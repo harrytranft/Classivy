@@ -1630,7 +1630,7 @@ const App: React.FC = () => {
         }
 
         let currentStudent = normalizeStudentPokemonData(s);
-        const eggProgressAmount = source === 'solo' ? (amount > 1 ? amount : 0) : amount;
+        const eggProgressAmount = source === 'solo' ? (amount > 0 ? amount : 0) : amount;
         const eggResult = advanceEggForStudent(currentStudent, eggProgressAmount);
         currentStudent = eggResult.student;
         if (eggResult.hatchedPet) {
@@ -1735,7 +1735,7 @@ const App: React.FC = () => {
     if (source === 'solo') {
       const resolvedClassName = updatedStudents.find(student => ids.includes(student.id))?.className;
       incrementBossCounterForClass(resolvedClassName);
-      if (amount > 1 && ids.length === 1 && !releaseEventToShow) {
+      if (amount > 0 && ids.length === 1 && !releaseEventToShow) {
         const ludoStudent = updatedStudents.find(student => student.id === ids[0]);
         if (ludoStudent) {
           setShowRandomModal(false);
@@ -3646,7 +3646,7 @@ const App: React.FC = () => {
       ];
 
       let eventStudent = progressionResult.student;
-      if (pointGain > 1) {
+      if (pointGain > 0) {
         const eggResult = advanceEggForStudent(eventStudent, pointGain);
         eventStudent = eggResult.student;
         if (eggResult.hatchedPet) {
@@ -3738,18 +3738,18 @@ const App: React.FC = () => {
     let ludoTurns: BattleLudoTurn[] = [];
     if (scoreA > scoreB) {
       ludoTurns = [
-        ...(scoreA > 1 ? [{ studentId: updatedA.id, role: 'winner' as const }] : []),
-        ...(scoreB > 1 ? [{ studentId: updatedB.id, role: 'loser' as const }] : [])
+        ...(scoreA > 0 ? [{ studentId: updatedA.id, role: 'winner' as const }] : []),
+        ...(scoreB > 0 ? [{ studentId: updatedB.id, role: 'loser' as const }] : [])
       ];
     } else if (scoreB > scoreA) {
       ludoTurns = [
-        ...(scoreB > 1 ? [{ studentId: updatedB.id, role: 'winner' as const }] : []),
-        ...(scoreA > 1 ? [{ studentId: updatedA.id, role: 'loser' as const }] : [])
+        ...(scoreB > 0 ? [{ studentId: updatedB.id, role: 'winner' as const }] : []),
+        ...(scoreA > 0 ? [{ studentId: updatedA.id, role: 'loser' as const }] : [])
       ];
     } else {
       ludoTurns = [
-        ...(scoreA > 1 ? [{ studentId: updatedA.id, role: 'draw' as const }] : []),
-        ...(scoreB > 1 ? [{ studentId: updatedB.id, role: 'draw' as const }] : [])
+        ...(scoreA > 0 ? [{ studentId: updatedA.id, role: 'draw' as const }] : []),
+        ...(scoreB > 0 ? [{ studentId: updatedB.id, role: 'draw' as const }] : [])
       ];
     }
     setBattleStudentA(updatedA);
@@ -6246,7 +6246,7 @@ const App: React.FC = () => {
                         </>
                       ) : (
                         <p className="rounded-xl bg-rose-50 p-3 text-center text-xs font-black text-rose-700">
-                          Không có lượt Cá Ngựa hợp lệ vì điểm Battle không lớn hơn 1.
+                          Không có lượt Cá Ngựa hợp lệ vì điểm Battle không lớn hơn 0.
                         </p>
                       )}
                     </div>
