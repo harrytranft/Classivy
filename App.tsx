@@ -96,7 +96,16 @@ interface LevelUpAnnouncement {
 
 interface BattleLudoTurn {
   studentId: string;
-  role: 'winner' | 'loser' | 'draw';
+  role: 'winner' | 'loser' | 'draw' | 'boss';
+}
+
+type LudoReturnHint = 'solo' | 'battle' | 'boss' | null;
+
+interface ClaimAllRewardSummary {
+  studentId: string;
+  studentName: string;
+  expeditionMessage?: string;
+  chestMessage?: string;
 }
 
 interface ShopReviewItem {
@@ -456,6 +465,8 @@ const App: React.FC = () => {
     type: 'kick' | 'special' | 'finish' | 'monster' | 'curse' | 'portal';
     tileIndex?: number;
   } | null>(null);
+  const [ludoReturnHint, setLudoReturnHint] = useState<LudoReturnHint>(null);
+  const [claimAllRewardSummary, setClaimAllRewardSummary] = useState<ClaimAllRewardSummary[] | null>(null);
 
   // Custom Ludo Special Tiles State
   const [customLudoTiles, setCustomLudoTiles] = useState<Record<number, LudoTileSpec>>(() => {
@@ -1319,7 +1330,7 @@ const App: React.FC = () => {
   }, []);
 
   // Actions
-  const openLudoForClass = (className?: string, activeStudent?: Student | null) => {
+  const openLudoForClass = (className?: string, activeStudent?: Student | null, returnHint: LudoReturnHint = null) => {
     const nextClass = className || (filterClass !== 'Tất cả' ? filterClass : classOptions[0] || '');
     if (!nextClass) {
       alert("Chưa có lớp nào để mở đường đua Cá Ngựa.");
@@ -1328,10 +1339,11 @@ const App: React.FC = () => {
     setLudoClassName(nextClass);
     setLudoActiveStudent(activeStudent && activeStudent.className === nextClass ? activeStudent : null);
     setLudoDice(null);
+    setLudoReturnHint(returnHint);
     setShowLudoModal(true);
   };
 
-  const openBattleLudoTurns = (turns: BattleLudoTurn[]) => {
+  const openBattleLudoTurns = (turns: BattleLudoTurn[], returnHint: LudoReturnHint = 'battle') => {
     const validTurns = turns
       .map(turn => {
         const student = students.find(s => s.id === turn.studentId);
@@ -1345,7 +1357,14 @@ const App: React.FC = () => {
     }
 
     setBattleLudoQueue(validTurns.map(item => item.turn));
-    openLudoForClass(validTurns[0].student.className, validTurns[0].student);
+    openLudoForClass(validTurns[0].student.className, validTurns[0].student, returnHint);
+  };
+
+  const handleRandomFromLudo = () => {
+    setBattleLudoQueue([]);
+    setLudoReturnHint(null);
+    setShowLudoModal(false);
+    window.setTimeout(() => handleRandom(), 0);
   };
 
   const getRandomIndex = (length: number) => {
@@ -1404,17 +1423,17 @@ const App: React.FC = () => {
   });
 
   const advanceEggForStudent = (student: Student, amount: number) => {
-    let currentEgg = student.egg ? { ...student.egg } : createEgg('normal');
+    let currentEgg = student.egg ? { ...student.egg } : amount > 0 ? createEgg('normal') : undefined;
     let currentStudent = student;
     let hatchedPet: PokemonPet | null = null;
 
-    if (amount > 0 && currentEgg.status === 'egg') {
+    if (amount > 0 && currentEgg?.status === 'egg') {
       const requiredProgress = getEggRequiredProgress(currentEgg);
       const nextProgress = currentEgg.progress + amount;
       currentEgg = {
         ...currentEgg,
         requiredProgress,
-        progress: Math.min(requiredProgress, nextProgress)
+        progress: Math.max(0, Math.min(requiredProgress, nextProgress))
       };
 
       if (currentEgg.progress >= requiredProgress) {
@@ -1452,6 +1471,50 @@ const App: React.FC = () => {
       egg: currentEgg,
       hatchedPet
     };
+  };
+
+  const handleSpendAuraToHatchEgg = (studentId: string) => {
+    const target = students.find(student => student.id === studentId);
+    if (!target?.egg || target.egg.status !== 'egg') {
+      alert('Trainer này chưa có trứng đang ấp.');
+      return;
+    }
+
+    const requiredProgress = getEggRequiredProgress(target.egg);
+    const currentProgress = Math.max(0, target.egg.progress || 0);
+    const remainingProgress = Math.max(0, requiredProgress - currentProgress);
+    if (remainingProgress <= 0) {
+      alert('Trứng đã đủ điểm ấp. Hãy bấm nở trứng ngay.');
+      return;
+    }
+    if (target.points < remainingProgress) {
+      alert(`Không đủ Hào Quang. Cần ${remainingProgress}đ để ấp nhanh, hiện có ${target.points}đ.`);
+      return;
+    }
+    if (!window.confirm(`Đổi ${remainingProgress}đ Hào Quang để ấp nhanh ${getEggLabel(target.egg.kind || 'normal')}?`)) return;
+
+    const timestamp = Date.now();
+    const eggResult = advanceEggForStudent(target, remainingProgress);
+    let nextStudent: Student = {
+      ...eggResult.student,
+      points: target.points - remainingProgress,
+      history: [{
+        id: `${timestamp}${Math.random()}`,
+        amount: -remainingProgress,
+        reason: `🥚 Đổi ${remainingProgress}đ Hào Quang để ấp nhanh ${getEggLabel(target.egg.kind || 'normal')}`,
+        timestamp
+      }, ...eggResult.student.history].slice(0, 50)
+    };
+
+    if (eggResult.hatchedPet) {
+      setHatchSuccessMessage(`Tin vui! ${target.name} đã đổi ${remainingProgress}đ Hào Quang để trứng nở ra ${getPokemonDisplayName(eggResult.hatchedPet)}. 🐣`);
+      setShowHatchModal(true);
+    }
+
+    setStudents(prev => prev.map(student => student.id === studentId ? nextStudent : student));
+    if (editingStudent?.id === studentId) setEditingStudent(nextStudent);
+    if (randomStudent?.id === studentId) setRandomStudent(nextStudent);
+    new Audio(posSoundUrl).play().catch(() => {});
   };
 
   const shuffleLuckyWheelRewards = (rewards: LuckyWheelReward[]) => {
@@ -1567,7 +1630,8 @@ const App: React.FC = () => {
         }
 
         let currentStudent = normalizeStudentPokemonData(s);
-        const eggResult = advanceEggForStudent(currentStudent, amount);
+        const eggProgressAmount = source === 'solo' ? (amount > 1 ? amount : 0) : amount;
+        const eggResult = advanceEggForStudent(currentStudent, eggProgressAmount);
         currentStudent = eggResult.student;
         if (eggResult.hatchedPet) {
           hatchedNames.push(s.name);
@@ -1671,6 +1735,13 @@ const App: React.FC = () => {
     if (source === 'solo') {
       const resolvedClassName = updatedStudents.find(student => ids.includes(student.id))?.className;
       incrementBossCounterForClass(resolvedClassName);
+      if (amount > 1 && ids.length === 1 && !releaseEventToShow) {
+        const ludoStudent = updatedStudents.find(student => student.id === ids[0]);
+        if (ludoStudent) {
+          setShowRandomModal(false);
+          openLudoForClass(ludoStudent.className, ludoStudent, 'solo');
+        }
+      }
     }
   };
 
@@ -2581,6 +2652,68 @@ const App: React.FC = () => {
     );
   };
 
+  const handleClaimAllRewards = () => {
+    const rewardRoster = students.filter(student => filterClass === 'Tất cả' || student.className === filterClass);
+    if (rewardRoster.length === 0) {
+      alert('Chưa có học sinh nào trong lớp hiện tại để nhận quà.');
+      return;
+    }
+
+    const timestamp = Date.now();
+    const weekKey = getLocalWeekKey();
+    const targetIds = new Set(rewardRoster.map(student => student.id));
+    const summaries: ClaimAllRewardSummary[] = [];
+
+    const updatedStudents = students.map(student => {
+      if (!targetIds.has(student.id)) return student;
+
+      let nextStudent = markExpeditionReadyIfDue(student, timestamp);
+      let expeditionMessage: string | undefined;
+      let chestMessage: string | undefined;
+
+      if (nextStudent.expedition?.status === 'ready') {
+        const result = claimReadyExpedition(nextStudent, timestamp);
+        nextStudent = result.student;
+        expeditionMessage = result.message;
+      }
+
+      const chest = nextStudent.weeklyChest?.weekKey === weekKey
+        ? nextStudent.weeklyChest
+        : { weekKey, progress: 0, claimed: false };
+      if (chest.progress >= 100 && !chest.claimed) {
+        const result = claimWeeklyChest({ ...nextStudent, weeklyChest: chest });
+        nextStudent = result.student;
+        chestMessage = result.message;
+      }
+
+      if (expeditionMessage || chestMessage) {
+        summaries.push({
+          studentId: student.id,
+          studentName: student.name,
+          expeditionMessage,
+          chestMessage
+        });
+      }
+
+      return nextStudent;
+    });
+
+    setStudents(updatedStudents);
+    if (editingStudent) {
+      const updatedEditingStudent = updatedStudents.find(student => student.id === editingStudent.id);
+      if (updatedEditingStudent) setEditingStudent(updatedEditingStudent);
+    }
+    if (randomStudent) {
+      const updatedRandomStudent = updatedStudents.find(student => student.id === randomStudent.id);
+      if (updatedRandomStudent) setRandomStudent(updatedRandomStudent);
+    }
+    setClaimAllRewardSummary(summaries);
+    showPokemonReaction(
+      [{ type: 'random-drop', message: summaries.length > 0 ? `${summaries.length} học sinh đã nhận quà` : 'Không có quà hoặc rương sẵn sàng' }],
+      'Nhận quà cả lớp'
+    );
+  };
+
   const toggleAttendance = (id: string) => {
     setStudents(prev => prev.map(s => {
       if (s.id !== id) return s;
@@ -2896,11 +3029,13 @@ const App: React.FC = () => {
     });
   };
 
-  const openBossEncounter = (className: string, state: ClassBossState): boolean => {
+  const openBossEncounter = (className: string, state: ClassBossState, options: { notify?: boolean } = {}): boolean => {
     const classStudents = students.filter(student => student.className === className);
     const { party, nextQueue } = selectBossParty(classStudents, state.participantQueue, state.previousPartyIds);
     if (party.length < BOSS_PARTY_SIZE) {
-      alert(`Boss đã xuất hiện nhưng cần ít nhất ${BOSS_PARTY_SIZE} trainer đang có Pokémon để chiến đấu.`);
+      if (options.notify) {
+        alert(`Boss đã xuất hiện nhưng cần ít nhất ${BOSS_PARTY_SIZE} trainer đang có Pokémon còn HP để chiến đấu.`);
+      }
       return false;
     }
 
@@ -2946,7 +3081,7 @@ const App: React.FC = () => {
       }
       const bossState = normalizeClassBossState(bossStatesByClass[activeRandomClassName], activeRandomClassName, bossEncounterFrequency);
       const bossReady = isBossEncounterReady(bossState);
-      if (bossReady && openBossEncounter(activeRandomClassName, { ...bossState, encounterReady: true })) return;
+      if (bossReady && openBossEncounter(activeRandomClassName, { ...bossState, encounterReady: true }, { notify: forceMode === 'boss' })) return;
       if (forceMode === 'boss') {
         setActiveBossRound(null);
         setRandomMode('boss');
@@ -3128,6 +3263,15 @@ const App: React.FC = () => {
     setActiveBossRound(null);
     setSelectedStudentIds([]);
     setBossRoundResolving(false);
+    if (result === 'success') {
+      const bossLudoTurns: BattleLudoTurn[] = partyIds.map(studentId => ({ studentId, role: 'boss' }));
+      const firstBossStudent = updatedStudents.find(student => student.id === bossLudoTurns[0]?.studentId) || null;
+      if (firstBossStudent) {
+        setShowRandomModal(false);
+        setBattleLudoQueue(bossLudoTurns);
+        openLudoForClass(className, firstBossStudent, 'boss');
+      }
+    }
 
     if (releaseEvents.length > 0) queuePokemonReleaseEvents(releaseEvents);
     if (resolution.bossDefeated) {
@@ -3462,6 +3606,7 @@ const App: React.FC = () => {
     let releaseEventToShow: PokemonReleaseEvent | null = null;
     let battleProgressMessages: string[] = [];
     let battleUiEvents: PokemonUiEvent[] = [];
+    let battleHatchedNames: string[] = [];
 
     const applyBattleOutcome = (
       student: Student,
@@ -3500,10 +3645,20 @@ const App: React.FC = () => {
           .map(event => `${student.name}: ${event.message}`)
       ];
 
+      let eventStudent = progressionResult.student;
+      if (pointGain > 1) {
+        const eggResult = advanceEggForStudent(eventStudent, pointGain);
+        eventStudent = eggResult.student;
+        if (eggResult.hatchedPet) {
+          battleHatchedNames.push(student.name);
+          battleUiEvents.push({ type: 'evolution', message: `${student.name}: trứng đã nở` });
+        }
+      }
+
       const trainerXpGain = (outcome === 'win' ? 10 : 0)
         + (progressionResult.uiEvents.some(event => event.type === 'evolution') ? 15 : 0);
       const journeyStudent = applyTrainerJourneyProgress(
-        progressionResult.student,
+        eventStudent,
         trainerXpGain,
         Date.now(),
         battleUiEvents,
@@ -3567,6 +3722,9 @@ const App: React.FC = () => {
     if (battleProgressMessages.length > 0) {
       resultMsg += `\n\nTiến triển Pokémon:\n${battleProgressMessages.slice(0, 5).map(message => `• ${message}`).join('\n')}`;
     }
+    if (battleHatchedNames.length > 0) {
+      resultMsg += `\n\nTrứng đã nở: ${battleHatchedNames.join(', ')}.`;
+    }
 
     setStudents(updatedStudents);
     if (releaseEventToShow) setPokemonReleaseEvent(releaseEventToShow);
@@ -3580,18 +3738,18 @@ const App: React.FC = () => {
     let ludoTurns: BattleLudoTurn[] = [];
     if (scoreA > scoreB) {
       ludoTurns = [
-        { studentId: updatedA.id, role: 'winner' },
-        ...(scoreB >= 0 ? [{ studentId: updatedB.id, role: 'loser' as const }] : [])
+        ...(scoreA > 1 ? [{ studentId: updatedA.id, role: 'winner' as const }] : []),
+        ...(scoreB > 1 ? [{ studentId: updatedB.id, role: 'loser' as const }] : [])
       ];
     } else if (scoreB > scoreA) {
       ludoTurns = [
-        { studentId: updatedB.id, role: 'winner' },
-        ...(scoreA >= 0 ? [{ studentId: updatedA.id, role: 'loser' as const }] : [])
+        ...(scoreB > 1 ? [{ studentId: updatedB.id, role: 'winner' as const }] : []),
+        ...(scoreA > 1 ? [{ studentId: updatedA.id, role: 'loser' as const }] : [])
       ];
     } else {
       ludoTurns = [
-        ...(scoreA >= 0 ? [{ studentId: updatedA.id, role: 'draw' as const }] : []),
-        ...(scoreB >= 0 ? [{ studentId: updatedB.id, role: 'draw' as const }] : [])
+        ...(scoreA > 1 ? [{ studentId: updatedA.id, role: 'draw' as const }] : []),
+        ...(scoreB > 1 ? [{ studentId: updatedB.id, role: 'draw' as const }] : [])
       ];
     }
     setBattleStudentA(updatedA);
@@ -4598,6 +4756,7 @@ const App: React.FC = () => {
               onShop={handleOpenShop}
               onGroup={() => setShowGroupModal(true)}
               onTimer={() => setShowTimerModal(true)}
+              onClaimAllRewards={handleClaimAllRewards}
               onSelectAll={handleToggleSelectAll}
               isMultiSelectMode={isMultiSelectMode}
               onToggleMultiSelect={() => { setIsMultiSelectMode(!isMultiSelectMode); setSelectedStudentIds([]); }}
@@ -4907,6 +5066,20 @@ const App: React.FC = () => {
                           >
                             🧪 Ủng Hộ +1đ Hào Quang Ấp Trứng
                           </button>
+
+                          {editingStudent.egg?.status === 'egg' && (() => {
+                            const requiredProgress = getEggRequiredProgress(editingStudent.egg);
+                            const remainingProgress = Math.max(0, requiredProgress - (editingStudent.egg.progress || 0));
+                            return (
+                              <button
+                                disabled={remainingProgress <= 0 || editingStudent.points < remainingProgress}
+                                onClick={() => handleSpendAuraToHatchEgg(editingStudent.id)}
+                                className="w-full rounded-2xl bg-emerald-700 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-md transition-all hover:bg-emerald-800 active:scale-95 disabled:bg-stone-200 disabled:text-stone-500"
+                              >
+                                🎁 Đổi {remainingProgress}đ Hào Quang để ấp nhanh
+                              </button>
+                            );
+                          })()}
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <button
@@ -5728,7 +5901,7 @@ const App: React.FC = () => {
 
       {/* MODAL: SKILL POINT BOARD */}
       {showSkillModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-0 sm:p-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-[220] flex items-center justify-center bg-black/80 p-0 sm:p-4 backdrop-blur-md">
           <div className="bg-white w-full max-w-5xl rounded-3xl h-full sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300 shadow-2xl">
             
             {/* Sidebar Profile details from screenshot request */}
@@ -5925,6 +6098,12 @@ const App: React.FC = () => {
                         </p>
                       </div>
                     )}
+                    <button
+                      onClick={() => handleRandom()}
+                      className="mt-5 w-full rounded-2xl bg-amber-500 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-amber-600"
+                    >
+                      🎲 Random Tiếp
+                    </button>
                   </div>
                 )}
               </>
@@ -6067,7 +6246,7 @@ const App: React.FC = () => {
                         </>
                       ) : (
                         <p className="rounded-xl bg-rose-50 p-3 text-center text-xs font-black text-rose-700">
-                          Không có lượt Cá Ngựa hợp lệ vì điểm Battle bị âm.
+                          Không có lượt Cá Ngựa hợp lệ vì điểm Battle không lớn hơn 1.
                         </p>
                       )}
                     </div>
@@ -6210,7 +6389,7 @@ const App: React.FC = () => {
               setShowLuckyWheelModal(false);
             }
           }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-[220] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md overflow-y-auto"
         >
           <div className="bg-[#17051f] w-full max-w-5xl rounded-[40px] shadow-[0_0_80px_rgba(217,70,239,0.55)] overflow-hidden animate-in zoom-in duration-300 relative border-4 border-fuchsia-500 my-auto">
             <button
@@ -6516,9 +6695,19 @@ const App: React.FC = () => {
                 <p className="text-[10px] text-amber-100/85">Lớp {activeLudoClassName || 'Chưa chọn'} - 1 ô chỉ có 1 trainer đứng, trừ ô 0.</p>
               </div>
             </div>
-            <button onClick={() => { setBattleLudoQueue([]); setShowLudoModal(false); }} className="rounded-xl border border-amber-300/70 bg-amber-400/20 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-amber-400/30">
-              ← Quay Lại Lớp
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={ludoRolling || battleLudoQueue.length > 0}
+                onClick={handleRandomFromLudo}
+                className="rounded-xl border border-emerald-300/70 bg-emerald-500/25 px-5 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-all hover:bg-emerald-500/35 disabled:cursor-not-allowed disabled:opacity-45"
+                title={battleLudoQueue.length > 0 ? 'Hoàn tất queue Cá Ngựa trước khi Random tiếp.' : 'Quay lại Random tiếp'}
+              >
+                🎲 Random Tiếp
+              </button>
+              <button onClick={() => { setBattleLudoQueue([]); setLudoReturnHint(null); setShowLudoModal(false); }} className="rounded-xl border border-amber-300/70 bg-amber-400/20 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-amber-400/30">
+                ← Quay Lại Lớp
+              </button>
+            </div>
           </div>
 
           <div className="flex-1 p-4 overflow-y-auto max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-6">
@@ -6538,6 +6727,7 @@ const App: React.FC = () => {
                       setLudoClassName(e.target.value);
                       setLudoActiveStudent(null);
                       setBattleLudoQueue([]);
+                      setLudoReturnHint(null);
                       setLudoDice(null);
                     }}
                     className="bg-amber-100 text-amber-950 border border-amber-300 px-3 py-1.5 rounded-xl text-xs font-black outline-none"
@@ -6626,7 +6816,9 @@ const App: React.FC = () => {
                 <div className="space-y-3">
                   {battleLudoQueue.length > 0 ? (
                     <div className="rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 p-3 shadow-inner">
-                      <p className="mb-2 text-[10px] font-black uppercase tracking-wider text-amber-900">Queue Battle tự động</p>
+                      <p className="mb-2 text-[10px] font-black uppercase tracking-wider text-amber-900">
+                        Queue {ludoReturnHint === 'boss' ? 'Boss' : ludoReturnHint === 'solo' ? 'Solo' : 'Battle'} tự động
+                      </p>
                       <div className="space-y-1.5">
                         {battleLudoQueue.map((turn, index) => {
                           const queuedStudent = ludoRaceStudents.find(s => s.id === turn.studentId) || students.find(s => s.id === turn.studentId);
@@ -6634,7 +6826,7 @@ const App: React.FC = () => {
                           return (
                             <div key={`${turn.studentId}-${index}`} className={`flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-black ${index === 0 ? 'bg-amber-600 text-white' : 'bg-white text-amber-950 border border-amber-200'}`}>
                               <span>{index + 1}. {queuedStudent.name}</span>
-                              <span className="text-[9px] uppercase">{turn.role === 'winner' ? 'Thắng' : turn.role === 'loser' ? 'Thua' : 'Hòa'}</span>
+                              <span className="text-[9px] uppercase">{turn.role === 'winner' ? 'Thắng' : turn.role === 'loser' ? 'Thua' : turn.role === 'boss' ? 'Boss' : 'Hòa'}</span>
                             </div>
                           );
                         })}
@@ -6812,6 +7004,62 @@ const App: React.FC = () => {
             </div>
             
             <div className="text-[9px] uppercase font-bold text-amber-900/40 tracking-wider">Trainer Hub - Pokémon Companion</div>
+          </div>
+        </div>
+      )}
+
+      {claimAllRewardSummary && (
+        <div className="fixed inset-0 z-[245] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-[36px] border-4 border-amber-300 bg-white shadow-2xl">
+            <div className="bg-gradient-to-r from-emerald-700 via-amber-600 to-red-800 p-6 text-white">
+              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-amber-100">Nhận quà cả lớp</p>
+              <h3 className="mt-1 text-3xl font-royal uppercase">Tổng kết phần thưởng</h3>
+              <p className="mt-1 text-xs font-bold text-white/80">
+                {claimAllRewardSummary.length > 0
+                  ? `${claimAllRewardSummary.length} học sinh có quà Expedition hoặc rương sẵn sàng.`
+                  : 'Chưa có Expedition hoặc rương nào sẵn sàng trong lớp hiện tại.'}
+              </p>
+            </div>
+            <div className="flex-1 space-y-3 overflow-y-auto bg-amber-50/60 p-5 custom-scrollbar">
+              {claimAllRewardSummary.length === 0 ? (
+                <div className="rounded-3xl border border-dashed border-amber-300 bg-white p-8 text-center">
+                  <div className="text-5xl">🎁</div>
+                  <p className="mt-3 text-sm font-black text-amber-950">Không có quà nào cần nhận lúc này.</p>
+                </div>
+              ) : claimAllRewardSummary.map(summary => {
+                const summaryStudent = students.find(student => student.id === summary.studentId);
+                return (
+                  <div key={summary.studentId} className="flex gap-4 rounded-3xl border border-amber-200 bg-white p-4 shadow-sm">
+                    {summaryStudent && (
+                      <StudentAvatar student={summaryStudent} className="h-16 w-16 shrink-0 rounded-2xl border-2 border-amber-400 shadow" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-base font-black text-amber-950">{summary.studentName}</p>
+                      <div className="mt-2 space-y-2">
+                        {summary.expeditionMessage && (
+                          <p className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3 text-xs font-bold text-emerald-900">
+                            🧭 Expedition: {summary.expeditionMessage}
+                          </p>
+                        )}
+                        {summary.chestMessage && (
+                          <p className="rounded-2xl border border-sky-100 bg-sky-50 p-3 text-xs font-bold text-sky-900">
+                            🎁 Rương: {summary.chestMessage}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="border-t border-amber-200 bg-white p-4">
+              <button
+                onClick={() => setClaimAllRewardSummary(null)}
+                className="w-full rounded-2xl bg-amber-600 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-amber-700"
+              >
+                Hoàn tất
+              </button>
+            </div>
           </div>
         </div>
       )}

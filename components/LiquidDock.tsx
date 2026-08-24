@@ -18,6 +18,7 @@ interface LiquidDockProps {
   onShop: () => void;
   onGroup: () => void;
   onTimer: () => void;
+  onClaimAllRewards: () => void;
   onSelectAll: () => void;
   isMultiSelectMode: boolean;
   onToggleMultiSelect: () => void;
@@ -98,6 +99,7 @@ export const LiquidDock: React.FC<LiquidDockProps> = ({
   onShop,
   onGroup,
   onTimer,
+  onClaimAllRewards,
   onSelectAll,
   isMultiSelectMode,
   onToggleMultiSelect,
@@ -188,6 +190,7 @@ export const LiquidDock: React.FC<LiquidDockProps> = ({
 
   const items = mainItems;
   const clockIndex = items.length;
+  const claimRewardsIndex = clockIndex + 1;
   const syncLabel = isSyncing
     ? 'Đang đồng bộ'
     : lastSyncedTime
@@ -293,6 +296,30 @@ export const LiquidDock: React.FC<LiquidDockProps> = ({
           >
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none" />
             <AnalogClockIcon now={now} size={hoveredIndex === clockIndex ? 56 : 46} />
+          </button>
+        </div>
+
+        <div
+          className="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer"
+          onMouseEnter={() => setHoveredIndex(claimRewardsIndex)}
+        >
+          {hoveredIndex === claimRewardsIndex && (
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap bg-red-950/90 text-amber-200 border border-amber-400/60 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider shadow-xl backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 pointer-events-none z-50 flex items-center gap-1.5">
+              <span>🎁</span>
+              <span>Nhận quà cả lớp</span>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={onClaimAllRewards}
+            style={{ width: `${getItemSize(claimRewardsIndex)}px`, height: `${getItemSize(claimRewardsIndex)}px` }}
+            className="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 bg-gradient-to-br from-emerald-400 via-amber-400 to-orange-600 hover:shadow-2xl active:scale-90"
+            title="Nhận quà cả lớp"
+          >
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none" />
+            <span className={`${getFontSize(claimRewardsIndex)} transition-all duration-200 select-none drop-shadow-md z-10 text-white`}>
+              🎁
+            </span>
           </button>
         </div>
 
