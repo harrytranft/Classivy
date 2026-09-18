@@ -108,6 +108,19 @@ interface ClaimAllRewardSummary {
   chestMessage?: string;
 }
 
+interface HatchAnnouncementItem {
+  studentId: string;
+  studentName: string;
+  pet: PokemonPet;
+}
+
+interface GiftPokemonResult {
+  student: Student;
+  pet: PokemonPet;
+  egg: StudentEgg;
+  hadExistingEgg: boolean;
+}
+
 interface ShopReviewItem {
   studentId: string;
   studentName: string;
@@ -510,8 +523,14 @@ const App: React.FC = () => {
   // Hatching State variables
   const [showHatchModal, setShowHatchModal] = useState(false);
   const [hatchSuccessMessage, setHatchSuccessMessage] = useState<string>('');
+  const [hatchAnnouncementItems, setHatchAnnouncementItems] = useState<HatchAnnouncementItem[] | null>(null);
   const [pokemonReleaseEvent, setPokemonReleaseEvent] = useState<PokemonReleaseEvent | null>(null);
   const [pokemonReleaseQueue, setPokemonReleaseQueue] = useState<PokemonReleaseEvent[]>([]);
+  const [showGiftPokemonModal, setShowGiftPokemonModal] = useState(false);
+  const [giftStudentId, setGiftStudentId] = useState<string>('');
+  const [giftPokemonResult, setGiftPokemonResult] = useState<GiftPokemonResult | null>(null);
+  const [giftAnimationPhase, setGiftAnimationPhase] = useState<'select' | 'hatching' | 'revealed'>('select');
+  const giftPokemonTimersRef = useRef<number[]>([]);
 
   // Audio settings
   const [posSoundUrl, setPosSoundUrl] = useState('https://actions.google.com/sounds/v1/foley/ting.ogg');
@@ -575,6 +594,7 @@ const App: React.FC = () => {
       if (pokemonReactionTimerRef.current) {
         window.clearTimeout(pokemonReactionTimerRef.current);
       }
+      giftPokemonTimersRef.current.forEach(timerId => window.clearTimeout(timerId));
     };
   }, []);
 
@@ -1163,6 +1183,13 @@ const App: React.FC = () => {
     return list;
   }, [students, filterClass, searchQuery, sortType]);
 
+  const giftPokemonRoster = useMemo(
+    () => students
+      .filter(student => filterClass === 'Tất cả' || student.className === filterClass)
+      .sort((a, b) => a.name.localeCompare(b.name)),
+    [students, filterClass]
+  );
+
   const presentStudents = useMemo(() => currentClassStudents.filter(s => !s.isAbsent), [currentClassStudents]);
   const homeworkLessonDateKey = getLocalDateKey();
   const editingPetEvolutionPreview = useMemo(() => getNextEvolutionPreview(editingStudent?.pet), [editingStudent?.pet]);
@@ -1473,6 +1500,111 @@ const App: React.FC = () => {
     };
   };
 
+  const showHatchAnnouncement = (items: HatchAnnouncementItem[], fallbackMessage: string) => {
+    setHatchAnnouncementItems(items.length > 0 ? items : null);
+    setHatchSuccessMessage(fallbackMessage);
+    setShowHatchModal(true);
+  };
+
+  const clearGiftPokemonTimers = () => {
+    giftPokemonTimersRef.current.forEach(timerId => window.clearTimeout(timerId));
+    giftPokemonTimersRef.current = [];
+  };
+
+  const resetGiftPokemonFlow = () => {
+    clearGiftPokemonTimers();
+    setGiftPokemonResult(null);
+    setGiftAnimationPhase('select');
+  };
+
+  const closeGiftPokemonModal = () => {
+    resetGiftPokemonFlow();
+    setShowGiftPokemonModal(false);
+  };
+
+  const openGiftPokemonModal = () => {
+    if (giftPokemonRoster.length === 0) {
+      alert('Chưa có học sinh nào trong lớp hiện tại để tặng Pokémon.');
+      return;
+    }
+    resetGiftPokemonFlow();
+    setGiftStudentId(prev => giftPokemonRoster.some(student => student.id === prev) ? prev : giftPokemonRoster[0].id);
+    setShowGiftPokemonModal(true);
+  };
+
+  const handleGiftPokemon = () => {
+    const target = students.find(student => student.id === giftStudentId);
+    if (!target || giftAnimationPhase === 'hatching') return;
+
+    const normalizedTarget = normalizeStudentPokemonData(target);
+    const hadExistingEgg = !!normalizedTarget.egg && normalizedTarget.egg.status === 'egg';
+    const giftEgg = hadExistingEgg
+      ? { ...normalizedTarget.egg! }
+      : createEgg('special', 'reward');
+    const giftReadyStudent: Student = {
+      ...normalizedTarget,
+      egg: {
+        ...giftEgg,
+        status: 'egg',
+        requiredProgress: getEggRequiredProgress(giftEgg)
+      }
+    };
+    const requiredProgress = getEggRequiredProgress(giftReadyStudent.egg);
+    const eggResult = advanceEggForStudent(giftReadyStudent, requiredProgress);
+    const hatchedPet = eggResult.hatchedPet || createPokemonPetFromDexId(giftReadyStudent.egg!.assignedDexId);
+    const timestamp = Date.now();
+    let nextStudent: Student = {
+      ...eggResult.student,
+      pet: hatchedPet,
+      pets: updatePetInCollection(eggResult.student, hatchedPet),
+      history: [{
+        id: `${timestamp}${Math.random()}`,
+        amount: 0,
+        reason: `🎁 Tặng Pokémon: ${getPokemonDisplayName(hatchedPet)} nở từ ${getEggLabel(giftReadyStudent.egg!.kind || 'special')} (không trừ Hào Quang)`,
+        timestamp
+      }, ...eggResult.student.history].slice(0, 50)
+    };
+
+    nextStudent = appendAdventureJournal(nextStudent, {
+      type: 'pokemon-hatched',
+      text: `${getPokemonDisplayName(hatchedPet)} hatched as a gift for ${target.name}.`,
+      petInstanceId: hatchedPet.instanceId
+    }, timestamp);
+    if (hatchedPet.isShiny) {
+      nextStudent = appendAdventureJournal(nextStudent, {
+        type: 'shiny-acquired',
+        text: `${target.name} received Shiny ${getPokemonDisplayName(hatchedPet)} from Gift Pokemon.`,
+        petInstanceId: hatchedPet.instanceId
+      }, timestamp);
+    }
+
+    setGiftAnimationPhase('hatching');
+    setGiftPokemonResult({
+      student: nextStudent,
+      pet: hatchedPet,
+      egg: giftReadyStudent.egg!,
+      hadExistingEgg
+    });
+
+    clearGiftPokemonTimers();
+    giftPokemonTimersRef.current = [
+      window.setTimeout(() => {
+        setStudents(prev => prev.map(student => student.id === target.id ? nextStudent : student));
+        if (editingStudent?.id === target.id) setEditingStudent(nextStudent);
+        if (randomStudent?.id === target.id) setRandomStudent(nextStudent);
+        setGiftPokemonResult({
+          student: nextStudent,
+          pet: hatchedPet,
+          egg: giftReadyStudent.egg!,
+          hadExistingEgg
+        });
+        setGiftAnimationPhase('revealed');
+        showPokemonReaction([{ type: 'evolution', message: `${nextStudent.name}: ${getPokemonDisplayName(hatchedPet)} đã nở` }], 'Tặng Pokémon');
+        new Audio(posSoundUrl).play().catch(() => {});
+      }, 2200)
+    ];
+  };
+
   const handleSpendAuraToHatchEgg = (studentId: string) => {
     const target = students.find(student => student.id === studentId);
     if (!target?.egg || target.egg.status !== 'egg') {
@@ -1507,8 +1639,10 @@ const App: React.FC = () => {
     };
 
     if (eggResult.hatchedPet) {
-      setHatchSuccessMessage(`Tin vui! ${target.name} đã đổi ${remainingProgress}đ Hào Quang để trứng nở ra ${getPokemonDisplayName(eggResult.hatchedPet)}. 🐣`);
-      setShowHatchModal(true);
+      showHatchAnnouncement(
+        [{ studentId: target.id, studentName: target.name, pet: eggResult.hatchedPet }],
+        `Tin vui! ${target.name} đã đổi ${remainingProgress}đ Hào Quang để trứng nở ra ${getPokemonDisplayName(eggResult.hatchedPet)}.`
+      );
     }
 
     setStudents(prev => prev.map(student => student.id === studentId ? nextStudent : student));
@@ -1613,7 +1747,7 @@ const App: React.FC = () => {
     const sound = new Audio(amount >= 0 ? posSoundUrl : negSoundUrl);
     sound.play().catch(() => {});
 
-    let hatchedNames: string[] = [];
+    let hatchItems: HatchAnnouncementItem[] = [];
     let evolvedMessages: string[] = [];
     let progressionEvents: PokemonUiEvent[] = [];
     let releaseEventToShow: PokemonReleaseEvent | null = null;
@@ -1634,7 +1768,7 @@ const App: React.FC = () => {
         const eggResult = advanceEggForStudent(currentStudent, eggProgressAmount);
         currentStudent = eggResult.student;
         if (eggResult.hatchedPet) {
-          hatchedNames.push(s.name);
+          hatchItems.push({ studentId: s.id, studentName: s.name, pet: eggResult.hatchedPet });
         }
 
         if (currentStudent.pet && amount !== 0) {
@@ -1702,10 +1836,10 @@ const App: React.FC = () => {
       const toastEvents: PokemonUiEvent[] = [
         ...progressionEvents.filter(event => ['xp', 'bond', 'streak', 'passive', 'charge-ready', 'level-up', 'evolution', 'hp', 'random-drop', 'mastery'].includes(event.type))
       ];
-      if (hatchedNames.length > 0) {
+      if (hatchItems.length > 0) {
         toastEvents.unshift({
           type: 'evolution',
-          message: `Trứng của ${hatchedNames.join(', ')} đã nở`
+          message: `Trứng của ${hatchItems.map(item => item.studentName).join(', ')} đã nở`
         });
       }
       const hasActivePetAfterUpdate = updatedStudents.some(student => ids.includes(student.id) && !!student.pet);
@@ -1716,10 +1850,19 @@ const App: React.FC = () => {
         });
       }
       showPokemonReaction(toastEvents, amount >= 0 ? 'Pokémon phản ứng vui vẻ' : 'Pokémon vẫn cố gắng');
-    } else if (hatchedNames.length > 0) {
-      setHatchSuccessMessage(`Tin vui! Quả trứng của trainer ${hatchedNames.join(', ')} đã nở ra một Pokémon đồng hành mới! 🥚🐣`);
-      setShowHatchModal(true);
+      if (hatchItems.length > 0) {
+        showHatchAnnouncement(
+          hatchItems,
+          `Tin vui! Trứng của ${hatchItems.map(item => item.studentName).join(', ')} đã nở ra Pokémon đồng hành mới.`
+        );
+      }
+    } else if (hatchItems.length > 0) {
+      showHatchAnnouncement(
+        hatchItems,
+        `Tin vui! Trứng của ${hatchItems.map(item => item.studentName).join(', ')} đã nở ra Pokémon đồng hành mới.`
+      );
     } else if (evolvedMessages.length > 0) {
+      setHatchAnnouncementItems(null);
       setHatchSuccessMessage(`✨ POKÉMON EVOLUTION ✨\n\n${evolvedMessages.join('\n')}\nHãy chúc mừng trainer và Pokémon đồng hành.`);
       setShowHatchModal(true);
     }
@@ -2790,6 +2933,7 @@ const App: React.FC = () => {
   const handleConfirmHomeworkCheck = () => {
     const timestamp = Date.now();
     const uiEvents: PokemonUiEvent[] = [];
+    const hatchItems: HatchAnnouncementItem[] = [];
     let doneCount = 0;
     let notYetCount = 0;
     let missingCount = 0;
@@ -2868,6 +3012,7 @@ const App: React.FC = () => {
       resultStudent = eggResult.student;
       if (eggResult.hatchedPet) {
         uiEvents.push({ type: 'evolution', message: `${student.name}: trứng đã nở` });
+        hatchItems.push({ studentId: student.id, studentName: student.name, pet: eggResult.hatchedPet });
       }
       if (resultStudent.pet) {
         const hpUpdate = applyPetHpDeltaToStudent(resultStudent, 8, 'Homework Done: hồi 8 HP');
@@ -2898,13 +3043,19 @@ const App: React.FC = () => {
       ...uiEvents.filter(event => ['xp', 'bond', 'hp', 'streak', 'passive', 'level-up', 'evolution', 'mastery'].includes(event.type)).slice(0, 3)
     ];
     showPokemonReaction(summaryEvents, 'Homework Check đã chốt');
+    if (hatchItems.length > 0 && !releaseEventToShow) {
+      showHatchAnnouncement(
+        hatchItems,
+        `Tin vui! Trứng của ${hatchItems.map(item => item.studentName).join(', ')} đã nở sau Homework.`
+      );
+    }
   };
 
   const handleConfirmAttendanceCheck = () => {
     const timestamp = Date.now();
     const lessonKeySuffix = getLocalDateKey();
     const uiEvents: PokemonUiEvent[] = [];
-    const hatchedNames: string[] = [];
+    const hatchItems: HatchAnnouncementItem[] = [];
     let presentCount = 0;
     let lateCount = 0;
     let absentCount = 0;
@@ -2960,7 +3111,7 @@ const App: React.FC = () => {
         const eggResult = advanceEggForStudent(resultStudent, pointDelta);
         resultStudent = eggResult.student;
         if (eggResult.hatchedPet) {
-          hatchedNames.push(student.name);
+          hatchItems.push({ studentId: student.id, studentName: student.name, pet: eggResult.hatchedPet });
         }
       }
 
@@ -3004,9 +3155,11 @@ const App: React.FC = () => {
     setShowAttendanceModal(false);
     setAttendanceStatuses({});
 
-    if (hatchedNames.length > 0 && !releaseEventToShow) {
-      setHatchSuccessMessage(`Tin vui! Trứng của ${hatchedNames.join(', ')} đã nở sau điểm chuyên cần. 🥚🐣`);
-      setShowHatchModal(true);
+    if (hatchItems.length > 0 && !releaseEventToShow) {
+      showHatchAnnouncement(
+        hatchItems,
+        `Tin vui! Trứng của ${hatchItems.map(item => item.studentName).join(', ')} đã nở sau điểm chuyên cần.`
+      );
     }
 
     showPokemonReaction(
@@ -3607,6 +3760,7 @@ const App: React.FC = () => {
     let battleProgressMessages: string[] = [];
     let battleUiEvents: PokemonUiEvent[] = [];
     let battleHatchedNames: string[] = [];
+    let battleHatchItems: HatchAnnouncementItem[] = [];
 
     const applyBattleOutcome = (
       student: Student,
@@ -3651,6 +3805,7 @@ const App: React.FC = () => {
         eventStudent = eggResult.student;
         if (eggResult.hatchedPet) {
           battleHatchedNames.push(student.name);
+          battleHatchItems.push({ studentId: student.id, studentName: student.name, pet: eggResult.hatchedPet });
           battleUiEvents.push({ type: 'evolution', message: `${student.name}: trứng đã nở` });
         }
       }
@@ -3730,6 +3885,12 @@ const App: React.FC = () => {
     if (releaseEventToShow) setPokemonReleaseEvent(releaseEventToShow);
     if (!releaseEventToShow && battleUiEvents.length > 0) {
       showPokemonReaction(battleUiEvents, 'Kết quả Battle Pokémon');
+    }
+    if (!releaseEventToShow && battleHatchItems.length > 0) {
+      showHatchAnnouncement(
+        battleHatchItems,
+        `Tin vui! Trứng của ${battleHatchItems.map(item => item.studentName).join(', ')} đã nở sau Battle.`
+      );
     }
     new Audio(posSoundUrl).play().catch(() => {});
 
@@ -4464,18 +4625,21 @@ const App: React.FC = () => {
           }}
         >
           {[
-            { id: 'plaza' as Screen, icon: '🏞️', label: 'Trainer Plaza' },
-            { id: 'class' as Screen, icon: '📚', label: 'Lớp Học' },
-            { id: 'settings' as Screen, icon: '⚙️', label: 'Cài Đặt' }
+            { id: 'plaza', screen: 'plaza' as Screen, icon: '🏞️', label: 'Trainer Plaza' },
+            { id: 'class', screen: 'class' as Screen, icon: '📚', label: 'Lớp Học' },
+            { id: 'giftPokemon', icon: '🎁', label: 'Tặng Pokémon' },
+            { id: 'settings', screen: 'settings' as Screen, icon: '⚙️', label: 'Cài Đặt' }
           ].map(item => (
             <button
               key={item.id}
               type="button"
-              onClick={() => setCurrentScreen(item.id)}
+              onClick={() => item.screen ? setCurrentScreen(item.screen) : openGiftPokemonModal()}
               title={item.label}
               className={`grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 ${
-                currentScreen === item.id
+                item.screen && currentScreen === item.screen
                   ? 'border-amber-200 bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 text-red-950 ring-4 ring-amber-200/35'
+                  : item.id === 'giftPokemon'
+                    ? 'border-white/50 bg-gradient-to-br from-emerald-300 via-amber-300 to-fuchsia-400 text-white hover:scale-110 hover:shadow-[0_0_28px_rgba(251,191,36,0.45)]'
                   : 'border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20'
               }`}
             >
@@ -4505,6 +4669,192 @@ const App: React.FC = () => {
         onBackup={handleBackupToCloud}
         onRestore={handleRestoreFromCloud}
       />
+
+      {showGiftPokemonModal && (
+        <div className="fixed inset-0 z-[280] flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-xl animate-in fade-in duration-200">
+          <div className="relative my-auto w-full max-w-5xl overflow-hidden rounded-[42px] border border-white/70 bg-white/18 shadow-[0_35px_120px_rgba(15,23,42,0.48)] backdrop-blur-2xl">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_15%,rgba(52,211,153,0.45),transparent_28%),radial-gradient(circle_at_88%_12%,rgba(217,70,239,0.35),transparent_25%),radial-gradient(circle_at_55%_100%,rgba(251,191,36,0.42),transparent_36%)] pointer-events-none" />
+            <div className="relative z-10 grid min-h-[620px] grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
+              <aside className="border-b border-white/30 bg-white/55 p-6 backdrop-blur-2xl lg:border-b-0 lg:border-r">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-emerald-700">Gift Pokémon</p>
+                    <h2 className="mt-2 font-royal text-3xl uppercase text-slate-950">Tặng Pokémon</h2>
+                    <p className="mt-2 text-xs font-bold leading-relaxed text-slate-600">
+                      Chọn học sinh trong {filterClass === 'Tất cả' ? 'tất cả lớp' : `lớp ${filterClass}`}. Quà sẽ nở trứng ngay và không trừ Hào Quang.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={closeGiftPokemonModal}
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-white/70 bg-white/60 text-2xl font-black text-slate-500 shadow-sm transition-colors hover:text-red-800"
+                    aria-label="Đóng tặng Pokémon"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="mt-5 rounded-[28px] border border-white/70 bg-white/60 p-3 shadow-inner">
+                  <p className="px-2 pb-2 text-[10px] font-black uppercase tracking-wider text-slate-500">Danh sách lớp hiện tại</p>
+                  <div className="max-h-[390px] space-y-2 overflow-y-auto pr-1 custom-scrollbar">
+                    {giftPokemonRoster.length === 0 ? (
+                      <div className="rounded-3xl border border-dashed border-slate-300 bg-white/70 p-6 text-center text-xs font-black text-slate-400">
+                        Chưa có học sinh trong lớp này
+                      </div>
+                    ) : giftPokemonRoster.map(student => {
+                      const selected = giftStudentId === student.id;
+                      const eggLabel = student.egg?.status === 'egg'
+                        ? `${student.egg.progress || 0}/${getEggRequiredProgress(student.egg)}`
+                        : 'Quà mới';
+                      return (
+                        <button
+                          key={student.id}
+                          type="button"
+                          disabled={giftAnimationPhase === 'hatching'}
+                          onClick={() => setGiftStudentId(student.id)}
+                          className={`flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all ${
+                            selected
+                              ? 'border-emerald-300 bg-emerald-50 shadow-[0_16px_40px_rgba(16,185,129,0.18)] ring-2 ring-emerald-200'
+                              : 'border-white/70 bg-white/65 hover:border-amber-200 hover:bg-amber-50/80'
+                          } disabled:cursor-not-allowed disabled:opacity-60`}
+                        >
+                          <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow" />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-black text-slate-950">{student.name}</p>
+                            <p className="mt-0.5 truncate text-[10px] font-bold text-slate-500">{student.className} · {student.points}đ Hào Quang</p>
+                          </div>
+                          <span className={`rounded-full px-3 py-1 text-[10px] font-black ${selected ? 'bg-emerald-600 text-white' : 'bg-white text-amber-700'}`}>
+                            {eggLabel}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </aside>
+
+              <section className="relative flex min-h-[620px] items-center justify-center overflow-hidden p-6 sm:p-8">
+                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.25),rgba(255,255,255,0.05))]" />
+                {giftAnimationPhase === 'revealed' && Array.from({ length: 34 }).map((_, index) => (
+                  <motion.span
+                    key={index}
+                    className="absolute h-2.5 w-2.5 rounded-full"
+                    style={{
+                      left: `${8 + (index * 17) % 84}%`,
+                      top: `${8 + (index * 29) % 76}%`,
+                      backgroundColor: ['#34d399', '#fbbf24', '#f472b6', '#60a5fa', '#fb7185'][index % 5]
+                    }}
+                    initial={{ y: -80, opacity: 0, scale: 0.4, rotate: 0 }}
+                    animate={{ y: [0, 120 + (index % 5) * 22], opacity: [0, 1, 0], scale: [0.6, 1, 0.7], rotate: 260 + index * 11 }}
+                    transition={{ duration: 2.1 + (index % 4) * 0.2, delay: (index % 7) * 0.045, repeat: Infinity, repeatDelay: 1.25 }}
+                  />
+                ))}
+
+                <div className="relative z-10 w-full max-w-xl rounded-[38px] border border-white/70 bg-white/58 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_28px_80px_rgba(15,23,42,0.22)] backdrop-blur-2xl">
+                  {giftAnimationPhase === 'select' && (
+                    <div className="space-y-6">
+                      <div className="mx-auto grid h-24 w-24 place-items-center rounded-[30px] border border-white/70 bg-gradient-to-br from-amber-100 via-white to-emerald-100 text-6xl shadow-xl">
+                        🥚
+                      </div>
+                      <div>
+                        <h3 className="font-royal text-4xl uppercase text-slate-950">Trứng quà tặng</h3>
+                        <p className="mx-auto mt-2 max-w-sm text-sm font-bold leading-relaxed text-slate-600">
+                          {giftStudentId
+                            ? `${giftPokemonRoster.find(student => student.id === giftStudentId)?.name || 'Học sinh'} sẽ nhận Pokémon ngay khi trứng nở.`
+                            : 'Chọn một học sinh để bắt đầu nghi thức nở trứng.'}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        disabled={!giftStudentId || giftPokemonRoster.length === 0}
+                        onClick={handleGiftPokemon}
+                        className="w-full rounded-[26px] bg-gradient-to-r from-emerald-500 via-amber-500 to-fuchsia-500 py-4 text-sm font-black uppercase tracking-wider text-white shadow-[0_20px_48px_rgba(217,70,239,0.28)] transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        Tặng và cho trứng nở ngay
+                      </button>
+                    </div>
+                  )}
+
+                  {giftAnimationPhase === 'hatching' && giftPokemonResult && (
+                    <div className="space-y-6">
+                      <div className="relative mx-auto h-56 w-56">
+                        <motion.div
+                          className="absolute inset-0 rounded-full bg-amber-300/40 blur-3xl"
+                          animate={{ scale: [0.8, 1.22, 0.9], opacity: [0.35, 0.75, 0.45] }}
+                          transition={{ duration: 0.9, repeat: Infinity }}
+                        />
+                        <motion.div
+                          className="absolute inset-5 grid place-items-center rounded-full bg-gradient-to-br from-amber-100 via-white to-emerald-100 text-9xl shadow-[0_28px_70px_rgba(245,158,11,0.35)]"
+                          animate={{ rotate: [-6, 7, -5, 6, 0], y: [0, -8, 5, -6, 0], scale: [1, 1.04, 0.98, 1.06, 1] }}
+                          transition={{ duration: 0.55, repeat: Infinity }}
+                        >
+                          🥚
+                        </motion.div>
+                        <motion.div
+                          className="absolute left-1/2 top-8 h-32 w-1 -translate-x-1/2 rounded-full bg-white/80"
+                          animate={{ opacity: [0, 1, 0.2], scaleY: [0.2, 1, 0.5] }}
+                          transition={{ duration: 0.5, repeat: Infinity }}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.28em] text-amber-700">Đang nở trứng</p>
+                        <h3 className="mt-2 font-royal text-4xl uppercase text-slate-950">{giftPokemonResult.student.name}</h3>
+                        <p className="mt-2 text-sm font-bold text-slate-600">Ánh sáng đang tràn ra từ quả trứng...</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {giftAnimationPhase === 'revealed' && giftPokemonResult && (
+                    <div className="space-y-5">
+                      <motion.div
+                        initial={{ y: 80, opacity: 0, scale: 0.65 }}
+                        animate={{ y: [80, -18, 0], opacity: 1, scale: [0.65, 1.12, 1] }}
+                        transition={{ duration: 0.9, ease: [0.2, 0.9, 0.2, 1] }}
+                        className="relative mx-auto grid h-64 w-64 place-items-center"
+                      >
+                        <div className="absolute inset-2 rounded-full bg-[radial-gradient(circle,rgba(251,191,36,0.55),rgba(52,211,153,0.18),transparent_70%)] blur-xl" />
+                        <img
+                          referrerPolicy="no-referrer"
+                          src={getPokemonArtworkUrl(giftPokemonResult.pet)}
+                          onError={event => handlePokemonArtworkError(event, giftPokemonResult.pet)}
+                          className={`relative z-10 h-56 w-56 object-contain drop-shadow-2xl ${giftPokemonResult.pet.isShiny ? 'rounded-[34px] bg-amber-100/80 ring-4 ring-amber-300' : ''}`}
+                          alt={getPokemonDisplayName(giftPokemonResult.pet)}
+                        />
+                      </motion.div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.28em] text-emerald-700">Chúc mừng</p>
+                        <h3 className="mt-2 font-royal text-4xl uppercase text-slate-950">{giftPokemonResult.student.name}</h3>
+                        <p className="mt-2 text-2xl font-black text-fuchsia-900">
+                          nhận được {giftPokemonResult.pet.isShiny ? 'Shiny ' : ''}{getPokemonDisplayName(giftPokemonResult.pet)}
+                        </p>
+                        <p className="mt-2 text-xs font-bold text-slate-500">
+                          {giftPokemonResult.hadExistingEgg ? 'Trứng đang ấp đã nở ngay.' : 'Một trứng quà tặng đặc biệt đã nở ngay.'}
+                        </p>
+                      </div>
+                      <div className="flex flex-col gap-2 sm:flex-row">
+                        <button
+                          type="button"
+                          onClick={resetGiftPokemonFlow}
+                          className="flex-1 rounded-2xl border border-white/70 bg-white/65 py-3 text-xs font-black uppercase tracking-wider text-slate-700 shadow-sm transition-colors hover:bg-white"
+                        >
+                          Tặng tiếp
+                        </button>
+                        <button
+                          type="button"
+                          onClick={closeGiftPokemonModal}
+                          className="flex-1 rounded-2xl bg-slate-950 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-colors hover:bg-slate-800"
+                        >
+                          Hoàn tất
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto p-6">
@@ -5030,8 +5380,10 @@ const App: React.FC = () => {
                                   ...nextPokemonProgress,
                                   hatchedEggs: (nextPokemonProgress.hatchedEggs || 0) + 1
                                 };
-                                setHatchSuccessMessage(`Tuyệt vời! Quả trứng của trainer ${editingStudent.name} đã chính thức nở ra Pokémon ${getPokemonDisplayName(updatedPet)}! 🎉`);
-                                setShowHatchModal(true);
+                                showHatchAnnouncement(
+                                  [{ studentId: editingStudent.id, studentName: editingStudent.name, pet: updatedPet }],
+                                  `Tuyệt vời! Trứng của ${editingStudent.name} đã nở ra ${getPokemonDisplayName(updatedPet)}.`
+                                );
                               }
 
                               let currentMerged: Student = {
@@ -5132,8 +5484,10 @@ const App: React.FC = () => {
 
                                  setEditingStudent(currentMerged);
                                  setStudents(prev => prev.map(s => s.id === editingStudent.id ? currentMerged : s));
-                                 setHatchSuccessMessage(`Tin vui! Pokémon ${getPokemonDisplayName(updatedPet)} đã nở từ trứng và sẵn sàng đồng hành cùng trainer ${editingStudent.name}! 🐣`);
-                                 setShowHatchModal(true);
+                                 showHatchAnnouncement(
+                                   [{ studentId: editingStudent.id, studentName: editingStudent.name, pet: updatedPet }],
+                                   `Tin vui! ${getPokemonDisplayName(updatedPet)} đã nở từ trứng và sẵn sàng đồng hành cùng ${editingStudent.name}.`
+                                 );
                                }}
                                className="w-full bg-green-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-green-700 animate-bounce transition-all uppercase text-xs"
                              >
@@ -6974,27 +7328,61 @@ const App: React.FC = () => {
       {/* MODAL: CHÚC MỪNG POKEMON NỞ */}
       {showHatchModal && (
         <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black/90 p-4 backdrop-blur-xl animate-in fade-in duration-500">
-          <div className="bg-amber-50/95 max-w-md w-full rounded-[45px] border-[10px] border-amber-400 p-8 shadow-[0_0_120px_rgba(245,158,11,0.6)] text-center space-y-6 relative overflow-hidden animate-in zoom-in-95 duration-500">
+          <div className="bg-amber-50/95 max-w-2xl w-full rounded-[45px] border-[10px] border-amber-400 p-8 shadow-[0_0_120px_rgba(245,158,11,0.6)] text-center space-y-6 relative overflow-hidden animate-in zoom-in-95 duration-500">
             {/* Ambient burst bg */}
             <div className="absolute inset-0 bg-radial-gradient from-amber-300/30 via-transparent to-transparent pointer-events-none" />
             
             <h3 className="text-3xl font-royal text-amber-800 uppercase tracking-widest">🐣 Pokémon Thức Giấc 🐣</h3>
             
-            <div className="relative inline-block py-6">
+            {!hatchAnnouncementItems && (
+              <div className="relative inline-block py-6">
               <div className="absolute inset-0 bg-amber-400/20 rounded-full blur-3xl animate-pulse" />
               <div className="text-8xl select-none animate-bounce relative z-10">🦖🧬🔥</div>
-            </div>
+              </div>
+            )}
 
             <div className="bg-white/90 p-6 rounded-3xl border border-amber-200/50 relative z-10 shadow-inner">
-              <p className="font-extrabold text-amber-950 text-sm leading-relaxed whitespace-pre-line">
-                {hatchSuccessMessage}
-              </p>
+              {hatchAnnouncementItems && hatchAnnouncementItems.length > 0 ? (
+                <div className="space-y-4">
+                  <p className="font-extrabold text-amber-950 text-sm leading-relaxed whitespace-pre-line">
+                    {hatchSuccessMessage}
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {hatchAnnouncementItems.map(item => {
+                      const student = students.find(current => current.id === item.studentId);
+                      return (
+                        <div key={`${item.studentId}-${item.pet.instanceId || item.pet.dexId}`} className="rounded-3xl border border-amber-200 bg-amber-50 p-4 text-left shadow-sm">
+                          <div className="flex items-center gap-3">
+                            {student && <StudentAvatar student={student} className="h-12 w-12 rounded-2xl border-2 border-white shadow" />}
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-black text-amber-950">{item.studentName}</p>
+                              <p className="truncate text-xs font-bold text-amber-700">nhận được {item.pet.isShiny ? 'Shiny ' : ''}{getPokemonDisplayName(item.pet)}</p>
+                            </div>
+                          </div>
+                          <img
+                            referrerPolicy="no-referrer"
+                            src={getPokemonArtworkUrl(item.pet)}
+                            onError={event => handlePokemonArtworkError(event, item.pet)}
+                            className={`mx-auto mt-3 h-28 w-28 object-contain drop-shadow-xl ${item.pet.isShiny ? 'rounded-3xl bg-amber-100 ring-4 ring-amber-300' : ''}`}
+                            alt={getPokemonDisplayName(item.pet)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <p className="font-extrabold text-amber-950 text-sm leading-relaxed whitespace-pre-line">
+                  {hatchSuccessMessage}
+                </p>
+              )}
             </div>
 
             <div className="relative z-10 pt-2">
               <button 
                 onClick={() => {
                   setShowHatchModal(false);
+                  setHatchAnnouncementItems(null);
                   new Audio(posSoundUrl).play().catch(() => {});
                 }} 
                 className="bg-amber-500 text-white px-10 py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-amber-600 hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-2xl border-b-4 border-amber-700"

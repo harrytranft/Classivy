@@ -134,9 +134,137 @@ const PASSIVE_BY_BASE_DEX_ID: Record<number, string> = {
   384: 'sky_legend'
 };
 
+const FALLBACK_PASSIVE_IDS = [
+  'static_charge',
+  'growth',
+  'blaze',
+  'torrent',
+  'adaptability',
+  'joyful_heart',
+  'rest_recover',
+  'aura_fighter',
+  'ninja_focus',
+  'mischief',
+  'synchronize',
+  'sky_legend'
+];
+
+const SPECIAL_LEGENDARY_PASSIVES_BY_DEX_ID: Record<number, string> = {
+  144: 'sky_legend',
+  145: 'static_charge',
+  146: 'blaze',
+  150: 'synchronize',
+  151: 'synchronize',
+  243: 'static_charge',
+  244: 'blaze',
+  245: 'torrent',
+  249: 'sky_legend',
+  250: 'blaze',
+  251: 'growth',
+  377: 'rest_recover',
+  378: 'ninja_focus',
+  379: 'aura_fighter',
+  380: 'joyful_heart',
+  381: 'mischief',
+  382: 'torrent',
+  383: 'blaze',
+  384: 'sky_legend',
+  385: 'synchronize',
+  386: 'adaptability',
+  480: 'ninja_focus',
+  481: 'joyful_heart',
+  482: 'mischief',
+  483: 'aura_fighter',
+  484: 'torrent',
+  485: 'blaze',
+  486: 'rest_recover',
+  487: 'mischief',
+  488: 'joyful_heart',
+  491: 'mischief',
+  492: 'growth',
+  493: 'adaptability',
+  494: 'blaze',
+  638: 'aura_fighter',
+  639: 'aura_fighter',
+  640: 'ninja_focus',
+  641: 'sky_legend',
+  642: 'static_charge',
+  643: 'blaze',
+  644: 'static_charge',
+  645: 'growth',
+  646: 'sky_legend',
+  647: 'torrent',
+  648: 'joyful_heart',
+  649: 'ninja_focus',
+  716: 'joyful_heart',
+  717: 'mischief',
+  718: 'sky_legend',
+  719: 'synchronize',
+  720: 'mischief',
+  721: 'blaze',
+  772: 'adaptability',
+  773: 'adaptability',
+  785: 'static_charge',
+  786: 'joyful_heart',
+  787: 'growth',
+  788: 'torrent',
+  789: 'sky_legend',
+  790: 'sky_legend',
+  791: 'blaze',
+  792: 'mischief',
+  800: 'sky_legend',
+  801: 'adaptability',
+  802: 'ninja_focus',
+  807: 'static_charge',
+  808: 'adaptability',
+  809: 'aura_fighter',
+  888: 'aura_fighter',
+  889: 'aura_fighter',
+  890: 'sky_legend',
+  891: 'aura_fighter',
+  892: 'aura_fighter',
+  893: 'growth',
+  894: 'static_charge',
+  895: 'torrent',
+  896: 'rest_recover',
+  897: 'mischief',
+  898: 'sky_legend',
+  905: 'joyful_heart',
+  1001: 'mischief',
+  1002: 'rest_recover',
+  1003: 'aura_fighter',
+  1004: 'blaze',
+  1007: 'blaze',
+  1008: 'torrent',
+  1009: 'static_charge',
+  1010: 'growth',
+  1014: 'ninja_focus',
+  1015: 'mischief',
+  1016: 'joyful_heart',
+  1017: 'synchronize',
+  1020: 'growth',
+  1021: 'blaze',
+  1022: 'static_charge',
+  1023: 'aura_fighter',
+  1024: 'adaptability',
+  1025: 'mischief'
+};
+
+const stableNumber = (value: number): number => {
+  let hash = 2166136261;
+  const input = `passive:${value}`;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+};
+
 export const getPassiveIdForBaseDexId = (baseDexId?: number): string | undefined => {
   if (!baseDexId) return undefined;
-  return PASSIVE_BY_BASE_DEX_ID[baseDexId];
+  return PASSIVE_BY_BASE_DEX_ID[baseDexId]
+    || SPECIAL_LEGENDARY_PASSIVES_BY_DEX_ID[baseDexId]
+    || FALLBACK_PASSIVE_IDS[stableNumber(baseDexId) % FALLBACK_PASSIVE_IDS.length];
 };
 
 export const getPassiveDefinition = (passiveId?: string): PassiveDefinition | undefined => {
@@ -212,6 +340,11 @@ export const resolvePassiveEffect = (context: PassiveContext): PassiveResult => 
     }
     case 'adaptability':
       return context.baseBond > 0 ? { bonusBond: 1, reaction: 'Adaptability +1 Bond' } : {};
+    case 'joyful_heart': {
+      if (context.trigger !== 'homework-complete') return {};
+      const bonusBond = tier >= 3 ? 3 : tier >= 2 ? 2 : 1;
+      return { bonusBond, reaction: `Joyful Heart +${bonusBond} Bond` };
+    }
     case 'rest_recover':
       return context.trigger === 'solo-positive' ? { bonusHp: 1, reaction: 'Rest & Recover +1 HP' } : {};
     case 'aura_fighter': {
@@ -228,7 +361,7 @@ export const resolvePassiveEffect = (context: PassiveContext): PassiveResult => 
         ? { bonusXp: 5, reaction: 'Mischief +5 XP' }
         : {};
     case 'sky_legend': {
-      if (context.trigger !== 'solo-positive') return {};
+      if (!['solo-positive', 'battle-win', 'homework-complete'].includes(context.trigger)) return {};
       const bonusXp = Math.ceil(context.baseXp * 0.1);
       return { bonusXp, reaction: `Sky Legend +${bonusXp} XP` };
     }
