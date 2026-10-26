@@ -52,4 +52,4 @@ React 19 + Vite 6 + TypeScript, Tailwind (CDN, sẽ đổi ở Phase 2), Supabas
 
 ## 8. Bước tiếp theo
 
-Phase 1: tách `App.tsx`. Việc đầu tiên là lập kế hoạch tách chi tiết (thứ tự, cấu trúc thư mục, checklist hồi quy) để Harry duyệt trước khi sửa code.
+Phase 1: tách `App.tsx`. Kế hoạch chi tiết đã viết ở `docs/phase-1-split-plan.md` (16 bước S0-S16), chờ Harry duyệt 4 quyết định A-D (Context, react-router, Playwright smoke test, nhánh `refactor/phase-1-split`). Chưa sửa code.

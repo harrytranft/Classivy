@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 0 hoàn thành, chờ Harry duyệt để sang Phase 1
+**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 - kế hoạch tách đã viết, chờ Harry duyệt (chưa sửa code)
 
 ## Mục tiêu
 
@@ -29,7 +29,7 @@
 | Phase | Nội dung | Trạng thái | Chạm vào Supabase thật? |
 |---|---|---|---|
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
-| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Chưa bắt đầu | Không |
+| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Đang lập kế hoạch (chờ duyệt) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Chưa bắt đầu | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Chưa bắt đầu | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
@@ -85,16 +85,20 @@ src/
 
 **Tasks:**
 
-- [ ] 1.1 Lập kế hoạch tách chi tiết: bản đồ ~200 state theo tính năng, thứ tự tách, rủi ro, checklist hồi quy thủ công. **Harry duyệt trước khi sửa code**
-- [ ] 1.2 Dựng khung `src/`, alias đường dẫn, chuyển file gốc vào đúng chỗ (không đổi nội dung), cấu hình vitest
-- [ ] 1.3 Thêm router (màn hình thay cho biến `currentScreen`), giữ URL ổn định
-- [ ] 1.4 Tách types, constants, lib (supabase, storage) ra khỏi App
-- [ ] 1.5 Tách tầng dữ liệu/lưu trữ: hook đọc/ghi localStorage + đồng bộ cloud (hiện nằm trong App)
-- [ ] 1.6 Tách từng màn hình/tính năng (mỗi mục một lần, test sau mỗi lần): Auth form, Plaza, Class + StudentCard grid, Settings, Student profile (info/pet/fusion), Random (solo/battle/boss), Attendance + Homework, Shop + Egg/Hatch, Lucky Wheel, Cá Ngựa (Ludo), Group maker + Timer, Pokedex, Release/Level-up modals
-- [ ] 1.7 Dọn dẹp: xoá state/hàm chết, rà `tech-debt`, giảm cảnh báo chunk bằng lazy-load theo màn hình
-- [ ] 1.8 Bổ sung test cho phần logic vừa lộ ra khi tách (nếu có)
-- [ ] 1.9 Checklist hồi quy thủ công toàn bộ luồng chính (Harry chạy trên dev)
-- [ ] 1.10 Cập nhật PLAN.md, CLASSIVY-BRIEF.md, báo cáo
+- [x] 1.1 Lập kế hoạch tách chi tiết: xem `docs/phase-1-split-plan.md` (2026-10-26). **Chờ Harry duyệt trước khi sửa code**
+- [ ] 1.2 (S0) Lưới an toàn: dữ liệu mẫu, smoke test chế độ khách, ảnh/DOM gốc
+- [ ] 1.3 (S1) Chuyển vào `src/`, sửa alias, đường dẫn
+- [ ] 1.4 (S2) Rút phần thuần (types, hằng số, hàm trứng/ngày, AuthLoginForm, SettingsSection) ra khỏi App
+- [ ] 1.5 (S3) Kho state dùng chung + CloudSyncProvider (giữ nguyên hành vi lưu/đồng bộ)
+- [ ] 1.6 (S4) UiEventsProvider (toast, level-up, release queue, hatch)
+- [ ] 1.7 (S5) Hành động nghiệp vụ dùng chung (`handleUpdatePoints`...) + characterization test
+- [ ] 1.8 (S6) Router + AppLayout + `vercel.json`
+- [ ] 1.9 (S7-S9) Tools/Group/Timer/Thời tiết/User modal; Settings; Plaza + Class + Skill modal
+- [ ] 1.10 (S10) Profile (info/pet/fusion)
+- [ ] 1.11 (S11-S12) Điểm danh, bài tập; Shop, Hatch, Gift, Release
+- [ ] 1.12 (S13-S14) Random (solo/battle/boss); Lucky Wheel + Ludo
+- [ ] 1.13 (S15) Dọn dẹp, lazy-load theo route, rà tech-debt
+- [ ] 1.14 (S16) Nghiệm thu: Harry chạy checklist hồi quy; cập nhật PLAN, BRIEF; báo cáo
 
 **Tiêu chí hoàn thành:** `npm test` và `npm run build` xanh; không file nào > ~500 dòng (ngoại lệ có ghi chú, ví dụ dữ liệu `pokemonData`); checklist hồi quy đạt.
 
