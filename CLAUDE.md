@@ -16,6 +16,7 @@ Classivy (trước đây là Imperial School) là web app lớp học gamificati
 - `npm run dev` - chạy dev (cổng 3000)
 - `npm test` - vitest (logic thuần trong `src/domain/`)
 - `npm run smoke` - Playwright smoke test (dữ liệu mẫu, Supabase giả; lần đầu cần `npx playwright install chromium`). Cập nhật ảnh gốc khi CỐ Ý đổi giao diện: `npm run smoke -- --update-snapshots`
+- `npm run typecheck` - kiểm tra kiểu TypeScript (phải 0 lỗi)
 - `npm run build` - build production
 
 Biến môi trường: `.env.example` (chỉ khoá `anon` của Supabase). Không tạo hoặc in ra khoá thật.

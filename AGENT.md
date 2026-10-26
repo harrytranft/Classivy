@@ -29,7 +29,7 @@ Tài liệu này áp dụng cho bất kỳ AI agent nào (Claude, Cursor, Codex.
 
 ## 4. Chất lượng và bằng chứng
 
-- Trước khi báo hoàn thành: chạy `npm test` và `npm run build`, đọc kết quả thật.
+- Trước khi báo hoàn thành: chạy `npm test`, `npm run typecheck`, `npm run build` (và `npm run smoke` khi đụng giao diện/luồng chính), đọc kết quả thật.
 - Phân biệt rõ trong báo cáo: (a) đã kiểm thử tự động, (b) đã thử thủ công trên dev, (c) chưa kiểm chứng, (d) đã chạy trên production. Không gộp chung.
 - Không đánh dấu task xong nếu test đang đỏ hoặc còn lỗi chưa giải quyết.
 - Mỗi hàm nghiệp vụ mới (tính điểm, ví, bạn bè) phải có test đơn vị.

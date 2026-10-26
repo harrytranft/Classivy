@@ -94,7 +94,7 @@ export const releasePokemonFromStudent = (
     adventureJournal: [{
       id: `${timestamp}${Math.random()}`,
       timestamp,
-      type: 'pokemon-lost',
+      type: 'pokemon-lost' as const,
       text: `${getPokemonDisplayName(releasedPet)} was lost after reaching 0 HP.`,
       petInstanceId: releasedPet.instanceId
     }, ...(student.adventureJournal || [])].slice(0, 80)

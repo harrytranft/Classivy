@@ -80,6 +80,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 |---|---|
 | `npm test` | Vitest: logic thuần trong `src/domain/` và `src/app/screenRoutes.ts` |
 | `npm run smoke` | Playwright: build production (không nén), dữ liệu mẫu `fixtures/sample-class.json`, Supabase giả, giờ cố định, số ngẫu nhiên có seed. So DOM từng màn hình/hộp thoại và dữ liệu đồng bộ lên "đám mây" sau các luồng chính với ảnh gốc trong `tests/smoke/__snapshots__/` |
+| `npm run typecheck` | Kiểm tra kiểu TypeScript (phải 0 lỗi) |
 | `npm run build` | Build production |
 
 - Lần đầu chạy smoke trên máy mới: `npx playwright install chromium`.
@@ -96,7 +97,6 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 
 ## 7. Nợ kỹ thuật đã biết (chưa xử lý trong Phase 1)
 
-- Chưa cài `@types/react`: kiểu của React là `any`, TypeScript bắt lỗi yếu. Có sẵn khoảng 20 lỗi `tsc` cũ (Shop, ô Cá Ngựa, `import.meta.env`, `gameEvents.ts`). Đề xuất xử lý đầu Phase 2.
 - Tailwind nạp qua CDN (đổi ở Phase 2 theo PLAN 2.x).
 - `useApp()` trả toàn bộ state, nên mọi component render lại khi bất kỳ state nào đổi (giống App.tsx cũ). Có thể chia nhỏ context hoặc dùng selector khi cần tối ưu.
 - Vài hàm vẫn gọi `alert`/`confirm` của trình duyệt (giữ nguyên hành vi; đổi sang hộp thoại riêng ở Phase 2 nếu muốn).

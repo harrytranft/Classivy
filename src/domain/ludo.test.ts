@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Gender, LudoTileSpec, Student } from '../types';
-import { LudoMoveInput, awardLudoAura, resolveLudoMove } from './ludo';
+import { LudoMoveInput, awardLudoAura, checkMonsterEscape, resolveLudoMove } from './ludo';
 
 // Characterization tests cho bàn cờ Cá Ngựa (0-49).
 
@@ -85,11 +85,30 @@ describe('resolveLudoMove', () => {
     expect(result.positions.a).toBe(0);
   });
 
-  it('keeps the stuck flag from the input map (current behaviour, see "Đề xuất phát sinh" in PLAN.md)', () => {
-    // The roll handler clears the flag after a 6, but this map still says "stuck", so the student stays stuck.
-    const result = move({ roll: 6, monsterStuck: { a: true } });
-    expect(result.monsterStuck.a).toBe(true);
-    expect(result.students[0].ludoMonsterStuck).toBe(true);
+  it('uses the stuck map it is given (the roll handler clears it first after a 6)', () => {
+    expect(move({ roll: 6, monsterStuck: { a: true } }).monsterStuck.a).toBe(true);
+    const escaped = checkMonsterEscape({ a: true }, 'a', 6);
+    const result = move({ roll: 6, monsterStuck: escaped.monsterStuck });
+    expect(result.monsterStuck.a).toBe(false);
+    expect(result.students[0].ludoMonsterStuck).toBe(false);
+    expect(result.positions.a).toBe(6);
+  });
+});
+
+describe('checkMonsterEscape', () => {
+  it('keeps a stuck racer in place unless the roll is 6', () => {
+    for (const roll of [1, 2, 3, 4, 5]) {
+      expect(checkMonsterEscape({ a: true }, 'a', roll)).toMatchObject({ wasStuck: true, stillStuck: true, monsterStuck: { a: true } });
+    }
+  });
+
+  it('frees the racer on a 6 without touching others', () => {
+    expect(checkMonsterEscape({ a: true, b: true }, 'a', 6)).toEqual({ wasStuck: true, stillStuck: false, monsterStuck: { a: false, b: true } });
+  });
+
+  it('does nothing for a racer who is not stuck', () => {
+    const map = { b: true };
+    expect(checkMonsterEscape(map, 'a', 3)).toEqual({ wasStuck: false, stillStuck: false, monsterStuck: map });
   });
 });
 

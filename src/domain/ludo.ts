@@ -29,6 +29,21 @@ export const awardLudoAura = (target: Student, amount: number, reason: string): 
   return { student: hpUpdate.student, releaseEvent: hpUpdate.releaseEvent };
 };
 
+/**
+ * Kiểm tra Quái vật trước khi đi: đang bị giữ mà lắc khác 6 thì đứng yên;
+ * lắc đúng 6 thì thoát và cờ "kẹt" được xoá trong bảng dùng cho bước di chuyển.
+ */
+export const checkMonsterEscape = (
+  monsterStuck: Record<string, boolean>,
+  studentId: string,
+  roll: number
+): { wasStuck: boolean; stillStuck: boolean; monsterStuck: Record<string, boolean> } => {
+  const wasStuck = !!monsterStuck[studentId];
+  if (!wasStuck) return { wasStuck, stillStuck: false, monsterStuck };
+  if (roll !== 6) return { wasStuck, stillStuck: true, monsterStuck };
+  return { wasStuck, stillStuck: false, monsterStuck: { ...monsterStuck, [studentId]: false } };
+};
+
 export interface LudoMoveInput {
   student: Student;
   roll: number;

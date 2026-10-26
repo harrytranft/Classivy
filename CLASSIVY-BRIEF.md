@@ -44,8 +44,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 ## 6. Rủi ro đã biết
 
 - Dữ liệu học sinh nằm trong một cột JSON của giáo viên, chưa phải bảng riêng; đây là nút thắt cho mọi tính năng học sinh. Phần cần thay ở Phase 3 đã gom vào `src/app/providers/gameData/`.
-- Chưa cài `@types/react` nên TypeScript kiểm tra kiểu yếu; còn ~20 lỗi `tsc` cũ (xem Đề xuất phát sinh trong PLAN).
-- Lỗi game có sẵn chờ Harry quyết: Cá Ngựa lắc 6 vẫn bị Quái vật giữ; danh sách cấp bậc rỗng làm lỗi bảng điểm.
+- Lỗi có sẵn chờ Harry quyết: danh sách cấp bậc rỗng trên đám mây làm app trắng trang khi bấm +/- (xem Đề xuất phát sinh). Lỗi Cá Ngựa lắc 6 đã sửa.
 - Khoá localStorage còn tiền tố `imperial_*`; đổi tên phải có đoạn chuyển dữ liệu để không mất dữ liệu khách (Phase 2).
 - Nội dung game còn từ ngữ cung đình (rank, Thánh chỉ, prompt Gemini); sẽ đổi ở Phase 2.
 - Giới hạn gói miễn phí Supabase/Vercel (kể cả Edge Functions) cần xác minh lại trước Phase 3-4.
@@ -54,9 +53,9 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 
 - Từ ngữ thay cho hệ cấp bậc cung đình (Phase 2).
 - Có thêm vai trò phụ huynh hay không (chưa nằm trong phạm vi).
-- Có sửa 2 lỗi game có sẵn (Cá Ngựa lắc 6, cấp bậc rỗng) hay không, sửa ở Phase nào.
+- Có sửa lỗi cấp bậc rỗng hay không.
 
 ## 8. Bước tiếp theo
 
 1. Harry: chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh `refactor/phase-1-split` (dùng dữ liệu mẫu hoặc bản sao lưu, không dùng tài khoản thật nếu chưa xuất JSON). Đạt thì gộp vào `main`.
-2. Phase 2: hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage (kèm chuyển dữ liệu). Đề xuất làm thêm ở đầu Phase 2: cài `@types/react` và sửa lỗi TypeScript cũ. Khi đổi giao diện, cập nhật ảnh gốc smoke test (`npm run smoke -- --update-snapshots`).
+2. Phase 2: hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage (kèm chuyển dữ liệu). Khi đổi giao diện, cập nhật ảnh gốc smoke test (`npm run smoke -- --update-snapshots`).

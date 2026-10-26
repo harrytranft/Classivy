@@ -99,7 +99,7 @@ export const createRandomActions = (appState: AppState, app: AppActions): Random
     }
     
     // Pick mode: if forceMode provided use it, otherwise randomly pick solo or battle (50/50 if available.length >= 2)
-    const mode = forceMode && forceMode !== 'boss'
+    const mode = forceMode
       ? forceMode
       : (available.length >= 2 ? (Math.random() > 0.5 ? 'battle' : 'solo') : 'solo');
     setRandomMode(mode);

@@ -1,6 +1,6 @@
 import { PokemonReleaseEvent, Student } from '../../types';
 import { BattleLudoTurn, LudoReturnHint } from '../../types/app';
-import { awardLudoAura, resolveLudoMove } from '../../domain/ludo';
+import { awardLudoAura, checkMonsterEscape, resolveLudoMove } from '../../domain/ludo';
 import { playDiceSound } from '../../lib/sounds';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
@@ -108,9 +108,9 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
         });
       };
 
-      const isStuck = !!ludoMonsterStuck[student.id];
-      if (isStuck) {
-        if (roll !== 6) {
+      const monsterCheck = checkMonsterEscape(ludoMonsterStuck, student.id, roll);
+      if (monsterCheck.wasStuck) {
+        if (monsterCheck.stillStuck) {
           setLudoLogs(prev => [`👹 ${student.name} tung được ${roll} điểm - Chưa đủ 6 để diệt Quái vật! Vẫn bị kẹt ở ô hiện tại.`, ...prev.slice(0, 30)]);
           setLudoEventPopup({
             title: '👹 CHƯA THOÁT KHỎI QUÁI VẬT',
@@ -124,7 +124,6 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
           advanceBattleQueue(updatedStudents);
           return;
         } else {
-          setLudoMonsterStuck(prev => ({ ...prev, [student.id]: false }));
           updatedStudents = updatedStudents.map(s => s.id === student.id ? { ...s, ludoMonsterStuck: false } : s);
           setLudoLogs(prev => [`⚔️ ${student.name} tung được 6 điểm! Đã tiêu diệt Quái vật và được tiếp tục tiến bước!`, ...prev.slice(0, 30)]);
         }
@@ -135,7 +134,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
         roll,
         steps: ludoSteps,
         positions: ludoPositions,
-        monsterStuck: ludoMonsterStuck,
+        monsterStuck: monsterCheck.monsterStuck,
         students: updatedStudents,
         rosterSource: students,
         tiles: effectiveLudoTiles

@@ -190,9 +190,9 @@ src/
 ## Đề xuất phát sinh (chờ Harry duyệt)
 
 - Có cần vai trò phụ huynh (xem điểm con) không? Hiện ngoài phạm vi.
-- **[Lỗi game, phát hiện ở Phase 1]** Cá Ngựa: học sinh bị Quái vật giữ, lắc được 6 vẫn bị đánh dấu "kẹt" (cờ bị ghi đè ở cuối lượt, xem test trong `src/domain/ludo.test.ts`). Đề xuất sửa để đúng luật "lắc 6 thì đi tiếp". Là đổi hành vi game nên chờ Harry duyệt.
-- **[Lỗi có sẵn]** Nếu dữ liệu đám mây có danh sách cấp bậc rỗng, mở bảng Ban thưởng/Phạt bị lỗi (không tìm thấy cấp bậc). Đề xuất: khi danh sách rỗng thì dùng cấp bậc mặc định.
-- **[Chất lượng mã]** Cài `@types/react`, `@types/react-dom` và sửa khoảng 20 lỗi TypeScript cũ để kiểm tra kiểu có tác dụng thật (hiện kiểu của React là `any`). Đề xuất làm đầu Phase 2.
+- ~~**[Lỗi game]** Cá Ngựa: bị Quái vật giữ, lắc 6 vẫn bị kẹt~~ → Harry duyệt sửa, **đã sửa 2026-10-26** (`checkMonsterEscape` trong `src/domain/ludo.ts`, có test).
+- **[Lỗi có sẵn, chờ Harry quyết]** Nếu bản trên đám mây có danh sách cấp bậc rỗng (ví dụ: nhập file JSON không có phần cấp bậc rồi đóng trang ngay trong ~2 giây; hoặc dòng dữ liệu được tạo với giá trị mặc định rỗng), lần đăng nhập sau bấm +/- trên thẻ học sinh sẽ làm app trắng trang. Đề xuất: khi danh sách rỗng thì dùng cấp bậc mặc định, và khi nhập JSON thiếu cấp bậc thì giữ cấp bậc hiện tại khi gửi lên đám mây.
+- ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
 - **[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt" khi danh sách đổi thứ tự sau khi chấm điểm. Xử lý cùng Phase 2.
 
 ## Quy trình sau mỗi Phase
@@ -224,3 +224,7 @@ src/
 - `npm run smoke`: 5 nhóm test đạt. 4 nhóm so với ảnh gốc tạo từ code TRƯỚC khi tách (cùng dữ liệu mẫu, giờ cố định, số ngẫu nhiên có seed): DOM giống hệt ở đăng nhập, đăng ký, Lớp, Plaza, Cài đặt (mở hết các khối), Hồ sơ 3 tab, Random, Cá Ngựa, Vòng quay, Shop, Chia nhóm, Hẹn giờ, Điểm danh, Bài tập, Tặng Pokémon, Tài khoản, bảng điểm; dữ liệu đồng bộ lên "đám mây" giống hệt sau: cộng điểm, điểm danh, bài tập, Random solo -> Cá Ngựa -> lắc, Battle, Shop, Tặng Pokémon, Vòng quay, đổi tần suất Boss. Nhóm 5 kiểm tra URL: tải lại ở từng đường dẫn, Back/Forward, đường dẫn lạ.
 - Smoke test không phủ: Boss Raid đủ 5 người, Pokémon về 0 HP và màn rời đi, hợp nhất, dùng skill, nhập/xuất JSON, sao lưu/khôi phục, đăng ký/đăng nhập thật, Google login, đồng bộ giữa 2 trình duyệt, Tailwind CDN (bị chặn trong máy ảo nên không so được màu/bố cục). Các mục này nằm trong checklist S16 của Harry.
 - Không có thay đổi nào trên Supabase hay Vercel. Không có migration.
+
+**Sau Phase 1 - 2026-10-26** (theo duyệt của Harry; kiểm thử tự động, chưa thử tay, chưa chạy trên Vercel/Supabase thật):
+- Sửa lỗi Cá Ngựa lắc 6 vẫn bị Quái vật giữ; cài `@types/react`/`@types/react-dom`, sửa lỗi kiểu (`npm run typecheck`: 0 lỗi, trước đó ~20 lỗi); xoá `.sync-out.tgz`.
+- `npm test`: 13 file, 97 test đạt. `npm run build`: thành công. `npm run smoke`: 5/5 đạt (ảnh gốc không đổi vì luồng thử không đi vào ô Quái vật).
