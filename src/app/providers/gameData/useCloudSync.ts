@@ -1,0 +1,256 @@
+import { useEffect } from 'react';
+import { fetchUserSettings, upsertUserSettings } from '../../../lib/supabaseData';
+import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
+import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_RANKS_FEMALE, DEFAULT_RANKS_MALE, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, RANKS_KEY_FEMALE, RANKS_KEY_MALE, SKILLS_KEY, STORAGE_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
+import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
+import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS } from '../../../data/pokemonData';
+import { Student } from '../../../types';
+import { GameDataState } from './useGameDataState';
+import type { AuthUser } from '../../../features/auth/AuthContext';
+
+// Tải dữ liệu từ Supabase khi đăng nhập và tự đồng bộ ngược lên (debounce 1,5 giây, chỉ khi dữ liệu đổi).
+export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoading: boolean) => {
+  const {
+    students, setStudents, ranksMale, setRanksMale, ranksFemale, setRanksFemale, skills,
+    setSkills, petSkills, setPetSkills, bossEncounterFrequency, setBossEncounterFrequency,
+    bossStatesByClass, setBossStatesByClass, luckyWheelRewards, setLuckyWheelRewards,
+    setLuckyWheelDisplayRewards, customLudoTiles, setCustomLudoTiles, posSoundUrl,
+    setPosSoundUrl, negSoundUrl, setNegSoundUrl, timerSoundUrl, setTimerSoundUrl,
+    wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
+    setIsSyncing, setLastSyncedTime, initialCloudLoadComplete, setInitialCloudLoadComplete,
+    cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef
+  } = data;
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    if (!user) {
+      setInitialCloudLoadComplete(false);
+      setCloudLoadSuccess(false);
+      setLastSyncedTime(null);
+      lastSyncedSnapshotRef.current = '';
+      return;
+    }
+
+    const fetchCloudData = async () => {
+      setIsSyncing(true);
+      try {
+        const cloudData = await fetchUserSettings(user.uid);
+
+        if (cloudData) {
+          const cloudStudents = Array.isArray(cloudData.students)
+            ? cloudData.students.map(normalizeStudentPokemonData)
+            : [];
+          if (cloudData.students && Array.isArray(cloudData.students)) setStudents(cloudStudents);
+          if (cloudData.ranksMale && Array.isArray(cloudData.ranksMale)) setRanksMale(cloudData.ranksMale);
+          if (cloudData.ranksFemale && Array.isArray(cloudData.ranksFemale)) setRanksFemale(cloudData.ranksFemale);
+          if (cloudData.skills && Array.isArray(cloudData.skills)) setSkills(cloudData.skills);
+          if (cloudData.petSkills && Array.isArray(cloudData.petSkills) && cloudData.petSkills.length > 0) {
+            setPetSkills(cloudData.petSkills);
+            localStorage.setItem(PET_SKILLS_KEY, JSON.stringify(cloudData.petSkills));
+          }
+          if (cloudData.posSoundUrl) setPosSoundUrl(cloudData.posSoundUrl);
+          if (cloudData.negSoundUrl) setNegSoundUrl(cloudData.negSoundUrl);
+          if (cloudData.timerSoundUrl) setTimerSoundUrl(cloudData.timerSoundUrl);
+          if (cloudData.wheelSpinSoundUrl) setWheelSpinSoundUrl(cloudData.wheelSpinSoundUrl);
+          if (cloudData.wheelFinishSoundUrl) setWheelFinishSoundUrl(cloudData.wheelFinishSoundUrl);
+          if (cloudData.customLudoTiles && typeof cloudData.customLudoTiles === 'object') {
+            setCustomLudoTiles(cloudData.customLudoTiles);
+            localStorage.setItem('custom_ludo_tiles', JSON.stringify(cloudData.customLudoTiles));
+          }
+          if (cloudData.luckyWheelRewards && Array.isArray(cloudData.luckyWheelRewards) && cloudData.luckyWheelRewards.length > 0) {
+            setLuckyWheelRewards(cloudData.luckyWheelRewards);
+            setLuckyWheelDisplayRewards(cloudData.luckyWheelRewards);
+            localStorage.setItem(LUCKY_WHEEL_REWARDS_KEY, JSON.stringify(cloudData.luckyWheelRewards));
+          }
+          const cloudBossFrequency = isBossEncounterFrequency(cloudData.bossEncounterFrequency)
+            ? cloudData.bossEncounterFrequency
+            : DEFAULT_BOSS_ENCOUNTER_FREQUENCY;
+          setBossEncounterFrequency(cloudBossFrequency);
+          localStorage.setItem(BOSS_ENCOUNTER_FREQUENCY_KEY, cloudBossFrequency);
+          const cloudBossStates = normalizeBossStatesByClass(cloudData.bossStatesByClass || {}, cloudBossFrequency);
+          setBossStatesByClass(cloudBossStates);
+          localStorage.setItem(BOSS_STATES_KEY, JSON.stringify(cloudBossStates));
+          setLastSyncedTime(cloudData.updatedAt || Date.now());
+
+          // Save snapshot ref to prevent immediate re-sync of unchanged data
+          lastSyncedSnapshotRef.current = JSON.stringify({
+            students: cloudStudents,
+            ranksMale: cloudData.ranksMale || [],
+            ranksFemale: cloudData.ranksFemale || [],
+            skills: cloudData.skills || [],
+            petSkills: cloudData.petSkills || DEFAULT_PET_SKILLS,
+            posSoundUrl: cloudData.posSoundUrl || '',
+            negSoundUrl: cloudData.negSoundUrl || '',
+            timerSoundUrl: cloudData.timerSoundUrl || '',
+            wheelSpinSoundUrl: cloudData.wheelSpinSoundUrl || '',
+            wheelFinishSoundUrl: cloudData.wheelFinishSoundUrl || '',
+            customLudoTiles: cloudData.customLudoTiles || {},
+            luckyWheelRewards: cloudData.luckyWheelRewards || DEFAULT_LUCKY_WHEEL_REWARDS,
+            bossStatesByClass: cloudBossStates,
+            bossEncounterFrequency: cloudBossFrequency
+          });
+
+          // Also save a fallback local copy
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudStudents));
+          if (cloudData.ranksMale) localStorage.setItem(RANKS_KEY_MALE, JSON.stringify(cloudData.ranksMale));
+          if (cloudData.ranksFemale) localStorage.setItem(RANKS_KEY_FEMALE, JSON.stringify(cloudData.ranksFemale));
+          if (cloudData.skills) localStorage.setItem(SKILLS_KEY, JSON.stringify(cloudData.skills));
+          if (cloudData.petSkills) localStorage.setItem(PET_SKILLS_KEY, JSON.stringify(cloudData.petSkills));
+          if (cloudData.posSoundUrl) localStorage.setItem('imperial_sound_pos', cloudData.posSoundUrl);
+          if (cloudData.negSoundUrl) localStorage.setItem('imperial_sound_neg', cloudData.negSoundUrl);
+          if (cloudData.timerSoundUrl) localStorage.setItem('imperial_sound_tim', cloudData.timerSoundUrl);
+          if (cloudData.wheelSpinSoundUrl) localStorage.setItem(WHEEL_SPIN_SOUND_KEY, cloudData.wheelSpinSoundUrl);
+          if (cloudData.wheelFinishSoundUrl) localStorage.setItem(WHEEL_FINISH_SOUND_KEY, cloudData.wheelFinishSoundUrl);
+        } else {
+          // First time logging in: check if there's any local storage data to migrate
+          const saved = localStorage.getItem(STORAGE_KEY);
+          let localStudents: Student[] = [];
+          if (saved) {
+            try {
+              localStudents = JSON.parse(saved).map(normalizeStudentPokemonData);
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          
+          const savedMaleRanks = localStorage.getItem(RANKS_KEY_MALE);
+          const localMaleRanks = savedMaleRanks ? JSON.parse(savedMaleRanks) : DEFAULT_RANKS_MALE;
+
+          const savedFemaleRanks = localStorage.getItem(RANKS_KEY_FEMALE);
+          const localFemaleRanks = savedFemaleRanks ? JSON.parse(savedFemaleRanks) : DEFAULT_RANKS_FEMALE;
+
+          const savedSkills = localStorage.getItem(SKILLS_KEY);
+          const localSkills = savedSkills ? JSON.parse(savedSkills) : DEFAULT_SKILLS;
+
+          const savedPetSkills = localStorage.getItem(PET_SKILLS_KEY);
+          const localPetSkills = savedPetSkills ? JSON.parse(savedPetSkills) : DEFAULT_PET_SKILLS;
+
+          const savedLuckyWheelRewards = localStorage.getItem(LUCKY_WHEEL_REWARDS_KEY);
+          const localLuckyWheelRewards = savedLuckyWheelRewards ? JSON.parse(savedLuckyWheelRewards) : DEFAULT_LUCKY_WHEEL_REWARDS;
+          const savedBossFrequency = localStorage.getItem(BOSS_ENCOUNTER_FREQUENCY_KEY);
+          const localBossFrequency = isBossEncounterFrequency(savedBossFrequency)
+            ? savedBossFrequency
+            : DEFAULT_BOSS_ENCOUNTER_FREQUENCY;
+          const savedBossStates = localStorage.getItem(BOSS_STATES_KEY);
+          const localBossStates = savedBossStates ? normalizeBossStatesByClass(JSON.parse(savedBossStates), localBossFrequency) : {};
+
+          // Push local state to cloud to prevent data loss on onboarding
+          const updatedAt = await upsertUserSettings(user.uid, {
+            students: localStudents,
+            ranksMale: localMaleRanks,
+            ranksFemale: localFemaleRanks,
+            skills: localSkills,
+            petSkills: localPetSkills,
+            posSoundUrl,
+            negSoundUrl,
+            timerSoundUrl,
+            wheelSpinSoundUrl,
+            wheelFinishSoundUrl,
+            customLudoTiles,
+            luckyWheelRewards: localLuckyWheelRewards,
+            bossStatesByClass: localBossStates,
+            bossEncounterFrequency: localBossFrequency
+          });
+
+          lastSyncedSnapshotRef.current = JSON.stringify({
+            students: localStudents,
+            ranksMale: localMaleRanks,
+            ranksFemale: localFemaleRanks,
+            skills: localSkills,
+            petSkills: localPetSkills,
+            posSoundUrl,
+            negSoundUrl,
+            timerSoundUrl,
+            wheelSpinSoundUrl,
+            wheelFinishSoundUrl,
+            customLudoTiles,
+            luckyWheelRewards: localLuckyWheelRewards,
+            bossStatesByClass: localBossStates,
+            bossEncounterFrequency: localBossFrequency
+          });
+          
+          setStudents(localStudents);
+          setRanksMale(localMaleRanks);
+          setRanksFemale(localFemaleRanks);
+          setSkills(localSkills);
+          setPetSkills(localPetSkills);
+          setLuckyWheelRewards(localLuckyWheelRewards);
+          setLuckyWheelDisplayRewards(localLuckyWheelRewards);
+          setBossEncounterFrequency(localBossFrequency);
+          setBossStatesByClass(localBossStates);
+          setLastSyncedTime(updatedAt);
+        }
+        setCloudLoadSuccess(true);
+        setInitialCloudLoadComplete(true);
+      } catch (err) {
+        console.error("Error pulling database sync from Supabase:", err);
+        setCloudLoadSuccess(false);
+        setInitialCloudLoadComplete(false);
+      } finally {
+        setIsSyncing(false);
+      }
+    };
+
+    fetchCloudData();
+  }, [user, authLoading]);
+
+  useEffect(() => {
+    if (!user || !initialCloudLoadComplete || !cloudLoadSuccess) return;
+
+    const currentSnapshot = JSON.stringify({
+      students,
+      ranksMale,
+      ranksFemale,
+      skills,
+      petSkills,
+      posSoundUrl,
+      negSoundUrl,
+      timerSoundUrl,
+      wheelSpinSoundUrl,
+      wheelFinishSoundUrl,
+      customLudoTiles,
+      luckyWheelRewards,
+      bossStatesByClass,
+      bossEncounterFrequency
+    });
+
+    // DIFFERENTIAL INCREMENTAL SYNC CHECK:
+    // Only perform auto-sync if current data is DIFFERENT from the last synced snapshot!
+    // If nothing changed, we skip cloud writes completely to preserve existing data and save bandwidth.
+    if (currentSnapshot === lastSyncedSnapshotRef.current) {
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsSyncing(true);
+      try {
+        const updatedAt = await upsertUserSettings(user.uid, {
+          students,
+          ranksMale,
+          ranksFemale,
+          skills,
+          petSkills,
+          posSoundUrl,
+          negSoundUrl,
+          timerSoundUrl,
+          wheelSpinSoundUrl,
+          wheelFinishSoundUrl,
+          customLudoTiles,
+          luckyWheelRewards,
+          bossStatesByClass,
+          bossEncounterFrequency
+        });
+
+        lastSyncedSnapshotRef.current = currentSnapshot;
+        setLastSyncedTime(updatedAt);
+      } catch (err) {
+        console.error("Auto-sync to cloud failed:", err);
+      } finally {
+        setIsSyncing(false);
+      }
+    }, 1500); // 1.5s debounce to group multiple rapid edits together
+
+    return () => clearTimeout(timer);
+  }, [students, ranksMale, ranksFemale, skills, petSkills, posSoundUrl, negSoundUrl, timerSoundUrl, wheelSpinSoundUrl, wheelFinishSoundUrl, customLudoTiles, luckyWheelRewards, bossStatesByClass, bossEncounterFrequency, user, initialCloudLoadComplete, cloudLoadSuccess]);
+};
