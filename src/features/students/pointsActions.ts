@@ -1,5 +1,4 @@
 import { GameEventSource, PokemonUiEvent } from '../../domain/gameEvents';
-import { generateEdict } from '../../lib/geminiService';
 import { applyPointsToStudents } from '../../domain/points';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
@@ -34,7 +33,10 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
       rankChanges
     } = applyPointsToStudents(students, { ids, amount, reason, source, getRank });
     rankChanges.forEach(change => {
-      generateEdict(change.studentName, change.newTitle, change.promoted).then(setEdict);
+      // Gemini SDK is loaded on demand so it is not part of the first page load.
+      import('../../lib/geminiService')
+        .then(({ generateEdict }) => generateEdict(change.studentName, change.newTitle, change.promoted))
+        .then(setEdict);
     });
 
     setStudents(updatedStudents);

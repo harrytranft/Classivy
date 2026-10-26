@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppLayout } from './AppLayout';
 import { SCREEN_PATHS } from './screenRoutes';
 import { useApp } from './AppContext';
-import { PlazaScreen } from '../features/plaza/PlazaScreen';
 import { ClassScreen } from '../features/class/ClassScreen';
-import { ProfileScreen } from '../features/profile/ProfileScreen';
-import { SettingsScreen } from '../features/settings/SettingsScreen';
+
+// Màn Lớp học (mở mặc định) tải ngay; các màn khác tải khi mở lần đầu.
+const PlazaScreen = lazy(() => import('../features/plaza/PlazaScreen').then(m => ({ default: m.PlazaScreen })));
+const ProfileScreen = lazy(() => import('../features/profile/ProfileScreen').then(m => ({ default: m.ProfileScreen })));
+const SettingsScreen = lazy(() => import('../features/settings/SettingsScreen').then(m => ({ default: m.SettingsScreen })));
 
 // Giữ nguyên ?query và #hash khi chuyển hướng: Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
 const RedirectToClass: React.FC = () => {

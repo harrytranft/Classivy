@@ -214,6 +214,7 @@ test('các màn hình chính', async ({ page }) => {
   await snap(page, '12-plaza', state);
 
   await navButton(page, 'Cài Đặt').click({ force: true });
+  await page.getByText('Trainer Settings').waitFor();
   const expanders = page.locator('main button[aria-label^="Hiện "]');
   while (await expanders.count() > 0) {
     await expanders.first().click();
@@ -222,6 +223,7 @@ test('các màn hình chính', async ({ page }) => {
 
   await navButton(page, 'Lớp Học').click({ force: true });
   await page.getByText('An 6A', { exact: true }).first().click();
+  await page.getByText('Hồ Sơ Trainer').waitFor();
   await snap(page, '14-profile-info', state);
   await page.getByRole('button', { name: /ẤP TRỨNG POKÉMON|LINH THÚ HỘ MỆNH/ }).click();
   await snap(page, '15-profile-pet', state);

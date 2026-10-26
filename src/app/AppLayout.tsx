@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { StatusDock } from '../components/StatusDock';
 import { PokemonReactionLayer } from '../features/pokemon/PokemonReactionLayer';
@@ -66,7 +66,9 @@ export const AppLayout: React.FC = () => {
 
       {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto p-6">
-        <Outlet />
+        <Suspense fallback={null}>
+          <Outlet />
+        </Suspense>
       </main>
 
       {/* MODAL: SKILL POINT BOARD */}
