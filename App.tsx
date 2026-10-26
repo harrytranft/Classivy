@@ -2459,7 +2459,7 @@ const App: React.FC = () => {
     const blob = new Blob([jsonString], { type: 'application/json' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `imperial_academy_backup_${new Date().toISOString().slice(0,10)}.json`;
+    link.download = `classivy_backup_${new Date().toISOString().slice(0,10)}.json`;
     link.click();
   };
 

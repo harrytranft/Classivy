@@ -1,24 +1,32 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+  <img src="public/brand/classivy-logo-horizontal.png" alt="Classivy" width="420" />
 </div>
 
-# Run and deploy your AI Studio app
+# Classivy
 
-This contains everything you need to run your app locally.
+Web app lớp học gamification cho giáo viên và học sinh (trước đây là Imperial School).
 
-View your app in AI Studio: https://ai.studio/apps/d44a98c4-bf5d-4545-bdfe-81c11120d1b5
+## Chạy local
 
-## Run Locally
+Yêu cầu: Node.js 20+.
 
-**Prerequisites:**  Node.js
+1. `npm install`
+2. Tạo `.env.local` theo `.env.example`:
+   - `VITE_SUPABASE_URL=...`
+   - `VITE_SUPABASE_ANON_KEY=...`
+   - `GEMINI_API_KEY=...` (tuỳ chọn, cho lời thông báo AI)
+3. `npm run dev` (cổng 3000)
 
+Kiểm thử và build: `npm test`, `npm run build`.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key.
-3. Set Supabase environment variables in `.env.local`:
-   `VITE_SUPABASE_URL=...`
-   `VITE_SUPABASE_ANON_KEY=...`
-4. Run `supabase-schema.sql` once in Supabase Dashboard > SQL Editor.
-5. Run the app:
-   `npm run dev`
+## Cơ sở dữ liệu
+
+Schema hiện tại: `supabase-schema.sql` (chạy một lần trong Supabase Dashboard > SQL Editor). Từ Phase 3 sẽ chuyển sang các file migration trong `supabase/migrations/`.
+
+## Tài liệu dự án
+
+- `CLASSIVY-BRIEF.md` - tóm tắt trạng thái
+- `PLAN.md` - các Phase và tasks
+- `DESIGN.md` - hệ thiết kế
+- `AGENT.md`, `CLAUDE.md` - quy tắc cho AI agent
+- `docs/archive/` - tài liệu lịch sử Imperial School
