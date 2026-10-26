@@ -1,4 +1,4 @@
-import { EarnedBadge, Student, TrainerProgress, TrainerTitleId } from './types';
+import { EarnedBadge, Student, TrainerProgress, TrainerTitleId } from '../types';
 import { clamp } from './pokemonProgression';
 
 export interface TrainerTitleDefinition {

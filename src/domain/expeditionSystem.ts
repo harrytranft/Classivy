@@ -1,4 +1,4 @@
-import { PokemonExpedition, Student } from './types';
+import { PokemonExpedition, Student } from '../types';
 import {
   addPokemonXp,
   clamp,

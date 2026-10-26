@@ -1,6 +1,6 @@
-import { EggKind, PokemonPet, Student, StudentEgg, LuckyWheelReward } from '../types';
-import { PetSkill } from '../pokemonData';
-import { PokemonUiEvent } from '../gameEvents';
+import { EggKind, PokemonPet, Student, StudentEgg, LuckyWheelReward } from './index';
+import { PetSkill } from '../data/pokemonData';
+import { PokemonUiEvent } from '../domain/gameEvents';
 
 export type Screen = 'plaza' | 'class' | 'profile' | 'settings';
 export type RandomMode = 'solo' | 'battle' | 'boss';

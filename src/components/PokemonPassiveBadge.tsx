@@ -1,5 +1,5 @@
 import React from 'react';
-import { getPassiveDefinition, getPassiveIcon } from '../pokemonPassives';
+import { getPassiveDefinition, getPassiveIcon } from '../domain/pokemonPassives';
 
 interface PokemonPassiveBadgeProps {
   passiveId?: string;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Gender, Student } from './types';
+import { Gender, Student } from '../types';
 import {
   BOSS_PARTY_SIZE,
   createClassBossState,

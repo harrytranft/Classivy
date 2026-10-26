@@ -1,7 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import { DEFAULT_RANKS_FEMALE, DEFAULT_RANKS_MALE, DEFAULT_SKILLS } from '../../constants';
 
 // Smoke test "giữ nguyên hành vi" cho Phase 1.
 // - Dữ liệu mẫu: fixtures/sample-class.json (nạp như dữ liệu đám mây của một giáo viên giả).
@@ -37,9 +36,9 @@ const fakeSession = () => ({
 const cloudRow = () => ({
   user_id: fakeSession().user.id,
   students: FIXTURE.students,
-  ranks_male: DEFAULT_RANKS_MALE,
-  ranks_female: DEFAULT_RANKS_FEMALE,
-  skills: DEFAULT_SKILLS,
+  ranks_male: FIXTURE.ranksMale,
+  ranks_female: FIXTURE.ranksFemale,
+  skills: FIXTURE.skills,
   pet_skills: null,
   pos_sound_url: '',
   neg_sound_url: '',
@@ -155,8 +154,17 @@ const normalizeHtml = (html: string) => html
   .replace(/\s{2,}/g, ' ')
   .replace(/></g, '>\n<');
 
+async function waitForSyncIdle(page: Page) {
+  // The status dock only exists when logged in; when it does, wait until no cloud sync is pending.
+  if (await page.locator('.group\\/status').count() === 0) return;
+  await page.locator('button[title^="Trạng thái sync"]').waitFor({ state: 'attached' });
+  await page.waitForTimeout(1700);
+  await page.locator('button[title^="Trạng thái sync"]').waitFor({ state: 'attached' });
+}
+
 async function snap(page: Page, name: string, state: SmokeState) {
   await page.waitForTimeout(700);
+  await waitForSyncIdle(page);
   const html = await page.locator('#root').evaluate(node => node.innerHTML);
   expect(normalizeHtml(html), `DOM ${name}`).toMatchSnapshot(`${name}.html`);
   expect(state.errors, `console errors at ${name}`).toEqual([]);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { PokemonPet, StudentPokemonProgress } from '../types';
-import { getPokemonArtworkUrl, getPokemonDisplayName, getPokemonNatureDefinition, handlePokemonArtworkError, xpNeededForNextLevel } from '../pokemonProgression';
+import { getPokemonArtworkUrl, getPokemonDisplayName, getPokemonNatureDefinition, handlePokemonArtworkError, xpNeededForNextLevel } from '../domain/pokemonProgression';
 import { PokemonPassiveBadge } from './PokemonPassiveBadge';
 
 interface PokemonMiniStatusProps {

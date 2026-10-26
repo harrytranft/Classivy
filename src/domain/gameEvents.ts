@@ -1,4 +1,4 @@
-import { HistoryItem, PokemonPet, PokemonReleaseEvent, Student, StudentPokemonProgress } from './types';
+import { HistoryItem, PokemonPet, PokemonReleaseEvent, Student, StudentPokemonProgress } from '../types';
 import {
   addPokemonXp,
   clamp,

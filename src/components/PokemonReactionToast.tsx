@@ -1,5 +1,5 @@
 import React from 'react';
-import { PokemonUiEvent } from '../gameEvents';
+import { PokemonUiEvent } from '../domain/gameEvents';
 
 interface PokemonReactionToastProps {
   events: PokemonUiEvent[];

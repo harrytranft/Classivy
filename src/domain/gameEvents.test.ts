@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { LIST_POKEMONS } from './pokemonData';
-import { Gender, Student } from './types';
+import { LIST_POKEMONS } from '../data/pokemonData';
+import { Gender, Student } from '../types';
 import { applyGameEventToStudent, applyPetHpDeltaToStudent } from './gameEvents';
 import { addPokemonXp, createPokemonPetFromDexId, deterministicNatureFromInstanceId, getPokemonArtworkCandidates, normalizeStudentPokemonData, totalXpForLevel } from './pokemonProgression';
 import { addTrainerXp, applyBadgeRewards, normalizeTrainerProgress } from './trainerProgression';

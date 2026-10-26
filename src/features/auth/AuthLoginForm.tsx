@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../AuthContext';
+import { useAuth } from './AuthContext';
 
 export const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   const { loginWithEmail, signUpWithEmail } = useAuth();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BossContribution, BossInstance, Student } from '../types';
-import { getPokemonDisplayName } from '../pokemonProgression';
+import { getPokemonDisplayName } from '../domain/pokemonProgression';
 import { BossHpBar } from './BossHpBar';
 import { PokemonMiniStatus } from './PokemonMiniStatus';
 import { StudentAvatar } from './StudentAvatar';

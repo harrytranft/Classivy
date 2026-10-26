@@ -1,32 +1,32 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ActiveBossRound, AdventureJournalEntry, BossContribution, BossEncounterFrequency, BossInstance, ClassBossState, EggKind, Student, Gender, HistoryItem, RankInfo, Skill, PokemonPet, PokemonReleaseEvent, LudoTileSpec, LuckyWheelReward, LuckyWheelRewardType, AttendanceStatus } from './types';
+import { ActiveBossRound, AdventureJournalEntry, BossContribution, BossEncounterFrequency, BossInstance, ClassBossState, EggKind, Student, Gender, HistoryItem, RankInfo, Skill, PokemonPet, PokemonReleaseEvent, LudoTileSpec, LuckyWheelReward, LuckyWheelRewardType, AttendanceStatus } from '../types';
 import { 
   STORAGE_KEY, DEFAULT_RANKS_MALE, DEFAULT_RANKS_FEMALE, 
   RANKS_KEY_MALE, RANKS_KEY_FEMALE, DEFAULT_SKILLS, SKILLS_KEY,
   BOSS_STATES_KEY, BOSS_ENCOUNTER_FREQUENCY_KEY, DEFAULT_LUDO_TILES, PET_SKILLS_KEY, DEFAULT_LUCKY_WHEEL_REWARDS,
   LUCKY_WHEEL_REWARDS_KEY, WHEEL_SPIN_SOUND_KEY, WHEEL_FINISH_SOUND_KEY,
   LUDO_FINISH_TILE, DEFAULT_WHEEL_SPIN_SOUND_URL
-} from './constants';
-import { StudentCard } from './components/StudentCard';
-import { LiquidDock } from './components/LiquidDock';
-import { StatusDock } from './components/StatusDock';
-import { StudentAvatar } from './components/StudentAvatar';
-import { AttendanceCheckModal } from './components/AttendanceCheckModal';
-import { HomeworkCheckModal } from './components/HomeworkCheckModal';
-import { HomeworkStatus } from './components/HomeworkCheckModal';
-import { PokemonMiniStatus } from './components/PokemonMiniStatus';
-import { PokemonPassiveBadge } from './components/PokemonPassiveBadge';
-import { PokemonReactionToast } from './components/PokemonReactionToast';
-import { BossBattlePanel } from './components/BossBattlePanel';
-import { BossDefeatedModal } from './components/BossDefeatedModal';
-import { generateEdict } from './geminiService';
-import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, PetSkill, getRandomPokemon } from './pokemonData';
-import { getPassiveDefinition, getPassiveIcon } from './pokemonPassives';
-import { useAuth } from './AuthContext';
-import { fetchUserSettings, upsertUserSettings } from './supabaseData';
-import { applyGameEventToStudent, applyPetHpDeltaToStudent, GameEventSource, PokemonUiEvent } from './gameEvents';
+} from '../data/constants';
+import { StudentCard } from '../components/StudentCard';
+import { LiquidDock } from '../components/LiquidDock';
+import { StatusDock } from '../components/StatusDock';
+import { StudentAvatar } from '../components/StudentAvatar';
+import { AttendanceCheckModal } from '../components/AttendanceCheckModal';
+import { HomeworkCheckModal } from '../components/HomeworkCheckModal';
+import { HomeworkStatus } from '../components/HomeworkCheckModal';
+import { PokemonMiniStatus } from '../components/PokemonMiniStatus';
+import { PokemonPassiveBadge } from '../components/PokemonPassiveBadge';
+import { PokemonReactionToast } from '../components/PokemonReactionToast';
+import { BossBattlePanel } from '../components/BossBattlePanel';
+import { BossDefeatedModal } from '../components/BossDefeatedModal';
+import { generateEdict } from '../lib/geminiService';
+import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, PetSkill, getRandomPokemon } from '../data/pokemonData';
+import { getPassiveDefinition, getPassiveIcon } from '../domain/pokemonPassives';
+import { useAuth } from '../features/auth/AuthContext';
+import { fetchUserSettings, upsertUserSettings } from '../lib/supabaseData';
+import { applyGameEventToStudent, applyPetHpDeltaToStudent, GameEventSource, PokemonUiEvent } from '../domain/gameEvents';
 import {
   createPokemonPetFromDexId,
   addPokemonXp,
@@ -42,7 +42,7 @@ import {
   totalXpForLevel,
   updatePetInCollection,
   xpNeededForNextLevel
-} from './pokemonProgression';
+} from '../domain/pokemonProgression';
 import {
   BADGE_DEFINITIONS,
   addTrainerXp,
@@ -52,7 +52,7 @@ import {
   getTrainerTitleDefinition,
   normalizeTrainerProgress,
   trainerXpNeededForNextLevel
-} from './trainerProgression';
+} from '../domain/trainerProgression';
 import {
   BOSS_ENCOUNTER_FREQUENCY_OPTIONS,
   BOSS_PARTY_SIZE,
@@ -69,12 +69,12 @@ import {
   resolveBossFailure,
   resolveBossSuccess,
   selectBossParty
-} from './bossSystem';
-import { claimReadyExpedition, ensureActiveExpedition, markExpeditionReadyIfDue } from './expeditionSystem';
-import { getLocalDateKey, getLocalWeekKey } from './domain/dates';
-import { createInstanceId, getRandomIndex } from './domain/random';
-import { createEgg, getEggCost, getEggLabel, getEggRequiredProgress } from './domain/eggs';
-import { getWeatherLabel, getWeatherMood, TrainerLocation, TrainerWeather } from './domain/weather';
+} from '../domain/bossSystem';
+import { claimReadyExpedition, ensureActiveExpedition, markExpeditionReadyIfDue } from '../domain/expeditionSystem';
+import { getLocalDateKey, getLocalWeekKey } from '../domain/dates';
+import { createInstanceId, getRandomIndex } from '../domain/random';
+import { createEgg, getEggCost, getEggLabel, getEggRequiredProgress } from '../domain/eggs';
+import { getWeatherLabel, getWeatherMood, TrainerLocation, TrainerWeather } from '../domain/weather';
 import {
   BattleLudoTurn,
   ClaimAllRewardSummary,
@@ -86,9 +86,9 @@ import {
   RandomMode,
   Screen,
   ShopReviewItem
-} from './types/app';
-import { AuthLoginForm } from './features/auth/AuthLoginForm';
-import { SettingsSection } from './features/settings/SettingsSection';
+} from '../types/app';
+import { AuthLoginForm } from '../features/auth/AuthLoginForm';
+import { SettingsSection } from '../features/settings/SettingsSection';
 
 
 const App: React.FC = () => {

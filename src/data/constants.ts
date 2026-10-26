@@ -1,5 +1,5 @@
 
-import { Gender, LuckyWheelReward, LudoTileSpec, RankInfo, Skill } from './types';
+import { Gender, LuckyWheelReward, LudoTileSpec, RankInfo, Skill } from '../types';
 
 export const STORAGE_KEY = 'imperial_school_data_v6';
 export const RANKS_KEY_MALE = 'imperial_ranks_male_v6';

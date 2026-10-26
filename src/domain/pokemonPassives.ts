@@ -1,4 +1,4 @@
-import { PokemonPet, Student } from './types';
+import { PokemonPet, Student } from '../types';
 
 export type PassiveTrigger =
   | 'solo-positive'

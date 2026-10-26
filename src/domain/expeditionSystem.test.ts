@@ -7,7 +7,7 @@ import {
   markExpeditionReadyIfDue
 } from './expeditionSystem';
 import { createPokemonPetFromDexId } from './pokemonProgression';
-import { Gender, Student } from './types';
+import { Gender, Student } from '../types';
 
 const makeStudent = (overrides: Partial<Student> = {}): Student => ({
   id: 'student-1',

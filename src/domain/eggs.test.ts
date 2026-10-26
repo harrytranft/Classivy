@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { LIST_POKEMONS } from '../pokemonData';
+import { LIST_POKEMONS } from '../data/pokemonData';
 import {
   LEGENDARY_POKEMON_DEX_IDS,
   SPECIAL_POKEMON_DEX_IDS,

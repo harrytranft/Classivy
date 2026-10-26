@@ -1,6 +1,6 @@
 import { supabase } from './supabaseClient';
-import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, RankInfo, Skill, Student, LudoTileSpec } from './types';
-import { PetSkill } from './pokemonData';
+import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, RankInfo, Skill, Student, LudoTileSpec } from '../types';
+import { PetSkill } from '../data/pokemonData';
 
 export interface UserSettingsData {
   students: Student[];

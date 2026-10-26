@@ -1,6 +1,6 @@
 
 import { Gender, RankInfo } from '../types';
-import { DEFAULT_RANKS_MALE, DEFAULT_RANKS_FEMALE } from '../constants';
+import { DEFAULT_RANKS_MALE, DEFAULT_RANKS_FEMALE } from '../data/constants';
 
 // Fix: Import RankInfo from types and use correct default constants from constants.ts
 export const getRank = (points: number, gender: Gender): RankInfo => {

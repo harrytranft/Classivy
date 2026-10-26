@@ -1,4 +1,4 @@
-import { BossContribution, BossDefinition, BossEncounterFrequency, BossInstance, ClassBossState, Student } from './types';
+import { BossContribution, BossDefinition, BossEncounterFrequency, BossInstance, ClassBossState, Student } from '../types';
 
 export const BOSS_MIN_RANDOM_GAP = 6;
 export const BOSS_MAX_RANDOM_GAP = 9;

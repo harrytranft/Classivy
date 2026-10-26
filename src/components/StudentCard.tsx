@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { Student, RankInfo, Gender } from '../types';
-import { PetSkill } from '../pokemonData';
-import { getPokemonArtworkUrl, getPokemonDisplayName, getPokemonNatureDefinition, handlePokemonArtworkError } from '../pokemonProgression';
-import { getBadgeDefinition, getTrainerLevelPercent, getTrainerTitleDefinition, normalizeTrainerProgress, trainerXpNeededForNextLevel } from '../trainerProgression';
+import { PetSkill } from '../data/pokemonData';
+import { getPokemonArtworkUrl, getPokemonDisplayName, getPokemonNatureDefinition, handlePokemonArtworkError } from '../domain/pokemonProgression';
+import { getBadgeDefinition, getTrainerLevelPercent, getTrainerTitleDefinition, normalizeTrainerProgress, trainerXpNeededForNextLevel } from '../domain/trainerProgression';
 import { StudentAvatar } from './StudentAvatar';
 
 interface StudentCardProps {

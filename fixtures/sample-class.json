@@ -763,5 +763,389 @@
       }
     }
   ],
+  "ranksMale": [
+    {
+      "id": "m1",
+      "level": -1,
+      "title": "Nô tài",
+      "minPoints": -999,
+      "maxPoints": -1,
+      "color": "text-gray-500",
+      "avatar": ""
+    },
+    {
+      "id": "m2",
+      "level": 0,
+      "title": "Thường dân",
+      "minPoints": 0,
+      "maxPoints": 49,
+      "color": "text-green-600",
+      "avatar": ""
+    },
+    {
+      "id": "m3",
+      "level": 1,
+      "title": "Thị vệ",
+      "minPoints": 50,
+      "maxPoints": 99,
+      "color": "text-blue-600",
+      "avatar": ""
+    },
+    {
+      "id": "m4",
+      "level": 2,
+      "title": "Trainer Pro",
+      "minPoints": 100,
+      "maxPoints": 149,
+      "color": "text-cyan-700",
+      "avatar": ""
+    },
+    {
+      "id": "m5",
+      "level": 3,
+      "title": "Ace Trainer",
+      "minPoints": 150,
+      "maxPoints": 199,
+      "color": "text-indigo-700",
+      "avatar": ""
+    },
+    {
+      "id": "m6",
+      "level": 4,
+      "title": "Thân vương",
+      "minPoints": 200,
+      "maxPoints": 249,
+      "color": "text-orange-600",
+      "avatar": ""
+    },
+    {
+      "id": "m7",
+      "level": 5,
+      "title": "Champion Trainer",
+      "minPoints": 250,
+      "maxPoints": 99999,
+      "color": "text-red-600 font-bold",
+      "avatar": ""
+    }
+  ],
+  "ranksFemale": [
+    {
+      "id": "f1",
+      "level": -1,
+      "title": "Nô tì",
+      "minPoints": -999,
+      "maxPoints": -1,
+      "color": "text-gray-500",
+      "avatar": ""
+    },
+    {
+      "id": "f2",
+      "level": 0,
+      "title": "Thường dân",
+      "minPoints": 0,
+      "maxPoints": 49,
+      "color": "text-green-600",
+      "avatar": ""
+    },
+    {
+      "id": "f3",
+      "level": 1,
+      "title": "Tú nữ",
+      "minPoints": 50,
+      "maxPoints": 99,
+      "color": "text-pink-600",
+      "avatar": ""
+    },
+    {
+      "id": "f4",
+      "level": 2,
+      "title": "Trainer Pro",
+      "minPoints": 100,
+      "maxPoints": 149,
+      "color": "text-red-500",
+      "avatar": ""
+    },
+    {
+      "id": "f5",
+      "level": 3,
+      "title": "Quý phi",
+      "minPoints": 150,
+      "maxPoints": 199,
+      "color": "text-rose-600",
+      "avatar": ""
+    },
+    {
+      "id": "f6",
+      "level": 4,
+      "title": "Elite Trainer",
+      "minPoints": 200,
+      "maxPoints": 249,
+      "color": "text-orange-600",
+      "avatar": ""
+    },
+    {
+      "id": "f7",
+      "level": 5,
+      "title": "Champion Trainer",
+      "minPoints": 250,
+      "maxPoints": 99999,
+      "color": "text-red-600 font-bold",
+      "avatar": ""
+    }
+  ],
+  "skills": [
+    {
+      "id": "p1",
+      "name": "Trả lời đúng",
+      "icon": "✅",
+      "points": 2,
+      "type": "positive"
+    },
+    {
+      "id": "p2",
+      "name": "+1",
+      "icon": "👍",
+      "points": 1,
+      "type": "positive"
+    },
+    {
+      "id": "p3",
+      "name": "+2",
+      "icon": "🔄",
+      "points": 2,
+      "type": "positive"
+    },
+    {
+      "id": "p4",
+      "name": "+3",
+      "icon": "🥳",
+      "points": 3,
+      "type": "positive"
+    },
+    {
+      "id": "p5",
+      "name": "+4",
+      "icon": "🖐️",
+      "points": 4,
+      "type": "positive"
+    },
+    {
+      "id": "p6",
+      "name": "+5",
+      "icon": "🎨",
+      "points": 5,
+      "type": "positive"
+    },
+    {
+      "id": "p7",
+      "name": "Học tốt",
+      "icon": "🏅",
+      "points": 5,
+      "type": "positive"
+    },
+    {
+      "id": "p8",
+      "name": "Giải thích được",
+      "icon": "🛡️",
+      "points": 3,
+      "type": "positive"
+    },
+    {
+      "id": "p9",
+      "name": "Tập trung vào bài",
+      "icon": "📖",
+      "points": 3,
+      "type": "positive"
+    },
+    {
+      "id": "p10",
+      "name": "Đi học đúng giờ",
+      "icon": "🔍",
+      "points": 3,
+      "type": "positive"
+    },
+    {
+      "id": "p11",
+      "name": "Quay video sớm nhất",
+      "icon": "💎",
+      "points": 5,
+      "type": "positive"
+    },
+    {
+      "id": "p12",
+      "name": "Trực nhật",
+      "icon": "⭐",
+      "points": 3,
+      "type": "positive"
+    },
+    {
+      "id": "p13",
+      "name": "Đội thắng",
+      "icon": "👑",
+      "points": 5,
+      "type": "positive"
+    },
+    {
+      "id": "p14",
+      "name": "Hoàn thành Quizlet",
+      "icon": "✈️",
+      "points": 5,
+      "type": "positive"
+    },
+    {
+      "id": "p15",
+      "name": "Hoàn thành BTVN",
+      "icon": "📔",
+      "points": 5,
+      "type": "positive"
+    },
+    {
+      "id": "p16",
+      "name": "Thuyết trình hay",
+      "icon": "🎓",
+      "points": 5,
+      "type": "positive"
+    },
+    {
+      "id": "n1",
+      "name": "Không trả lời được",
+      "icon": "❓",
+      "points": -2,
+      "type": "negative"
+    },
+    {
+      "id": "n2",
+      "name": "-1",
+      "icon": "🔔",
+      "points": -1,
+      "type": "negative"
+    },
+    {
+      "id": "n3",
+      "name": "-2",
+      "icon": "🔔",
+      "points": -2,
+      "type": "negative"
+    },
+    {
+      "id": "n4",
+      "name": "-3",
+      "icon": "🔔",
+      "points": -3,
+      "type": "negative"
+    },
+    {
+      "id": "n5",
+      "name": "-4",
+      "icon": "🔔",
+      "points": -4,
+      "type": "negative"
+    },
+    {
+      "id": "n6",
+      "name": "-5",
+      "icon": "🔔",
+      "points": -5,
+      "type": "negative"
+    },
+    {
+      "id": "n7",
+      "name": "Không giải thích được",
+      "icon": "🧪",
+      "points": -3,
+      "type": "negative"
+    },
+    {
+      "id": "n8",
+      "name": "Không tập trung",
+      "icon": "🌲",
+      "points": -3,
+      "type": "negative"
+    },
+    {
+      "id": "n9",
+      "name": "Nói chuyện",
+      "icon": "🗣️",
+      "points": -3,
+      "type": "negative"
+    },
+    {
+      "id": "n10",
+      "name": "Không quay video",
+      "icon": "🎤",
+      "points": -5,
+      "type": "negative"
+    },
+    {
+      "id": "n11",
+      "name": "Chưa làm Quizlet",
+      "icon": "✈️",
+      "points": -5,
+      "type": "negative"
+    },
+    {
+      "id": "n12",
+      "name": "Làm việc riêng",
+      "icon": "🪐",
+      "points": -3,
+      "type": "negative"
+    },
+    {
+      "id": "n13",
+      "name": "Chuẩn bị bài chưa tốt",
+      "icon": "♻️",
+      "points": -3,
+      "type": "negative"
+    },
+    {
+      "id": "n14",
+      "name": "Cãi nhau",
+      "icon": "🎒",
+      "points": -5,
+      "type": "negative"
+    },
+    {
+      "id": "n15",
+      "name": "Không tham gia games",
+      "icon": "🐲",
+      "points": -5,
+      "type": "negative"
+    },
+    {
+      "id": "n16",
+      "name": "Nghịch đồ dạy học",
+      "icon": "👎",
+      "points": -5,
+      "type": "negative"
+    },
+    {
+      "id": "n17",
+      "name": "Ngồi không đẹp",
+      "icon": "🍦",
+      "points": -4,
+      "type": "negative"
+    },
+    {
+      "id": "n18",
+      "name": "Nói bậy",
+      "icon": "🗑️",
+      "points": -5,
+      "type": "negative"
+    },
+    {
+      "id": "n19",
+      "name": "Đi học muộn",
+      "icon": "💬",
+      "points": -3,
+      "type": "negative"
+    },
+    {
+      "id": "n20",
+      "name": "Không mang sách vở",
+      "icon": "✈️",
+      "points": -4,
+      "type": "negative"
+    }
+  ],
   "exportedAt": 1793000000000
 }

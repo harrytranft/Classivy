@@ -1,5 +1,5 @@
 import { EggKind, StudentEgg } from '../types';
-import { LIST_POKEMONS } from '../pokemonData';
+import { LIST_POKEMONS } from '../data/pokemonData';
 import { createInstanceId, getRandomIndex } from './random';
 
 export const SPECIAL_POKEMON_DEX_IDS = new Set([

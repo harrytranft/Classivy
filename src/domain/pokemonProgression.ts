@@ -1,5 +1,5 @@
-import { PokemonNatureId, PokemonPet, Student, StudentPokemonProgress } from './types';
-import { LIST_POKEMONS, POKEMON_EVOLUTION_CHAINS } from './pokemonData';
+import { PokemonNatureId, PokemonPet, Student, StudentPokemonProgress } from '../types';
+import { LIST_POKEMONS, POKEMON_EVOLUTION_CHAINS } from '../data/pokemonData';
 import { getPassiveIdForBaseDexId } from './pokemonPassives';
 
 const MAX_NORMAL_LEVEL = 30;
