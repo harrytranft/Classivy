@@ -14,17 +14,21 @@ Classivy (trước đây là Imperial School) là web app lớp học gamificati
 
 - `npm install` - cài phụ thuộc
 - `npm run dev` - chạy dev (cổng 3000)
-- `npm test` - vitest
-- `npm run build` - build production (hiện chỉ có cảnh báo chunk lớn đã biết)
+- `npm test` - vitest (logic thuần trong `src/domain/`)
+- `npm run smoke` - Playwright smoke test (dữ liệu mẫu, Supabase giả; lần đầu cần `npx playwright install chromium`). Cập nhật ảnh gốc khi CỐ Ý đổi giao diện: `npm run smoke -- --update-snapshots`
+- `npm run build` - build production
 
 Biến môi trường: `.env.example` (chỉ khoá `anon` của Supabase). Không tạo hoặc in ra khoá thật.
 
-## Kiến trúc hiện tại (sẽ đổi sau Phase 1)
+## Kiến trúc hiện tại (sau Phase 1)
 
-- `App.tsx` ~7.900 dòng chứa gần như toàn bộ UI + state; đang được tách ở Phase 1.
-- Logic thuần đã tách và có test: `bossSystem.ts`, `gameEvents.ts`, `expeditionSystem.ts`, `pokemonProgression.ts`, `trainerProgression.ts`, `pokemonPassives.ts`.
-- Dữ liệu cloud hiện là một snapshot JSON mỗi giáo viên (`user_settings.students`). Chưa có bảng học sinh. Sẽ đổi ở Phase 3.
-- Auth: Supabase Auth (`AuthContext.tsx`). Triển khai: Vercel. Nội dung cũ: `docs/archive/`.
+Chi tiết: `docs/architecture.md`. Tóm tắt:
+
+- Mã nằm trong `src/`. `src/app/App.tsx` chỉ là khung: router -> `GameDataProvider` -> `UiEventsProvider` -> `AppProvider` -> các route.
+- Mỗi tính năng có thư mục `src/features/<tính năng>/`: `use*State.ts` (state), `*Actions.ts` (hành động, gọi tính năng khác qua `app.x`), component giao diện. Giao diện đọc mọi thứ qua `useApp()`.
+- Logic thuần + test ở `src/domain/` (điểm, điểm danh, bài tập, battle, Cá Ngựa, Boss, Pokémon, tiến trình...).
+- Dữ liệu cloud vẫn là một snapshot JSON mỗi giáo viên (`user_settings.students`), xử lý trong `src/app/providers/gameData/`. Sẽ đổi ở Phase 3.
+- Định tuyến: `/class` (mặc định), `/plaza`, `/settings`, `/student/:id`. Auth: Supabase (`src/features/auth/AuthContext.tsx`). Triển khai: Vercel (`vercel.json`). Nội dung cũ: `docs/archive/`.
 
 ## Skills nên dùng
 

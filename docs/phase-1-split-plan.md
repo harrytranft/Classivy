@@ -1,6 +1,6 @@
 # Kế hoạch Phase 1: Tách App.tsx
 
-> Trạng thái: **bản đề xuất, chờ Harry duyệt.** Chưa sửa dòng code nào. Đây là Task 1.1 trong `PLAN.md`.
+> Trạng thái: **đã thực hiện S0-S15 (2026-10-26), chờ Harry nghiệm thu S16** (checklist mục 7). Quyết định A-D lấy theo mặc định đề xuất. Kết quả, các điểm khác kế hoạch và nhật ký kiểm chứng: xem Phase 1 trong `PLAN.md`; kiến trúc sau khi tách: `docs/architecture.md`.
 > Nguyên tắc cứng: giữ nguyên hành vi và giao diện; không đổi luật game; không đổi schema Supabase.
 
 ## 1. Hiện trạng đo được

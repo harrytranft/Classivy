@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 - đang tách App.tsx (xong S2; S0, S1 chưa làm)
+**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 - phần code xong (S0-S15), chờ Harry nghiệm thu S16
 
 ## Mục tiêu
 
@@ -29,7 +29,7 @@
 | Phase | Nội dung | Trạng thái | Chạm vào Supabase thật? |
 |---|---|---|---|
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
-| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Đang làm (S2 xong) | Không |
+| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Code xong, chờ nghiệm thu (S16) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Chưa bắt đầu | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Chưa bắt đầu | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
@@ -85,22 +85,28 @@ src/
 
 **Tasks:**
 
-- [x] 1.1 Lập kế hoạch tách chi tiết: xem `docs/phase-1-split-plan.md` (2026-10-26). **Chờ Harry duyệt trước khi sửa code**
-- [ ] 1.2 (S0) Lưới an toàn: dữ liệu mẫu, smoke test chế độ khách, ảnh/DOM gốc
-- [ ] 1.3 (S1) Chuyển vào `src/`, sửa alias, đường dẫn
-- [x] 1.4 (S2) Rút phần thuần (types, hằng số, hàm trứng/ngày, AuthLoginForm, SettingsSection) ra khỏi App (2026-10-26). App.tsx 7.936 → 7.600 dòng. File mới: `domain/{dates,random,eggs,weather}.ts` (+ test), `types/app.ts`, `features/auth/AuthLoginForm.tsx`, `features/settings/SettingsSection.tsx`; `LUDO_FINISH_TILE`, `DEFAULT_WHEEL_SPIN_SOUND_URL` sang `constants.ts`; `isBossEncounterFrequency` sang `bossSystem.ts`. Làm trước S0/S1 theo yêu cầu Harry: các thư mục mới đặt ở gốc repo, S1 sẽ chuyển cả vào `src/`. Giảm ít hơn ước tính (600-800) vì các hàm thời tiết gọi API và `advanceEggForStudent` còn dính state, để lại cho S3/S5
-- [ ] 1.5 (S3) Kho state dùng chung + CloudSyncProvider (giữ nguyên hành vi lưu/đồng bộ)
-- [ ] 1.6 (S4) UiEventsProvider (toast, level-up, release queue, hatch)
-- [ ] 1.7 (S5) Hành động nghiệp vụ dùng chung (`handleUpdatePoints`...) + characterization test
-- [ ] 1.8 (S6) Router + AppLayout + `vercel.json`
-- [ ] 1.9 (S7-S9) Tools/Group/Timer/Thời tiết/User modal; Settings; Plaza + Class + Skill modal
-- [ ] 1.10 (S10) Profile (info/pet/fusion)
-- [ ] 1.11 (S11-S12) Điểm danh, bài tập; Shop, Hatch, Gift, Release
-- [ ] 1.12 (S13-S14) Random (solo/battle/boss); Lucky Wheel + Ludo
-- [ ] 1.13 (S15) Dọn dẹp, lazy-load theo route, rà tech-debt
-- [ ] 1.14 (S16) Nghiệm thu: Harry chạy checklist hồi quy; cập nhật PLAN, BRIEF; báo cáo
+- [x] 1.1 Lập kế hoạch tách chi tiết: xem `docs/phase-1-split-plan.md` (2026-10-26). Quyết định A-D lấy theo mặc định đề xuất khi Harry yêu cầu "hoàn thành toàn bộ Phase 1": Context + hook, `react-router-dom` + `vercel.json`, Playwright (devDependency), nhánh `refactor/phase-1-split`
+- [x] 1.2 (S0) Lưới an toàn (2026-10-26): `fixtures/sample-class.json` (2 lớp, 12 học sinh), `tests/smoke/app.spec.ts` (`npm run smoke`): DOM 4 màn hình + 11 hộp thoại + dữ liệu đồng bộ sau 9 luồng thao tác. Ảnh gốc tạo từ code TRƯỚC khi tách
+- [x] 1.3 (S1) Chuyển vào `src/` theo cấu trúc `app/ features/ domain/ data/ lib/ types/ components/` (2026-10-26)
+- [x] 1.4 (S2) Rút phần thuần (types, hằng số, hàm trứng/ngày, AuthLoginForm, SettingsSection) ra khỏi App (2026-10-26)
+- [x] 1.5 (S3) `GameDataProvider` + `providers/gameData/` (state, đồng bộ Supabase, localStorage, sao lưu/khôi phục), giữ nguyên khoá và điều kiện lưu (2026-10-26)
+- [x] 1.6 (S4) `UiEventsProvider` (toast, level-up, nở trứng, hàng đợi Pokémon rời đi, thánh chỉ) (2026-10-26)
+- [x] 1.7 (S5) Hành động theo tính năng (`features/*/*Actions.ts`, gọi nhau qua `app.*`); `handleUpdatePoints` -> `domain/points.ts`; tiến trình -> `domain/progression.ts`, `pokemonCollection.ts`; test đặc trưng (2026-10-26)
+- [x] 1.8 (S6) Router: `/class` (mặc định), `/plaza`, `/settings`, `/student/:id`; `vercel.json` (2026-10-26)
+- [x] 1.9 (S7-S9) Tools/Group/Timer/Thời tiết/User modal; Settings; Plaza + Class + Skill modal (2026-10-26)
+- [x] 1.10 (S10) Profile tách theo tab: info / pet (trứng, Pokémon) / fusion + 3 panel (2026-10-26)
+- [x] 1.11 (S11-S12) Điểm danh, bài tập (`domain/attendance.ts`, `domain/homework.ts`); Shop, Hatch, Gift, Release (2026-10-26)
+- [x] 1.12 (S13-S14) Random/Battle/Boss (`domain/battle.ts`); Lucky Wheel + Cá Ngựa (`domain/ludo.ts`) (2026-10-26)
+- [x] 1.13 (S15) Dọn dẹp: lazy-load Plaza/Hồ sơ/Cài đặt và Gemini, tách chunk thư viện (chunk chính 1,40 MB -> 0,50 MB, hết cảnh báo), xoá state/hàm chết, bỏ `importmap` cũ của AI Studio; nợ kỹ thuật ghi ở `docs/architecture.md` mục 7 (2026-10-26)
+- [ ] 1.14 (S16) Nghiệm thu: Harry chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh; xác nhận để gộp vào `main`
 
-**Tiêu chí hoàn thành:** `npm test` và `npm run build` xanh; không file nào > ~500 dòng (ngoại lệ có ghi chú, ví dụ dữ liệu `pokemonData`); checklist hồi quy đạt.
+**Khác so với kế hoạch ban đầu (đã cân nhắc, không đổi hành vi):**
+- Không tạo `ModalHost` riêng: Random, Cá Ngựa, Vòng quay gọi nhau qua `app.*`; mọi hộp thoại render trong `AppLayout`.
+- State giao diện của từng tính năng nằm trong hook của tính năng nhưng vẫn "sống" ở cấp `AppProvider` (không chuyển vào bên trong component) để giữ nguyên hành vi đóng/mở hộp thoại như cũ.
+- Code được di chuyển bằng script đọc cây cú pháp TypeScript (không chép tay), sau đó tách thêm logic thuần có test.
+- Hai chỉnh sửa nhỏ không đổi kết quả hiển thị: `normalizeClassBossState` không tạo ID Boss bỏ đi mỗi lần render; Boss của lớp hiện tại được `useMemo`.
+
+**Tiêu chí hoàn thành:** `npm test` và `npm run build` xanh; không file nào > ~500 dòng (ngoại lệ có ghi chú, ví dụ dữ liệu `pokemonData`); checklist hồi quy đạt. Hiện trạng: test, build, smoke xanh; `App.tsx` 21 dòng; file lớn nhất (ngoài `pokemonData.ts`) là `domain/gameEvents.ts` 504 dòng (có từ trước, chưa đụng); checklist hồi quy chờ Harry.
 
 **Bàn giao cho Harry (dự kiến):** không migration; chạy checklist hồi quy trên bản dev/preview.
 
@@ -184,6 +190,10 @@ src/
 ## Đề xuất phát sinh (chờ Harry duyệt)
 
 - Có cần vai trò phụ huynh (xem điểm con) không? Hiện ngoài phạm vi.
+- **[Lỗi game, phát hiện ở Phase 1]** Cá Ngựa: học sinh bị Quái vật giữ, lắc được 6 vẫn bị đánh dấu "kẹt" (cờ bị ghi đè ở cuối lượt, xem test trong `src/domain/ludo.test.ts`). Đề xuất sửa để đúng luật "lắc 6 thì đi tiếp". Là đổi hành vi game nên chờ Harry duyệt.
+- **[Lỗi có sẵn]** Nếu dữ liệu đám mây có danh sách cấp bậc rỗng, mở bảng Ban thưởng/Phạt bị lỗi (không tìm thấy cấp bậc). Đề xuất: khi danh sách rỗng thì dùng cấp bậc mặc định.
+- **[Chất lượng mã]** Cài `@types/react`, `@types/react-dom` và sửa khoảng 20 lỗi TypeScript cũ để kiểm tra kiểu có tác dụng thật (hiện kiểu của React là `any`). Đề xuất làm đầu Phase 2.
+- **[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt" khi danh sách đổi thứ tự sau khi chấm điểm. Xử lý cùng Phase 2.
 
 ## Quy trình sau mỗi Phase
 
@@ -206,3 +216,11 @@ src/
 - `npm run build`: thành công (513 module); vẫn chỉ cảnh báo chunk lớn đã biết.
 - `tsc --noEmit`: không thêm lỗi mới (các lỗi kiểu cũ trong `App.tsx`, `gameEvents.ts`, `supabaseClient.ts` có từ trước, không thuộc S2).
 - Smoke test tạm bằng Playwright (script nằm ngoài repo, chưa phải S0): phiên đăng nhập giả, chặn mạng Supabase. So văn bản hiển thị trước/sau của màn đăng nhập, đăng ký, Plaza, Lớp học, Cài đặt, bật/tắt một khối cài đặt: giống hệt; ảnh chụp chỉ khác ở đồng hồ. 0 lỗi console. Chưa phủ: các modal, dữ liệu học sinh thật, Tailwind CDN (bị chặn mạng nên ảnh không có style).
+
+**Phase 1 - 2026-10-26** (kiểm thử tự động trên máy ảo; chưa thử tay; chưa chạy trên Vercel/Supabase thật):
+- `npm test`: 13 file, 94 test đạt (thêm test cho điểm, điểm danh, bài tập, battle, Cá Ngựa, tiến trình, bộ sưu tập Pokémon, Vòng quay, Boss, định tuyến).
+- `npm run build`: thành công, không còn cảnh báo chunk lớn (chunk chính ~499 kB).
+- `tsc --noEmit`: đúng bộ lỗi cũ có từ trước (so từng thông báo), không thêm lỗi mới.
+- `npm run smoke`: 5 nhóm test đạt. 4 nhóm so với ảnh gốc tạo từ code TRƯỚC khi tách (cùng dữ liệu mẫu, giờ cố định, số ngẫu nhiên có seed): DOM giống hệt ở đăng nhập, đăng ký, Lớp, Plaza, Cài đặt (mở hết các khối), Hồ sơ 3 tab, Random, Cá Ngựa, Vòng quay, Shop, Chia nhóm, Hẹn giờ, Điểm danh, Bài tập, Tặng Pokémon, Tài khoản, bảng điểm; dữ liệu đồng bộ lên "đám mây" giống hệt sau: cộng điểm, điểm danh, bài tập, Random solo -> Cá Ngựa -> lắc, Battle, Shop, Tặng Pokémon, Vòng quay, đổi tần suất Boss. Nhóm 5 kiểm tra URL: tải lại ở từng đường dẫn, Back/Forward, đường dẫn lạ.
+- Smoke test không phủ: Boss Raid đủ 5 người, Pokémon về 0 HP và màn rời đi, hợp nhất, dùng skill, nhập/xuất JSON, sao lưu/khôi phục, đăng ký/đăng nhập thật, Google login, đồng bộ giữa 2 trình duyệt, Tailwind CDN (bị chặn trong máy ảo nên không so được màu/bố cục). Các mục này nằm trong checklist S16 của Harry.
+- Không có thay đổi nào trên Supabase hay Vercel. Không có migration.

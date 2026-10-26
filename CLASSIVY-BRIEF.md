@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-26 (Phase 1, xong S2)
+**Cập nhật lần cuối:** 2026-10-26 (Phase 1: code xong S0-S15, chờ nghiệm thu S16)
 
 ## 1. Sản phẩm
 
@@ -12,7 +12,7 @@ Mục tiêu đợt cải tổ: (1) đổi thương hiệu sang Classivy; (2) tá
 
 ## 2. Stack
 
-React 19 + Vite 6 + TypeScript, Tailwind (CDN, sẽ đổi ở Phase 2), Supabase (Auth + Postgres), Vercel, Gemini API (lời thông báo). Vitest cho test.
+React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi ở Phase 2), Supabase (Auth + Postgres), Vercel, Gemini API (lời thông báo). Vitest (unit) + Playwright (smoke test).
 
 ## 3. Quyết định đã chốt
 
@@ -23,25 +23,29 @@ React 19 + Vite 6 + TypeScript, Tailwind (CDN, sẽ đổi ở Phase 2), Supabas
 - Bạn bè chỉ trong cùng lớp; không chat tự do.
 - North Star thiết kế: **"Lá non trong tấm khiên"** (Harry xác nhận 2026-10-26).
 - Thư mục `.claude/` (skills) được commit vào git.
+- Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
 
 ## 4. Trạng thái hiện tại
 
-- Phase 0 (nền móng và thương hiệu): hoàn thành, xem `PLAN.md`.
-- Phase 1: đang làm trên nhánh `refactor/phase-1-split`. Xong S2 (rút phần thuần ra `domain/`, `types/app.ts`, `features/`). S0 (lưới an toàn) và S1 (chuyển vào `src/`) chưa làm.
-- Chưa đổi schema, chưa có migration nào mới.
-- Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`). Chưa có gì được xác nhận là đã thay đổi trên Supabase thật.
+- Phase 0 (nền móng và thương hiệu): hoàn thành.
+- Phase 1 (tách App.tsx): code xong S0-S15 trên nhánh `refactor/phase-1-split` (đã push). Còn S16: Harry chạy checklist hồi quy trên bản preview rồi gộp vào `main`.
+- Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
+- Chưa đổi schema, chưa có migration nào mới. Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
 
 ## 5. Bản đồ repo (hiện tại)
 
-- `App.tsx` (~7.900 dòng): UI + state + nhiều logic. `AuthContext.tsx`, `supabaseClient.ts`, `supabaseData.ts`.
-- Logic thuần có test: `bossSystem`, `gameEvents`, `expeditionSystem`, `pokemonProgression`, `trainerProgression`, `pokemonPassives`.
-- `components/` (12 component nhỏ), `types.ts`, `constants.ts`, `pokemonData.ts`.
-- `public/brand/` logo đã tối ưu; `brand-source/` file gốc.
-- `docs/archive/` tài liệu Imperial School cũ (chỉ để tra cứu).
+- `src/app/`: khung app (`App.tsx` ~20 dòng, `AppRoutes`, `AppLayout`, `AppContext`), `controller/` (gom state/hành động), `providers/` (`GameDataProvider` + `gameData/` đồng bộ Supabase/localStorage, `UiEventsProvider`).
+- `src/features/<tính năng>/`: state, hành động, giao diện của class, students, attendance, homework, random, ludo, wheel, shop, pokemon, profile, plaza, settings, tools, feedback, auth.
+- `src/domain/`: logic thuần có test (điểm, điểm danh, bài tập, battle, Cá Ngựa, Boss, Pokémon, tiến trình, trứng, ngày/tuần, thời tiết).
+- `src/components/` (component dùng chung), `src/data/` (hằng số, `pokemonData`), `src/lib/` (Supabase, Gemini, âm thanh), `src/types/`.
+- `tests/smoke/` + `fixtures/sample-class.json`: smoke test Playwright. `docs/architecture.md`: hướng dẫn kiến trúc.
+- `public/brand/` logo; `brand-source/` file gốc; `docs/archive/` tài liệu Imperial School cũ.
 
 ## 6. Rủi ro đã biết
 
-- Dữ liệu học sinh nằm trong một cột JSON của giáo viên, chưa phải bảng riêng; đây là nút thắt cho mọi tính năng học sinh.
+- Dữ liệu học sinh nằm trong một cột JSON của giáo viên, chưa phải bảng riêng; đây là nút thắt cho mọi tính năng học sinh. Phần cần thay ở Phase 3 đã gom vào `src/app/providers/gameData/`.
+- Chưa cài `@types/react` nên TypeScript kiểm tra kiểu yếu; còn ~20 lỗi `tsc` cũ (xem Đề xuất phát sinh trong PLAN).
+- Lỗi game có sẵn chờ Harry quyết: Cá Ngựa lắc 6 vẫn bị Quái vật giữ; danh sách cấp bậc rỗng làm lỗi bảng điểm.
 - Khoá localStorage còn tiền tố `imperial_*`; đổi tên phải có đoạn chuyển dữ liệu để không mất dữ liệu khách (Phase 2).
 - Nội dung game còn từ ngữ cung đình (rank, Thánh chỉ, prompt Gemini); sẽ đổi ở Phase 2.
 - Giới hạn gói miễn phí Supabase/Vercel (kể cả Edge Functions) cần xác minh lại trước Phase 3-4.
@@ -50,7 +54,9 @@ React 19 + Vite 6 + TypeScript, Tailwind (CDN, sẽ đổi ở Phase 2), Supabas
 
 - Từ ngữ thay cho hệ cấp bậc cung đình (Phase 2).
 - Có thêm vai trò phụ huynh hay không (chưa nằm trong phạm vi).
+- Có sửa 2 lỗi game có sẵn (Cá Ngựa lắc 6, cấp bậc rỗng) hay không, sửa ở Phase nào.
 
 ## 8. Bước tiếp theo
 
-Phase 1 theo `docs/phase-1-split-plan.md`. Còn S0 (smoke test Playwright + dữ liệu mẫu) và S1 (chuyển vào `src/`) nên làm trước S3 vì S3 đụng tới đồng bộ dữ liệu. Quyết định A-C (Context, react-router, Playwright) chưa được ghi nhận là đã duyệt.
+1. Harry: chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh `refactor/phase-1-split` (dùng dữ liệu mẫu hoặc bản sao lưu, không dùng tài khoản thật nếu chưa xuất JSON). Đạt thì gộp vào `main`.
+2. Phase 2: hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage (kèm chuyển dữ liệu). Đề xuất làm thêm ở đầu Phase 2: cài `@types/react` và sửa lỗi TypeScript cũ. Khi đổi giao diện, cập nhật ảnh gốc smoke test (`npm run smoke -- --update-snapshots`).
