@@ -18,6 +18,10 @@ export const BOSS_ENCOUNTER_FREQUENCY_OPTIONS: Array<{
 
 export const DEFAULT_BOSS_ENCOUNTER_FREQUENCY: BossEncounterFrequency = 'occasional';
 
+export const isBossEncounterFrequency = (value: unknown): value is BossEncounterFrequency => {
+  return value === 'frequent' || value === 'occasional' || value === 'rare';
+};
+
 export const BOSS_PRESETS: BossDefinition[] = [
   {
     id: 'shadow-dragon',

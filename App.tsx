@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ActiveBossRound, AdventureJournalEntry, BossContribution, BossEncounterFrequency, BossInstance, ClassBossState, EggKind, Student, Gender, HistoryItem, RankInfo, Skill, PokemonPet, PokemonReleaseEvent, LudoTileSpec, LuckyWheelReward, LuckyWheelRewardType, StudentEgg, AttendanceStatus } from './types';
+import { ActiveBossRound, AdventureJournalEntry, BossContribution, BossEncounterFrequency, BossInstance, ClassBossState, EggKind, Student, Gender, HistoryItem, RankInfo, Skill, PokemonPet, PokemonReleaseEvent, LudoTileSpec, LuckyWheelReward, LuckyWheelRewardType, AttendanceStatus } from './types';
 import { 
   STORAGE_KEY, DEFAULT_RANKS_MALE, DEFAULT_RANKS_FEMALE, 
   RANKS_KEY_MALE, RANKS_KEY_FEMALE, DEFAULT_SKILLS, SKILLS_KEY,
   BOSS_STATES_KEY, BOSS_ENCOUNTER_FREQUENCY_KEY, DEFAULT_LUDO_TILES, PET_SKILLS_KEY, DEFAULT_LUCKY_WHEEL_REWARDS,
-  LUCKY_WHEEL_REWARDS_KEY, WHEEL_SPIN_SOUND_KEY, WHEEL_FINISH_SOUND_KEY
+  LUCKY_WHEEL_REWARDS_KEY, WHEEL_SPIN_SOUND_KEY, WHEEL_FINISH_SOUND_KEY,
+  LUDO_FINISH_TILE, DEFAULT_WHEEL_SPIN_SOUND_URL
 } from './constants';
 import { StudentCard } from './components/StudentCard';
 import { LiquidDock } from './components/LiquidDock';
@@ -21,7 +22,7 @@ import { PokemonReactionToast } from './components/PokemonReactionToast';
 import { BossBattlePanel } from './components/BossBattlePanel';
 import { BossDefeatedModal } from './components/BossDefeatedModal';
 import { generateEdict } from './geminiService';
-import { LIST_POKEMONS, LIST_PET_SKILLS as DEFAULT_PET_SKILLS, PetSkill, getRandomPokemon } from './pokemonData';
+import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, PetSkill, getRandomPokemon } from './pokemonData';
 import { getPassiveDefinition, getPassiveIcon } from './pokemonPassives';
 import { useAuth } from './AuthContext';
 import { fetchUserSettings, upsertUserSettings } from './supabaseData';
@@ -60,6 +61,7 @@ import {
   getBossEncounterFrequencyOption,
   getBossTopContributors,
   incrementBossEncounterCounter,
+  isBossEncounterFrequency,
   isBossEncounterReady,
   normalizeBossStatesByClass,
   normalizeClassBossState,
@@ -69,289 +71,25 @@ import {
   selectBossParty
 } from './bossSystem';
 import { claimReadyExpedition, ensureActiveExpedition, markExpeditionReadyIfDue } from './expeditionSystem';
+import { getLocalDateKey, getLocalWeekKey } from './domain/dates';
+import { createInstanceId, getRandomIndex } from './domain/random';
+import { createEgg, getEggCost, getEggLabel, getEggRequiredProgress } from './domain/eggs';
+import { getWeatherLabel, getWeatherMood, TrainerLocation, TrainerWeather } from './domain/weather';
+import {
+  BattleLudoTurn,
+  ClaimAllRewardSummary,
+  GiftPokemonResult,
+  HatchAnnouncementItem,
+  LevelUpAnnouncement,
+  LuckyWheelResult,
+  LudoReturnHint,
+  RandomMode,
+  Screen,
+  ShopReviewItem
+} from './types/app';
+import { AuthLoginForm } from './features/auth/AuthLoginForm';
+import { SettingsSection } from './features/settings/SettingsSection';
 
-
-type Screen = 'plaza' | 'class' | 'profile' | 'settings';
-type RandomMode = 'solo' | 'battle' | 'boss';
-
-const isBossEncounterFrequency = (value: unknown): value is BossEncounterFrequency => {
-  return value === 'frequent' || value === 'occasional' || value === 'rare';
-};
-
-const LUDO_FINISH_TILE = 49;
-
-interface LuckyWheelResult {
-  student: Student;
-  reward: LuckyWheelReward;
-  pokemon?: PokemonPet;
-  skill?: PetSkill;
-  hpDelta?: number;
-  message: string;
-}
-
-interface LevelUpAnnouncement {
-  title: string;
-  events: PokemonUiEvent[];
-}
-
-interface BattleLudoTurn {
-  studentId: string;
-  role: 'winner' | 'loser' | 'draw' | 'boss';
-}
-
-type LudoReturnHint = 'solo' | 'battle' | 'boss' | null;
-
-interface ClaimAllRewardSummary {
-  studentId: string;
-  studentName: string;
-  expeditionMessage?: string;
-  chestMessage?: string;
-}
-
-interface HatchAnnouncementItem {
-  studentId: string;
-  studentName: string;
-  pet: PokemonPet;
-}
-
-interface GiftPokemonResult {
-  student: Student;
-  pet: PokemonPet;
-  egg: StudentEgg;
-  hadExistingEgg: boolean;
-}
-
-interface ShopReviewItem {
-  studentId: string;
-  studentName: string;
-  pointBalance: number;
-  egg?: Exclude<EggKind, 'legendary'>;
-  skillIds: string[];
-  itemLabels: string[];
-  totalCost: number;
-  canAfford: boolean;
-}
-
-interface TrainerWeather {
-  temperature: number;
-  weatherCode: number;
-  isDay: boolean;
-  updatedAt: number;
-  label: string;
-}
-
-interface TrainerLocation {
-  label: string;
-  latitude: number;
-  longitude: number;
-}
-
-const getLocalDateKey = (date = new Date()) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
-const getLocalWeekKey = (date = new Date()) => {
-  const start = new Date(date.getFullYear(), 0, 1);
-  const dayOfYear = Math.floor((date.getTime() - start.getTime()) / 86400000) + 1;
-  const week = Math.ceil((dayOfYear + start.getDay()) / 7);
-  return `${date.getFullYear()}-W${String(week).padStart(2, '0')}`;
-};
-
-const DEFAULT_WHEEL_SPIN_SOUND_URL = 'https://actions.google.com/sounds/v1/transportation/airport_departure_chime.ogg';
-
-const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
-  const { loginWithEmail, signUpWithEmail } = useAuth();
-  const [authTab, setAuthTab] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg(null);
-
-    if (!email.trim() || !password.trim()) {
-      setErrorMsg("Vui lòng nhập đầy đủ Email và Mật khẩu.");
-      return;
-    }
-
-    if (authTab === 'register' && !displayName.trim()) {
-      setErrorMsg("Vui lòng nhập tên giáo viên.");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      if (authTab === 'login') {
-        await loginWithEmail(email.trim(), password);
-      } else {
-        const result = await signUpWithEmail(email.trim(), password, displayName.trim());
-        if (result.needsEmailConfirmation) {
-          setAuthTab('login');
-          setErrorMsg("Tài khoản đã được tạo. Vui lòng mở email xác nhận từ Supabase rồi quay lại đăng nhập.");
-          return;
-        }
-      }
-      if (onSuccess) onSuccess();
-    } catch (err: any) {
-      setErrorMsg(err.message || "Có lỗi xảy ra, vui lòng thử lại.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="w-full font-sans space-y-4">
-      {/* Tabs */}
-      <div className="flex bg-stone-100 p-1 rounded-2xl border border-stone-200">
-        <button
-          type="button"
-          onClick={() => { setAuthTab('login'); setErrorMsg(null); }}
-          className={`flex-1 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${
-            authTab === 'login'
-              ? 'bg-red-800 text-white shadow-md'
-              : 'text-stone-600 hover:text-stone-900'
-          }`}
-        >
-          🔑 Đăng Nhập
-        </button>
-        <button
-          type="button"
-          onClick={() => { setAuthTab('register'); setErrorMsg(null); }}
-          className={`flex-1 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${
-            authTab === 'register'
-              ? 'bg-red-800 text-white shadow-md'
-              : 'text-stone-600 hover:text-stone-900'
-          }`}
-        >
-          📜 Tạo Tài Khoản
-        </button>
-      </div>
-
-      {errorMsg && (
-        <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-2xl text-xs font-bold flex items-center gap-2 animate-in fade-in">
-          <span>⚠️</span>
-          <span>{errorMsg}</span>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-3.5 text-left">
-        {authTab === 'register' && (
-          <div>
-            <label className="block text-[10px] font-black uppercase tracking-wider text-stone-500 mb-1">
-              Tên giáo viên
-            </label>
-            <input
-              type="text"
-              required
-              value={displayName}
-              onChange={e => setDisplayName(e.target.value)}
-              placeholder="Ví dụ: Thầy/Cô Nguyễn"
-              className="w-full border border-stone-300 p-3 rounded-xl text-xs font-bold outline-none focus:ring-2 ring-red-800/30"
-            />
-          </div>
-        )}
-
-        <div>
-          <label className="block text-[10px] font-black uppercase tracking-wider text-stone-500 mb-1">
-            Địa chỉ Email
-          </label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="syphu@trieudinh.vn"
-            className="w-full border border-stone-300 p-3 rounded-xl text-xs font-bold outline-none focus:ring-2 ring-red-800/30"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[10px] font-black uppercase tracking-wider text-stone-500 mb-1">
-            Mật khẩu
-          </label>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="w-full border border-stone-300 p-3 rounded-xl text-xs font-bold outline-none focus:ring-2 ring-red-800/30"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full bg-gradient-to-r from-red-800 to-red-900 hover:from-red-700 hover:to-red-800 text-white font-extrabold py-3.5 rounded-xl shadow-lg hover:shadow-xl active:scale-95 transition-all text-xs uppercase tracking-wider border-b-4 border-red-950 disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {submitting ? (
-            <>
-              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>Đang Xử Lý...</span>
-            </>
-          ) : authTab === 'login' ? (
-            <span>Đăng nhập</span>
-          ) : (
-            <span>✨ Tạo Tài Khoản Mới</span>
-          )}
-        </button>
-      </form>
-    </div>
-  );
-};
-
-interface SettingsSectionProps {
-  id: string;
-  title: string;
-  icon: string;
-  subtitle?: string;
-  className?: string;
-  collapsedSections: Record<string, boolean>;
-  onToggle: (section: string) => void;
-  children: React.ReactNode;
-}
-
-const SettingsSection: React.FC<SettingsSectionProps> = ({
-  id,
-  title,
-  icon,
-  subtitle,
-  className = 'bg-white p-10 rounded-[40px] border shadow-sm space-y-8',
-  collapsedSections,
-  onToggle,
-  children
-}) => {
-  const isCollapsed = !!collapsedSections[id];
-  return (
-    <section className={className}>
-      <div className="flex items-center justify-between gap-4 border-b pb-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <span className="text-3xl shrink-0">{icon}</span>
-          <div className="min-w-0">
-            <h3 className="text-2xl font-royal text-red-800">{title}</h3>
-            {subtitle && <p className="text-xs text-stone-500 font-bold mt-1">{subtitle}</p>}
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={() => onToggle(id)}
-          className={`shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all ${isCollapsed ? 'bg-stone-200 border-stone-300' : 'bg-red-800 border-red-900'}`}
-          aria-label={isCollapsed ? `Hiện ${title}` : `Ẩn ${title}`}
-          title={isCollapsed ? `Hiện ${title}` : `Ẩn ${title}`}
-        >
-          <span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${isCollapsed ? 'translate-x-0' : 'translate-x-8'}`} />
-        </button>
-      </div>
-      {!isCollapsed && children}
-    </section>
-  );
-};
 
 const App: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -1254,25 +992,6 @@ const App: React.FC = () => {
     }
   }, [activeLudoClassName, ludoActiveStudent]);
 
-  const getWeatherMood = (weather?: TrainerWeather | null) => {
-    if (!weather) return 'clear';
-    if (!weather.isDay) return 'night';
-    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99].includes(weather.weatherCode)) return 'rain';
-    if ([71, 73, 75, 77, 85, 86].includes(weather.weatherCode)) return 'snow';
-    if ([45, 48].includes(weather.weatherCode)) return 'fog';
-    return 'sunny';
-  };
-
-  const getWeatherLabel = (code: number) => {
-    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return 'Đang mưa';
-    if ([95, 96, 99].includes(code)) return 'Có giông';
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return 'Có tuyết';
-    if ([45, 48].includes(code)) return 'Có sương';
-    if ([0, 1].includes(code)) return 'Trời quang';
-    if ([2, 3].includes(code)) return 'Nhiều mây';
-    return 'Thời tiết hiện tại';
-  };
-
   const fetchWeatherForLocation = async (location: TrainerLocation) => {
     setWeatherLoading(true);
     setWeatherError(null);
@@ -1393,61 +1112,6 @@ const App: React.FC = () => {
     setShowLudoModal(false);
     window.setTimeout(() => handleRandom(), 0);
   };
-
-  const getRandomIndex = (length: number) => {
-    if (length <= 0) return 0;
-    if (window.crypto?.getRandomValues) {
-      const arr = new Uint32Array(1);
-      window.crypto.getRandomValues(arr);
-      return arr[0] % length;
-    }
-    return Math.floor(Math.random() * length);
-  };
-
-  const SPECIAL_POKEMON_DEX_IDS = new Set([
-    144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386,
-    480, 481, 482, 483, 484, 485, 486, 487, 488, 491, 492, 493, 494, 638, 639, 640, 641, 642, 643, 644, 645,
-    646, 647, 648, 649, 716, 717, 718, 719, 720, 721, 772, 773, 785, 786, 787, 788, 789, 790, 791, 792,
-    800, 801, 802, 807, 808, 809, 888, 889, 890, 891, 892, 893, 894, 895, 896, 897, 898, 905, 1001, 1002,
-    1003, 1004, 1007, 1008, 1009, 1010, 1014, 1015, 1016, 1017, 1020, 1021, 1022, 1023, 1024, 1025
-  ]);
-
-  const LEGENDARY_POKEMON_DEX_IDS = new Set([
-    144, 145, 146, 150, 151, 249, 250, 251, 382, 383, 384, 385, 386, 483, 484, 487, 491, 493, 643, 644, 646,
-    716, 717, 718, 719, 720, 721, 888, 889, 890, 898, 1007, 1008, 1024, 1025
-  ]);
-
-  const createInstanceId = (prefix: string): string => {
-    return globalThis.crypto?.randomUUID?.() || `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-  };
-
-  const getEggRequiredProgress = (egg?: StudentEgg): number => egg?.requiredProgress || (egg?.kind === 'legendary' ? 30 : egg?.kind === 'special' ? 15 : 10);
-  const getEggLabel = (kind: EggKind) => kind === 'legendary' ? 'Trứng huyền thoại' : kind === 'special' ? 'Trứng đặc biệt' : 'Trứng thường';
-  const getEggCost = (kind: Exclude<EggKind, 'legendary'>) => kind === 'special' ? 20 : 10;
-
-  const getRandomEggDexId = (kind: EggKind = 'normal') => {
-    if (kind === 'legendary') {
-      const legendaryPool = LIST_POKEMONS.filter(pokemon => LEGENDARY_POKEMON_DEX_IDS.has(pokemon.dexId));
-      const pool = legendaryPool.length > 0 ? legendaryPool : LIST_POKEMONS.filter(pokemon => SPECIAL_POKEMON_DEX_IDS.has(pokemon.dexId));
-      return pool[getRandomIndex(pool.length)]?.dexId || 150;
-    }
-    const specialPool = LIST_POKEMONS.filter(pokemon => SPECIAL_POKEMON_DEX_IDS.has(pokemon.dexId));
-    const normalPool = LIST_POKEMONS.filter(pokemon => !SPECIAL_POKEMON_DEX_IDS.has(pokemon.dexId));
-    const useSpecialPool = kind === 'special' || getRandomIndex(100) >= 80;
-    const pool = useSpecialPool && specialPool.length > 0 ? specialPool : normalPool.length > 0 ? normalPool : LIST_POKEMONS;
-    return pool[getRandomIndex(pool.length)]?.dexId || 25;
-  };
-
-  const createEgg = (kind: EggKind = 'normal', source: StudentEgg['source'] = 'shop'): StudentEgg => ({
-    instanceId: createInstanceId('egg'),
-    progress: 0,
-    status: 'egg',
-    assignedDexId: getRandomEggDexId(kind),
-    kind,
-    requiredProgress: kind === 'legendary' ? 30 : kind === 'special' ? 15 : 10,
-    acquiredAt: Date.now(),
-    source
-  });
 
   const advanceEggForStudent = (student: Student, amount: number) => {
     let currentEgg = student.egg ? { ...student.egg } : amount > 0 ? createEgg('normal') : undefined;

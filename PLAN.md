@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 - kế hoạch tách đã viết, chờ Harry duyệt (chưa sửa code)
+**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 - đang tách App.tsx (xong S2; S0, S1 chưa làm)
 
 ## Mục tiêu
 
@@ -29,7 +29,7 @@
 | Phase | Nội dung | Trạng thái | Chạm vào Supabase thật? |
 |---|---|---|---|
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
-| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Đang lập kế hoạch (chờ duyệt) | Không |
+| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Đang làm (S2 xong) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Chưa bắt đầu | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Chưa bắt đầu | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
@@ -88,7 +88,7 @@ src/
 - [x] 1.1 Lập kế hoạch tách chi tiết: xem `docs/phase-1-split-plan.md` (2026-10-26). **Chờ Harry duyệt trước khi sửa code**
 - [ ] 1.2 (S0) Lưới an toàn: dữ liệu mẫu, smoke test chế độ khách, ảnh/DOM gốc
 - [ ] 1.3 (S1) Chuyển vào `src/`, sửa alias, đường dẫn
-- [ ] 1.4 (S2) Rút phần thuần (types, hằng số, hàm trứng/ngày, AuthLoginForm, SettingsSection) ra khỏi App
+- [x] 1.4 (S2) Rút phần thuần (types, hằng số, hàm trứng/ngày, AuthLoginForm, SettingsSection) ra khỏi App (2026-10-26). App.tsx 7.936 → 7.600 dòng. File mới: `domain/{dates,random,eggs,weather}.ts` (+ test), `types/app.ts`, `features/auth/AuthLoginForm.tsx`, `features/settings/SettingsSection.tsx`; `LUDO_FINISH_TILE`, `DEFAULT_WHEEL_SPIN_SOUND_URL` sang `constants.ts`; `isBossEncounterFrequency` sang `bossSystem.ts`. Làm trước S0/S1 theo yêu cầu Harry: các thư mục mới đặt ở gốc repo, S1 sẽ chuyển cả vào `src/`. Giảm ít hơn ước tính (600-800) vì các hàm thời tiết gọi API và `advanceEggForStudent` còn dính state, để lại cho S3/S5
 - [ ] 1.5 (S3) Kho state dùng chung + CloudSyncProvider (giữ nguyên hành vi lưu/đồng bộ)
 - [ ] 1.6 (S4) UiEventsProvider (toast, level-up, release queue, hatch)
 - [ ] 1.7 (S5) Hành động nghiệp vụ dùng chung (`handleUpdatePoints`...) + characterization test
@@ -200,3 +200,9 @@ src/
 - `npm run build`: thành công (507 module); chỉ còn cảnh báo chunk lớn đã biết (~1,34 MB).
 - Chưa kiểm tra bằng mắt trên trình duyệt: tiêu đề tab "Classivy" và favicon mới (cần Harry xem khi chạy `npm run dev`).
 - Không có thay đổi nào trên Supabase hay Vercel.
+
+**Phase 1 / S2 - 2026-10-26** (kiểm thử tự động trên máy ảo; chưa thử tay, chưa chạy trên Vercel/Supabase thật):
+- `npm test`: 7 file test, 48 test đạt (thêm 20 test cho ngày/tuần, trứng, thời tiết, số ngẫu nhiên, `isBossEncounterFrequency`).
+- `npm run build`: thành công (513 module); vẫn chỉ cảnh báo chunk lớn đã biết.
+- `tsc --noEmit`: không thêm lỗi mới (các lỗi kiểu cũ trong `App.tsx`, `gameEvents.ts`, `supabaseClient.ts` có từ trước, không thuộc S2).
+- Smoke test tạm bằng Playwright (script nằm ngoài repo, chưa phải S0): phiên đăng nhập giả, chặn mạng Supabase. So văn bản hiển thị trước/sau của màn đăng nhập, đăng ký, Plaza, Lớp học, Cài đặt, bật/tắt một khối cài đặt: giống hệt; ảnh chụp chỉ khác ở đồng hồ. 0 lỗi console. Chưa phủ: các modal, dữ liệu học sinh thật, Tailwind CDN (bị chặn mạng nên ảnh không có style).

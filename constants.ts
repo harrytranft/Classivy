@@ -158,3 +158,7 @@ const DEFAULT_LUDO_TILE_LIST: LudoTileSpec[] = [
 export const DEFAULT_LUDO_TILES: Record<number, LudoTileSpec> = Object.fromEntries(
   DEFAULT_LUDO_TILE_LIST.map(tile => [tile.tileIndex, tile])
 );
+
+export const LUDO_FINISH_TILE = 49;
+
+export const DEFAULT_WHEEL_SPIN_SOUND_URL = 'https://actions.google.com/sounds/v1/transportation/airport_departure_chime.ogg';

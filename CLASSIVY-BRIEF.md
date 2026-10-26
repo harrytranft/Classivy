@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-26 (kết thúc Phase 0)
+**Cập nhật lần cuối:** 2026-10-26 (Phase 1, xong S2)
 
 ## 1. Sản phẩm
 
@@ -27,7 +27,8 @@ React 19 + Vite 6 + TypeScript, Tailwind (CDN, sẽ đổi ở Phase 2), Supabas
 ## 4. Trạng thái hiện tại
 
 - Phase 0 (nền móng và thương hiệu): hoàn thành, xem `PLAN.md`.
-- Chưa tách code, chưa đổi schema, chưa có migration nào mới.
+- Phase 1: đang làm trên nhánh `refactor/phase-1-split`. Xong S2 (rút phần thuần ra `domain/`, `types/app.ts`, `features/`). S0 (lưới an toàn) và S1 (chuyển vào `src/`) chưa làm.
+- Chưa đổi schema, chưa có migration nào mới.
 - Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`). Chưa có gì được xác nhận là đã thay đổi trên Supabase thật.
 
 ## 5. Bản đồ repo (hiện tại)
@@ -52,4 +53,4 @@ React 19 + Vite 6 + TypeScript, Tailwind (CDN, sẽ đổi ở Phase 2), Supabas
 
 ## 8. Bước tiếp theo
 
-Phase 1: tách `App.tsx`. Kế hoạch chi tiết đã viết ở `docs/phase-1-split-plan.md` (16 bước S0-S16), chờ Harry duyệt 4 quyết định A-D (Context, react-router, Playwright smoke test, nhánh `refactor/phase-1-split`). Chưa sửa code.
+Phase 1 theo `docs/phase-1-split-plan.md`. Còn S0 (smoke test Playwright + dữ liệu mẫu) và S1 (chuyển vào `src/`) nên làm trước S3 vì S3 đụng tới đồng bộ dữ liệu. Quyết định A-C (Context, react-router, Playwright) chưa được ghi nhận là đã duyệt.

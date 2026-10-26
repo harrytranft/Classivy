@@ -5,6 +5,7 @@ import {
   createClassBossState,
   getBossEncounterFrequencyOption,
   incrementBossEncounterCounter,
+  isBossEncounterFrequency,
   isBossEncounterReady,
   recalibrateBossEncounterFrequency,
   resolveBossFailure,
@@ -145,5 +146,16 @@ describe('boss system', () => {
 
     expect(second.damageDealt).toBe(0);
     expect(second.state.boss.currentHp).toBe(first.state.boss.currentHp);
+  });
+});
+
+describe('isBossEncounterFrequency', () => {
+  it('accepts only the three known frequencies', () => {
+    expect(isBossEncounterFrequency('frequent')).toBe(true);
+    expect(isBossEncounterFrequency('occasional')).toBe(true);
+    expect(isBossEncounterFrequency('rare')).toBe(true);
+    expect(isBossEncounterFrequency('never')).toBe(false);
+    expect(isBossEncounterFrequency(null)).toBe(false);
+    expect(isBossEncounterFrequency(undefined)).toBe(false);
   });
 });
