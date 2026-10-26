@@ -1,0 +1,767 @@
+{
+  "students": [
+    {
+      "id": "stu-01",
+      "name": "An 6A",
+      "gender": "Nam",
+      "className": "6A",
+      "points": 15,
+      "history": [
+        {
+          "id": "h-1",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-1",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 1,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-1-1",
+        "dexId": 1,
+        "baseDexId": 1,
+        "name": "Bulbasaur",
+        "speciesName": "Bulbasaur",
+        "types": [
+          "Grass",
+          "Poison"
+        ],
+        "hp": 45,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 2,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 10,
+        "charge": 0,
+        "isShiny": false,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-1-1",
+          "dexId": 1,
+          "baseDexId": 1,
+          "name": "Bulbasaur",
+          "speciesName": "Bulbasaur",
+          "types": [
+            "Grass",
+            "Poison"
+          ],
+          "hp": 45,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 2,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 10,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        },
+        {
+          "instanceId": "pet-1-2",
+          "dexId": 4,
+          "baseDexId": 4,
+          "name": "Charmander",
+          "speciesName": "Charmander",
+          "types": [
+            "Fire"
+          ],
+          "hp": 80,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 3,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 20,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ],
+      "eggInventory": [
+        {
+          "instanceId": "inv-1",
+          "progress": 0,
+          "status": "egg",
+          "assignedDexId": 150,
+          "kind": "legendary",
+          "requiredProgress": 30,
+          "acquiredAt": 1793000000000,
+          "source": "boss"
+        }
+      ],
+      "eggFragments": {
+        "normal": 12,
+        "special": 3
+      },
+      "ludoTile": 7,
+      "ludoSteps": 7
+    },
+    {
+      "id": "stu-02",
+      "name": "Bình 6A",
+      "gender": "Nam",
+      "className": "6A",
+      "points": 30,
+      "history": [
+        {
+          "id": "h-2",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-2",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 4,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-2-2",
+        "dexId": 4,
+        "baseDexId": 4,
+        "name": "Charmander",
+        "speciesName": "Charmander",
+        "types": [
+          "Fire"
+        ],
+        "hp": 50,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 3,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 20,
+        "charge": 0,
+        "isShiny": true,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-2-2",
+          "dexId": 4,
+          "baseDexId": 4,
+          "name": "Charmander",
+          "speciesName": "Charmander",
+          "types": [
+            "Fire"
+          ],
+          "hp": 50,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 3,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 20,
+          "charge": 0,
+          "isShiny": true,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ]
+    },
+    {
+      "id": "stu-03",
+      "name": "Chi 6A",
+      "gender": "Nữ",
+      "className": "6A",
+      "points": 45,
+      "history": [
+        {
+          "id": "h-3",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-3",
+        "progress": 4,
+        "status": "egg",
+        "assignedDexId": 147,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      }
+    },
+    {
+      "id": "stu-04",
+      "name": "Dũng 6A",
+      "gender": "Nam",
+      "className": "6A",
+      "points": 60,
+      "history": [
+        {
+          "id": "h-4",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-4",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 133,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-4-4",
+        "dexId": 133,
+        "baseDexId": 133,
+        "name": "Eevee",
+        "speciesName": "Eevee",
+        "types": [
+          "Normal"
+        ],
+        "hp": 60,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 5,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 40,
+        "charge": 0,
+        "isShiny": false,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-4-4",
+          "dexId": 133,
+          "baseDexId": 133,
+          "name": "Eevee",
+          "speciesName": "Eevee",
+          "types": [
+            "Normal"
+          ],
+          "hp": 60,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 5,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 40,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ]
+    },
+    {
+      "id": "stu-05",
+      "name": "Giang 6A",
+      "gender": "Nữ",
+      "className": "6A",
+      "points": 75,
+      "history": [
+        {
+          "id": "h-5",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": true,
+      "attendanceStatus": "absent",
+      "egg": {
+        "instanceId": "egg-5",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 39,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-5-5",
+        "dexId": 39,
+        "baseDexId": 39,
+        "name": "Jigglypuff",
+        "speciesName": "Jigglypuff",
+        "types": [
+          "Normal",
+          "Fairy"
+        ],
+        "hp": 65,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 6,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 50,
+        "charge": 0,
+        "isShiny": false,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-5-5",
+          "dexId": 39,
+          "baseDexId": 39,
+          "name": "Jigglypuff",
+          "speciesName": "Jigglypuff",
+          "types": [
+            "Normal",
+            "Fairy"
+          ],
+          "hp": 65,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 6,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 50,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        },
+        {
+          "instanceId": "pet-5-6",
+          "dexId": 25,
+          "baseDexId": 25,
+          "name": "Pikachu",
+          "speciesName": "Pikachu",
+          "types": [
+            "Electric"
+          ],
+          "hp": 80,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 3,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 60,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ]
+    },
+    {
+      "id": "stu-06",
+      "name": "Hà 6A",
+      "gender": "Nữ",
+      "className": "6A",
+      "points": 90,
+      "history": [
+        {
+          "id": "h-6",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-6",
+        "progress": 4,
+        "status": "egg",
+        "assignedDexId": 147,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      }
+    },
+    {
+      "id": "stu-07",
+      "name": "Khoa 6A",
+      "gender": "Nam",
+      "className": "6A",
+      "points": 105,
+      "history": [
+        {
+          "id": "h-7",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-7",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 1,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-7-7",
+        "dexId": 1,
+        "baseDexId": 1,
+        "name": "Bulbasaur",
+        "speciesName": "Bulbasaur",
+        "types": [
+          "Grass",
+          "Poison"
+        ],
+        "hp": 75,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 1,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 70,
+        "charge": 0,
+        "isShiny": false,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-7-7",
+          "dexId": 1,
+          "baseDexId": 1,
+          "name": "Bulbasaur",
+          "speciesName": "Bulbasaur",
+          "types": [
+            "Grass",
+            "Poison"
+          ],
+          "hp": 75,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 70,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ]
+    },
+    {
+      "id": "stu-08",
+      "name": "Lan 7B",
+      "gender": "Nữ",
+      "className": "7B",
+      "points": 120,
+      "history": [
+        {
+          "id": "h-8",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-8",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 4,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-8-8",
+        "dexId": 4,
+        "baseDexId": 4,
+        "name": "Charmander",
+        "speciesName": "Charmander",
+        "types": [
+          "Fire"
+        ],
+        "hp": 80,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 2,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 80,
+        "charge": 0,
+        "isShiny": false,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-8-8",
+          "dexId": 4,
+          "baseDexId": 4,
+          "name": "Charmander",
+          "speciesName": "Charmander",
+          "types": [
+            "Fire"
+          ],
+          "hp": 80,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 2,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 80,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ]
+    },
+    {
+      "id": "stu-09",
+      "name": "Minh 7B",
+      "gender": "Nam",
+      "className": "7B",
+      "points": 135,
+      "history": [
+        {
+          "id": "h-9",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-9",
+        "progress": 4,
+        "status": "egg",
+        "assignedDexId": 147,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      }
+    },
+    {
+      "id": "stu-10",
+      "name": "Ngọc 7B",
+      "gender": "Nữ",
+      "className": "7B",
+      "points": 10,
+      "history": [
+        {
+          "id": "h-10",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-10",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 133,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-10-10",
+        "dexId": 133,
+        "baseDexId": 133,
+        "name": "Eevee",
+        "speciesName": "Eevee",
+        "types": [
+          "Normal"
+        ],
+        "hp": 90,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 4,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 100,
+        "charge": 0,
+        "isShiny": false,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-10-10",
+          "dexId": 133,
+          "baseDexId": 133,
+          "name": "Eevee",
+          "speciesName": "Eevee",
+          "types": [
+            "Normal"
+          ],
+          "hp": 90,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 4,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 100,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ]
+    },
+    {
+      "id": "stu-11",
+      "name": "Phúc 7B",
+      "gender": "Nam",
+      "className": "7B",
+      "points": 25,
+      "history": [
+        {
+          "id": "h-11",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-11",
+        "progress": 10,
+        "status": "hatched",
+        "assignedDexId": 39,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      },
+      "pet": {
+        "instanceId": "pet-11-11",
+        "dexId": 39,
+        "baseDexId": 39,
+        "name": "Jigglypuff",
+        "speciesName": "Jigglypuff",
+        "types": [
+          "Normal",
+          "Fairy"
+        ],
+        "hp": 95,
+        "accessories": [],
+        "skills": [],
+        "skillUses": {},
+        "level": 5,
+        "xp": 0,
+        "totalXp": 0,
+        "bond": 110,
+        "charge": 0,
+        "isShiny": false,
+        "masteryXp": 0,
+        "masteryStars": 0
+      },
+      "pets": [
+        {
+          "instanceId": "pet-11-11",
+          "dexId": 39,
+          "baseDexId": 39,
+          "name": "Jigglypuff",
+          "speciesName": "Jigglypuff",
+          "types": [
+            "Normal",
+            "Fairy"
+          ],
+          "hp": 95,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 5,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 110,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0
+        }
+      ]
+    },
+    {
+      "id": "stu-12",
+      "name": "Quỳnh 7B",
+      "gender": "Nữ",
+      "className": "7B",
+      "points": 40,
+      "history": [
+        {
+          "id": "h-12",
+          "amount": 5,
+          "reason": "Phát biểu xây dựng bài",
+          "timestamp": 1792913600000
+        }
+      ],
+      "isAbsent": false,
+      "attendanceStatus": "present",
+      "egg": {
+        "instanceId": "egg-12",
+        "progress": 4,
+        "status": "egg",
+        "assignedDexId": 147,
+        "kind": "normal",
+        "requiredProgress": 10,
+        "acquiredAt": 1793000000000,
+        "source": "shop"
+      }
+    }
+  ],
+  "exportedAt": 1793000000000
+}

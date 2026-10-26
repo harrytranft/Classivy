@@ -1,0 +1,2378 @@
+{
+  "upsertCount": 9,
+  "latest": {
+    "user_id": "00000000-0000-4000-8000-000000000001",
+    "students": [
+      {
+        "id": "stu-01",
+        "name": "An 6A",
+        "gender": "Nam",
+        "className": "6A",
+        "points": 31,
+        "history": [
+          {
+            "id": "17929800000000.7027296088635921",
+            "amount": 0,
+            "reason": "🎁 Tặng Pokémon: Mew nở từ Trứng đặc biệt (không trừ Hào Quang)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.16988095617853105",
+            "amount": 3,
+            "reason": "🏆 Thắng Battle: +3đ (Pokemon +2 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.48532773880288005",
+            "amount": 8,
+            "reason": "📚 Homework Done (2026-10-26) (+8 Hào Quang, Pokémon +8 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.48532773880288005",
+            "amount": 5,
+            "reason": "🧭 Đi học Có mặt (2026-10-26) (+5 Hào Quang, Pokémon +5 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "h-1",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "00000000-0000-4000-8000-000000000008",
+          "progress": 15,
+          "status": "hatched",
+          "assignedDexId": 151,
+          "kind": "special",
+          "requiredProgress": 15,
+          "acquiredAt": 1792980000000,
+          "source": "reward"
+        },
+        "pet": {
+          "instanceId": "00000000-0000-4000-8000-000000000009",
+          "dexId": 151,
+          "baseDexId": 151,
+          "name": "Mew",
+          "speciesName": "Mew",
+          "types": [
+            "Psychic"
+          ],
+          "hp": 100,
+          "accessories": [],
+          "skills": [],
+          "isShiny": false,
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 0,
+          "charge": 0,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "synchronize",
+          "natureId": "calm"
+        },
+        "pets": [
+          {
+            "instanceId": "00000000-0000-4000-8000-000000000009",
+            "dexId": 151,
+            "baseDexId": 151,
+            "name": "Mew",
+            "speciesName": "Mew",
+            "types": [
+              "Psychic"
+            ],
+            "hp": 100,
+            "accessories": [],
+            "skills": [],
+            "isShiny": false,
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 0,
+            "charge": 0,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "synchronize",
+            "natureId": "calm"
+          },
+          {
+            "instanceId": "pet-1-1",
+            "dexId": 1,
+            "baseDexId": 1,
+            "name": "Bulbasaur",
+            "speciesName": "Bulbasaur",
+            "types": [
+              "Grass",
+              "Poison"
+            ],
+            "hp": 60,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 2,
+            "xp": 8,
+            "totalXp": 38,
+            "bond": 15,
+            "charge": 2,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "growth",
+            "natureId": "lucky"
+          },
+          {
+            "instanceId": "pet-1-2",
+            "dexId": 4,
+            "baseDexId": 4,
+            "name": "Charmander",
+            "speciesName": "Charmander",
+            "types": [
+              "Fire"
+            ],
+            "hp": 80,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 20,
+            "charge": 0,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "blaze",
+            "natureId": "hardworking"
+          }
+        ],
+        "eggInventory": [
+          {
+            "instanceId": "inv-1",
+            "progress": 0,
+            "status": "egg",
+            "assignedDexId": 150,
+            "kind": "legendary",
+            "requiredProgress": 30,
+            "acquiredAt": 1793000000000,
+            "source": "boss"
+          }
+        ],
+        "eggFragments": {
+          "normal": 12,
+          "special": 3
+        },
+        "ludoTile": 7,
+        "ludoSteps": 7,
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 1,
+          "bestBattleWinStreak": 1,
+          "homeworkStreak": 1,
+          "bestHomeworkStreak": 1,
+          "attendanceStreak": 1,
+          "bestAttendanceStreak": 1,
+          "positiveSoloCount": 0,
+          "battleWins": 1,
+          "hatchedEggs": 1,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0,
+          "lastAttendanceLessonKey": "6A:2026-10-26",
+          "lastHomeworkLessonKey": "6A:2026-10-26"
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 25,
+          "totalXp": 25,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "adventureJournal": [
+          {
+            "id": "17929800000000.1409106149803847",
+            "timestamp": 1792980000000,
+            "type": "pokemon-hatched",
+            "text": "Mew hatched as a gift for An 6A.",
+            "petInstanceId": "00000000-0000-4000-8000-000000000009"
+          },
+          {
+            "id": "17929800000000.6398397455923259",
+            "timestamp": 1792980000000,
+            "type": "pokemon-hatched",
+            "text": "Mew hatched for An 6A.",
+            "petInstanceId": "00000000-0000-4000-8000-000000000009"
+          }
+        ],
+        "weeklyChest": {
+          "weekKey": "2026-W44",
+          "progress": 33,
+          "claimed": false
+        },
+        "expedition": {
+          "expeditionId": "00000000-0000-4000-8000-000000000008",
+          "petInstanceId": "pet-1-1",
+          "startedAt": 1792980000000,
+          "resolvesAt": 1793008800000,
+          "status": "active",
+          "seed": "stu-01:pet-1-1:1792980000000"
+        }
+      },
+      {
+        "id": "stu-02",
+        "name": "Bình 6A",
+        "gender": "Nam",
+        "className": "6A",
+        "points": 43,
+        "history": [
+          {
+            "id": "17929800000000.8260546817909926",
+            "amount": 8,
+            "reason": "📚 Homework Done (2026-10-26) (+8 Hào Quang, Pokémon +8 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.8260546817909926",
+            "amount": 5,
+            "reason": "🧭 Đi học Có mặt (2026-10-26) (+5 Hào Quang, Pokémon +5 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "h-2",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-2",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 4,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "pet": {
+          "instanceId": "pet-2-2",
+          "dexId": 4,
+          "baseDexId": 4,
+          "name": "Charmander",
+          "speciesName": "Charmander",
+          "types": [
+            "Fire"
+          ],
+          "hp": 63,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 1,
+          "xp": 15,
+          "totalXp": 15,
+          "bond": 23,
+          "charge": 0,
+          "isShiny": true,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "blaze",
+          "natureId": "loyal"
+        },
+        "pets": [
+          {
+            "instanceId": "pet-2-2",
+            "dexId": 4,
+            "baseDexId": 4,
+            "name": "Charmander",
+            "speciesName": "Charmander",
+            "types": [
+              "Fire"
+            ],
+            "hp": 63,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 15,
+            "totalXp": 15,
+            "bond": 23,
+            "charge": 0,
+            "isShiny": true,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "blaze",
+            "natureId": "loyal"
+          }
+        ],
+        "eggInventory": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 1,
+          "bestHomeworkStreak": 1,
+          "attendanceStreak": 1,
+          "bestAttendanceStreak": 1,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0,
+          "lastAttendanceLessonKey": "6A:2026-10-26",
+          "lastHomeworkLessonKey": "6A:2026-10-26"
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 35,
+          "totalXp": 35,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie",
+            "shiny-hunter"
+          ]
+        },
+        "earnedBadges": [
+          {
+            "badgeId": "shiny-hunter",
+            "earnedAt": 1792980000000
+          }
+        ],
+        "eggFragments": {},
+        "adventureJournal": [
+          {
+            "id": "17929800000000.6398397455923259",
+            "timestamp": 1792980000000,
+            "type": "badge-earned",
+            "text": "Bình 6A earned Shiny Hunter Badge."
+          }
+        ],
+        "weeklyChest": {
+          "weekKey": "2026-W44",
+          "progress": 25,
+          "claimed": false
+        },
+        "expedition": {
+          "expeditionId": "00000000-0000-4000-8000-000000000009",
+          "petInstanceId": "pet-2-2",
+          "startedAt": 1792980000000,
+          "resolvesAt": 1793008800000,
+          "status": "active",
+          "seed": "stu-02:pet-2-2:1792980000000"
+        }
+      },
+      {
+        "id": "stu-03",
+        "name": "Chi 6A",
+        "gender": "Nữ",
+        "className": "6A",
+        "points": 58,
+        "history": [
+          {
+            "id": "17929800000000.6398397455923259",
+            "amount": 8,
+            "reason": "📚 Homework Done (2026-10-26) (+8 Hào Quang, Pokémon +8 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.7027296088635921",
+            "amount": 5,
+            "reason": "🧭 Đi học Có mặt (2026-10-26) (+5 Hào Quang, Pokémon +5 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "h-3",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-3",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 147,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "eggInventory": [],
+        "pets": [
+          {
+            "instanceId": "00000000-0000-4000-8000-000000000008",
+            "dexId": 147,
+            "baseDexId": 147,
+            "name": "Dratini",
+            "speciesName": "Dratini",
+            "types": [
+              "Dragon"
+            ],
+            "hp": 100,
+            "accessories": [],
+            "skills": [],
+            "isShiny": false,
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 0,
+            "charge": 0,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "synchronize",
+            "natureId": "curious"
+          }
+        ],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 1,
+          "bestHomeworkStreak": 1,
+          "attendanceStreak": 1,
+          "bestAttendanceStreak": 1,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 1,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0,
+          "lastAttendanceLessonKey": "6A:2026-10-26",
+          "lastHomeworkLessonKey": "6A:2026-10-26"
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 15,
+          "totalXp": 15,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": [
+          {
+            "id": "17929800000000.1409106149803847",
+            "timestamp": 1792980000000,
+            "type": "pokemon-hatched",
+            "text": "Dratini hatched for Chi 6A.",
+            "petInstanceId": "00000000-0000-4000-8000-000000000008"
+          }
+        ],
+        "weeklyChest": {
+          "weekKey": "2026-W44",
+          "progress": 25,
+          "claimed": false
+        },
+        "pet": {
+          "instanceId": "00000000-0000-4000-8000-000000000008",
+          "dexId": 147,
+          "baseDexId": 147,
+          "name": "Dratini",
+          "speciesName": "Dratini",
+          "types": [
+            "Dragon"
+          ],
+          "hp": 100,
+          "accessories": [],
+          "skills": [],
+          "isShiny": false,
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 0,
+          "charge": 0,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "synchronize",
+          "natureId": "curious"
+        }
+      },
+      {
+        "id": "stu-04",
+        "name": "Dũng 6A",
+        "gender": "Nam",
+        "className": "6A",
+        "points": 78,
+        "history": [
+          {
+            "id": "17929800000000.4630747972987592",
+            "amount": 0,
+            "reason": "🎡 Vòng quay may mắn: Pokémon của Dũng 6A bị trừ 10 HP!",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.3352603542152792",
+            "amount": 2,
+            "reason": "💎 Nhặt được 🍀 Cỏ May Mắn (+2đ)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.9902929614763707",
+            "amount": 1,
+            "reason": "🎲 Trả lời đúng câu hỏi Cá Ngựa (+1đ)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.5779434856958687",
+            "amount": 2,
+            "reason": "Trả lời đúng",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.8274675998836756",
+            "amount": 8,
+            "reason": "📚 Homework Done (2026-10-26) (+8 Hào Quang, Pokémon +8 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.1409106149803847",
+            "amount": 5,
+            "reason": "🧭 Đi học Có mặt (2026-10-26) (+5 Hào Quang, Pokémon +5 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "h-4",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-4",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 133,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "pet": {
+          "instanceId": "pet-4-4",
+          "dexId": 133,
+          "baseDexId": 133,
+          "name": "Eevee",
+          "speciesName": "Eevee",
+          "types": [
+            "Normal"
+          ],
+          "hp": 68,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 1,
+          "xp": 25,
+          "totalXp": 25,
+          "bond": 47,
+          "charge": 1,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "adaptability",
+          "natureId": "loyal"
+        },
+        "pets": [
+          {
+            "instanceId": "pet-4-4",
+            "dexId": 133,
+            "baseDexId": 133,
+            "name": "Eevee",
+            "speciesName": "Eevee",
+            "types": [
+              "Normal"
+            ],
+            "hp": 68,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 25,
+            "totalXp": 25,
+            "bond": 47,
+            "charge": 1,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "adaptability",
+            "natureId": "loyal"
+          }
+        ],
+        "eggInventory": [],
+        "pokemonProgress": {
+          "answerStreak": 1,
+          "bestAnswerStreak": 1,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 1,
+          "bestHomeworkStreak": 1,
+          "attendanceStreak": 1,
+          "bestAttendanceStreak": 1,
+          "positiveSoloCount": 1,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0,
+          "lastAttendanceLessonKey": "6A:2026-10-26",
+          "lastHomeworkLessonKey": "6A:2026-10-26"
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 20,
+          "totalXp": 20,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": [],
+        "weeklyChest": {
+          "weekKey": "2026-W44",
+          "progress": 28,
+          "claimed": false
+        },
+        "expedition": {
+          "expeditionId": "00000000-0000-4000-8000-000000000010",
+          "petInstanceId": "pet-4-4",
+          "startedAt": 1792980000000,
+          "resolvesAt": 1793008800000,
+          "status": "active",
+          "seed": "stu-04:pet-4-4:1792980000000"
+        },
+        "ludoTile": 2,
+        "ludoSteps": 2,
+        "ludoMonsterStuck": false
+      },
+      {
+        "id": "stu-05",
+        "name": "Giang 6A",
+        "gender": "Nữ",
+        "className": "6A",
+        "points": 75,
+        "history": [
+          {
+            "id": "17929800000000.8274675998836756",
+            "amount": 0,
+            "reason": "🧭 Đi học Vắng (2026-10-26)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "h-5",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": true,
+        "attendanceStatus": "absent",
+        "egg": {
+          "instanceId": "egg-5",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 39,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "pet": {
+          "instanceId": "pet-5-5",
+          "dexId": 39,
+          "baseDexId": 39,
+          "name": "Jigglypuff",
+          "speciesName": "Jigglypuff",
+          "types": [
+            "Normal",
+            "Fairy"
+          ],
+          "hp": 65,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 50,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "joyful_heart",
+          "natureId": "calm"
+        },
+        "pets": [
+          {
+            "instanceId": "pet-5-5",
+            "dexId": 39,
+            "baseDexId": 39,
+            "name": "Jigglypuff",
+            "speciesName": "Jigglypuff",
+            "types": [
+              "Normal",
+              "Fairy"
+            ],
+            "hp": 65,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 50,
+            "charge": 0,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "joyful_heart",
+            "natureId": "calm"
+          },
+          {
+            "instanceId": "pet-5-6",
+            "dexId": 25,
+            "baseDexId": 25,
+            "name": "Pikachu",
+            "speciesName": "Pikachu",
+            "types": [
+              "Electric"
+            ],
+            "hp": 80,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 60,
+            "charge": 0,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "static_charge",
+            "natureId": "energetic"
+          }
+        ],
+        "eggInventory": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 0,
+          "bestHomeworkStreak": 0,
+          "attendanceStreak": 0,
+          "bestAttendanceStreak": 0,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0,
+          "lastAttendanceLessonKey": "6A:2026-10-26"
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": []
+      },
+      {
+        "id": "stu-06",
+        "name": "Hà 6A",
+        "gender": "Nữ",
+        "className": "6A",
+        "points": 103,
+        "history": [
+          {
+            "id": "17929800000000.862676972290501",
+            "amount": 8,
+            "reason": "📚 Homework Done (2026-10-26) (+8 Hào Quang, Pokémon +8 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.862676972290501",
+            "amount": 5,
+            "reason": "🧭 Đi học Có mặt (2026-10-26) (+5 Hào Quang, Pokémon +5 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "h-6",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-6",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 147,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "eggInventory": [],
+        "pets": [
+          {
+            "instanceId": "00000000-0000-4000-8000-000000000009",
+            "dexId": 147,
+            "baseDexId": 147,
+            "name": "Dratini",
+            "speciesName": "Dratini",
+            "types": [
+              "Dragon"
+            ],
+            "hp": 100,
+            "accessories": [],
+            "skills": [],
+            "isShiny": false,
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 0,
+            "charge": 0,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "synchronize",
+            "natureId": "calm"
+          }
+        ],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 1,
+          "bestHomeworkStreak": 1,
+          "attendanceStreak": 1,
+          "bestAttendanceStreak": 1,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 1,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0,
+          "lastAttendanceLessonKey": "6A:2026-10-26",
+          "lastHomeworkLessonKey": "6A:2026-10-26"
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 15,
+          "totalXp": 15,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": [
+          {
+            "id": "17929800000000.831763201393187",
+            "timestamp": 1792980000000,
+            "type": "pokemon-hatched",
+            "text": "Dratini hatched for Hà 6A.",
+            "petInstanceId": "00000000-0000-4000-8000-000000000009"
+          }
+        ],
+        "weeklyChest": {
+          "weekKey": "2026-W44",
+          "progress": 25,
+          "claimed": false
+        },
+        "pet": {
+          "instanceId": "00000000-0000-4000-8000-000000000009",
+          "dexId": 147,
+          "baseDexId": 147,
+          "name": "Dratini",
+          "speciesName": "Dratini",
+          "types": [
+            "Dragon"
+          ],
+          "hp": 100,
+          "accessories": [],
+          "skills": [],
+          "isShiny": false,
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 0,
+          "charge": 0,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "synchronize",
+          "natureId": "calm"
+        }
+      },
+      {
+        "id": "stu-07",
+        "name": "Khoa 6A",
+        "gender": "Nam",
+        "className": "6A",
+        "points": 111,
+        "history": [
+          {
+            "id": "17929800000000.6398397455923259",
+            "amount": -10,
+            "reason": "🛒 Shop: 🥚 Trứng thường (-10đ)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.3352603542152792",
+            "amount": 1,
+            "reason": "⚔️ Thua Battle: +1đ (Pokemon -2 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.781099891057238",
+            "amount": 8,
+            "reason": "📚 Homework Done (2026-10-26) (+8 Hào Quang, Pokémon +8 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.9207114255987108",
+            "amount": 5,
+            "reason": "🧭 Đi học Có mặt (2026-10-26) (+5 Hào Quang, Pokémon +5 HP)",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "17929800000000.1409106149803847",
+            "amount": 2,
+            "reason": "Trả lời đúng",
+            "timestamp": 1792980000000
+          },
+          {
+            "id": "h-7",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "00000000-0000-4000-8000-000000000012",
+          "progress": 0,
+          "status": "egg",
+          "assignedDexId": 429,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1792980000000,
+          "source": "shop"
+        },
+        "pets": [
+          {
+            "instanceId": "pet-7-7",
+            "dexId": 1,
+            "baseDexId": 1,
+            "name": "Bulbasaur",
+            "speciesName": "Bulbasaur",
+            "types": [
+              "Grass",
+              "Poison"
+            ],
+            "hp": 88,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 2,
+            "xp": 0,
+            "totalXp": 30,
+            "bond": 74,
+            "charge": 1,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "growth",
+            "natureId": "curious"
+          }
+        ],
+        "eggInventory": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 1,
+          "bestHomeworkStreak": 1,
+          "attendanceStreak": 1,
+          "bestAttendanceStreak": 1,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0,
+          "lastAttendanceLessonKey": "6A:2026-10-26",
+          "lastHomeworkLessonKey": "6A:2026-10-26"
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 15,
+          "totalXp": 15,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": [],
+        "weeklyChest": {
+          "weekKey": "2026-W44",
+          "progress": 28,
+          "claimed": false
+        },
+        "expedition": {
+          "expeditionId": "00000000-0000-4000-8000-000000000011",
+          "petInstanceId": "pet-7-7",
+          "startedAt": 1792980000000,
+          "resolvesAt": 1793008800000,
+          "status": "active",
+          "seed": "stu-07:pet-7-7:1792980000000"
+        }
+      },
+      {
+        "id": "stu-08",
+        "name": "Lan 7B",
+        "gender": "Nữ",
+        "className": "7B",
+        "points": 120,
+        "history": [
+          {
+            "id": "h-8",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-8",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 4,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "pet": {
+          "instanceId": "pet-8-8",
+          "dexId": 4,
+          "baseDexId": 4,
+          "name": "Charmander",
+          "speciesName": "Charmander",
+          "types": [
+            "Fire"
+          ],
+          "hp": 80,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 80,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "blaze",
+          "natureId": "lucky"
+        },
+        "pets": [
+          {
+            "instanceId": "pet-8-8",
+            "dexId": 4,
+            "baseDexId": 4,
+            "name": "Charmander",
+            "speciesName": "Charmander",
+            "types": [
+              "Fire"
+            ],
+            "hp": 80,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 80,
+            "charge": 0,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "blaze",
+            "natureId": "lucky"
+          }
+        ],
+        "eggInventory": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 0,
+          "bestHomeworkStreak": 0,
+          "attendanceStreak": 0,
+          "bestAttendanceStreak": 0,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": []
+      },
+      {
+        "id": "stu-09",
+        "name": "Minh 7B",
+        "gender": "Nam",
+        "className": "7B",
+        "points": 135,
+        "history": [
+          {
+            "id": "h-9",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-9",
+          "progress": 4,
+          "status": "egg",
+          "assignedDexId": 147,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "eggInventory": [],
+        "pets": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 0,
+          "bestHomeworkStreak": 0,
+          "attendanceStreak": 0,
+          "bestAttendanceStreak": 0,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": []
+      },
+      {
+        "id": "stu-10",
+        "name": "Ngọc 7B",
+        "gender": "Nữ",
+        "className": "7B",
+        "points": 10,
+        "history": [
+          {
+            "id": "h-10",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-10",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 133,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "pet": {
+          "instanceId": "pet-10-10",
+          "dexId": 133,
+          "baseDexId": 133,
+          "name": "Eevee",
+          "speciesName": "Eevee",
+          "types": [
+            "Normal"
+          ],
+          "hp": 90,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 100,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "adaptability",
+          "natureId": "loyal"
+        },
+        "pets": [
+          {
+            "instanceId": "pet-10-10",
+            "dexId": 133,
+            "baseDexId": 133,
+            "name": "Eevee",
+            "speciesName": "Eevee",
+            "types": [
+              "Normal"
+            ],
+            "hp": 90,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 100,
+            "charge": 0,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "adaptability",
+            "natureId": "loyal"
+          }
+        ],
+        "eggInventory": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 0,
+          "bestHomeworkStreak": 0,
+          "attendanceStreak": 0,
+          "bestAttendanceStreak": 0,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": []
+      },
+      {
+        "id": "stu-11",
+        "name": "Phúc 7B",
+        "gender": "Nam",
+        "className": "7B",
+        "points": 25,
+        "history": [
+          {
+            "id": "h-11",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-11",
+          "progress": 10,
+          "status": "hatched",
+          "assignedDexId": 39,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "pet": {
+          "instanceId": "pet-11-11",
+          "dexId": 39,
+          "baseDexId": 39,
+          "name": "Jigglypuff",
+          "speciesName": "Jigglypuff",
+          "types": [
+            "Normal",
+            "Fairy"
+          ],
+          "hp": 95,
+          "accessories": [],
+          "skills": [],
+          "skillUses": {},
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "bond": 100,
+          "charge": 0,
+          "isShiny": false,
+          "masteryXp": 0,
+          "masteryStars": 0,
+          "passiveId": "joyful_heart",
+          "natureId": "curious"
+        },
+        "pets": [
+          {
+            "instanceId": "pet-11-11",
+            "dexId": 39,
+            "baseDexId": 39,
+            "name": "Jigglypuff",
+            "speciesName": "Jigglypuff",
+            "types": [
+              "Normal",
+              "Fairy"
+            ],
+            "hp": 95,
+            "accessories": [],
+            "skills": [],
+            "skillUses": {},
+            "level": 1,
+            "xp": 0,
+            "totalXp": 0,
+            "bond": 100,
+            "charge": 0,
+            "isShiny": false,
+            "masteryXp": 0,
+            "masteryStars": 0,
+            "passiveId": "joyful_heart",
+            "natureId": "curious"
+          }
+        ],
+        "eggInventory": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 0,
+          "bestHomeworkStreak": 0,
+          "attendanceStreak": 0,
+          "bestAttendanceStreak": 0,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": []
+      },
+      {
+        "id": "stu-12",
+        "name": "Quỳnh 7B",
+        "gender": "Nữ",
+        "className": "7B",
+        "points": 40,
+        "history": [
+          {
+            "id": "h-12",
+            "amount": 5,
+            "reason": "Phát biểu xây dựng bài",
+            "timestamp": 1792913600000
+          }
+        ],
+        "isAbsent": false,
+        "attendanceStatus": "present",
+        "egg": {
+          "instanceId": "egg-12",
+          "progress": 4,
+          "status": "egg",
+          "assignedDexId": 147,
+          "kind": "normal",
+          "requiredProgress": 10,
+          "acquiredAt": 1793000000000,
+          "source": "shop"
+        },
+        "eggInventory": [],
+        "pets": [],
+        "pokemonProgress": {
+          "answerStreak": 0,
+          "bestAnswerStreak": 0,
+          "battleWinStreak": 0,
+          "bestBattleWinStreak": 0,
+          "homeworkStreak": 0,
+          "bestHomeworkStreak": 0,
+          "attendanceStreak": 0,
+          "bestAttendanceStreak": 0,
+          "positiveSoloCount": 0,
+          "battleWins": 0,
+          "hatchedEggs": 0,
+          "bossSuccessfulRounds": 0,
+          "bossTop5Finishes": 0
+        },
+        "trainerProgress": {
+          "level": 1,
+          "xp": 0,
+          "totalXp": 0,
+          "titleId": "rookie",
+          "unlockedTitleIds": [
+            "rookie"
+          ]
+        },
+        "earnedBadges": [],
+        "eggFragments": {},
+        "adventureJournal": []
+      }
+    ],
+    "ranks_male": [
+      {
+        "id": "m1",
+        "level": -1,
+        "title": "Nô tài",
+        "minPoints": -999,
+        "maxPoints": -1,
+        "color": "text-gray-500",
+        "avatar": ""
+      },
+      {
+        "id": "m2",
+        "level": 0,
+        "title": "Thường dân",
+        "minPoints": 0,
+        "maxPoints": 49,
+        "color": "text-green-600",
+        "avatar": ""
+      },
+      {
+        "id": "m3",
+        "level": 1,
+        "title": "Thị vệ",
+        "minPoints": 50,
+        "maxPoints": 99,
+        "color": "text-blue-600",
+        "avatar": ""
+      },
+      {
+        "id": "m4",
+        "level": 2,
+        "title": "Trainer Pro",
+        "minPoints": 100,
+        "maxPoints": 149,
+        "color": "text-cyan-700",
+        "avatar": ""
+      },
+      {
+        "id": "m5",
+        "level": 3,
+        "title": "Ace Trainer",
+        "minPoints": 150,
+        "maxPoints": 199,
+        "color": "text-indigo-700",
+        "avatar": ""
+      },
+      {
+        "id": "m6",
+        "level": 4,
+        "title": "Thân vương",
+        "minPoints": 200,
+        "maxPoints": 249,
+        "color": "text-orange-600",
+        "avatar": ""
+      },
+      {
+        "id": "m7",
+        "level": 5,
+        "title": "Champion Trainer",
+        "minPoints": 250,
+        "maxPoints": 99999,
+        "color": "text-red-600 font-bold",
+        "avatar": ""
+      }
+    ],
+    "ranks_female": [
+      {
+        "id": "f1",
+        "level": -1,
+        "title": "Nô tì",
+        "minPoints": -999,
+        "maxPoints": -1,
+        "color": "text-gray-500",
+        "avatar": ""
+      },
+      {
+        "id": "f2",
+        "level": 0,
+        "title": "Thường dân",
+        "minPoints": 0,
+        "maxPoints": 49,
+        "color": "text-green-600",
+        "avatar": ""
+      },
+      {
+        "id": "f3",
+        "level": 1,
+        "title": "Tú nữ",
+        "minPoints": 50,
+        "maxPoints": 99,
+        "color": "text-pink-600",
+        "avatar": ""
+      },
+      {
+        "id": "f4",
+        "level": 2,
+        "title": "Trainer Pro",
+        "minPoints": 100,
+        "maxPoints": 149,
+        "color": "text-red-500",
+        "avatar": ""
+      },
+      {
+        "id": "f5",
+        "level": 3,
+        "title": "Quý phi",
+        "minPoints": 150,
+        "maxPoints": 199,
+        "color": "text-rose-600",
+        "avatar": ""
+      },
+      {
+        "id": "f6",
+        "level": 4,
+        "title": "Elite Trainer",
+        "minPoints": 200,
+        "maxPoints": 249,
+        "color": "text-orange-600",
+        "avatar": ""
+      },
+      {
+        "id": "f7",
+        "level": 5,
+        "title": "Champion Trainer",
+        "minPoints": 250,
+        "maxPoints": 99999,
+        "color": "text-red-600 font-bold",
+        "avatar": ""
+      }
+    ],
+    "skills": [
+      {
+        "id": "p1",
+        "name": "Trả lời đúng",
+        "icon": "✅",
+        "points": 2,
+        "type": "positive"
+      },
+      {
+        "id": "p2",
+        "name": "+1",
+        "icon": "👍",
+        "points": 1,
+        "type": "positive"
+      },
+      {
+        "id": "p3",
+        "name": "+2",
+        "icon": "🔄",
+        "points": 2,
+        "type": "positive"
+      },
+      {
+        "id": "p4",
+        "name": "+3",
+        "icon": "🥳",
+        "points": 3,
+        "type": "positive"
+      },
+      {
+        "id": "p5",
+        "name": "+4",
+        "icon": "🖐️",
+        "points": 4,
+        "type": "positive"
+      },
+      {
+        "id": "p6",
+        "name": "+5",
+        "icon": "🎨",
+        "points": 5,
+        "type": "positive"
+      },
+      {
+        "id": "p7",
+        "name": "Học tốt",
+        "icon": "🏅",
+        "points": 5,
+        "type": "positive"
+      },
+      {
+        "id": "p8",
+        "name": "Giải thích được",
+        "icon": "🛡️",
+        "points": 3,
+        "type": "positive"
+      },
+      {
+        "id": "p9",
+        "name": "Tập trung vào bài",
+        "icon": "📖",
+        "points": 3,
+        "type": "positive"
+      },
+      {
+        "id": "p10",
+        "name": "Đi học đúng giờ",
+        "icon": "🔍",
+        "points": 3,
+        "type": "positive"
+      },
+      {
+        "id": "p11",
+        "name": "Quay video sớm nhất",
+        "icon": "💎",
+        "points": 5,
+        "type": "positive"
+      },
+      {
+        "id": "p12",
+        "name": "Trực nhật",
+        "icon": "⭐",
+        "points": 3,
+        "type": "positive"
+      },
+      {
+        "id": "p13",
+        "name": "Đội thắng",
+        "icon": "👑",
+        "points": 5,
+        "type": "positive"
+      },
+      {
+        "id": "p14",
+        "name": "Hoàn thành Quizlet",
+        "icon": "✈️",
+        "points": 5,
+        "type": "positive"
+      },
+      {
+        "id": "p15",
+        "name": "Hoàn thành BTVN",
+        "icon": "📔",
+        "points": 5,
+        "type": "positive"
+      },
+      {
+        "id": "p16",
+        "name": "Thuyết trình hay",
+        "icon": "🎓",
+        "points": 5,
+        "type": "positive"
+      },
+      {
+        "id": "n1",
+        "name": "Không trả lời được",
+        "icon": "❓",
+        "points": -2,
+        "type": "negative"
+      },
+      {
+        "id": "n2",
+        "name": "-1",
+        "icon": "🔔",
+        "points": -1,
+        "type": "negative"
+      },
+      {
+        "id": "n3",
+        "name": "-2",
+        "icon": "🔔",
+        "points": -2,
+        "type": "negative"
+      },
+      {
+        "id": "n4",
+        "name": "-3",
+        "icon": "🔔",
+        "points": -3,
+        "type": "negative"
+      },
+      {
+        "id": "n5",
+        "name": "-4",
+        "icon": "🔔",
+        "points": -4,
+        "type": "negative"
+      },
+      {
+        "id": "n6",
+        "name": "-5",
+        "icon": "🔔",
+        "points": -5,
+        "type": "negative"
+      },
+      {
+        "id": "n7",
+        "name": "Không giải thích được",
+        "icon": "🧪",
+        "points": -3,
+        "type": "negative"
+      },
+      {
+        "id": "n8",
+        "name": "Không tập trung",
+        "icon": "🌲",
+        "points": -3,
+        "type": "negative"
+      },
+      {
+        "id": "n9",
+        "name": "Nói chuyện",
+        "icon": "🗣️",
+        "points": -3,
+        "type": "negative"
+      },
+      {
+        "id": "n10",
+        "name": "Không quay video",
+        "icon": "🎤",
+        "points": -5,
+        "type": "negative"
+      },
+      {
+        "id": "n11",
+        "name": "Chưa làm Quizlet",
+        "icon": "✈️",
+        "points": -5,
+        "type": "negative"
+      },
+      {
+        "id": "n12",
+        "name": "Làm việc riêng",
+        "icon": "🪐",
+        "points": -3,
+        "type": "negative"
+      },
+      {
+        "id": "n13",
+        "name": "Chuẩn bị bài chưa tốt",
+        "icon": "♻️",
+        "points": -3,
+        "type": "negative"
+      },
+      {
+        "id": "n14",
+        "name": "Cãi nhau",
+        "icon": "🎒",
+        "points": -5,
+        "type": "negative"
+      },
+      {
+        "id": "n15",
+        "name": "Không tham gia games",
+        "icon": "🐲",
+        "points": -5,
+        "type": "negative"
+      },
+      {
+        "id": "n16",
+        "name": "Nghịch đồ dạy học",
+        "icon": "👎",
+        "points": -5,
+        "type": "negative"
+      },
+      {
+        "id": "n17",
+        "name": "Ngồi không đẹp",
+        "icon": "🍦",
+        "points": -4,
+        "type": "negative"
+      },
+      {
+        "id": "n18",
+        "name": "Nói bậy",
+        "icon": "🗑️",
+        "points": -5,
+        "type": "negative"
+      },
+      {
+        "id": "n19",
+        "name": "Đi học muộn",
+        "icon": "💬",
+        "points": -3,
+        "type": "negative"
+      },
+      {
+        "id": "n20",
+        "name": "Không mang sách vở",
+        "icon": "✈️",
+        "points": -4,
+        "type": "negative"
+      }
+    ],
+    "pet_skills": [
+      {
+        "id": "sk_evade",
+        "name": "Skill Né Trực Diện",
+        "icon": "💨",
+        "cost": 25,
+        "description": "Khi giáo viên gọi trả lời câu hỏi khó, có quyền trao lại quyền trả lời cho bạn khác."
+      },
+      {
+        "id": "sk_guard",
+        "name": "Lá Chắn Hộ Vệ",
+        "icon": "🛡️",
+        "cost": 20,
+        "description": "Giảm 50% số điểm bị phạt của lần đầu sai sót trong ngày."
+      },
+      {
+        "id": "sk_double",
+        "name": "Pháp Bảo Nhân Đôi",
+        "icon": "🎰",
+        "cost": 30,
+        "description": "Cơ hội nhân đôi (+100%) số điểm nhận được từ một câu trả lời xuất sắc."
+      },
+      {
+        "id": "sk_rescue",
+        "name": "Hộ Tống Đồng Đội",
+        "icon": "🤝",
+        "cost": 20,
+        "description": "Được tặng tối đa 3 điểm của mình để cứu viện một bạn khác bị phạt."
+      },
+      {
+        "id": "sk_swap",
+        "name": "Đổi Đề Thần Tốc",
+        "icon": "🔄",
+        "cost": 22,
+        "description": "Yêu cầu Thầy/Cô đổi câu hỏi khác dễ hơn nếu câu hiện tại quá khó."
+      },
+      {
+        "id": "sk_decree",
+        "name": "Ý Chỉ Đồng Hành",
+        "icon": "📜",
+        "cost": 26,
+        "description": "Được phép chỉ định một học sĩ bất kỳ thảo luận nhóm hỗ trợ trả lời câu hỏi."
+      },
+      {
+        "id": "sk_survival",
+        "name": "Kim Bài Miễn Tử",
+        "icon": "🎫",
+        "cost": 40,
+        "description": "Bỏ qua một lần bị trừ điểm (muộn học, quên bài tập, nghịch đồ, vv.)"
+      },
+      {
+        "id": "sk_clairvoyance",
+        "name": "Mắt Thần Trí Tuệ",
+        "icon": "👁️",
+        "cost": 24,
+        "description": "Được nhận một gợi ý trực tiếp từ Thầy/Cô trước khi chốt đáp án."
+      },
+      {
+        "id": "sk_companion",
+        "name": "Trợ Thủ Tra Cứu",
+        "icon": "📖",
+        "cost": 16,
+        "description": "Được đặc cách mở vở xem tài liệu hoặc tra cứu trong vòng 30 giây."
+      },
+      {
+        "id": "sk_rapid",
+        "name": "Cướp Quyền Tranh Đoạt",
+        "icon": "⚡",
+        "cost": 20,
+        "description": "Được ưu tiên tuyệt đối giành quyền phát biểu đầu tiên khi giơ tay."
+      },
+      {
+        "id": "sk_soul_link",
+        "name": "Đồng Tâm Hiệp Lực",
+        "icon": "🔗",
+        "cost": 30,
+        "description": "Khi bạn cùng bàn của bạn trả lời đúng, bạn cũng được cộng ké 1 điểm ấm lòng."
+      },
+      {
+        "id": "sk_lucky",
+        "name": "Vòng Quay Tự Tin",
+        "icon": "🎡",
+        "cost": 24,
+        "description": "Nhận ngay +2 điểm nếu bạn được gọi trúng qua nút Random."
+      },
+      {
+        "id": "sk_cloak",
+        "name": "Tàng Hình Chi Thuật",
+        "icon": "🌫️",
+        "cost": 28,
+        "description": "Bật ẩn thân để không bị gọi tên trả lời câu hỏi hoặc giao nhiệm vụ trong 1 tiết học."
+      },
+      {
+        "id": "sk_furious",
+        "name": "Khiên Chắn Phản Đòn",
+        "icon": "💥",
+        "cost": 18,
+        "description": "Phá giải hoàn toàn trò đùa giỡn, cướp điểm từ bạn bè khác."
+      },
+      {
+        "id": "sk_dual",
+        "name": "Song Kiếm Hợp Bích",
+        "icon": "⚔️",
+        "cost": 25,
+        "description": "Đồng trả lời câu hỏi khó cùng 1 bạn khác, cả 2 đều được hưởng trọn số điểm cộng."
+      },
+      {
+        "id": "sk_recovery",
+        "name": "Sám Hối Thu Hồi",
+        "icon": "⚖️",
+        "cost": 25,
+        "description": "Xin phục hồi 50% số điểm vừa bị trừ bằng cách hứa tiếp thu tích cực."
+      },
+      {
+        "id": "sk_blessing",
+        "name": "Phúc Lành Trấn An",
+        "icon": "✨",
+        "cost": 20,
+        "description": "Khiến cả lớp nhận hiệu ứng cộng thêm 1 điểm khi ai đó trả lời đúng."
+      },
+      {
+        "id": "sk_inspire",
+        "name": "Truyền Cảm Hứng",
+        "icon": "🗣️",
+        "cost": 18,
+        "description": "Học sĩ dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi."
+      },
+      {
+        "id": "sk_healing",
+        "name": "Bạch Ngọc Chữa Lành",
+        "icon": "💚",
+        "cost": 22,
+        "description": "Rút lại 1 kết quả trừ điểm gần nhất trong ngày hôm nay của chính mình."
+      },
+      {
+        "id": "sk_scholar",
+        "name": "Ủy Thác Trạng Nguyên",
+        "icon": "🎖️",
+        "cost": 35,
+        "description": "Nhờ vả Trạng Nguyên bảng xếp hạng gánh tạ câu hỏi và chia đôi cát-xê điểm."
+      },
+      {
+        "id": "sk_time_warp",
+        "name": "Bẻ Cong Thời Gian",
+        "icon": "⏳",
+        "cost": 20,
+        "description": "Yêu cầu cộng thêm 10 giây thời gian suy nghĩ bài kiểm tra hoặc trả lời câu hỏi."
+      },
+      {
+        "id": "sk_emperor",
+        "name": "Sức Mạnh Thiên Tử",
+        "icon": "👑",
+        "cost": 50,
+        "description": "Lần thăng cấp tiếp theo của bạn sẽ cộng thêm 5 điểm Hào Quang bonus."
+      }
+    ],
+    "pos_sound_url": "https://actions.google.com/sounds/v1/foley/ting.ogg",
+    "neg_sound_url": "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
+    "timer_sound_url": "https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg",
+    "wheel_spin_sound_url": "https://actions.google.com/sounds/v1/transportation/airport_departure_chime.ogg",
+    "wheel_finish_sound_url": "https://actions.google.com/sounds/v1/cartoon/concussive_hit_guitar_boing.ogg",
+    "custom_ludo_tiles": {},
+    "lucky_wheel_rewards": [
+      {
+        "id": "points_plus_1",
+        "label": "Cộng 1 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 1,
+        "color": "#16a34a"
+      },
+      {
+        "id": "points_plus_2",
+        "label": "Cộng 2 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 2,
+        "color": "#22c55e"
+      },
+      {
+        "id": "points_plus_3",
+        "label": "Cộng 3 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 3,
+        "color": "#16a34a"
+      },
+      {
+        "id": "points_plus_4",
+        "label": "Cộng 4 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 4,
+        "color": "#22c55e"
+      },
+      {
+        "id": "points_plus_5",
+        "label": "Cộng 5 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 5,
+        "color": "#16a34a"
+      },
+      {
+        "id": "points_plus_6",
+        "label": "Cộng 6 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 6,
+        "color": "#22c55e"
+      },
+      {
+        "id": "points_plus_7",
+        "label": "Cộng 7 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 7,
+        "color": "#16a34a"
+      },
+      {
+        "id": "points_plus_8",
+        "label": "Cộng 8 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 8,
+        "color": "#22c55e"
+      },
+      {
+        "id": "points_plus_9",
+        "label": "Cộng 9 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 9,
+        "color": "#16a34a"
+      },
+      {
+        "id": "points_plus_10",
+        "label": "Cộng 10 điểm",
+        "icon": "✨",
+        "type": "points",
+        "amount": 10,
+        "color": "#22c55e"
+      },
+      {
+        "id": "points_minus_1",
+        "label": "Trừ 1 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -1,
+        "color": "#dc2626"
+      },
+      {
+        "id": "points_minus_2",
+        "label": "Trừ 2 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -2,
+        "color": "#f97316"
+      },
+      {
+        "id": "points_minus_3",
+        "label": "Trừ 3 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -3,
+        "color": "#dc2626"
+      },
+      {
+        "id": "points_minus_4",
+        "label": "Trừ 4 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -4,
+        "color": "#f97316"
+      },
+      {
+        "id": "points_minus_5",
+        "label": "Trừ 5 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -5,
+        "color": "#dc2626"
+      },
+      {
+        "id": "points_minus_6",
+        "label": "Trừ 6 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -6,
+        "color": "#f97316"
+      },
+      {
+        "id": "points_minus_7",
+        "label": "Trừ 7 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -7,
+        "color": "#dc2626"
+      },
+      {
+        "id": "points_minus_8",
+        "label": "Trừ 8 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -8,
+        "color": "#f97316"
+      },
+      {
+        "id": "points_minus_9",
+        "label": "Trừ 9 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -9,
+        "color": "#dc2626"
+      },
+      {
+        "id": "points_minus_10",
+        "label": "Trừ 10 điểm",
+        "icon": "⚡",
+        "type": "points",
+        "amount": -10,
+        "color": "#f97316"
+      },
+      {
+        "id": "pokemon_gift_1",
+        "label": "Tặng Pokemon",
+        "icon": "🎁",
+        "type": "pokemon",
+        "color": "#f59e0b"
+      },
+      {
+        "id": "pokemon_gift_2",
+        "label": "Tặng Pokemon hiếm",
+        "icon": "🥚",
+        "type": "pokemon",
+        "color": "#d97706"
+      },
+      {
+        "id": "pokemon_gift_3",
+        "label": "Tặng Pokemon mới",
+        "icon": "🌟",
+        "type": "pokemon",
+        "color": "#fbbf24"
+      },
+      {
+        "id": "skill_gift_1",
+        "label": "Tặng skill Pokemon",
+        "icon": "📜",
+        "type": "skill",
+        "color": "#7c3aed"
+      },
+      {
+        "id": "skill_gift_2",
+        "label": "Tặng bí kíp Pet",
+        "icon": "🔮",
+        "type": "skill",
+        "color": "#9333ea"
+      },
+      {
+        "id": "skill_gift_3",
+        "label": "Tặng tuyệt chiêu",
+        "icon": "💫",
+        "type": "skill",
+        "color": "#a855f7"
+      },
+      {
+        "id": "hp_plus_5",
+        "label": "Cộng 5 HP",
+        "icon": "❤️",
+        "type": "hp",
+        "amount": 5,
+        "color": "#059669"
+      },
+      {
+        "id": "hp_plus_10",
+        "label": "Cộng 10 HP",
+        "icon": "💚",
+        "type": "hp",
+        "amount": 10,
+        "color": "#10b981"
+      },
+      {
+        "id": "hp_plus_15",
+        "label": "Cộng 15 HP",
+        "icon": "💖",
+        "type": "hp",
+        "amount": 15,
+        "color": "#34d399"
+      },
+      {
+        "id": "hp_plus_20",
+        "label": "Cộng 20 HP",
+        "icon": "💎",
+        "type": "hp",
+        "amount": 20,
+        "color": "#2dd4bf"
+      },
+      {
+        "id": "hp_minus_5",
+        "label": "Trừ 5 HP",
+        "icon": "💔",
+        "type": "hp",
+        "amount": -5,
+        "color": "#be123c"
+      },
+      {
+        "id": "hp_minus_10",
+        "label": "Trừ 10 HP",
+        "icon": "🩹",
+        "type": "hp",
+        "amount": -10,
+        "color": "#e11d48"
+      },
+      {
+        "id": "hp_minus_15",
+        "label": "Trừ 15 HP",
+        "icon": "🔥",
+        "type": "hp",
+        "amount": -15,
+        "color": "#ea580c"
+      },
+      {
+        "id": "hp_minus_20",
+        "label": "Trừ 20 HP",
+        "icon": "🌩️",
+        "type": "hp",
+        "amount": -20,
+        "color": "#b91c1c"
+      },
+      {
+        "id": "ludo_rolls_1",
+        "label": "Lắc Cá Ngựa 1 lần",
+        "icon": "🎲",
+        "type": "ludo_rolls",
+        "amount": 1,
+        "color": "#2563eb"
+      },
+      {
+        "id": "ludo_rolls_2",
+        "label": "Lắc Cá Ngựa 2 lần",
+        "icon": "🎲",
+        "type": "ludo_rolls",
+        "amount": 2,
+        "color": "#0ea5e9"
+      },
+      {
+        "id": "ludo_rolls_3",
+        "label": "Lắc Cá Ngựa 3 lần",
+        "icon": "🎲",
+        "type": "ludo_rolls",
+        "amount": 3,
+        "color": "#0891b2"
+      },
+      {
+        "id": "ludo_rolls_4",
+        "label": "Lắc Cá Ngựa 4 lần",
+        "icon": "🎲",
+        "type": "ludo_rolls",
+        "amount": 4,
+        "color": "#7c3aed"
+      },
+      {
+        "id": "ludo_rolls_5",
+        "label": "Lắc Cá Ngựa 5 lần",
+        "icon": "🎲",
+        "type": "ludo_rolls",
+        "amount": 5,
+        "color": "#c026d3"
+      }
+    ],
+    "boss_states_by_class": {
+      "6A": {
+        "className": "6A",
+        "boss": {
+          "instanceId": "00000000-0000-4000-8000-000000000004",
+          "definitionId": "shadow-dragon",
+          "name": "Shadow Dragon",
+          "icon": "🐲",
+          "maxHp": 500,
+          "currentHp": 500,
+          "failDamage": 10,
+          "damagePerSuccessfulStudent": 5,
+          "tier": "standard",
+          "spawnedAt": 1792980000000
+        },
+        "randomsSinceLastEncounter": 2,
+        "nextEncounterAt": 8,
+        "encounterReady": false,
+        "contributionByStudentId": {},
+        "participantQueue": [],
+        "previousPartyIds": [],
+        "defeatedBosses": 0,
+        "resolvedRoundIds": [],
+        "updatedAt": 1792980000000
+      }
+    },
+    "boss_encounter_frequency": "occasional",
+    "updated_at_ms": 1792980000000,
+    "updated_at": "2026-10-26T02:00:00.000Z"
+  },
+  "dialogs": []
+}
