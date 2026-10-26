@@ -1,9 +1,6 @@
-import { GameEventSource, PokemonUiEvent, applyGameEventToStudent, applyPetHpDeltaToStudent } from '../../domain/gameEvents';
-import { HatchAnnouncementItem } from '../../types/app';
-import { HistoryItem, PokemonReleaseEvent } from '../../types';
+import { GameEventSource, PokemonUiEvent } from '../../domain/gameEvents';
 import { generateEdict } from '../../lib/geminiService';
-import { normalizeStudentPokemonData } from '../../domain/pokemonProgression';
-import { addWeeklyChestProgress, advanceEggForStudent, applyTrainerJourneyProgress } from '../../domain/progression';
+import { applyPointsToStudents } from '../../domain/points';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
 
@@ -28,76 +25,16 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
     const sound = new Audio(amount >= 0 ? posSoundUrl : negSoundUrl);
     sound.play().catch(() => {});
 
-    let hatchItems: HatchAnnouncementItem[] = [];
-    let evolvedMessages: string[] = [];
-    let progressionEvents: PokemonUiEvent[] = [];
-    let releaseEventToShow: PokemonReleaseEvent | null = null;
-
-    const updatedStudents = students.map(s => {
-      if (ids.includes(s.id)) {
-        const oldRank = getRank(s.points, s.gender);
-        const newPoints = s.points + amount;
-        const newRank = getRank(newPoints, s.gender);
-        const history: HistoryItem = { id: Date.now().toString() + Math.random(), amount, reason, timestamp: Date.now() };
-
-        if (ids.length === 1 && oldRank.id !== newRank.id) {
-          generateEdict(s.name, newRank.title, newPoints > s.points).then(setEdict);
-        }
-
-        let currentStudent = normalizeStudentPokemonData(s);
-        const eggProgressAmount = source === 'solo' ? (amount > 0 ? amount : 0) : amount;
-        const eggResult = advanceEggForStudent(currentStudent, eggProgressAmount);
-        currentStudent = eggResult.student;
-        if (eggResult.hatchedPet) {
-          hatchItems.push({ studentId: s.id, studentName: s.name, pet: eggResult.hatchedPet });
-        }
-
-        if (currentStudent.pet && amount !== 0) {
-          const hpUpdate = applyPetHpDeltaToStudent(currentStudent, amount, `${reason}: ${amount >= 0 ? 'hồi' : 'mất'} ${Math.abs(amount)} HP`);
-          currentStudent = hpUpdate.student;
-          if (hpUpdate.releaseEvent && !releaseEventToShow) {
-            releaseEventToShow = hpUpdate.releaseEvent;
-          }
-        }
-
-        if (source === 'solo') {
-          const progressionResult = applyGameEventToStudent(
-            { ...currentStudent, points: newPoints },
-            {
-              type: 'SOLO_RESULT',
-              source,
-              studentId: s.id,
-              auraDelta: amount,
-              timestamp: Date.now()
-            }
-          );
-          currentStudent = progressionResult.student;
-          progressionEvents = [...progressionEvents, ...progressionResult.uiEvents];
-          progressionResult.uiEvents
-            .filter(event => event.type === 'evolution')
-            .forEach(event => evolvedMessages.push(`Pokémon của ${s.name}: ${event.message}!`));
-          const trainerXpGain = (amount > 0 ? 5 : 0)
-            + (progressionResult.uiEvents.some(event => event.type === 'evolution') ? 15 : 0);
-          currentStudent = applyTrainerJourneyProgress(
-            currentStudent,
-            trainerXpGain,
-            Date.now(),
-            progressionEvents,
-            amount > 0 ? 'Positive Solo' : undefined
-          );
-          if (amount > 0) {
-            currentStudent = addWeeklyChestProgress(currentStudent, 3);
-          }
-        }
-
-        return {
-          ...currentStudent,
-          points: newPoints,
-          history: [history, ...currentStudent.history].slice(0, 50),
-          egg: eggResult.egg
-        };
-      }
-      return s;
+    const {
+      students: updatedStudents,
+      hatchItems,
+      evolvedMessages,
+      progressionEvents,
+      releaseEvent: releaseEventToShow,
+      rankChanges
+    } = applyPointsToStudents(students, { ids, amount, reason, source, getRank });
+    rankChanges.forEach(change => {
+      generateEdict(change.studentName, change.newTitle, change.promoted).then(setEdict);
     });
 
     setStudents(updatedStudents);

@@ -56,3 +56,13 @@ export interface ShopReviewItem {
   totalCost: number;
   canAfford: boolean;
 }
+
+export interface LudoEventPopupData {
+  title: string;
+  message: string;
+  actor: Student;
+  target?: Student;
+  icon: string;
+  type: 'kick' | 'special' | 'finish' | 'monster' | 'curse' | 'portal';
+  tileIndex?: number;
+}

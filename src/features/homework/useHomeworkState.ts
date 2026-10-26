@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HomeworkStatus } from '../../components/HomeworkCheckModal';
+import { HomeworkStatus } from '../../types';
 
 // State hộp thoại kiểm tra bài tập.
 export const useHomeworkState = () => {

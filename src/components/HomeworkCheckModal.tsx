@@ -1,8 +1,8 @@
 import React from 'react';
-import { Gender, RankInfo, Student } from '../types';
+import { Gender, HomeworkStatus, RankInfo, Student } from '../types';
 import { StudentAvatar } from './StudentAvatar';
 
-export type HomeworkStatus = 'done' | 'not-yet' | 'missing';
+export type { HomeworkStatus };
 
 interface HomeworkCheckModalProps {
   students: Student[];

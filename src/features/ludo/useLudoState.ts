@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Student } from '../../types';
-import { BattleLudoTurn, LudoReturnHint } from '../../types/app';
+import { BattleLudoTurn, LudoEventPopupData, LudoReturnHint } from '../../types/app';
 
 // State Cá Ngựa.
 export const useLudoState = () => {
@@ -17,15 +17,7 @@ export const useLudoState = () => {
   const [ludoLogs, setLudoLogs] = useState<string[]>([]);
   const [ludoBonusRolls, setLudoBonusRolls] = useState<Record<string, number>>({});
   const [battleLudoQueue, setBattleLudoQueue] = useState<BattleLudoTurn[]>([]);
-  const [ludoEventPopup, setLudoEventPopup] = useState<{
-    title: string;
-    message: string;
-    actor: Student;
-    target?: Student;
-    icon: string;
-    type: 'kick' | 'special' | 'finish' | 'monster' | 'curse' | 'portal';
-    tileIndex?: number;
-  } | null>(null);
+  const [ludoEventPopup, setLudoEventPopup] = useState<LudoEventPopupData | null>(null);
   const [ludoReturnHint, setLudoReturnHint] = useState<LudoReturnHint>(null);
 
   return {

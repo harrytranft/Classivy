@@ -156,6 +156,8 @@ export interface StudentPokemonProgress {
 
 export type AttendanceStatus = 'present' | 'late' | 'absent';
 
+export type HomeworkStatus = 'done' | 'not-yet' | 'missing';
+
 export interface Student {
   id: string;
   name: string;
