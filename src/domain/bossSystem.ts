@@ -65,8 +65,7 @@ export const rollNextBossEncounterGap = (
   return option.minGap + Math.floor(Math.random() * (option.maxGap - option.minGap + 1));
 };
 
-export const createBossInstance = (definition: BossDefinition = BOSS_PRESETS[0], timestamp = Date.now()): BossInstance => ({
-  instanceId: createId('boss'),
+const bossInstanceFields = (definition: BossDefinition, timestamp: number): Omit<BossInstance, 'instanceId'> => ({
   definitionId: definition.id,
   name: definition.name,
   icon: definition.icon,
@@ -76,6 +75,11 @@ export const createBossInstance = (definition: BossDefinition = BOSS_PRESETS[0],
   damagePerSuccessfulStudent: definition.damagePerSuccessfulStudent,
   tier: definition.tier,
   spawnedAt: timestamp
+});
+
+export const createBossInstance = (definition: BossDefinition = BOSS_PRESETS[0], timestamp = Date.now()): BossInstance => ({
+  instanceId: createId('boss'),
+  ...bossInstanceFields(definition, timestamp)
 });
 
 export const createClassBossState = (
@@ -107,7 +111,10 @@ export const normalizeClassBossState = (
     ...state,
     className: state.className || className,
     boss: {
-      ...createBossInstance(definition, state.boss?.spawnedAt || Date.now()),
+      // Only mint a new id when the saved boss has none (normalize runs on every render).
+      ...(state.boss?.instanceId
+        ? { instanceId: state.boss.instanceId, ...bossInstanceFields(definition, state.boss.spawnedAt || Date.now()) }
+        : createBossInstance(definition, state.boss?.spawnedAt || Date.now())),
       ...(state.boss || {}),
       icon: state.boss?.icon || definition.icon,
       tier: state.boss?.tier || definition.tier,

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Gender, Student } from '../types';
 import {
   BOSS_PARTY_SIZE,
@@ -7,6 +7,7 @@ import {
   incrementBossEncounterCounter,
   isBossEncounterFrequency,
   isBossEncounterReady,
+  normalizeClassBossState,
   recalibrateBossEncounterFrequency,
   resolveBossFailure,
   resolveBossSuccess,
@@ -157,5 +158,25 @@ describe('isBossEncounterFrequency', () => {
     expect(isBossEncounterFrequency('never')).toBe(false);
     expect(isBossEncounterFrequency(null)).toBe(false);
     expect(isBossEncounterFrequency(undefined)).toBe(false);
+  });
+});
+
+describe('normalizeClassBossState', () => {
+  it('keeps the saved boss and does not mint a new id for it', () => {
+    const state = createClassBossState('6A', 1000, 'occasional');
+    const uuid = vi.spyOn(globalThis.crypto, 'randomUUID');
+    const normalized = normalizeClassBossState(state, '6A', 'occasional');
+    expect(uuid).not.toHaveBeenCalled();
+    expect(normalized).toEqual(state);
+    expect(Object.keys(normalized.boss)).toEqual(Object.keys(state.boss));
+    uuid.mockRestore();
+  });
+
+  it('creates a boss id when the saved boss has none', () => {
+    const state = createClassBossState('6A', 1000, 'occasional');
+    const { instanceId: _removed, ...bossWithoutId } = state.boss;
+    const normalized = normalizeClassBossState({ ...state, boss: bossWithoutId as typeof state.boss }, '6A', 'occasional');
+    expect(normalized.boss.instanceId).toBeTruthy();
+    expect(normalized.boss.name).toBe(state.boss.name);
   });
 });

@@ -1,7 +1,7 @@
 {
   "upsertCount": 3,
   "latest": {
-    "user_id": "00000000-0000-4000-8000-000000000001",
+    "user_id": "<uuid>",
     "students": [
       {
         "id": "stu-01",
@@ -162,7 +162,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000008",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-1-1",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -300,7 +300,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000009",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-2-2",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -493,7 +493,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000010",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-4-4",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -721,7 +721,7 @@
             "timestamp": 1792980000000
           },
           {
-            "id": "17929800000000.1409106149803847",
+            "id": "17929800000000.6398397455923259",
             "amount": 2,
             "reason": "Trả lời đúng",
             "timestamp": 1792980000000
@@ -832,7 +832,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000011",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-7-7",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -2128,7 +2128,7 @@
       "6A": {
         "className": "6A",
         "boss": {
-          "instanceId": "00000000-0000-4000-8000-000000000004",
+          "instanceId": "<uuid>",
           "definitionId": "shadow-dragon",
           "name": "Shadow Dragon",
           "icon": "🐲",
@@ -2140,7 +2140,7 @@
           "spawnedAt": 1792980000000
         },
         "randomsSinceLastEncounter": 0,
-        "nextEncounterAt": 8,
+        "nextEncounterAt": 9,
         "encounterReady": false,
         "contributionByStudentId": {},
         "participantQueue": [],

@@ -1,7 +1,7 @@
 {
   "upsertCount": 10,
   "latest": {
-    "user_id": "00000000-0000-4000-8000-000000000001",
+    "user_id": "<uuid>",
     "students": [
       {
         "id": "stu-01",
@@ -44,7 +44,7 @@
         "isAbsent": false,
         "attendanceStatus": "present",
         "egg": {
-          "instanceId": "00000000-0000-4000-8000-000000000008",
+          "instanceId": "<uuid>",
           "progress": 15,
           "status": "hatched",
           "assignedDexId": 151,
@@ -54,7 +54,7 @@
           "source": "reward"
         },
         "pet": {
-          "instanceId": "00000000-0000-4000-8000-000000000009",
+          "instanceId": "<uuid>",
           "dexId": 151,
           "baseDexId": 151,
           "name": "Mew",
@@ -79,7 +79,7 @@
         },
         "pets": [
           {
-            "instanceId": "00000000-0000-4000-8000-000000000009",
+            "instanceId": "<uuid>",
             "dexId": 151,
             "baseDexId": 151,
             "name": "Mew",
@@ -203,14 +203,14 @@
             "timestamp": 1792980000000,
             "type": "pokemon-hatched",
             "text": "Mew hatched as a gift for An 6A.",
-            "petInstanceId": "00000000-0000-4000-8000-000000000009"
+            "petInstanceId": "<uuid>"
           },
           {
             "id": "17929800000000.6398397455923259",
             "timestamp": 1792980000000,
             "type": "pokemon-hatched",
             "text": "Mew hatched for An 6A.",
-            "petInstanceId": "00000000-0000-4000-8000-000000000009"
+            "petInstanceId": "<uuid>"
           }
         ],
         "weeklyChest": {
@@ -219,7 +219,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000008",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-1-1",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -364,7 +364,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000009",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-2-2",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -413,7 +413,7 @@
         "eggInventory": [],
         "pets": [
           {
-            "instanceId": "00000000-0000-4000-8000-000000000008",
+            "instanceId": "<uuid>",
             "dexId": 147,
             "baseDexId": 147,
             "name": "Dratini",
@@ -471,7 +471,7 @@
             "timestamp": 1792980000000,
             "type": "pokemon-hatched",
             "text": "Dratini hatched for Chi 6A.",
-            "petInstanceId": "00000000-0000-4000-8000-000000000008"
+            "petInstanceId": "<uuid>"
           }
         ],
         "weeklyChest": {
@@ -480,7 +480,7 @@
           "claimed": false
         },
         "pet": {
-          "instanceId": "00000000-0000-4000-8000-000000000008",
+          "instanceId": "<uuid>",
           "dexId": 147,
           "baseDexId": 147,
           "name": "Dratini",
@@ -512,7 +512,7 @@
         "points": 78,
         "history": [
           {
-            "id": "17929800000000.4630747972987592",
+            "id": "17929800000000.5960116982460022",
             "amount": 0,
             "reason": "🎡 Vòng quay may mắn: Pokémon của Dũng 6A bị trừ 10 HP!",
             "timestamp": 1792980000000
@@ -652,7 +652,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000010",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-4-4",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -842,7 +842,7 @@
         "eggInventory": [],
         "pets": [
           {
-            "instanceId": "00000000-0000-4000-8000-000000000009",
+            "instanceId": "<uuid>",
             "dexId": 147,
             "baseDexId": 147,
             "name": "Dratini",
@@ -900,7 +900,7 @@
             "timestamp": 1792980000000,
             "type": "pokemon-hatched",
             "text": "Dratini hatched for Hà 6A.",
-            "petInstanceId": "00000000-0000-4000-8000-000000000009"
+            "petInstanceId": "<uuid>"
           }
         ],
         "weeklyChest": {
@@ -909,7 +909,7 @@
           "claimed": false
         },
         "pet": {
-          "instanceId": "00000000-0000-4000-8000-000000000009",
+          "instanceId": "<uuid>",
           "dexId": 147,
           "baseDexId": 147,
           "name": "Dratini",
@@ -965,7 +965,7 @@
             "timestamp": 1792980000000
           },
           {
-            "id": "17929800000000.1409106149803847",
+            "id": "17929800000000.6398397455923259",
             "amount": 2,
             "reason": "Trả lời đúng",
             "timestamp": 1792980000000
@@ -980,7 +980,7 @@
         "isAbsent": false,
         "attendanceStatus": "present",
         "egg": {
-          "instanceId": "00000000-0000-4000-8000-000000000012",
+          "instanceId": "<uuid>",
           "progress": 0,
           "status": "egg",
           "assignedDexId": 429,
@@ -1052,7 +1052,7 @@
           "claimed": false
         },
         "expedition": {
-          "expeditionId": "00000000-0000-4000-8000-000000000011",
+          "expeditionId": "<uuid>",
           "petInstanceId": "pet-7-7",
           "startedAt": 1792980000000,
           "resolvesAt": 1793008800000,
@@ -2348,7 +2348,7 @@
       "6A": {
         "className": "6A",
         "boss": {
-          "instanceId": "00000000-0000-4000-8000-000000000004",
+          "instanceId": "<uuid>",
           "definitionId": "shadow-dragon",
           "name": "Shadow Dragon",
           "icon": "🐲",
@@ -2360,7 +2360,7 @@
           "spawnedAt": 1792980000000
         },
         "randomsSinceLastEncounter": 2,
-        "nextEncounterAt": 8,
+        "nextEncounterAt": 9,
         "encounterReady": false,
         "contributionByStudentId": {},
         "participantQueue": [],

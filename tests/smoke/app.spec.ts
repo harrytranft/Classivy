@@ -150,6 +150,9 @@ async function waitForApp(page: Page, loggedIn: boolean) {
 
 const normalizeHtml = (html: string) => html
   .replace(/ style="[^"]*"/g, '')
+  // Dimming of other cards while one is hovered depends on pointer timing, not on app logic.
+  .replace(/ opacity-35 brightness-75 saturate-50 scale-\[0\.98\]/g, '')
+  .replace(/ +"/g, '"')
   .replace(/>\s+</g, '><')
   .replace(/\s{2,}/g, ' ')
   .replace(/></g, '>\n<');
@@ -163,6 +166,8 @@ async function waitForSyncIdle(page: Page) {
 }
 
 async function snap(page: Page, name: string, state: SmokeState) {
+  // Park the mouse away from student cards so hover effects do not leak into snapshots.
+  await page.mouse.move(700, 2);
   await page.waitForTimeout(700);
   await waitForSyncIdle(page);
   const html = await page.locator('#root').evaluate(node => node.innerHTML);
@@ -175,7 +180,9 @@ async function snapCloud(page: Page, name: string, state: SmokeState) {
   await page.waitForTimeout(2200);
   const latest = state.upserts[state.upserts.length - 1] ?? null;
   const payload = { upsertCount: state.upserts.length, latest, dialogs: state.dialogs };
-  expect(JSON.stringify(payload, null, 2), `cloud ${name}`).toMatchSnapshot(`${name}.cloud.json`);
+  // Random UUIDs depend on effect timing (React StrictMode); their values are not behaviour.
+  const json = JSON.stringify(payload, null, 2).replace(/00000000-0000-4000-8000-\d{12}/g, '<uuid>');
+  expect(json, `cloud ${name}`).toMatchSnapshot(`${name}.cloud.json`);
 }
 
 const navButton = (page: Page, title: string) => page.locator(`nav button[title="${title}"]`);

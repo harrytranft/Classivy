@@ -1,7 +1,7 @@
 {
   "upsertCount": 2,
   "latest": {
-    "user_id": "00000000-0000-4000-8000-000000000001",
+    "user_id": "<uuid>",
     "students": [
       {
         "id": "stu-01",
@@ -1998,7 +1998,7 @@
       "6A": {
         "className": "6A",
         "boss": {
-          "instanceId": "00000000-0000-4000-8000-000000000004",
+          "instanceId": "<uuid>",
           "definitionId": "shadow-dragon",
           "name": "Shadow Dragon",
           "icon": "🐲",
@@ -2010,7 +2010,7 @@
           "spawnedAt": 1792980000000
         },
         "randomsSinceLastEncounter": 0,
-        "nextEncounterAt": 8,
+        "nextEncounterAt": 9,
         "encounterReady": false,
         "contributionByStudentId": {},
         "participantQueue": [],

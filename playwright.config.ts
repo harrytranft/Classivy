@@ -18,9 +18,11 @@ export default defineConfig({
     locale: 'vi-VN'
   },
   webServer: {
-    command: `npx vite --port ${PORT} --strictPort`,
+    // Production build: no StrictMode double-invocation, so seeded randomness stays stable.
+    command: `npx vite build --outDir dist-smoke --emptyOutDir && npx vite preview --outDir dist-smoke --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
+    timeout: 120_000,
     env: {
       VITE_SUPABASE_URL: 'https://smoke-test.invalid',
       VITE_SUPABASE_ANON_KEY: 'smoke-anon-key',
