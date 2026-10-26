@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { StatusDock } from '../components/StatusDock';
 import { PokemonReactionLayer } from '../features/pokemon/PokemonReactionLayer';
 import { AttendanceModal } from '../features/attendance/AttendanceModal';
@@ -14,22 +15,18 @@ import { ClaimAllRewardsModal } from '../features/class/ClaimAllRewardsModal';
 import { LudoEventPopup } from '../features/ludo/LudoEventPopup';
 import { HatchModal } from '../features/pokemon/HatchModal';
 import { PokemonReleaseModal } from '../features/pokemon/PokemonReleaseModal';
-import { ClassScreen } from '../features/class/ClassScreen';
 import { SkillPointsModal } from '../features/feedback/SkillPointsModal';
 import { UserModal } from '../features/auth/UserModal';
-import { PlazaScreen } from '../features/plaza/PlazaScreen';
 import { ShopModal } from '../features/shop/ShopModal';
 import { GiftPokemonModal } from '../features/pokemon/GiftPokemonModal';
 import { LuckyWheelModal } from '../features/wheel/LuckyWheelModal';
 import { LudoModal } from '../features/ludo/LudoModal';
 import { RandomModal } from '../features/random/RandomModal';
-import { SettingsScreen } from '../features/settings/SettingsScreen';
-import { ProfileScreen } from '../features/profile/ProfileScreen';
 import { useApp } from './AppContext';
 
 export const AppLayout: React.FC = () => {
   const {
-    authLoading, currentScreen, editingStudent, handleBackupToCloud, handleRestoreFromCloud,
+    authLoading, handleBackupToCloud, handleRestoreFromCloud,
     isSyncing, lastSyncedTime, user
   } = useApp();
 
@@ -69,21 +66,7 @@ export const AppLayout: React.FC = () => {
 
       {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto p-6">
-        {currentScreen === 'plaza' && (
-          <PlazaScreen />
-        )}
-
-        {currentScreen === 'class' && (
-          <ClassScreen />
-        )}
-
-        {currentScreen === 'profile' && editingStudent && (
-          <ProfileScreen />
-        )}
-
-        {currentScreen === 'settings' && (
-          <SettingsScreen />
-        )}
+        <Outlet />
       </main>
 
       {/* MODAL: SKILL POINT BOARD */}

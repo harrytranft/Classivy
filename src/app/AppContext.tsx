@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { useAppState, type AppState } from './controller/appState';
 import { createAppActions, type AppActions } from './controller/appActions';
+import { useProfileRouteSync } from './useProfileRouteSync';
 import { useUserModalEffects } from '../features/auth/useUserModalEffects';
 import { useGiftPokemonEffects } from '../features/pokemon/useGiftPokemonEffects';
 import { useLudoEffects } from '../features/ludo/useLudoEffects';
@@ -21,6 +22,7 @@ const useAppScope = (): AppScope => {
   useLudoEffects(app);
   useBossEffects(app);
   useWeatherEffects(app);
+  useProfileRouteSync(app);
   return app;
 };
 

@@ -45,9 +45,14 @@ export const useDerivedState = (s: BaseState) => {
     () => getBossEncounterFrequencyOption(bossEncounterFrequency),
     [bossEncounterFrequency]
   );
-  const currentBossState = activeRandomClassName
-    ? normalizeClassBossState(bossStatesByClass[activeRandomClassName], activeRandomClassName, bossEncounterFrequency)
-    : null;
+  const activeClassBossState = activeRandomClassName ? bossStatesByClass[activeRandomClassName] : undefined;
+  // Memoized: normalizing a class without a saved boss rolls a random boss, so do it once per change, not on every render.
+  const currentBossState = useMemo(
+    () => activeRandomClassName
+      ? normalizeClassBossState(activeClassBossState, activeRandomClassName, bossEncounterFrequency)
+      : null,
+    [activeClassBossState, activeRandomClassName, bossEncounterFrequency]
+  );
   const activeBossParty = activeBossRound
     ? activeBossRound.partyStudentIds
       .map(studentId => students.find(student => student.id === studentId))

@@ -1,18 +1,21 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import { GameDataProvider } from './providers/GameDataProvider';
 import { UiEventsProvider } from './providers/UiEventsProvider';
 import { AppProvider } from './AppContext';
-import { AppLayout } from './AppLayout';
+import { AppRoutes } from './AppRoutes';
 
-// Khung ứng dụng giáo viên: dữ liệu -> sự kiện giao diện -> state/hành động -> giao diện.
+// Khung ứng dụng giáo viên: router -> dữ liệu -> sự kiện giao diện -> state/hành động -> các màn hình.
 const App: React.FC = () => (
-  <GameDataProvider>
-    <UiEventsProvider>
-      <AppProvider>
-        <AppLayout />
-      </AppProvider>
-    </UiEventsProvider>
-  </GameDataProvider>
+  <BrowserRouter>
+    <GameDataProvider>
+      <UiEventsProvider>
+        <AppProvider>
+          <AppRoutes />
+        </AppProvider>
+      </UiEventsProvider>
+    </GameDataProvider>
+  </BrowserRouter>
 );
 
 export default App;

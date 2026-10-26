@@ -18,8 +18,9 @@ export default defineConfig({
     locale: 'vi-VN'
   },
   webServer: {
-    // Production build: no StrictMode double-invocation, so seeded randomness stays stable.
-    command: `npx vite build --outDir dist-smoke --emptyOutDir && npx vite preview --outDir dist-smoke --port ${PORT} --strictPort`,
+    // Production build (no StrictMode double-invocation) but unminified, so the test can tell
+    // library randomness (react-router keys) apart from app randomness by function name.
+    command: `npx vite build --outDir dist-smoke --emptyOutDir --minify false && npx vite preview --outDir dist-smoke --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
     timeout: 120_000,

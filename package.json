@@ -15,7 +15,8 @@
     "@supabase/supabase-js": "^2.112.2",
     "motion": "^13.0.0",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

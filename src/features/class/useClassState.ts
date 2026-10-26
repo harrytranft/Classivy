@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { ClaimAllRewardSummary, Screen } from '../../types/app';
+import { ClaimAllRewardSummary } from '../../types/app';
 
-// State màn Lớp học: màn hiện tại, lọc, tìm kiếm, sắp xếp, chọn nhiều.
+// State màn Lớp học: lọc, tìm kiếm, sắp xếp, chọn nhiều. (Màn hiện tại nằm trên URL, xem useScreenRoute.)
 export const useClassState = () => {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('class');
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,7 +12,7 @@ export const useClassState = () => {
   const [claimAllRewardSummary, setClaimAllRewardSummary] = useState<ClaimAllRewardSummary[] | null>(null);
 
   return {
-    currentScreen, setCurrentScreen, selectedStudentIds, setSelectedStudentIds,
+    selectedStudentIds, setSelectedStudentIds,
     isMultiSelectMode, setIsMultiSelectMode, searchQuery, setSearchQuery, sortType,
     setSortType, filterClass, setFilterClass, hoveredStudentCardId, setHoveredStudentCardId,
     claimAllRewardSummary, setClaimAllRewardSummary

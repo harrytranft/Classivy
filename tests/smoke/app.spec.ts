@@ -73,7 +73,11 @@ async function setupPage(page: Page, options: { loggedIn: boolean }): Promise<Sm
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
-    Math.random = next;
+    // react-router draws random location keys on every navigation; give it its own stream so
+    // adding routes does not shift the app's random sequence (needs the unminified smoke build).
+    let routerSeed = 7;
+    const routerNext = () => { routerSeed = (routerSeed * 16807) % 2147483647; return routerSeed / 2147483647; };
+    Math.random = () => ((new Error().stack || '').includes('createKey') ? routerNext() : next());
     const cryptoObj = window.crypto;
     Object.defineProperty(cryptoObj, 'getRandomValues', {
       value: <T extends ArrayBufferView | null>(arr: T): T => {
@@ -357,4 +361,44 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   await page.getByRole('button', { name: /Thường xuyên/ }).click();
   await snap(page, '43-boss-frequency', state);
   await snapCloud(page, '43-boss-frequency', state);
+});
+
+test('định tuyến URL: tải lại ở từng đường dẫn, Back/Forward, đường dẫn lạ', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await expect(page).toHaveURL(/\/class$/);
+
+  await navButton(page, 'Trainer Plaza').click({ force: true });
+  await expect(page).toHaveURL(/\/plaza$/);
+  await navButton(page, 'Cài Đặt').click({ force: true });
+  await expect(page).toHaveURL(/\/settings$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/plaza$/);
+  await page.goForward();
+  await expect(page).toHaveURL(/\/settings$/);
+
+  await navButton(page, 'Lớp Học').click({ force: true });
+  await page.getByText('An 6A', { exact: true }).first().click();
+  await expect(page).toHaveURL(/\/student\/stu-01$/);
+  await expect(page.getByText('Hồ Sơ Trainer')).toBeVisible();
+
+  // Reload directly on the profile URL loads the same student.
+  await page.reload();
+  await expect(page.getByText('Hồ Sơ Trainer')).toBeVisible();
+  await expect(page.locator('main input:not([type])').first()).toHaveValue('An 6A');
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\/class$/);
+  await page.goForward();
+  await expect(page.getByText('Hồ Sơ Trainer')).toBeVisible();
+
+  // Unknown student or path falls back to the class screen.
+  await page.goto('/student/khong-ton-tai');
+  await waitForApp(page, true);
+  await expect(page).toHaveURL(/\/class$/);
+  await page.goto('/duong-dan-la');
+  await expect(page).toHaveURL(/\/class$/);
+  await page.goto('/plaza');
+  await expect(navButton(page, 'Trainer Plaza')).toBeAttached();
+  await expect(page).toHaveURL(/\/plaza$/);
+  expect(state.errors).toEqual([]);
 });
