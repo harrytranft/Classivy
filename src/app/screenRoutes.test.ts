@@ -3,7 +3,7 @@ import { CLASS_SUB_PAGES, classPath, parseClassPath, profilePath, screenFromPath
 
 describe('screen routes', () => {
   it('maps paths to the old screen names', () => {
-    expect(screenFromPath('/plaza')).toBe('plaza');
+    expect(screenFromPath('/plaza')).toBe('class');
     expect(screenFromPath('/class')).toBe('class');
     expect(screenFromPath('/settings')).toBe('settings');
     expect(screenFromPath('/student/abc')).toBe('profile');

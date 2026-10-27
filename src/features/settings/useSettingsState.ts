@@ -10,7 +10,6 @@ export const useSettingsState = () => {
   const [tileFormValue, setTileFormValue] = useState<number>(3);
   const [editingTileIndex, setEditingTileIndex] = useState<number | null>(null);
   const [settingsCollapsed, setSettingsCollapsed] = useState<Record<string, boolean>>({
-    weather: true,
     sound: true,
     skills: true,
     petSkills: true,

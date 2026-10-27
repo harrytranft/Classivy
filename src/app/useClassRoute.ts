@@ -4,11 +4,11 @@ import { ALL_CLASSES, CLASS_SUB_PAGES, ClassSubPage, SCREEN_PATHS, classPath, pa
 
 interface ClassNavigationOptions {
   replace?: boolean;
-  /** Trang sẽ quay về khi đóng trang con (ví dụ mở Tặng Pokémon từ Plaza). */
+  /** Trang sẽ quay về khi đóng trang con (ví dụ mở Tặng Pokémon từ Cài đặt). */
   returnTo?: string;
 }
 
-// Lớp đang chọn nằm trên URL (/class/<lớp>). Ngoài các trang lớp (Plaza, hồ sơ, cài đặt)
+// Lớp đang chọn nằm trên URL (/class/<lớp>). Ngoài các trang lớp (hồ sơ, cài đặt)
 // app nhớ lớp mở gần nhất, giống bộ lọc lớp cũ. Cá Ngựa / Vòng quay / Tặng Pokémon là trang con của lớp.
 export const useClassRoute = () => {
   const location = useLocation();

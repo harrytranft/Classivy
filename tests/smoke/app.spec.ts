@@ -238,9 +238,6 @@ test('các màn hình chính', async ({ page }) => {
   await chooseClass(page, '6A');
   await snap(page, '11-class-6A', state);
 
-  await clickNav(page, 'Trainer Plaza');
-  await snap(page, '12-plaza', state);
-
   await clickNav(page, 'Cài Đặt');
   await page.getByText('Trainer Settings').waitFor();
   const expanders = page.locator('main button[aria-label^="Hiện "]');
@@ -400,14 +397,15 @@ test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Ba
   await expect(page).toHaveURL(/\/class$/);
   await expect(page.getByRole('button', { name: 'Vào lớp 7B', exact: true })).toBeVisible();
 
-  await clickNav(page, 'Trainer Plaza');
-  await expect(page).toHaveURL(/\/plaza$/);
   await clickNav(page, 'Cài Đặt');
   await expect(page).toHaveURL(/\/settings$/);
   await page.goBack();
-  await expect(page).toHaveURL(/\/plaza$/);
+  await expect(page).toHaveURL(/\/class$/);
   await page.goForward();
   await expect(page).toHaveURL(/\/settings$/);
+  // Plaza đã bỏ: đường dẫn cũ về trang chọn lớp.
+  await page.goto('/plaza');
+  await expect(page).toHaveURL(/\/class$/);
 
   // No class chosen yet: "Lớp học" opens the class picker; choosing a class opens its own page.
   await clickNav(page, 'Lớp Học');
@@ -448,12 +446,12 @@ test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Ba
   await page.locator('button:has-text("×")').first().click();
   await expect(page).toHaveURL(/\/class\/6A$/);
 
-  await clickNav(page, 'Trainer Plaza');
-  await expect(page).toHaveURL(/\/plaza$/);
+  await clickNav(page, 'Cài Đặt');
+  await expect(page).toHaveURL(/\/settings$/);
   await clickNav(page, 'Tặng Pokémon');
   await expect(page).toHaveURL(/\/class\/6A\/tang-pokemon$/);
   await page.getByRole('button', { name: 'Đóng tặng Pokémon' }).click();
-  await expect(page).toHaveURL(/\/plaza$/);
+  await expect(page).toHaveURL(/\/settings$/);
 
   // Unknown class / student / path.
   await page.goto('/class/khong-co-lop');

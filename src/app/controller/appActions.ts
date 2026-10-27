@@ -12,7 +12,6 @@ import { LudoActions, createLudoActions } from '../../features/ludo/ludoActions'
 import { LuckyWheelActions, createLuckyWheelActions } from '../../features/wheel/luckyWheelActions';
 import { SettingsActions, createSettingsActions } from '../../features/settings/settingsActions';
 import { ToolsActions, createToolsActions } from '../../features/tools/toolsActions';
-import { WeatherActions, createWeatherActions } from '../../features/tools/weatherActions';
 import type { AppState } from './appState';
 
 // Mọi hành động nghiệp vụ của ứng dụng giáo viên. Mỗi nhóm nằm trong thư mục tính năng của nó.
@@ -30,8 +29,7 @@ export type AppActions = ClassActions
   & LudoActions
   & LuckyWheelActions
   & SettingsActions
-  & ToolsActions
-  & WeatherActions;
+  & ToolsActions;
 
 export const createAppActions = (state: AppState): AppActions => {
   const actions = {} as AppActions;
@@ -50,8 +48,7 @@ export const createAppActions = (state: AppState): AppActions => {
     createLudoActions(state, actions),
     createLuckyWheelActions(state, actions),
     createSettingsActions(state, actions),
-    createToolsActions(state, actions),
-    createWeatherActions(state, actions)
+    createToolsActions(state, actions)
   );
   return actions;
 };

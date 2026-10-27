@@ -13,56 +13,16 @@ export const SettingsScreen: React.FC = () => {
     currentBossFrequencyOption, currentBossState, customLudoTiles, deleteCustomTile,
     editCustomTile, editingTileIndex, handleBossEncounterFrequencyChange, handleExportJSON,
     handleImportJSON, handleResetPokemonLevels, handleSaveCustomTile, luckyWheelRewards,
-    negSoundUrl, petSkills, posSoundUrl, refreshWeatherByAddress,
-    refreshWeatherByBrowserLocation, resetTileForm, setCustomLudoTiles, setLuckyWheelRewards,
+    negSoundUrl, petSkills, posSoundUrl, resetTileForm, setCustomLudoTiles, setLuckyWheelRewards,
     setNegSoundUrl, setPetSkills, setPosSoundUrl, setSkills, setStudents, setTileFormDesc,
     setTileFormIcon, setTileFormIndex, setTileFormTitle, setTileFormType, setTileFormValue,
-    setTimerSoundUrl, setWeatherLocationInput, setWheelFinishSoundUrl, setWheelSpinSoundUrl,
+    setTimerSoundUrl, setWheelFinishSoundUrl, setWheelSpinSoundUrl,
     settingsCollapsed, skills, tileFormDesc, tileFormIcon, tileFormIndex, tileFormTitle,
-    tileFormType, tileFormValue, timerSoundUrl, toggleSettingsSection, trainerLocation,
-    trainerWeather, updateLuckyWheelReward, updatePetSkill, updateSkill, weatherError,
-    weatherLoading, weatherLocationInput, wheelFinishSoundUrl, wheelSpinSoundUrl
+    tileFormType, tileFormValue, timerSoundUrl, toggleSettingsSection, updateLuckyWheelReward, updatePetSkill, updateSkill, wheelFinishSoundUrl, wheelSpinSoundUrl
   } = useApp();
   return (
     <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-8 pb-12">
       <h2 className="text-3xl font-royal text-teal-800 text-center uppercase">Trainer Settings</h2>
-
-      <SettingsSection id="weather" icon="☀️" title="Weather Plaza" subtitle="Cài vị trí để Trainer Plaza đổi nắng, mưa hoặc trời tối theo thời tiết thật." collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
-        <div className="grid grid-cols-1 gap-4 rounded-[32px] border border-sky-100 bg-sky-50/60 p-5 md:grid-cols-[1fr_auto_auto]">
-          <input
-            value={weatherLocationInput}
-            onChange={event => {
-              setWeatherLocationInput(event.target.value);
-              localStorage.setItem('trainer_weather_location_input', event.target.value);
-            }}
-            placeholder="Nhập thành phố hoặc địa chỉ, ví dụ: Hanoi"
-            className="rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm font-bold text-sky-950 outline-none focus:ring-4 focus:ring-sky-100"
-          />
-          <button
-            onClick={refreshWeatherByAddress}
-            disabled={weatherLoading}
-            className="rounded-2xl bg-sky-700 px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-sky-800 disabled:opacity-50"
-          >
-            Update Weather
-          </button>
-          <button
-            onClick={refreshWeatherByBrowserLocation}
-            disabled={weatherLoading}
-            className="rounded-2xl border border-sky-200 bg-white px-5 py-3 text-xs font-black uppercase tracking-wider text-sky-800 shadow-sm hover:bg-sky-50 disabled:opacity-50"
-          >
-            Auto Location
-          </button>
-          <div className="md:col-span-3 text-xs font-bold text-sky-900/70">
-            {weatherLoading
-              ? 'Đang cập nhật thời tiết...'
-              : weatherError
-                ? weatherError
-                : trainerWeather
-                  ? `${trainerLocation?.label || 'Vị trí'} · ${trainerWeather.label} · ${trainerWeather.temperature}°C · cập nhật ${new Date(trainerWeather.updatedAt).toLocaleTimeString('vi-VN')}`
-                  : 'Chưa có dữ liệu thời tiết.'}
-          </div>
-        </div>
-      </SettingsSection>
 
       <SettingsSection id="bossRaid" icon="👹" title="Boss Raid" subtitle="Cài tần suất Boss xuất hiện sau các lượt Random Solo/Battle." collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="rounded-[32px] border border-red-100 bg-gradient-to-br from-red-50 via-white to-amber-50 p-5 text-left shadow-sm">

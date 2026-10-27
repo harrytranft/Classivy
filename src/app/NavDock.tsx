@@ -1,12 +1,11 @@
 import React from 'react';
-import { BookOpen, Gift, Settings, Trees } from 'lucide-react';
+import { BookOpen, Gift, Settings } from 'lucide-react';
 import { Screen } from '../types/app';
 import { useApp } from './AppContext';
 import { StatusDock } from '../components/StatusDock';
 import { cx } from '../components/ui';
 
 const NAV_ITEMS = [
-  { id: 'plaza', screen: 'plaza' as Screen, Icon: Trees, label: 'Trainer Plaza', short: 'Plaza' },
   { id: 'class', screen: 'class' as Screen, Icon: BookOpen, label: 'Lớp Học', short: 'Lớp học' },
   { id: 'giftPokemon', Icon: Gift, label: 'Tặng Pokémon', short: 'Tặng quà' },
   { id: 'settings', screen: 'settings' as Screen, Icon: Settings, label: 'Cài Đặt', short: 'Cài đặt' }
@@ -19,7 +18,7 @@ export const NavDock: React.FC = () => {
     openGiftPokemonModal, profile, setCurrentScreen, setShowUserModal, user
   } = useApp();
   return (
-    <div className="group/nav fixed inset-y-0 left-0 z-50 flex w-[84px] flex-col items-center bg-brand-forest-deep py-4 text-brand-cream">
+    <div className="group/nav fixed inset-y-0 left-0 z-50 flex w-[84px] flex-col items-center rounded-r-[28px] bg-brand-shield py-4 text-brand-cream shadow-[4px_0_18px_-6px_rgba(1,72,47,0.45)]">
       <img src="/brand/classivy-app-icon-dark.png" alt="Classivy" className="mb-5 h-11 w-11 rounded-brand-md" />
       <nav aria-label="Điều hướng chính" className="flex flex-1 flex-col items-center gap-1.5">
         {NAV_ITEMS.map(({ id, screen, Icon, label, short }) => {
@@ -33,8 +32,7 @@ export const NavDock: React.FC = () => {
               aria-current={active ? 'page' : undefined}
               className={cx(
                 'flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors',
-                active ? 'bg-brand-cream text-brand-forest-deep' : 'text-brand-cream/80 hover:bg-white/10 hover:text-brand-cream',
-                id === 'giftPokemon' && !active && 'text-brand-violet-soft hover:text-[#d79cf0]'
+                active ? 'bg-brand-cream text-brand-forest-deep' : 'text-brand-cream hover:bg-white/15'
               )}
             >
               <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />

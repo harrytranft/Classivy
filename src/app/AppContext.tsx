@@ -6,7 +6,6 @@ import { useUserModalEffects } from '../features/auth/useUserModalEffects';
 import { useGiftPokemonEffects } from '../features/pokemon/useGiftPokemonEffects';
 import { useLudoEffects } from '../features/ludo/useLudoEffects';
 import { useBossEffects } from '../features/random/useBossEffects';
-import { useWeatherEffects } from '../features/tools/useWeatherEffects';
 
 export type AppScope = AppState & AppActions;
 
@@ -21,7 +20,6 @@ const useAppScope = (): AppScope => {
   useGiftPokemonEffects(app);
   useLudoEffects(app);
   useBossEffects(app);
-  useWeatherEffects(app);
   useProfileRouteSync(app);
   return app;
 };

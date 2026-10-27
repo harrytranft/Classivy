@@ -12,7 +12,6 @@ import { useLuckyWheelState } from '../../features/wheel/useLuckyWheelState';
 import { useLudoState } from '../../features/ludo/useLudoState';
 import { useSettingsState } from '../../features/settings/useSettingsState';
 import { useToolsState } from '../../features/tools/useToolsState';
-import { useWeatherState } from '../../features/tools/useWeatherState';
 import { useGiftPokemonState } from '../../features/pokemon/useGiftPokemonState';
 import { useUserModalState } from '../../features/auth/useUserModalState';
 import { useDerivedState } from './useDerivedState';
@@ -43,7 +42,6 @@ export const useBaseState = () => {
     ...useLudoState(),
     ...useSettingsState(),
     ...useToolsState(),
-    ...useWeatherState(),
     ...useGiftPokemonState(),
     ...useUserModalState(),
   };

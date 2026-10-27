@@ -27,6 +27,10 @@ export default {
           success: '#298353'
         }
       },
+      backgroundImage: {
+        // Nền xanh của biểu tượng app (đo từ public/brand/classivy-app-icon-dark.png): sáng ở trên, đậm dần xuống dưới.
+        'brand-shield': 'linear-gradient(180deg, #0a9a69 0px, #04774f 84px, #015638 280px, #01482f 65%, #043624 100%)'
+      },
       fontFamily: {
         brand: ['"Plus Jakarta Sans"', '"Be Vietnam Pro"', 'system-ui', 'sans-serif']
       },

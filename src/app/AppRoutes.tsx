@@ -8,7 +8,6 @@ import { ClassPickerScreen } from '../features/class/ClassPickerScreen';
 import { ClassPageGuard } from '../features/class/ClassPageGuard';
 
 // Màn Lớp học (mở mặc định) tải ngay; các màn khác tải khi mở lần đầu.
-const PlazaScreen = lazy(() => import('../features/plaza/PlazaScreen').then(m => ({ default: m.PlazaScreen })));
 const ProfileScreen = lazy(() => import('../features/profile/ProfileScreen').then(m => ({ default: m.ProfileScreen })));
 const LudoModal = lazy(() => import('../features/ludo/LudoModal').then(m => ({ default: m.LudoModal })));
 const LuckyWheelModal = lazy(() => import('../features/wheel/LuckyWheelModal').then(m => ({ default: m.LuckyWheelModal })));
@@ -31,7 +30,6 @@ export const AppRoutes: React.FC = () => (
   <Routes>
     <Route element={<AppLayout />}>
       <Route index element={<RedirectToClass />} />
-      <Route path="plaza" element={<PlazaScreen />} />
       <Route path="class" element={<ClassPickerScreen />} />
       <Route path="class/:className" element={<ClassPageGuard><ClassScreen /></ClassPageGuard>} />
       <Route path={`class/:className/${CLASS_SUB_PAGES.ludo}`} element={<ClassPageGuard><LudoModal /></ClassPageGuard>} />

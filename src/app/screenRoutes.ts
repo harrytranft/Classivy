@@ -4,7 +4,6 @@ import { Screen } from '../types/app';
 // '/' chuyển về '/class' (trang chọn lớp). Mỗi lớp có trang riêng /class/<lớp>,
 // kèm các trang con theo lớp: Cá Ngựa, Vòng quay may mắn, Tặng Pokémon.
 export const SCREEN_PATHS: Record<Exclude<Screen, 'profile'>, string> = {
-  plaza: '/plaza',
   class: '/class',
   settings: '/settings'
 };
@@ -15,7 +14,6 @@ export const profilePath = (studentId: string) => `${PROFILE_PATH_PREFIX}${encod
 
 export const screenFromPath = (pathname: string): Screen => {
   if (pathname.startsWith(PROFILE_PATH_PREFIX)) return 'profile';
-  if (pathname.startsWith(SCREEN_PATHS.plaza)) return 'plaza';
   if (pathname.startsWith(SCREEN_PATHS.settings)) return 'settings';
   return 'class';
 };

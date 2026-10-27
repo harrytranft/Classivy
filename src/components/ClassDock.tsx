@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { MotionValue, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
 import {
   CheckCheck, Dices, Eraser, FerrisWheel, Flag, Gift, Hand, ShoppingBag, Sparkles, Timer, Trash2, Users, type LucideIcon
 } from 'lucide-react';
@@ -65,7 +66,7 @@ const AnalogClock: React.FC<{ now: Date }> = ({ now }) => {
     <line x1="20" y1="20" x2="20" y2={20 - length} strokeWidth={width} strokeLinecap="round" className={className} transform={`rotate(${deg} 20 20)`} />
   );
   return (
-    <svg viewBox="0 0 40 40" className="h-9 w-9" aria-hidden>
+    <svg viewBox="0 0 40 40" className="h-full w-full" aria-hidden>
       <circle cx="20" cy="20" r="18" className="fill-brand-cream stroke-brand-gold" strokeWidth="2" />
       {[...Array(12)].map((_, index) => (
         <line key={index} x1="20" y1="4.5" x2="20" y2={index % 3 === 0 ? 8 : 6.5} strokeWidth="1.5" className="stroke-brand-forest/60" transform={`rotate(${index * 30} 20 20)`} />
@@ -78,7 +79,60 @@ const AnalogClock: React.FC<{ now: Date }> = ({ now }) => {
   );
 };
 
-const itemClass = 'flex h-[64px] w-[72px] shrink-0 flex-col items-center justify-center gap-1 rounded-brand-md text-[12px] font-bold leading-none transition-colors';
+// Phóng to kiểu dock macOS: ô gần con trỏ to dần theo khoảng cách, rời đi thì co về cỡ cũ (có lò xo cho mượt).
+const BASE_SIZE = 52;
+const MAX_SIZE = 84;
+const REACH = 140;
+
+interface DockTileProps {
+  mouseX: MotionValue<number>;
+  label: string;
+  short: string;
+  onClick?: () => void;
+  active?: boolean;
+  pressed?: boolean;
+  tone?: 'default' | 'reward' | 'static';
+  children: (iconSize: MotionValue<number>) => React.ReactNode;
+}
+
+const DockTile: React.FC<DockTileProps> = ({ mouseX, label, short, onClick, active, pressed, tone = 'default', children }) => {
+  const ref = useRef<HTMLButtonElement>(null);
+  const reduceMotion = useReducedMotion();
+  const distance = useTransform(mouseX, value => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect || !Number.isFinite(value)) return REACH + 1;
+    return value - (rect.left + rect.width / 2);
+  });
+  const target = useTransform(distance, [-REACH, 0, REACH], [BASE_SIZE, reduceMotion ? BASE_SIZE : MAX_SIZE, BASE_SIZE], { clamp: true });
+  const size = useSpring(target, { mass: 0.1, stiffness: 170, damping: 14 });
+  const iconSize = useTransform(size, value => Math.round(value * 0.48));
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onClick}
+      title={label}
+      aria-pressed={pressed}
+      className={cx('group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none', tone === 'static' ? 'cursor-default' : 'cursor-pointer')}
+    >
+      <motion.span
+        style={{ width: size, height: size }}
+        className={cx(
+          'grid place-items-center rounded-[16px] transition-colors',
+          active
+            ? 'bg-brand-forest text-brand-cream shadow-[0_4px_12px_-4px_rgba(1,74,45,0.6)]'
+            : tone === 'reward'
+              ? 'bg-brand-gold text-brand-forest-deep shadow-[0_4px_12px_-4px_rgba(160,110,10,0.55)] group-hover/tile:bg-[#e9ab32]'
+              : 'bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]'
+        )}
+      >
+        {children(iconSize)}
+      </motion.span>
+      <span className={cx('whitespace-nowrap', active ? 'text-brand-forest-deep' : 'text-brand-forest')}>{short}</span>
+    </button>
+  );
+};
 
 // Công cụ của trang lớp: nút có chữ để đọc được trên màn chiếu (thay cho dock kính phóng to kiểu cũ).
 export const ClassDock: React.FC<ClassDockProps> = ({
@@ -87,6 +141,7 @@ export const ClassDock: React.FC<ClassDockProps> = ({
   onOpenFeedback, onDeleteSelected
 }) => {
   const [now, setNow] = useState(() => new Date());
+  const mouseX = useMotionValue(Infinity);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
@@ -130,47 +185,30 @@ export const ClassDock: React.FC<ClassDockProps> = ({
       <div
         role="toolbar"
         aria-label="Công cụ lớp"
-        className="pointer-events-auto flex max-w-full items-center gap-1 overflow-x-auto rounded-[22px] border border-[#e6e2d4] bg-white p-2 shadow-[0_2px_6px_rgba(12,37,39,0.06),0_18px_40px_-14px_rgba(0,38,25,0.35)]"
+        onMouseMove={event => mouseX.set(event.clientX)}
+        onMouseLeave={() => mouseX.set(Infinity)}
+        className="pointer-events-auto flex max-w-full items-end gap-1.5 rounded-[24px] border border-[#e6e2d4] bg-white px-3 pb-2 pt-2.5 shadow-[0_2px_6px_rgba(12,37,39,0.06),0_18px_40px_-14px_rgba(0,38,25,0.35)]"
       >
         {items.map(({ id, label, short, Icon, onClick, active }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={onClick}
-            title={label}
-            aria-pressed={id === 'multi-select' ? !!active : undefined}
-            className={cx(itemClass, active ? 'bg-brand-forest text-brand-cream' : 'text-brand-forest hover:bg-brand-forest/[0.07]')}
-          >
-            <Icon className="h-6 w-6" strokeWidth={2} aria-hidden />
-            <span>{short}</span>
-          </button>
+          <DockTile key={id} mouseX={mouseX} label={label} short={short} onClick={onClick} active={active} pressed={id === 'multi-select' ? !!active : undefined}>
+            {iconSize => <motion.span style={{ width: iconSize, height: iconSize }} className="grid place-items-center"><Icon className="h-full w-full" strokeWidth={2} aria-hidden /></motion.span>}
+          </DockTile>
         ))}
 
-        <div className="mx-1 h-10 w-px shrink-0 bg-[#e6e2d4]" />
+        <div className="mx-1 mb-6 h-10 w-px shrink-0 self-end bg-[#e6e2d4]" />
 
-        <button
-          type="button"
-          className={cx(itemClass, 'cursor-default text-brand-forest-deep')}
-          title={`GMT+7: ${formatVietnamTime(now)} · ${syncLabel}`}
-        >
-          <AnalogClock now={now} />
-          <span className="tabular-nums">{formatVietnamMinute(now)}</span>
-        </button>
+        <DockTile mouseX={mouseX} label={`GMT+7: ${formatVietnamTime(now)} · ${syncLabel}`} short={formatVietnamMinute(now)} tone="static">
+          {iconSize => <motion.span style={{ width: iconSize, height: iconSize }} className="grid place-items-center"><AnalogClock now={now} /></motion.span>}
+        </DockTile>
 
-        <button
-          type="button"
-          onClick={onClaimAllRewards}
-          className={cx(itemClass, 'bg-brand-gold text-brand-forest-deep hover:bg-[#e9ab32]')}
-          title="Nhận quà cả lớp"
-        >
-          <Gift className="h-6 w-6" strokeWidth={2} aria-hidden />
-          <span>Nhận quà</span>
-        </button>
+        <DockTile mouseX={mouseX} label="Nhận quà cả lớp" short="Nhận quà" onClick={onClaimAllRewards} tone="reward">
+          {iconSize => <motion.span style={{ width: iconSize, height: iconSize }} className="grid place-items-center"><Gift className="h-full w-full" strokeWidth={2} aria-hidden /></motion.span>}
+        </DockTile>
 
         {isMultiSelectMode && selectedCount > 0 && (
           <>
-            <div className="mx-1 h-10 w-px shrink-0 bg-[#e6e2d4]" />
-            <div className="flex shrink-0 items-center gap-1.5 px-1">
+            <div className="mx-1 mb-6 h-10 w-px shrink-0 bg-[#e6e2d4]" />
+            <div className="mb-5 flex shrink-0 items-center gap-1.5 px-1">
               <button
                 type="button"
                 onClick={onOpenFeedback}
