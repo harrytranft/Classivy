@@ -1,6 +1,6 @@
 # ADR 0001 - Mô hình dữ liệu Phase 3: lớp, học sinh, sổ điểm
 
-- **Trạng thái:** Đề xuất (chờ Harry duyệt các mục ở phần 7)
+- **Trạng thái:** Đã chấp nhận (Harry duyệt 2026-10-27: đồng ý mọi đề xuất, riêng Q3 chọn **xoá hẳn**)
 - **Ngày:** 2026-10-27
 - **Phạm vi:** PLAN task 3.1; là nền cho task 3.2-3.6 và Phase 4-6
 
@@ -62,7 +62,6 @@ Hiện app không có "lớp" riêng, lớp suy ra từ `student.className`. B�
 | `game_state` | jsonb | mọi trường còn lại của `Student` (pet, pets, egg, eggInventory, pokemonProgress, trainerProgress, earnedBadges, expedition, eggFragments, weeklyChest, adventureJournal, supportPetInstanceId, ludo*, attendanceStatus, isAbsent) |
 | `auth_user_id` | uuid null unique | **để trống ở Phase 3**; Phase 4 gắn tài khoản đăng nhập |
 | `status` | text | 'active' \| 'locked'; Phase 4 dùng |
-| `deleted_at` | timestamptz null | xoá mềm: xoá học sinh trên app = đặt ngày này, sổ điểm vẫn còn |
 | `created_at`, `updated_at` | timestamptz | |
 
 ### 3.3 `point_ledger` (mới) - sổ điểm
@@ -70,7 +69,7 @@ Hiện app không có "lớp" riêng, lớp suy ra từ `student.className`. B�
 | Cột | Kiểu | Ghi chú |
 |---|---|---|
 | `id` | bigint identity PK | |
-| `teacher_id`, `student_id`, `class_id` | uuid | |
+| `teacher_id`, `student_id` | uuid | khoá ngoại ghép `(student_id, teacher_id)`: dòng sổ luôn cùng giáo viên với học sinh |
 | `amount` | integer | + hoặc - |
 | `reason` | text | như `HistoryItem.reason` |
 | `client_event_id` | text | = `HistoryItem.id`; `unique(student_id, client_event_id)` để gửi lại không bị trùng |
@@ -78,15 +77,15 @@ Hiện app không có "lớp" riêng, lớp suy ra từ `student.className`. B�
 | `occurred_at` | timestamptz | = `HistoryItem.timestamp` |
 | `created_at`, `created_by` | | `created_by default auth.uid()` |
 
-- RLS chỉ cho **SELECT và INSERT**; không có policy UPDATE/DELETE, thêm trigger chặn sửa/xoá → sổ bất biến.
+- RLS chỉ cho **SELECT và INSERT**; không có policy UPDATE/DELETE, thêm trigger chặn sửa/xoá → sổ bất biến. Ngoại lệ duy nhất: xoá học sinh (Q3) hoặc xoá tài khoản giáo viên thì sổ của em đó bị xoá theo (khoá ngoại `on delete cascade`).
 - App vẫn hiển thị 50 dòng gần nhất, nhưng DB giữ **toàn bộ** (không còn mất lịch sử). Ước tính: 100 học sinh × 20 dòng/tuần × 52 tuần ≈ 100.000 dòng/năm ≈ 15-20 MB, trong hạn 500 MB.
-- Lúc chuyển dữ liệu, thêm một dòng `opening_balance` = `points - tổng(50 dòng lịch sử)` để tổng sổ = điểm hiện tại, đối chiếu được.
+- Lúc chuyển dữ liệu, thêm một dòng `opening_balance` = `points - tổng(50 dòng lịch sử)` để tổng sổ = điểm hiện tại, đối chiếu được. Dòng này không hiện trong lịch sử trên app (view bỏ qua), nên lịch sử hiển thị giữ y như cũ.
 - **Phase 3 không đổi cách tính điểm:** `students.points` vẫn là con số game đặt ra; sổ là nhật ký. Tặng điểm giữa học sinh (Phase 6) dùng ví riêng (D2) qua hàm DB atomic, không đụng `points`.
 
 ### 3.4 Bảng có sẵn
 
 - `profiles`: thêm cột `role` ('teacher' mặc định, 'student' cho Phase 4); đổi mặc định "Học sĩ triều đình" → "Trainer" (gộp `docs/phase-3-pending-sql.md` mục 2).
-- `user_settings`: giữ cài đặt giáo viên (skills, pet_skills, âm thanh, custom_ludo_tiles, lucky_wheel_rewards, boss_encounter_frequency). Xoá `ranks_male`, `ranks_female` (D7). Cột `students` và `boss_states_by_class` **giữ nguyên, ngừng ghi**, làm bản lưu để hoàn tác; xoá ở Phase 7 khi Harry xác nhận.
+- `user_settings`: thêm `data_model_version` (1 = dữ liệu cũ, 2 = bảng mới; app chỉ đặt 2 sau khi chuyển và đối chiếu khớp). Giữ cài đặt giáo viên (skills, pet_skills, âm thanh, custom_ludo_tiles, lucky_wheel_rewards, boss_encounter_frequency). Xoá `ranks_male`, `ranks_female` (D7). Cột `students` và `boss_states_by_class` **giữ nguyên, ngừng ghi**, làm bản lưu để hoàn tác; xoá ở Phase 7 khi Harry xác nhận.
 
 ## 4. Phân quyền (RLS)
 
@@ -106,7 +105,7 @@ Cột `auth_user_id`, `status` sẽ khoá không cho client ghi ở Phase 4 (ch�
 
 Giữ nguyên cách app làm việc trong bộ nhớ (`Student[]`), **chỉ thay phần đồng bộ** trong `src/app/providers/gameData/`:
 
-1. **Tải:** đọc `classes`, `students` (chưa xoá), 50 dòng sổ gần nhất mỗi học sinh (view `student_recent_history`) → dựng lại `Student[]` y như hiện nay.
+1. **Tải:** đọc `classes`, `students`, 50 dòng sổ gần nhất mỗi học sinh (view `student_recent_history`) → dựng lại `Student[]` y như hiện nay.
 2. **Lưu:** sau 1,5 giây, so với lần lưu trước, chỉ gửi **phần thay đổi**: lớp mới, học sinh đổi, học sinh bị xoá, dòng lịch sử mới. Gửi qua **một hàm DB** `save_teacher_changes(...)` (`security invoker`, nên RLS vẫn áp dụng) để cả gói ghi trong một transaction: hoặc ghi hết, hoặc không ghi gì.
 3. Logic chuyển đổi `Student` ↔ dòng bảng và tính "phần thay đổi" là hàm thuần trong `src/domain/` có unit test.
 
@@ -130,7 +129,7 @@ Lợi ích: ít dữ liệu gửi đi hơn nhiều (đổi điểm 1 học sinh 
 |---|---|---|
 | Q1 | Mô hình lai (bảng cho lớp/học sinh/sổ điểm, JSON cho dữ liệu game) hay tách hết Pokémon, trứng... thành bảng? | **Lai.** Tách hết tốn gấp nhiều lần công, rủi ro đổi hành vi game, chưa Phase nào cần |
 | Q2 | Một học sinh chỉ thuộc một lớp? | **Có**, như hiện nay. Nếu cần học nhiều lớp thì thêm bảng thành viên sau |
-| Q3 | Xoá học sinh là xoá mềm (ẩn, giữ sổ điểm) hay xoá hẳn? | **Xoá mềm**; xoá hẳn để Phase 4 (có xác nhận) |
+| Q3 | Xoá học sinh là xoá mềm (ẩn, giữ sổ điểm) hay xoá hẳn? | Đề xuất xoá mềm; **Harry chọn xoá hẳn** (học sinh và sổ điểm của em đó bị xoá) |
 | Q4 | Sổ điểm giữ toàn bộ lịch sử (không giới hạn 50 dòng)? | **Có** (~15-20 MB/năm) |
 | Q5 | Ảnh đại diện base64 tạm để trong DB (giới hạn kích thước) hay chuyển Supabase Storage ngay? | **Tạm để DB**, giới hạn ~200 KB; chuyển Storage ở Phase 5 |
 | Q6 | Chuyển dữ liệu trong app do giáo viên bấm (mục 6) hay script chạy bằng khoá quản trị? | **Trong app** |
@@ -147,3 +146,17 @@ Lợi ích: ít dữ liệu gửi đi hơn nhiều (đổi điểm 1 học sinh 
 - Tốt: mở đường cho Phase 4-6; lịch sử điểm không còn mất; đồng bộ nhẹ hơn; ghi atomic.
 - Phải chấp nhận: `points` chưa phải "tổng sổ" bắt buộc (vì game đặt điểm trực tiếp); dữ liệu game vẫn là JSON nên học sinh (Phase 5) đọc được toàn bộ `game_state` của chính mình - chấp nhận được vì đều là dữ liệu của em đó.
 - Rủi ro: sai sót khi chuyển dữ liệu → giảm bằng dry-run, sao lưu JSON, đối chiếu, giữ cột cũ.
+
+## 10. Đã triển khai (2026-10-27, nhánh `claude/phase3-data-model`)
+
+| Phần | File |
+|---|---|
+| Migration (chạy lại được, có file hoàn tác) | `supabase/migrations/20261027120000_phase3_data_model.sql`, `supabase/rollback/20261027120000_phase3_data_model_down.sql` |
+| Test RLS trên PostgreSQL cục bộ (60 kiểm tra) | `supabase/tests/`, `scripts/test-db.sh` (`npm run test:db`) |
+| Chuyển đổi Student <-> dòng bảng, tính phần thay đổi | `src/domain/cloudModel.ts` (+ test) |
+| Chạy thử, chuyển, đối chiếu dữ liệu cũ | `src/domain/legacyImport.ts` (+ test), `src/features/dataUpgrade/DataUpgradeModal.tsx` |
+| Đọc/ghi Supabase, chọn đường cũ/mới | `src/lib/supabaseData.ts`, `src/app/providers/gameData/cloudStore.ts` |
+
+Thay đổi so với bản đề xuất: bỏ cột `class_id` khỏi `point_ledger` (học sinh có thể đổi lớp, không cần); bỏ `deleted_at` (Q3); khoá ngoại ghép `(class_id, teacher_id)` và `(student_id, teacher_id)` để DB tự chặn gắn dữ liệu sang giáo viên khác, không chỉ dựa vào RLS; profile mới nhận `role = 'student'` chỉ khi `app_metadata.role = 'student'` (chỉ khoá quản trị đặt được, dùng ở Phase 4).
+
+App tương thích cả trước và sau khi chạy migration: chưa chạy => dùng cách lưu cũ y như trước; đã chạy => mời giáo viên nâng cấp; giáo viên mới dùng bảng mới ngay.

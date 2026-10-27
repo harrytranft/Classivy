@@ -1,5 +1,7 @@
 # SQL chờ gộp vào migration Phase 3
 
+> **Đã gộp (2026-10-27)** vào `supabase/migrations/20261027120000_phase3_data_model.sql`: mục 1 và phần mặc định/hàm trigger của mục 2. Phần "đổi tên hồ sơ cũ" (sửa dữ liệu thật) vẫn chờ Harry duyệt, xem `docs/phase-3-runbook.md`. File này giữ lại để tra cứu.
+
 Các thay đổi schema phát sinh ở Phase 2. **Không chạy riêng.** Khi viết migration Phase 3 trong `supabase/migrations/`, gộp các đoạn dưới đây (kèm phần hoàn tác) rồi chạy theo quy trình của Phase 3 (dev trước, sao lưu, Harry xác nhận).
 
 ## 1. Bỏ cột cấp bậc (D7, task 2.0)

@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (đang làm trên nhánh `claude/phase3-data-model`; ADR chờ Harry duyệt)
+**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (phần code xong trên nhánh `claude/phase3-data-model`; chờ Harry chạy migration trên Supabase dev theo `docs/phase-3-runbook.md`)
 
 ## Mục tiêu
 
@@ -27,6 +27,7 @@
 | D9 | Thuật ngữ: giữ "Hào Quang" (điểm); "Học sĩ" đổi thành "Trainer" | 2026-10-27 |
 | D10 | Bỏ hẳn trang Plaza và phần thời tiết (Weather Plaza trong Cài đặt). Thanh điều hướng màu xanh như nền logo, bo hai góc phải; nút Tặng quà màu trắng; dock phóng to kiểu macOS | 2026-10-27 |
 | D11 | Màn đăng nhập chỉ còn email + mật khẩu cho tài khoản đã có; bỏ nút "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (code nền giữ lại cho Phase 4). Harry xác nhận 2026-10-27 | 2026-10-27 |
+| D12 | Phase 3 theo ADR 0001: mô hình lai (bảng `classes`, `students`, `point_ledger`; dữ liệu game JSON trong `students.game_state`), một học sinh một lớp, **xoá học sinh là xoá hẳn** (kể cả sổ điểm), sổ điểm giữ toàn bộ lịch sử, ảnh đại diện tạm lưu DB (nén <= ~200 KB), chuyển dữ liệu trong app do giáo viên bấm, có dự án Supabase dev riêng | 2026-10-27 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -36,7 +37,7 @@
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
-| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Đang làm (3.1 chờ duyệt) | **Có (migration)** |
+| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Code xong, chờ Harry chạy trên dev (3.5) | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
@@ -151,19 +152,19 @@ src/
 
 ---
 
-## Phase 3 - Mô hình dữ liệu mới + RLS (ĐANG LÀM, bắt đầu 2026-10-27)
+## Phase 3 - Mô hình dữ liệu mới + RLS (CODE XONG 2026-10-27, chờ chạy trên Supabase dev)
 
 **Mục tiêu:** học sinh, lớp, điểm là dữ liệu bảng thật, có RLS chặt, dữ liệu cũ được chuyển sang mà không mất.
 
 **Nhánh:** `claude/phase3-data-model`. **Thiết kế:** `docs/adr/0001-phase-3-data-model.md` (mô hình lai: bảng `classes`, `students`, `point_ledger`; dữ liệu game giữ JSON trong `students.game_state`).
 
-- [~] 3.1 ADR về data model (`engineering:architecture`) - **đã viết 2026-10-27, chờ Harry chốt Q1-Q7 trong ADR mục 7**. Chưa viết migration trước khi chốt (đổi schema/RLS phải hỏi Harry).
-- [ ] 3.2 Migration `supabase/migrations/` (có file hoàn tác): bảng `classes`, `students`, `point_ledger`, view `student_recent_history`, hàm `save_teacher_changes`, `profiles.role`; RLS + trigger chặn sửa/xoá sổ điểm; gộp `docs/phase-3-pending-sql.md` (xoá `ranks_male`/`ranks_female`, mặc định "Trainer")
-- [ ] 3.2b Test RLS lặp lại được trên PostgreSQL 16 cục bộ với schema `auth` giả (`supabase/tests/`): giáo viên A không đọc/ghi được dữ liệu giáo viên B; không sửa/xoá được sổ điểm; không gán học sinh vào lớp người khác
-- [ ] 3.3 Chuyển dữ liệu trong app (ADR mục 6): hàm thuần `legacy -> rows` có test; hộp thoại chạy thử (dry-run) hiện số lớp/học sinh/lịch sử/tổng điểm; sao lưu JSON trước; đối chiếu sau khi ghi; cột cũ giữ nguyên để hoàn tác
-- [ ] 3.4 Lớp truy cập dữ liệu mới trong `src/app/providers/gameData/`: tải từ bảng, lưu theo phần thay đổi (diff) qua một hàm DB atomic; logic diff là hàm thuần có test; smoke test cập nhật Supabase giả. App không có chế độ khách (bắt buộc đăng nhập) nên không cần giữ
-- [ ] 3.5 Chạy trên **dự án Supabase dev** trước (Harry tạo); kiểm tra giới hạn gói miễn phí
-- [ ] 3.6 `deploy-checklist`, sao lưu trước khi chạy trên production
+- [x] 3.1 ADR data model - `docs/adr/0001-phase-3-data-model.md`; Harry duyệt 2026-10-27 (đồng ý mọi đề xuất, Q3 = xoá hẳn) -> D12
+- [x] 3.2 Migration `supabase/migrations/20261027120000_phase3_data_model.sql` (chạy lại được) + hoàn tác `supabase/rollback/..._down.sql`: bảng `classes`, `students`, `point_ledger` (chỉ thêm, trigger chặn sửa/xoá), view `student_recent_history`, hàm `save_teacher_changes` (security invoker, một transaction), `profiles.role` (client không ghi được), `user_settings.data_model_version`; đã gộp `docs/phase-3-pending-sql.md` (2026-10-27)
+- [x] 3.2b Test RLS trên PostgreSQL 16 cục bộ với `auth` giả: `npm run test:db` (`scripts/test-db.sh`, `supabase/tests/`), 60 kiểm tra: giáo viên A/B tách biệt, ẩn danh bị chặn, sổ điểm bất biến (kể cả quyền quản trị), không ghi được `auth_user_id`/`status`/`role`, khoá ngoại chặn gắn lớp/sổ sang giáo viên khác, xoá học sinh/giáo viên kéo theo dữ liệu; migration chạy 2 lần + hoàn tác + chạy lại; dữ liệu cũ không đổi (2026-10-27)
+- [x] 3.3 Chuyển dữ liệu trong app: `src/domain/legacyImport.ts` (chạy thử, kiểm tra lỗi chặn/lưu ý, số dư đầu kỳ, đối chiếu từng học sinh, chạy lại được sau khi chuyển dở) + hộp thoại `src/features/dataUpgrade/DataUpgradeModal.tsx` (tải sao lưu JSON trước; lỗi thì giữ cách lưu cũ) (2026-10-27)
+- [x] 3.4 Lớp truy cập dữ liệu: `src/app/providers/gameData/cloudStore.ts` chọn cách lưu cũ/mới theo `data_model_version`; bảng mới chỉ gửi phần thay đổi (`src/domain/cloudModel.ts`, có test), lưu lần lượt không chồng nhau; sao lưu/khôi phục/nhập JSON đi cùng đường; nén ảnh đại diện quá lớn (`src/lib/imageCompression.ts`). App không có chế độ khách nên không cần giữ (2026-10-27)
+- [ ] 3.5 Harry chạy trên **dự án Supabase dev** theo `docs/phase-3-runbook.md` bước 1 và báo kết quả
+- [x] 3.6 Checklist triển khai + sao lưu + hoàn tác: `docs/phase-3-runbook.md` bước 2 và "Nếu có sự cố" (2026-10-27). Chạy production chờ 3.5
 
 **Bàn giao cho Harry:** sao lưu dữ liệu, chạy migration trên dev rồi production theo hướng dẫn; xác nhận từng bước trước khi coi là đã áp dụng.
 
@@ -317,3 +318,10 @@ src/
 - `npm run typecheck` 0 lỗi; `npm test` 106/106; `npm run build` thành công; `npm run smoke` 6/6 đạt. Ảnh gốc DOM cập nhật có chủ đích; 8 file dữ liệu đám mây chỉ đổi đúng tên/mô tả kỹ năng `sk_decree` (Đồng Đội Hỗ Trợ, đã duyệt ở 2.5), ngoài ra giống hệt = hành vi giữ nguyên. Đã so ảnh chụp trước/sau ở đăng nhập, Hồ sơ, Cài đặt, Cá Ngựa, Random.
 - Nợ kỹ thuật ghi nhận (không chặn Phase 2): vài file Codex viết JSX dồn một dòng rất dài (`GroupModal`, `TimerModal`, footer của `AttendanceCheckModal`/`HomeworkCheckModal`) - khó đọc, nên định dạng lại khi có dịp; còn nhiều màu Tailwind mặc định (amber, purple...) trong nội dung game sâu, chưa chuyển hết sang token.
 - Nghiệm thu (2026-10-27): Harry thử thủ công bản preview Vercel của nhánh `claude/phase2-rebranding` và đồng ý; mở PR gộp vào `main`. Không có migration, không thay đổi Supabase.
+
+**Phase 3 - 2026-10-27** (kiểm thử tự động trên máy của phiên Claude; CHƯA chạy trên Supabase dev/production, chưa thử tay trên preview):
+- `npm run typecheck`: 0 lỗi.
+- `npm test`: 16 file, 127 test đạt (thêm `cloudModel.test.ts`, `legacyImport.test.ts`: 21 test).
+- `npm run build`: thành công.
+- `npm run test:db` (PostgreSQL 16 cục bộ, `auth` giả lập): 60 kiểm tra đạt; migration chạy 2 lần, hoàn tác, chạy lại đều đạt. Thử làm hỏng policy đọc `students` -> test đỏ đúng chỗ.
+- `npm run smoke`: 8/8 đạt. 6 test cũ (Supabase chưa chạy migration) giữ nguyên ảnh gốc DOM và dữ liệu đồng bộ -> hành vi cũ không đổi. 2 test mới: nâng cấp (chạy thử, tải sao lưu, đối chiếu, tổng sổ = điểm), sau đó cộng điểm chỉ gửi 1 học sinh + 1 dòng sổ, không ghi cột cũ, mở lại đọc từ bảng; giáo viên mới dùng bảng mới ngay. Thử bỏ phần "chỉ gửi thay đổi" -> test đỏ đúng chỗ.

@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-27 (Phase 2 hoàn thành, Harry nghiệm thu preview; PR gộp vào `main`)
+**Cập nhật lần cuối:** 2026-10-27 (Phase 3: code xong trên nhánh `claude/phase3-data-model`, chờ Harry chạy migration trên Supabase dev)
 
 ## 1. Sản phẩm
 
@@ -26,6 +26,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Mỗi lớp một trang `/class/<lớp>`, `/class` là trang chọn lớp; Cá Ngựa, Vòng quay, Tặng Pokémon là trang con của lớp; Random vẫn là hộp thoại (D8, 2026-10-27, đã làm trên nhánh Phase 1).
 - Màn đăng nhập chỉ còn email + mật khẩu; bỏ "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (D11, 2026-10-27).
 - Bỏ hệ cấp bậc cung đình và "Thánh chỉ"/Gemini; bảng Ban thưởng/Phạt dùng Trainer Level (D7, 2026-10-27) - đã làm (task 2.0).
+- Phase 3 (D12): mô hình lai theo `docs/adr/0001-phase-3-data-model.md`; một học sinh một lớp; **xoá học sinh là xoá hẳn** (kể cả sổ điểm); sổ điểm giữ toàn bộ lịch sử; ảnh đại diện tạm lưu DB (nén); chuyển dữ liệu trong app do giáo viên bấm; có dự án Supabase dev riêng (Harry duyệt 2026-10-27).
 - Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
 
 ## 4. Trạng thái hiện tại
@@ -34,8 +35,8 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
 - Phase 2 (hệ thiết kế, reskin, thuật ngữ): hoàn thành, Harry nghiệm thu preview (2026-10-27), gộp vào `main` qua PR từ nhánh `claude/phase2-rebranding`. Nội dung: bỏ cấp bậc/Gemini, hệ thiết kế + Tailwind local, thuật ngữ Trainer, localStorage `classivy_*`, Modal/Toast và reskin shell, lớp, hồ sơ, cài đặt, đăng nhập, công cụ, điểm danh/bài tập cùng các modal game. Vòng cuối đã làm lại Random và Tặng Pokémon theo nền kem/trắng, CTA xanh rừng/vàng, tăng tương phản và dọn CTA đỏ không có nghĩa cảnh báo. Phông chữ: một nguồn duy nhất `fontFamily.sans` = Plus Jakarta Sans/Be Vietnam Pro; `font-royal` và kiểu VIẾT HOA giãn chữ đã bỏ. Rà soát sau Codex đã sửa: smoke đỏ, CSS ép màu làm nút trừ điểm Battle thành xanh, bảng Cá Ngựa mất nền (xem Nhật ký kiểm chứng trong PLAN).
-- Phase 3 (dữ liệu mới + RLS): bắt đầu 2026-10-27 trên nhánh `claude/phase3-data-model`. Đã viết ADR `docs/adr/0001-phase-3-data-model.md` (mô hình lai: bảng `classes`, `students`, `point_ledger`; dữ liệu game giữ JSON), **chờ Harry chốt Q1-Q7** trước khi viết migration.
-- Chưa đổi schema, chưa có migration nào mới. App đã thôi đọc/ghi cột `ranks_male`/`ranks_female` (xoá cột ở Phase 3). Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
+- Phase 3 (dữ liệu mới + RLS): **code xong 2026-10-27** trên nhánh `claude/phase3-data-model`, chưa gộp `main`. Có migration + file hoàn tác, test RLS trên Postgres cục bộ (`npm run test:db`), lớp lưu mới chỉ gửi phần thay đổi, hộp thoại "Nâng cấp cách lưu dữ liệu" (chạy thử, sao lưu, đối chiếu). App chạy được cả trước và sau migration (chưa chạy = cách lưu cũ).
+- **Migration CHƯA chạy ở đâu cả.** Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`). Bước tiếp: Harry làm `docs/phase-3-runbook.md` bước 1 (dự án dev) rồi báo kết quả.
 
 ## 5. Bản đồ repo (hiện tại)
 
@@ -53,8 +54,10 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Đăng nhập hiện chỉ dành cho tài khoản đã tồn tại: email + mật khẩu. UI tạo tài khoản và Google login đã bỏ (D11, Harry xác nhận 2026-10-27); không xóa API nền để Phase 4 còn có thể dùng luồng giáo viên tạo tài khoản học sinh.
 - Đã reskin modal Điểm danh/Bài tập và các luồng game. Random/Tặng Pokémon là vòng polish cuối; các CTA đỏ không mang nghĩa nguy hiểm đã dọn, còn đỏ dành cho lỗi/cảnh báo/trừ điểm hoặc sự kiện Cá Ngựa.
 - Kiểm chứng sau rà soát (2026-10-27): typecheck 0 lỗi, `npm test` 106/106, build đạt, `npm run smoke` 6/6. Chưa thử tay trên preview Vercel.
-- SQL chờ gộp vào migration Phase 3: `docs/phase-3-pending-sql.md` (xoá cột cấp bậc, đổi tên mặc định).
-- Giới hạn gói miễn phí Supabase/Vercel (kể cả Edge Functions) cần xác minh lại trước Phase 3-4.
+- SQL chờ từ Phase 2 (`docs/phase-3-pending-sql.md`) đã gộp vào migration Phase 3, trừ việc đổi tên hồ sơ cũ "Học sĩ triều đình" (sửa dữ liệu thật, chờ Harry duyệt).
+- Phase 3: `students.points` vẫn do game đặt trực tiếp; sổ điểm là nhật ký (tổng sổ = điểm ngay sau khi chuyển, có thể lệch nếu điểm đổi mà không ghi lịch sử). Ví tặng điểm Phase 6 phải dùng hàm DB atomic riêng (D2).
+- Phase 4 tạo tài khoản học sinh phải đặt `app_metadata.role = 'student'` để hồ sơ nhận vai trò học sinh.
+- Giới hạn gói miễn phí Supabase (500 MB/dự án, 2 dự án, dự án nghỉ 7 ngày bị tạm dừng) ghi trong runbook Phase 3; Edge Functions cần xác minh trước Phase 4.
 
 ## 7. Quyết định còn mở
 
@@ -62,4 +65,6 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-Phase 3 đang chờ Harry duyệt ADR (mục 7). Sau đó: migration + RLS trên Supabase dev, script chuyển dữ liệu và đối chiếu. Không chạy migration riêng từ Phase 2: SQL trong `docs/phase-3-pending-sql.md` phải gộp vào migration Phase 3. Phase 2 đã nghiệm thu.
+1. Harry chạy `docs/phase-3-runbook.md` bước 1 trên dự án Supabase **dev**, báo kết quả (task 3.5).
+2. Ổn thì gộp PR Phase 3, chạy bước 2 trên production, Harry xác nhận -> nghiệm thu Phase 3.
+3. Phase 4: giáo viên quản lý tài khoản học sinh (Edge Function).

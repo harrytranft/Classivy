@@ -17,6 +17,7 @@ Classivy (trước đây là Imperial School) là web app lớp học gamificati
 - `npm test` - vitest (logic thuần trong `src/domain/`)
 - `npm run smoke` - Playwright smoke test (dữ liệu mẫu, Supabase giả; lần đầu cần `npx playwright install chromium`). Cập nhật ảnh gốc khi CỐ Ý đổi giao diện: `npm run smoke -- --update-snapshots`. Lưu ảnh chụp để xem bằng mắt: `SMOKE_SCREENSHOTS=1 npm run smoke` (vào `test-results/screens/`)
 - `npm run typecheck` - kiểm tra kiểu TypeScript (phải 0 lỗi)
+- `npm run test:db` - test migration + RLS trên PostgreSQL cục bộ (cần Postgres đang chạy, kết nối qua PGHOST/PGUSER...; không chạm Supabase thật)
 - `npm run build` - build production
 
 Biến môi trường: `.env.example` (chỉ khoá `anon` của Supabase). Không tạo hoặc in ra khoá thật.
@@ -28,7 +29,7 @@ Chi tiết: `docs/architecture.md`. Tóm tắt:
 - Mã nằm trong `src/`. `src/app/App.tsx` chỉ là khung: router -> `GameDataProvider` -> `UiEventsProvider` -> `AppProvider` -> các route.
 - Mỗi tính năng có thư mục `src/features/<tính năng>/`: `use*State.ts` (state), `*Actions.ts` (hành động, gọi tính năng khác qua `app.x`), component giao diện. Giao diện đọc mọi thứ qua `useApp()`.
 - Logic thuần + test ở `src/domain/` (điểm, điểm danh, bài tập, battle, Cá Ngựa, Boss, Pokémon, tiến trình...).
-- Dữ liệu cloud vẫn là một snapshot JSON mỗi giáo viên (`user_settings.students`), xử lý trong `src/app/providers/gameData/`. Sẽ đổi ở Phase 3.
+- Dữ liệu cloud: `src/app/providers/gameData/cloudStore.ts` chọn cách lưu theo `user_settings.data_model_version` (1 = snapshot JSON cũ, 2 = bảng `classes`/`students`/`point_ledger` của Phase 3, chỉ gửi phần thay đổi qua hàm DB `save_teacher_changes`). Thiết kế: `docs/adr/0001-phase-3-data-model.md`; migration trong `supabase/migrations/`.
 - Định tuyến: `/class` (chọn lớp, mặc định), `/class/<lớp>` (trang lớp) với trang con `ca-ngua`, `vong-quay`, `tang-pokemon`; `/settings`, `/student/:id` (Plaza đã bỏ). Auth: Supabase (`src/features/auth/AuthContext.tsx`). Triển khai: Vercel (`vercel.json`). Nội dung cũ: `docs/archive/`.
 
 ## Skills nên dùng
