@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-26 (Phase 1: code xong S0-S15, chờ nghiệm thu S16)
+**Cập nhật lần cuối:** 2026-10-27 (kết thúc Phase 1, đã gộp vào `main`)
 
 ## 1. Sản phẩm
 
@@ -30,7 +30,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 ## 4. Trạng thái hiện tại
 
 - Phase 0 (nền móng và thương hiệu): hoàn thành.
-- Phase 1 (tách App.tsx): code xong S0-S15 trên nhánh `refactor/phase-1-split` (đã push). Còn S16: Harry chạy checklist hồi quy trên bản preview rồi gộp vào `main`.
+- Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
 - Chưa đổi schema, chưa có migration nào mới. Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
 
@@ -58,5 +58,4 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 
 ## 8. Bước tiếp theo
 
-1. Harry: chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh `refactor/phase-1-split` (dùng dữ liệu mẫu hoặc bản sao lưu, không dùng tài khoản thật nếu chưa xuất JSON). Đạt thì gộp vào `main`.
-2. Phase 2: bắt đầu bằng task 2.0 bỏ hệ cấp bậc + Gemini (D7); sau đó hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage (kèm chuyển dữ liệu). Khi đổi giao diện, cập nhật ảnh gốc smoke test (`npm run smoke -- --update-snapshots`).
+Phase 2 (hệ thiết kế Classivy, reskin, thuật ngữ, đổi khoá localStorage), bắt đầu bằng task 2.0: bỏ hệ cấp bậc + "Thánh chỉ"/Gemini, bảng Ban thưởng/Phạt dùng Trainer Level (D7). Làm trên nhánh mới từ `main`. Khi đổi giao diện, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff.

@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 - phần code xong (S0-S15), chờ Harry nghiệm thu S16
+**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 hoàn thành (gộp vào `main` 2026-10-27). Tiếp theo: Phase 2, bắt đầu từ task 2.0
 
 ## Mục tiêu
 
@@ -31,7 +31,7 @@
 | Phase | Nội dung | Trạng thái | Chạm vào Supabase thật? |
 |---|---|---|---|
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
-| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Code xong, chờ nghiệm thu (S16) | Không |
+| 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Chưa bắt đầu | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Chưa bắt đầu | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
@@ -64,7 +64,7 @@ Ghi chú: so với lộ trình đã trao đổi, Phase 2 (reskin + thuật ngữ
 
 ---
 
-## Phase 1 - Tách App.tsx (giữ nguyên hành vi)
+## Phase 1 - Tách App.tsx (giữ nguyên hành vi) (HOÀN THÀNH 2026-10-27)
 
 **Mục tiêu:** `App.tsx` còn là lớp khung mỏng (< ~300 dòng); mỗi tính năng có thư mục riêng; có router; hành vi người dùng không đổi.
 
@@ -101,7 +101,7 @@ src/
 - [x] 1.12 (S13-S14) Random/Battle/Boss (`domain/battle.ts`); Lucky Wheel + Cá Ngựa (`domain/ludo.ts`) (2026-10-26)
 - [x] 1.13 (S15) Dọn dẹp: lazy-load Plaza/Hồ sơ/Cài đặt và Gemini, tách chunk thư viện (chunk chính 1,40 MB -> 0,50 MB, hết cảnh báo), xoá state/hàm chết, bỏ `importmap` cũ của AI Studio; nợ kỹ thuật ghi ở `docs/architecture.md` mục 7 (2026-10-26)
 - [x] 1.13b Theo góp ý nghiệm thu của Harry (D8, 2026-10-27): trang riêng cho từng lớp và cho Cá Ngựa / Vòng quay / Tặng Pokémon (`useClassRoute`, `ClassPickerScreen`, `ClassPageGuard`); dữ liệu đồng bộ sau mọi luồng thử giữ nguyên
-- [ ] 1.14 (S16) Nghiệm thu: Harry chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh; xác nhận để gộp vào `main`
+- [x] 1.14 (S16) Nghiệm thu (2026-10-27): Harry đã chạy checklist trên bản preview và đồng ý gộp; nhánh `refactor/phase-1-split` gộp vào `main`. Nghiệm thu: Harry chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh; xác nhận để gộp vào `main`
 
 **Khác so với kế hoạch ban đầu (đã cân nhắc, không đổi hành vi):**
 - Không tạo `ModalHost` riêng: Random, Cá Ngựa, Vòng quay gọi nhau qua `app.*`; mọi hộp thoại render trong `AppLayout`.
@@ -240,3 +240,4 @@ src/
 - `npm test`: 13 file, 97 test đạt. `npm run build`: thành công. `npm run smoke`: 5/5 đạt (ảnh gốc không đổi vì luồng thử không đi vào ô Quái vật).
 - Thử nhập file sao lưu cũ (2026-10-27, kiểm thử tự động, Supabase giả): xuất JSON từ code trước nhánh (`253253c`) rồi nhập vào code mới: thành công, 12/12 học sinh đúng điểm/Pokémon/trứng, không lỗi; dùng bảng điểm và hồ sơ sau khi nhập vẫn bình thường. Chưa thử với file sao lưu thật của Harry.
 - Trang riêng theo lớp (D8, 2026-10-27, kiểm thử tự động): `npm run typecheck` 0 lỗi; `npm test` 100 test đạt; `npm run build` thành công, không cảnh báo; `npm run smoke` 5/5 đạt hai lần liên tiếp, test định tuyến 6/6 lần lặp. Ảnh chụp dữ liệu đám mây sau mọi luồng không đổi. Ảnh giao diện cập nhật có chủ đích: trang chọn lớp mới, chữ "← Danh sách lớp" trong ô chọn lớp, trang con không còn vẽ lưới học sinh phía sau, danh sách tick ở Vòng quay (đã đối chiếu: ngoài các chỗ này không có dòng mới). Chưa thử tay.
+- Nghiệm thu S16 (2026-10-27): Harry thử thủ công trên bản preview Vercel của nhánh và đồng ý; gộp vào `main`. Không có migration, không thay đổi Supabase.
