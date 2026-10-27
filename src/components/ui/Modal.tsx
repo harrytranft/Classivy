@@ -1,4 +1,4 @@
-import React, { useEffect, useId } from 'react';
+import React, { useEffect, useId, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cx } from './cx';
 
@@ -32,6 +32,9 @@ export interface ModalProps {
   children: React.ReactNode;
 }
 
+// Các hộp thoại đang mở, theo thứ tự chồng lên nhau: Esc chỉ đóng hộp trên cùng.
+const openStack: symbol[] = [];
+
 /**
  * Khung hộp thoại Classivy: nền mờ xanh đậm, thẻ trắng bo 22px, tiêu đề + nút X, phím Esc để đóng.
  * Chỉ render khi được gọi (nơi dùng vẫn tự quyết định hiện/ẩn như cũ).
@@ -41,14 +44,26 @@ export const Modal: React.FC<ModalProps> = ({
   hideClose, footer, className, bodyClassName, children
 }) => {
   const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
+    const token = Symbol('modal');
+    openStack.push(token);
+    // Đưa focus vào hộp thoại để Tab/Esc hoạt động ngay; khi đóng thì trả focus về chỗ cũ.
+    const previous = document.activeElement as HTMLElement | null;
+    dialogRef.current?.focus();
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape' && openStack[openStack.length - 1] === token) onCloseRef.current();
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      openStack.splice(openStack.indexOf(token), 1);
+      if (previous && document.contains(previous)) previous.focus();
+    };
+  }, []);
 
   return (
     <div
@@ -58,11 +73,13 @@ export const Modal: React.FC<ModalProps> = ({
       }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
+        tabIndex={-1}
         aria-labelledby={title ? titleId : undefined}
         className={cx(
-          'relative flex max-h-full w-full flex-col overflow-hidden bg-white shadow-[0_24px_60px_-18px_rgba(0,38,25,0.55)] sm:max-h-[92vh] sm:rounded-brand-lg',
+          'relative flex max-h-full w-full flex-col overflow-hidden bg-white outline-none shadow-[0_24px_60px_-18px_rgba(0,38,25,0.55)] sm:max-h-[92vh] sm:rounded-brand-lg',
           SIZES[size], className
         )}
       >

@@ -21,17 +21,17 @@ export const BossHpBar: React.FC<BossHpBarProps> = ({ boss }) => {
             {boss.icon}
           </div>
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.28em] text-amber-200">Boss Raid Encounter</p>
-            <h3 className="mt-1 text-3xl font-black uppercase tracking-wide">{boss.name}</h3>
-            <p className="mt-2 inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-red-100">
+            <p className="text-xs font-black text-amber-200">Boss Raid Encounter</p>
+            <h3 className="mt-1 text-3xl font-black">{boss.name}</h3>
+            <p className="mt-2 inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-black text-red-100">
               {boss.tier} tier
             </p>
           </div>
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-left sm:text-right">
-          <p className="text-[10px] font-black uppercase tracking-wider text-red-200">HP Remaining</p>
+          <p className="text-xs font-black text-red-200">HP Remaining</p>
           <p className="mt-1 text-2xl font-black">{boss.currentHp}/{boss.maxHp}</p>
-          <p className={`mt-1 text-[10px] font-black uppercase tracking-wider ${danger ? 'text-red-200' : wounded ? 'text-amber-200' : 'text-emerald-200'}`}>
+          <p className={`mt-1 text-xs font-black ${danger ? 'text-red-200' : wounded ? 'text-amber-200' : 'text-emerald-200'}`}>
             {danger ? 'Critical' : wounded ? 'Wounded' : 'Threat Active'}
           </p>
         </div>
@@ -44,7 +44,7 @@ export const BossHpBar: React.FC<BossHpBarProps> = ({ boss }) => {
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0,rgba(255,255,255,0.28)_50%,transparent_100%)] opacity-30" />
       </div>
-      <div className="relative mt-2 flex justify-between text-[9px] font-black uppercase tracking-[0.18em] text-red-100/80">
+      <div className="relative mt-2 flex justify-between text-xs font-black text-red-100/80">
         <span>0</span>
         <span>{Math.round(hpPct)}%</span>
         <span>{boss.maxHp}</span>

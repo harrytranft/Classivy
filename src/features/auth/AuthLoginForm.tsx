@@ -29,7 +29,7 @@ export const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess 
   };
 
   return (
-    <div className="w-full font-sans">
+    <div className="w-full">
       {errorMsg && (
         <div className="mb-4 flex items-center gap-2 rounded-brand-md border border-brand-danger/30 bg-[#fff4f2] p-3 text-sm font-semibold text-brand-danger animate-in fade-in">
           <span>⚠️</span>

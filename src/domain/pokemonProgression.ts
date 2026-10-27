@@ -134,8 +134,8 @@ export const getPokemonFallbackPlaceholderUrl = (pet?: PokemonPet): string => {
       <circle cx="120" cy="100" r="58" fill="#ffffff" stroke="#f59e0b" stroke-width="8"/>
       <path d="M62 100h116" stroke="#111827" stroke-width="10" stroke-linecap="round"/>
       <circle cx="120" cy="100" r="18" fill="#ffffff" stroke="#111827" stroke-width="8"/>
-      <text x="120" y="183" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="800" fill="#92400e">${escapedName.slice(0, 18)}</text>
-      <text x="120" y="207" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#b45309">${escapedTypes.slice(0, 24)}</text>
+      <text x="120" y="183" text-anchor="middle" font-family="Plus Jakarta Sans, Be Vietnam Pro, Arial, sans-serif" font-size="22" font-weight="800" fill="#92400e">${escapedName.slice(0, 18)}</text>
+      <text x="120" y="207" text-anchor="middle" font-family="Plus Jakarta Sans, Be Vietnam Pro, Arial, sans-serif" font-size="13" font-weight="700" fill="#b45309">${escapedTypes.slice(0, 24)}</text>
     </svg>
   `;
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;

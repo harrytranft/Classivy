@@ -248,9 +248,9 @@ test('các màn hình chính', async ({ page }) => {
   await page.getByText('An 6A', { exact: true }).first().click();
   await page.getByText('Hồ Sơ Trainer').waitFor();
   await snap(page, '14-profile-info', state);
-  await page.getByRole('button', { name: /ẤP TRỨNG POKÉMON|LINH THÚ HỘ MỆNH/ }).click();
+  await page.getByRole('button', { name: /Ấp trứng Pokémon|Linh thú hộ mệnh/ }).click();
   await snap(page, '15-profile-pet', state);
-  await page.getByRole('button', { name: /HỢP NHẤT LINH THÚ/ }).click();
+  await page.getByRole('button', { name: /Hợp nhất linh thú/ }).click();
   await snap(page, '16-profile-fusion', state);
   await page.getByRole('button', { name: /Quay lại lớp/ }).click();
   await snap(page, '17-back-to-class', state);
@@ -318,14 +318,14 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   // 2. Điểm danh
   await reopen();
   await page.getByRole('button', { name: /Check đi học/ }).click();
-  await page.getByRole('button', { name: 'Confirm Attendance' }).click();
+  await page.getByRole('button', { name: 'Chốt điểm danh' }).click();
   await snap(page, '32-after-attendance', state);
   await snapCloud(page, '32-after-attendance', state);
 
   // 3. Bài tập
   await reopen();
   await page.getByRole('button', { name: /Check Homework/ }).click();
-  await page.getByRole('button', { name: 'Confirm Homework' }).click();
+  await page.getByRole('button', { name: 'Chốt bài tập' }).click();
   await snap(page, '33-after-homework', state);
   await snapCloud(page, '33-after-homework', state);
 

@@ -13,7 +13,7 @@ export const ProfileFusionTab: React.FC = () => {
                     <div className="bg-purple-50/70 border-2 border-purple-200 rounded-[32px] p-6 space-y-4">
                       <div className="flex items-center justify-between gap-4 border-b border-purple-200 pb-4">
                         <div>
-                          <h3 className="text-2xl font-royal text-purple-900 uppercase tracking-wider">🔮 Hợp nhất Pokémon</h3>
+                          <h3 className="text-2xl text-purple-900 font-extrabold">🔮 Hợp nhất Pokémon</h3>
                           <p className="text-xs text-purple-950/70 mt-1">Chọn đúng 2 Pokémon để hợp nhất thành 1 Pokémon mới. Hai Pokémon cũ sẽ biến mất, còn các skills đã mua và vẫn còn hiệu lực sẽ được giữ lại.</p>
                         </div>
                         <span className="shrink-0 bg-white text-purple-900 border border-purple-200 px-3 py-1.5 rounded-full text-xs font-black">
@@ -60,10 +60,10 @@ export const ProfileFusionTab: React.FC = () => {
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-2">
                                       <h4 className="font-black text-sm text-purple-950 truncate">{p.isShiny ? '✨ ' : ''}{getPokemonDisplayName(p)}</h4>
-                                      {isSelected && <span className="text-[9px] bg-purple-700 text-white px-2 py-0.5 rounded-full font-black">CHỌN</span>}
+                                      {isSelected && <span className="text-xs bg-purple-700 text-white px-2 py-0.5 rounded-full font-black">CHỌN</span>}
                                     </div>
-                                    <p className="text-[9px] font-black text-purple-600 uppercase mt-1">{p.types.join(' / ')}</p>
-                                    <p className="text-[10px] text-stone-500 mt-2 line-clamp-2">
+                                    <p className="text-xs font-black text-purple-600 mt-1">{p.types.join(' / ')}</p>
+                                    <p className="text-xs text-stone-500 mt-2 line-clamp-2">
                                       {skillNames.length > 0 ? `Skills: ${skillNames.join(', ')}` : 'Chưa có skill đã mua'}
                                     </p>
                                   </div>
@@ -75,7 +75,7 @@ export const ProfileFusionTab: React.FC = () => {
                           <button
                             disabled={selectedFusionPetDexIds.length !== 2}
                             onClick={() => handleFuseSelectedPokemons(editingStudent.id)}
-                            className="w-full bg-purple-700 hover:bg-purple-800 disabled:opacity-40 disabled:hover:bg-purple-700 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+                            className="w-full bg-purple-700 hover:bg-purple-800 disabled:opacity-40 disabled:hover:bg-purple-700 text-white py-4 rounded-2xl font-black text-xs shadow-lg transition-all"
                           >
                             🔮 Hợp Nhất 2 Pokémon Đã Chọn
                           </button>

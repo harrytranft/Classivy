@@ -2,6 +2,8 @@
 // Tailwind 3.4 build local (thay cho cdn.tailwindcss.com, cũng là v3) để giữ nguyên giao diện hiện tại.
 // Token Classivy lấy từ DESIGN.md, đặt dưới tiền tố `brand-` để không đụng bảng màu mặc định
 // (emerald, violet... đang được dùng khắp nơi). Ví dụ: bg-brand-forest, text-brand-ink, rounded-brand-lg.
+const BRAND_FONT = ['"Plus Jakarta Sans"', '"Be Vietnam Pro"', 'system-ui', 'sans-serif'];
+
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
@@ -31,8 +33,11 @@ export default {
         // Nền xanh của biểu tượng app (đo từ public/brand/classivy-app-icon-dark.png): sáng ở trên, đậm dần xuống dưới.
         'brand-shield': 'linear-gradient(180deg, #0a9a69 0px, #04774f 84px, #015638 280px, #01482f 65%, #043624 100%)'
       },
+      // Một họ chữ duy nhất cho toàn app: ghi đè `sans` (mặc định của Tailwind, dùng cho <html> và class font-sans)
+      // để không còn chỗ nào rơi về phông hệ thống. `font-brand` giữ làm tên gọi khác.
       fontFamily: {
-        brand: ['"Plus Jakarta Sans"', '"Be Vietnam Pro"', 'system-ui', 'sans-serif']
+        sans: BRAND_FONT,
+        brand: BRAND_FONT
       },
       borderRadius: {
         'brand-sm': '8px',

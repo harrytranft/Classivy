@@ -14,7 +14,7 @@ export const GiftPokemonModal: React.FC = () => {
   return (
     <>
       {showGiftPokemonModal && (
-        <div className="classivy-game-modal fixed inset-0 z-[280] flex items-center justify-center overflow-y-auto bg-brand-forest-deep/70 p-4 backdrop-blur-xl animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[280] flex items-center justify-center overflow-y-auto bg-brand-forest-deep/70 p-4 backdrop-blur-xl animate-in fade-in duration-200">
           <div className="relative my-auto w-full max-w-5xl overflow-hidden rounded-brand-lg border border-[#e6e2d4] bg-white shadow-[0_24px_60px_-18px_rgba(0,38,25,0.42)]">
             <div className="relative z-10 grid min-h-[620px] grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
               <aside className="border-b border-[#e6e2d4] bg-[#f4f8f1] p-6 lg:border-b-0 lg:border-r">
@@ -65,7 +65,7 @@ export const GiftPokemonModal: React.FC = () => {
                             <p className="truncate text-sm font-bold text-brand-ink">{student.name}</p>
                             <p className="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">{student.className} · {student.points}đ Hào Quang</p>
                           </div>
-                          <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${selected ? 'bg-brand-emerald text-white' : 'bg-brand-gold-light text-brand-forest-deep'}`}>
+                          <span className={`rounded-full px-3 py-1 text-xs font-bold ${selected ? 'bg-brand-emerald text-white' : 'bg-brand-gold-light text-brand-forest-deep'}`}>
                             {eggLabel}
                           </span>
                         </button>
@@ -138,7 +138,7 @@ export const GiftPokemonModal: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-brand-gold-dark">Đang nở trứng</p>
+                        <p className="text-xs font-black text-brand-gold-dark">Đang nở trứng</p>
                         <h3 className="mt-2 text-4xl font-extrabold tracking-tight text-brand-ink">{giftPokemonResult.student.name}</h3>
                         <p className="mt-2 text-sm font-semibold text-brand-ink/70">Ánh sáng đang tràn ra từ quả trứng...</p>
                       </div>
@@ -163,7 +163,7 @@ export const GiftPokemonModal: React.FC = () => {
                         />
                       </motion.div>
                       <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-brand-forest">Chúc mừng</p>
+                        <p className="text-xs font-black text-brand-forest">Chúc mừng</p>
                         <h3 className="mt-2 text-4xl font-extrabold tracking-tight text-brand-ink">{giftPokemonResult.student.name}</h3>
                         <p className="mt-2 text-2xl font-extrabold tracking-tight text-brand-forest-deep">
                           nhận được {giftPokemonResult.pet.isShiny ? 'Shiny ' : ''}{getPokemonDisplayName(giftPokemonResult.pet)}
@@ -176,14 +176,14 @@ export const GiftPokemonModal: React.FC = () => {
                         <button
                           type="button"
                           onClick={resetGiftPokemonFlow}
-                          className="flex-1 rounded-brand-md border border-[#d9d6ca] bg-white py-3 text-xs font-bold tracking-wide text-brand-forest shadow-sm transition-colors hover:bg-brand-cream"
+                          className="flex-1 rounded-brand-md border border-[#d9d6ca] bg-white py-3 text-xs font-bold text-brand-forest shadow-sm transition-colors hover:bg-brand-cream"
                         >
                           Tặng tiếp
                         </button>
                         <button
                           type="button"
                           onClick={closeGiftPokemonModal}
-                          className="flex-1 rounded-brand-md bg-brand-forest py-3 text-xs font-bold tracking-wide text-brand-cream shadow-lg transition-colors hover:bg-brand-forest-deep"
+                          className="flex-1 rounded-brand-md bg-brand-forest py-3 text-xs font-bold text-brand-cream shadow-lg transition-colors hover:bg-brand-forest-deep"
                         >
                           Hoàn tất
                         </button>

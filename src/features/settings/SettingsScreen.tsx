@@ -21,7 +21,7 @@ export const SettingsScreen: React.FC = () => {
     tileFormType, tileFormValue, timerSoundUrl, toggleSettingsSection, updateLuckyWheelReward, updatePetSkill, updateSkill, wheelFinishSoundUrl, wheelSpinSoundUrl
   } = useApp();
   return (
-    <div className="classivy-reskin animate-in slide-in-from-bottom-4 space-y-6 pb-12 duration-500">
+    <div className="animate-in slide-in-from-bottom-4 space-y-6 pb-12 duration-500">
       <header className="rounded-brand-lg border border-[#e6e2d4] bg-[#f4f8f1] px-6 py-7 sm:px-8">
         <p className="text-sm font-semibold text-brand-forest">Không gian giáo viên</p>
         <h2 className="mt-1 text-3xl font-extrabold tracking-tight text-brand-ink">Cài đặt lớp học</h2>
@@ -43,7 +43,7 @@ export const SettingsScreen: React.FC = () => {
                       : 'border-[#e6e2d4] bg-white text-brand-ink hover:border-brand-emerald hover:bg-brand-cream'
                   }`}
                 >
-                  <p className="text-sm font-black uppercase tracking-wider">{option.label}</p>
+                  <p className="text-sm font-black">{option.label}</p>
                   <p className={`mt-2 text-xs font-bold leading-relaxed ${active ? 'text-brand-cream/85' : 'text-brand-ink/70'}`}>
                     {option.description}
                   </p>
@@ -82,7 +82,7 @@ export const SettingsScreen: React.FC = () => {
             ['Vòng Quay Kết Thúc', wheelFinishSoundUrl, setWheelFinishSoundUrl]
           ].map(([label, value, setter]) => (
             <div key={label as string} className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-gray-400">{label as string}</label>
+              <label className="text-xs font-black text-gray-400">{label as string}</label>
               <input
                 className="w-full border p-3 rounded-xl text-xs outline-none focus:ring-2 ring-red-800/20"
                 value={value as string}
@@ -118,7 +118,7 @@ export const SettingsScreen: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {['positive', 'negative'].map(type => (
             <div key={type} className="space-y-4">
-              <h4 className="font-bold text-sm uppercase tracking-[0.2em] opacity-40 text-purple-800">{type === 'positive' ? 'Tích Cực' : 'Cần Cố Gắng'}</h4>
+              <h4 className="font-bold text-sm opacity-40 text-purple-800">{type === 'positive' ? 'Tích Cực' : 'Cần Cố Gắng'}</h4>
               {skills.filter(s => s.type === type).map(sk => (
                 <div key={sk.id} className="bg-white p-4 rounded-2xl border flex items-center gap-3 group shadow-sm">
                   <input value={sk.icon} onChange={e => updateSkill(sk.id, 'icon', e.target.value)} className="w-10 h-10 text-xl text-center bg-gray-50 rounded-lg outline-none focus:ring-2 ring-purple-100" />
@@ -155,12 +155,12 @@ export const SettingsScreen: React.FC = () => {
       <SettingsSection id="pokemonReset" icon="🧬" title="Reset Pokémon" subtitle="Đưa toàn bộ Pokémon hiện có về Level 1 mà vẫn giữ Hào Quang, HP, kỹ năng và phụ kiện." className="bg-emerald-50 p-6 sm:p-10 rounded-[40px] border-4 border-emerald-200 text-left space-y-6 my-8" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="bg-white p-6 rounded-3xl border border-emerald-100 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
           <div className="text-left space-y-1">
-            <h4 className="font-black text-emerald-950 text-sm uppercase">Reset Level Pokémon</h4>
-            <p className="text-xs text-emerald-800/80 font-sans">Tất cả Pokémon của trainer sẽ trở về Level 1, XP/Mastery về 0.</p>
+            <h4 className="font-black text-emerald-950 text-sm">Reset Level Pokémon</h4>
+            <p className="text-xs text-emerald-800/80">Tất cả Pokémon của trainer sẽ trở về Level 1, XP/Mastery về 0.</p>
           </div>
           <button
             onClick={handleResetPokemonLevels}
-            className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-2xl font-black text-xs shadow-lg active:scale-95 transition-all"
           >
             Reset Level
           </button>
@@ -169,12 +169,12 @@ export const SettingsScreen: React.FC = () => {
 
       <SettingsSection id="ludo" icon="🐴" title="Customize Cá Ngựa" subtitle="Thêm, chỉnh sửa hoặc xóa ô đặc biệt trên bàn cờ 0-49." className="bg-amber-50 p-6 sm:p-10 rounded-[40px] border-4 border-amber-300 text-left space-y-6 my-8" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="flex justify-end">
-          <button onClick={() => setCustomLudoTiles(DEFAULT_LUDO_TILES)} className="bg-amber-200 hover:bg-amber-300 text-amber-950 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all">
+          <button onClick={() => setCustomLudoTiles(DEFAULT_LUDO_TILES)} className="bg-amber-200 hover:bg-amber-300 text-amber-950 px-4 py-2 rounded-xl text-xs font-bold transition-all">
             Khôi Phục Mặc Định 🔄
           </button>
         </div>
         <div className="bg-white p-5 rounded-3xl border-2 border-amber-200 space-y-4">
-          <h4 className="font-black text-amber-950 text-sm uppercase">{editingTileIndex !== null ? `Chỉnh Sửa Ô Số ${editingTileIndex}` : 'Thêm/Sửa Ô Đặc Biệt Mới'}</h4>
+          <h4 className="font-black text-amber-950 text-sm">{editingTileIndex !== null ? `Chỉnh Sửa Ô Số ${editingTileIndex}` : 'Thêm/Sửa Ô Đặc Biệt Mới'}</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <input type="number" min={0} max={49} value={tileFormIndex} onChange={e => setTileFormIndex(parseInt(e.target.value) || 0)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" />
             <input type="text" placeholder="Tên ô đặc biệt" value={tileFormTitle} onChange={e => setTileFormTitle(e.target.value)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" />
@@ -192,8 +192,8 @@ export const SettingsScreen: React.FC = () => {
           </div>
           <input type="text" placeholder="Mô tả khi dẫm vào ô..." value={tileFormDesc} onChange={e => setTileFormDesc(e.target.value)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" />
           <div className="flex gap-2">
-            <button onClick={handleSaveCustomTile} className="bg-amber-600 hover:bg-amber-700 text-white font-black px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow">{editingTileIndex !== null ? 'Cập Nhật Ô' : 'Lưu Ô Đặc Biệt'}</button>
-            {editingTileIndex !== null && <button onClick={resetTileForm} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2.5 rounded-xl text-xs uppercase">Hủy</button>}
+            <button onClick={handleSaveCustomTile} className="bg-amber-600 hover:bg-amber-700 text-white font-black px-6 py-2.5 rounded-xl text-xs shadow">{editingTileIndex !== null ? 'Cập Nhật Ô' : 'Lưu Ô Đặc Biệt'}</button>
+            {editingTileIndex !== null && <button onClick={resetTileForm} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2.5 rounded-xl text-xs">Hủy</button>}
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
@@ -203,7 +203,7 @@ export const SettingsScreen: React.FC = () => {
                 <span className="text-xl shrink-0">{tile.icon}</span>
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-amber-950 truncate">Ô {tile.tileIndex}: {tile.title}</p>
-                  <p className="text-[9px] text-amber-800 truncate">{tile.desc}</p>
+                  <p className="text-xs text-amber-800 truncate">{tile.desc}</p>
                 </div>
               </div>
               <div className="flex gap-1 shrink-0">
@@ -217,13 +217,13 @@ export const SettingsScreen: React.FC = () => {
 
       <SettingsSection id="luckyWheel" icon="🎡" title="Customize Vòng Quay May Mắn" subtitle="Tùy chỉnh phần thưởng, hình phạt, HP, Pokémon skill và lượt lắc Cá Ngựa." className="bg-fuchsia-50 p-6 sm:p-10 rounded-[40px] border-4 border-fuchsia-200 text-left space-y-6 my-8" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="flex flex-wrap justify-end gap-3">
-          <button onClick={() => addLuckyWheelReward('points')} className="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all">
+          <button onClick={() => addLuckyWheelReward('points')} className="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
             + Thêm Mục Quay
           </button>
-          <button onClick={() => addLuckyWheelReward('ludo_rolls')} className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all">
+          <button onClick={() => addLuckyWheelReward('ludo_rolls')} className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">
             + Thêm Lượt Cá Ngựa
           </button>
-          <button onClick={() => { if(confirm('Khôi phục danh sách Vòng quay may mắn mặc định?')) setLuckyWheelRewards(DEFAULT_LUCKY_WHEEL_REWARDS); }} className="bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-950 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all border border-fuchsia-200">
+          <button onClick={() => { if(confirm('Khôi phục danh sách Vòng quay may mắn mặc định?')) setLuckyWheelRewards(DEFAULT_LUCKY_WHEEL_REWARDS); }} className="bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-950 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-fuchsia-200">
             Khôi Phục Mặc Định
           </button>
         </div>
@@ -269,9 +269,9 @@ export const SettingsScreen: React.FC = () => {
         <div className="bg-white p-6 rounded-3xl border border-red-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left space-y-1">
             <h4 className="text-sm font-bold text-brand-ink">Danh Sách Trainer (CSV / Excel)</h4>
-            <p className="font-sans text-xs text-brand-ink/70">Nhập danh sách trainer từ bảng CSV.</p>
+            <p className="text-xs text-brand-ink/70">Nhập danh sách trainer từ bảng CSV.</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 shrink-0 font-sans">
+          <div className="flex flex-wrap justify-center gap-4 shrink-0">
             <button onClick={() => {
               const BOM = '\uFEFF';
               const csv = "Họ tên, Lớp, Số điểm hiện tại, Giới tính (Nam/Nữ)\nNguyễn Văn A, 10A1, 100, Nam\nTrần Thị B, 10A1, 80, Nữ";
@@ -305,9 +305,9 @@ export const SettingsScreen: React.FC = () => {
         <div className="bg-white p-6 rounded-3xl border border-red-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left space-y-1">
             <h4 className="font-bold text-red-950 text-sm">Sao Lưu Toàn Bộ Hệ Thống (JSON Backup)</h4>
-            <p className="text-xs text-red-800/80 font-sans">Bao gồm trainer, điểm, lịch sử, Pokémon, công trạng, Pokémon skills và âm thanh.</p>
+            <p className="text-xs text-red-800/80">Bao gồm trainer, điểm, lịch sử, Pokémon, công trạng, Pokémon skills và âm thanh.</p>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 shrink-0 font-sans">
+          <div className="flex flex-wrap justify-center gap-4 shrink-0">
             <button onClick={handleExportJSON} className="bg-[#D4AF37] hover:bg-amber-600 text-white p-3 px-6 rounded-2xl font-bold transition-all text-xs shadow-md">Export JSON Backup 📦</button>
             <label className="bg-teal-700 hover:bg-teal-900 text-white p-3 px-6 rounded-2xl font-bold cursor-pointer transition-all text-xs shadow-md">
               Import JSON Restore 📥

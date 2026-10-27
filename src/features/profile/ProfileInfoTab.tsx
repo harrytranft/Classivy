@@ -41,7 +41,7 @@ export const ProfileInfoTab: React.FC = () => {
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl bg-white p-3">
-                <p className="mb-2 text-[10px] font-black uppercase tracking-wider text-stone-400">Unlocked Titles</p>
+                <p className="mb-2 text-xs font-black text-stone-400">Unlocked Titles</p>
                 <div className="flex flex-wrap gap-2">
                   {(trainerProgress.unlockedTitleIds || ['rookie']).map(titleId => {
                     const title = getTrainerTitleDefinition(titleId);
@@ -59,7 +59,7 @@ export const ProfileInfoTab: React.FC = () => {
                           setEditingStudent(updatedStudent);
                           setStudents(prev => prev.map(student => student.id === editingStudent.id ? updatedStudent : student));
                         }}
-                        className={`rounded-full border px-3 py-1 text-[10px] font-black ${trainerProgress.titleId === title.id ? 'border-brand-forest bg-brand-forest text-brand-cream' : 'border-amber-200 bg-amber-50 text-amber-900'}`}
+                        className={`rounded-full border px-3 py-1 text-xs font-black ${trainerProgress.titleId === title.id ? 'border-brand-forest bg-brand-forest text-brand-cream' : 'border-amber-200 bg-amber-50 text-amber-900'}`}
                       >
                         {title.icon} {title.name}
                       </button>
@@ -68,11 +68,11 @@ export const ProfileInfoTab: React.FC = () => {
                 </div>
               </div>
               <div className="rounded-2xl bg-white p-3">
-                <p className="mb-2 text-[10px] font-black uppercase tracking-wider text-stone-400">Gym Badges</p>
+                <p className="mb-2 text-xs font-black text-stone-400">Gym Badges</p>
                 {earnedBadgeViews.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {earnedBadgeViews.map(({ badge, definition }) => (
-                      <span key={badge.badgeId} className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[10px] font-black text-amber-900" title={definition!.description}>
+                      <span key={badge.badgeId} className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-black text-amber-900" title={definition!.description}>
                         {definition!.icon} {definition!.name}
                       </span>
                     ))}
@@ -88,12 +88,12 @@ export const ProfileInfoTab: React.FC = () => {
 
       {editingStudent.adventureJournal && editingStudent.adventureJournal.length > 0 && (
         <div className="rounded-[32px] border border-stone-200 bg-stone-50 p-5">
-          <h3 className="font-royal text-xl text-stone-900">📖 Adventure Journal</h3>
+          <h3 className="text-xl text-stone-900 font-extrabold">📖 Adventure Journal</h3>
           <div className="mt-4 max-h-56 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
             {editingStudent.adventureJournal.slice(0, 12).map(entry => (
               <div key={entry.id} className="rounded-2xl bg-white p-3 text-sm shadow-sm">
                 <p className="font-bold text-stone-800">{entry.text}</p>
-                <p className="mt-1 text-[10px] font-bold text-stone-400">{new Date(entry.timestamp).toLocaleDateString()}</p>
+                <p className="mt-1 text-xs font-bold text-stone-400">{new Date(entry.timestamp).toLocaleDateString()}</p>
               </div>
             ))}
           </div>
@@ -104,7 +104,7 @@ export const ProfileInfoTab: React.FC = () => {
         <div className="relative shrink-0 flex flex-col items-center gap-2">
           <StudentAvatar student={editingStudent} className="w-32 h-32 rounded-full border-4 border-[#D4AF37] shadow-lg" />
           <div className="flex flex-col items-center gap-1.5 w-full">
-            <label className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-xl cursor-pointer shadow-sm transition-all text-center w-full uppercase">
+            <label className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-3 py-1.5 rounded-xl cursor-pointer shadow-sm transition-all text-center w-full">
               📷 Đổi Ảnh Riêng
               <input 
                 type="file" 
@@ -116,7 +116,7 @@ export const ProfileInfoTab: React.FC = () => {
             {editingStudent.customAvatar && (
               <button 
                 onClick={() => handleRemoveStudentCustomAvatar(editingStudent.id)}
-                className="text-[9px] font-bold text-red-600 hover:underline uppercase"
+                className="text-xs font-bold text-red-600 hover:underline"
               >
                 Xoá ảnh riêng (Dùng Avatar cấp bậc)
               </button>
@@ -125,15 +125,15 @@ export const ProfileInfoTab: React.FC = () => {
         </div>
         <div className="flex-1 w-full space-y-4">
           <div>
-            <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Họ Tên</label>
+            <label className="text-xs font-bold text-gray-400 block mb-1">Họ Tên</label>
             <input className="w-full border border-[#d9d6ca] p-3 rounded-brand-md bg-white focus:ring-2 ring-brand-emerald/20 outline-none text-sm font-bold" value={editingStudent.name} onChange={e => setEditingStudent({...editingStudent, name: e.target.value})} />
           </div>
           <div>
-            <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Lớp / Team</label>
+            <label className="text-xs font-bold text-gray-400 block mb-1">Lớp / Team</label>
             <input className="w-full border border-[#d9d6ca] p-3 rounded-brand-md bg-white focus:ring-2 ring-brand-emerald/20 outline-none text-sm font-bold" value={editingStudent.className} onChange={e => setEditingStudent({...editingStudent, className: e.target.value})} />
           </div>
           <div>
-            <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Điểm Hiện Tại</label>
+            <label className="text-xs font-bold text-gray-400 block mb-1">Điểm Hiện Tại</label>
             <input type="number" className="w-full border border-[#d9d6ca] p-3 rounded-brand-md bg-white font-black text-2xl text-brand-forest outline-none" value={editingStudent.points} onChange={e => setEditingStudent({...editingStudent, points: parseInt(e.target.value) || 0})} />
           </div>
         </div>
@@ -159,13 +159,13 @@ export const ProfileInfoTab: React.FC = () => {
       </div>
 
       <div className="pt-8 border-t">
-        <h3 className="text-xl font-royal mb-6 text-gray-800">Biên Niên Sử</h3>
+        <h3 className="text-xl mb-6 text-gray-800 font-extrabold">Biên Niên Sử</h3>
         <div className="space-y-3 h-80 overflow-y-auto pr-2 custom-scrollbar">
           {editingStudent.history.map(h => (
             <div key={h.id} className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex justify-between items-center group hover:border-red-800/20">
               <div>
                 <p className="font-bold text-gray-800 text-sm">{h.reason}</p>
-                <p className="text-[10px] opacity-40">{new Date(h.timestamp).toLocaleString()}</p>
+                <p className="text-xs opacity-40">{new Date(h.timestamp).toLocaleString()}</p>
               </div>
               <span className={`text-xl font-black ${h.amount >= 0 ? 'text-green-600' : 'text-red-600'}`}>{h.amount > 0 ? '+' : ''}{h.amount}</span>
             </div>

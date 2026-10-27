@@ -1732,10 +1732,10 @@
       },
       {
         "id": "sk_decree",
-        "name": "Ý Chỉ Đồng Hành",
+        "name": "Đồng Đội Hỗ Trợ",
         "icon": "📜",
         "cost": 26,
-        "description": "Được phép chỉ định một Trainer bất kỳ thảo luận nhóm hỗ trợ trả lời câu hỏi."
+        "description": "Được phép mời một Trainer bất kỳ cùng thảo luận để hỗ trợ trả lời câu hỏi."
       },
       {
         "id": "sk_survival",

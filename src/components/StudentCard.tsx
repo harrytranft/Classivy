@@ -65,6 +65,15 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   return (
     <div
       onClick={() => onSelect(student)}
+      // Vào được bằng phím Tab; Enter/Space mở như bấm chuột (chỉ khi focus đang ở chính thẻ, không phải nút con).
+      role="button"
+      tabIndex={0}
+      aria-label={student.name}
+      onKeyDown={event => {
+        if (event.target !== event.currentTarget || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        onSelect(student);
+      }}
       className={cx(
         'relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200',
         isSelected
@@ -119,7 +128,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
                               <span className="text-sm">{sk?.icon || '✨'}</span>
                               <div className="min-w-0">
                                 <p className="truncate font-bold">{sk?.name || skId}</p>
-                                <p className="line-clamp-1 text-[11px] text-brand-cream/70">{sk?.description}</p>
+                                <p className="line-clamp-1 text-xs text-brand-cream/70">{sk?.description}</p>
                               </div>
                             </div>
                           );

@@ -35,7 +35,7 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
         <button
           type="button"
           onClick={() => onToggle(id)}
-          className={`shrink-0 h-8 w-14 rounded-full border p-1 transition-colors ${isCollapsed ? 'border-[#d9d6ca] bg-[#f1efe7]' : 'border-brand-forest bg-brand-forest'}`}
+          className={`shrink-0 h-8 w-14 rounded-full border p-1 transition-colors ${isCollapsed ? 'border-[#d9d6ca] bg-[#f1efe7]':'border-brand-forest bg-brand-forest'}`}
           aria-label={isCollapsed ? `Hiện ${title}` : `Ẩn ${title}`}
           title={isCollapsed ? `Hiện ${title}` : `Ẩn ${title}`}
         >

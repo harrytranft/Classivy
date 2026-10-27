@@ -13,7 +13,7 @@ export const LoginScreen: React.FC = () => (
 
         <div className="my-6 h-px w-full bg-[#e6e2d4]" />
 
-        <p className="max-w-sm text-sm leading-relaxed text-brand-ink/70">
+        <p className="mx-auto max-w-sm text-sm leading-relaxed text-brand-ink/70">
           Đăng nhập để quản lý trainer, đồng bộ dữ liệu lớp học,
           theo dõi Pokémon đồng hành và tổ chức các hoạt động học tập.
         </p>

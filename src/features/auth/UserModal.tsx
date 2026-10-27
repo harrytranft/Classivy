@@ -69,14 +69,14 @@ export const UserModal: React.FC = () => {
                   <div className="space-y-1 rounded-brand-md border border-brand-emerald/20 bg-[#f4f8f1] p-3 text-left text-xs text-brand-forest">
                     <div className="flex items-center justify-between font-bold">
                       <span>Trạng thái đồng bộ</span>
-                      <span className="rounded-full bg-brand-emerald px-2 py-0.5 text-[10px] font-bold text-white">Đang bật</span>
+                      <span className="rounded-full bg-brand-emerald px-2 py-0.5 text-xs font-bold text-white">Đang bật</span>
                     </div>
                     <p className="leading-snug text-brand-ink/70">
                       Tự động sao lưu sau 1,5 giây khi có thay đổi. Dữ liệu chưa đổi vẫn được giữ nguyên.
                     </p>
                   </div>
 
-                  <div className="pt-2 space-y-2.5 font-sans">
+                  <div className="pt-2 space-y-2.5">
                     <Button
                       onClick={async () => {
                         if (!editingDisplayName.trim()) {

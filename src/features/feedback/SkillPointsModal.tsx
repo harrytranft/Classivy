@@ -12,7 +12,7 @@ export const SkillPointsModal: React.FC = () => {
   return (
     <>
             {showSkillModal && (
-              <div className="classivy-game-modal fixed inset-0 z-[220] flex items-center justify-center bg-brand-forest-deep/60 p-0 sm:p-4 backdrop-blur-md">
+              <div className="fixed inset-0 z-[220] flex items-center justify-center bg-brand-forest-deep/60 p-0 sm:p-4 backdrop-blur-md">
                 <div className="bg-white w-full max-w-5xl rounded-3xl h-full sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300 shadow-2xl">
 
                   {/* Sidebar Profile details from screenshot request */}
@@ -29,7 +29,7 @@ export const SkillPointsModal: React.FC = () => {
 
                           {sidebarData.student.pet && (
                             <div className="flex flex-col items-center bg-amber-50 p-2 rounded-2xl border border-amber-200 shadow-sm relative">
-                              <div className="absolute -top-2 -right-2 bg-emerald-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full border border-white shadow">
+                              <div className="absolute -top-2 -right-2 bg-emerald-600 text-white text-xs font-black px-2 py-0.5 rounded-full border border-white shadow">
                                 ❤️ {sidebarData.student.pet.hp ?? 100}/100
                               </div>
                               <img 
@@ -39,7 +39,7 @@ export const SkillPointsModal: React.FC = () => {
                                 className="w-20 h-20 object-contain drop-shadow"
                                 alt={getPokemonDisplayName(sidebarData.student.pet)}
                               />
-                              <span className="text-[9px] font-black text-amber-900 truncate max-w-[80px]">{getPokemonDisplayName(sidebarData.student.pet)}</span>
+                              <span className="text-xs font-black text-amber-900 truncate max-w-[80px]">{getPokemonDisplayName(sidebarData.student.pet)}</span>
                               <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
                                 <div 
                                   className={`h-full rounded-full transition-all duration-300 ${(sidebarData.student.pet.hp ?? 100) > 50 ? 'bg-emerald-500' : (sidebarData.student.pet.hp ?? 100) > 20 ? 'bg-amber-500' : 'bg-red-500'}`}
@@ -51,10 +51,10 @@ export const SkillPointsModal: React.FC = () => {
                         </div>
 
                         <h3 className="text-2xl font-bold text-gray-800 mb-1 text-center">{sidebarData.student.name}</h3>
-                        <p className="text-xs font-black uppercase text-gray-400 mb-4">{sidebarData.student.className}</p>
+                        <p className="text-xs font-black text-gray-400 mb-4">{sidebarData.student.className}</p>
 
                         <div className="w-full space-y-3 pt-6 border-t border-gray-200 text-center" data-testid="trainer-level-panel">
-                          <p className="text-[10px] font-black uppercase text-gray-400">Trainer Level</p>
+                          <p className="text-xs font-black text-gray-400">Trainer Level</p>
                           <p className="text-3xl font-black text-brand-forest">Lv.{sidebarData.trainerProgress.level}</p>
                           <p className="inline-block rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-800 border border-amber-100">
                             {sidebarData.trainerTitle.icon} {sidebarData.trainerTitle.name}
@@ -65,7 +65,7 @@ export const SkillPointsModal: React.FC = () => {
                               style={{ width: `${sidebarData.trainerLevelPct}%` }}
                             />
                           </div>
-                          <p className="text-[10px] font-bold uppercase text-gray-400">
+                          <p className="text-xs font-bold text-gray-400">
                             Trainer XP {sidebarData.trainerProgress.xp}/{sidebarData.trainerXpNeeded}
                           </p>
                         </div>
@@ -91,7 +91,7 @@ export const SkillPointsModal: React.FC = () => {
                           />
                           <button 
                             onClick={() => handleUpdatePoints(selectedStudentIds, parseInt(manualPoints), "Điều chỉnh thủ công", feedbackSource)}
-                            className="bg-purple-600 text-white text-[10px] px-4 py-2 rounded-full font-bold hover:bg-purple-700 transition-all uppercase"
+                            className="bg-purple-600 text-white text-xs px-4 py-2 rounded-full font-bold hover:bg-purple-700 transition-all"
                           >
                             Lưu điểm
                           </button>
@@ -114,7 +114,7 @@ export const SkillPointsModal: React.FC = () => {
                             className="flex flex-col items-center justify-center gap-3 p-6 rounded-3xl border-2 border-gray-100 hover:border-purple-200 hover:bg-purple-50 transition-all group relative aspect-square"
                           >
                             <div className="text-5xl group-hover:scale-125 transition-transform duration-300">{sk.icon}</div>
-                            <span className="text-xs font-bold text-center text-gray-600 uppercase tracking-tight leading-tight px-2">{sk.name}</span>
+                            <span className="text-xs font-bold text-center text-gray-600 tracking-tight leading-tight px-2">{sk.name}</span>
                             <span className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center font-black text-xs ${sk.points > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                               {sk.points > 0 ? '+' : ''}{sk.points}
                             </span>
@@ -122,7 +122,7 @@ export const SkillPointsModal: React.FC = () => {
                         ))}
                         <button onClick={() => setCurrentScreen('settings')} className="flex flex-col items-center justify-center gap-3 p-6 rounded-3xl border-2 border-dashed border-gray-200 opacity-40 hover:opacity-100 transition-all aspect-square">
                            <div className="w-12 h-12 rounded-full border-2 border-purple-600 flex items-center justify-center text-3xl text-purple-600">+</div>
-                           <span className="text-[10px] font-bold uppercase text-purple-600">Add skills</span>
+                           <span className="text-xs font-bold text-purple-600">Add skills</span>
                         </button>
                       </div>
                     </div>

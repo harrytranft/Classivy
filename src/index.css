@@ -34,26 +34,10 @@ input, textarea, select {
 @tailwind components;
 @tailwind utilities;
 
-/* Những control cũ còn lồng sâu trong Hồ sơ/Cài đặt: chuyển màu primary Imperial sang Classivy
-   trong khi giữ đỏ cho hành động xoá/cảnh báo có ý nghĩa nguy hiểm. */
-.classivy-reskin button[class*="bg-red-"] {
-  background-color: #014a2d !important;
-}
-.classivy-reskin button[class*="hover:bg-red-"]:hover {
-  background-color: #002619 !important;
-}
-.classivy-reskin .font-royal {
-  font-family: "Plus Jakarta Sans", "Be Vietnam Pro", system-ui, sans-serif !important;
-}
-
-/* Các modal game giữ màu trạng thái/reward riêng, nhưng không còn dùng serif hay primary Imperial. */
-.classivy-game-modal .font-royal {
-  font-family: "Plus Jakarta Sans", "Be Vietnam Pro", system-ui, sans-serif !important;
-  letter-spacing: -0.01em !important;
-}
-.classivy-game-modal button[class*="bg-red-"] {
-  background-color: #014a2d !important;
-}
-.classivy-game-modal button[class*="hover:bg-red-"]:hover {
-  background-color: #002619 !important;
+@layer base {
+  /* Phông chữ lấy từ `fontFamily.sans` trong tailwind.config.js (Plus Jakarta Sans, Be Vietnam Pro). */
+  body {
+    @apply bg-brand-cream font-sans text-brand-ink;
+    min-height: 100vh;
+  }
 }

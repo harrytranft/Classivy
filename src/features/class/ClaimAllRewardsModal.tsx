@@ -12,8 +12,8 @@ export const ClaimAllRewardsModal: React.FC = () => {
         <div className="fixed inset-0 z-[245] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
           <div className="flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-[36px] border-4 border-amber-300 bg-white shadow-2xl">
             <div className="bg-gradient-to-r from-emerald-700 via-amber-600 to-red-800 p-6 text-white">
-              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-amber-100">Nhận quà cả lớp</p>
-              <h3 className="mt-1 text-3xl font-royal uppercase">Tổng kết phần thưởng</h3>
+              <p className="text-xs font-black text-amber-100">Nhận quà cả lớp</p>
+              <h3 className="mt-1 text-3xl font-extrabold">Tổng kết phần thưởng</h3>
               <p className="mt-1 text-xs font-bold text-white/80">
                 {claimAllRewardSummary.length > 0
                   ? `${claimAllRewardSummary.length} học sinh có quà Expedition hoặc rương sẵn sàng.`
@@ -55,7 +55,7 @@ export const ClaimAllRewardsModal: React.FC = () => {
             <div className="border-t border-amber-200 bg-white p-4">
               <button
                 onClick={() => setClaimAllRewardSummary(null)}
-                className="w-full rounded-2xl bg-amber-600 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-amber-700"
+                className="w-full rounded-2xl bg-amber-600 py-3 text-xs font-black text-white shadow-lg hover:bg-amber-700"
               >
                 Hoàn tất
               </button>

@@ -61,7 +61,7 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
                     <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-black text-gray-900">{student.name}</p>
-                      <p className="truncate text-[10px] font-bold text-gray-500">{student.className}</p>
+                      <p className="truncate text-xs font-bold text-gray-500">{student.className}</p>
                     </div>
                     {alreadyChecked ? (
                       <Chip tone="neutral">Đã chốt</Chip>
@@ -72,7 +72,7 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
                             key={value}
                             type="button"
                             onClick={() => onSetStatus(student.id, value)}
-                            className={`rounded-full border px-3 py-1 text-[11px] font-bold transition-colors ${
+                            className={`rounded-full border px-3 py-1 text-xs font-bold transition-colors ${
                               status === value ? statusStyles[value] : 'border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink'
                             }`}
                           >

@@ -24,7 +24,7 @@ export const LuckyWheelModal: React.FC = () => {
                     closeLuckyWheel();
                   }
                 }}
-                className="classivy-game-modal fixed inset-0 z-[220] flex items-center justify-center bg-brand-forest-deep/70 p-4 backdrop-blur-md overflow-y-auto"
+                className="fixed inset-0 z-[220] flex items-center justify-center bg-brand-forest-deep/70 p-4 backdrop-blur-md overflow-y-auto"
               >
                 <div className="bg-[#17051f] w-full max-w-5xl rounded-[40px] shadow-[0_0_80px_rgba(217,70,239,0.55)] overflow-hidden animate-in zoom-in duration-300 relative border-4 border-fuchsia-500 my-auto">
                   <button
@@ -46,7 +46,7 @@ export const LuckyWheelModal: React.FC = () => {
                         🎡
                       </div>
                       <div>
-                        <h2 className="text-2xl sm:text-3xl font-royal uppercase tracking-wider text-amber-200">Vòng Quay May Mắn</h2>
+                        <h2 className="text-2xl sm:text-3xl text-amber-200 font-extrabold">Vòng Quay May Mắn</h2>
                         <p className="text-xs sm:text-sm text-fuchsia-100 font-bold mt-1">
                           {isLuckyWheelSpinning
                             ? 'Đang quay trong 10 giây...'
@@ -96,7 +96,7 @@ export const LuckyWheelModal: React.FC = () => {
                         <div className="absolute -inset-6 rounded-full border border-amber-300/30 shadow-[0_0_60px_rgba(250,204,21,0.55)] pointer-events-none" />
                       </div>
 
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full max-w-xl text-xs font-black uppercase tracking-wide">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full max-w-xl text-xs font-black">
                         <div className="bg-emerald-100 text-emerald-800 rounded-2xl px-3 py-2 text-center">+ Điểm tối đa 10</div>
                         <div className="bg-red-100 text-red-800 rounded-2xl px-3 py-2 text-center">- Điểm tối đa 10</div>
                         <div className="bg-amber-100 text-amber-900 rounded-2xl px-3 py-2 text-center">Tặng Pokemon</div>
@@ -108,7 +108,7 @@ export const LuckyWheelModal: React.FC = () => {
 
                     <div className="space-y-5">
                       <div className="bg-white/95 rounded-3xl border border-fuchsia-100 p-5 shadow-[0_0_24px_rgba(255,255,255,0.22)]">
-                        <p className="text-[10px] font-black uppercase tracking-[0.25em] text-fuchsia-900 mb-3">Danh sách được quay</p>
+                        <p className="text-xs font-black text-fuchsia-900 mb-3">Danh sách được quay</p>
                         {luckyWheelMode === 'ludo-finish' ? (
                           <div className="flex flex-wrap gap-2 max-h-28 overflow-y-auto custom-scrollbar pr-1">
                             {luckyWheelCandidateIds.map(id => {
@@ -123,7 +123,7 @@ export const LuckyWheelModal: React.FC = () => {
                           </div>
                         ) : (
                           <>
-                            <p className="text-[11px] font-bold text-gray-500 mb-2">Bấm vào tên để chọn hoặc bỏ chọn ({luckyWheelCandidateIds.filter(id => wheelRoster.some(s => s.id === id)).length}/{wheelRoster.length}).</p>
+                            <p className="text-xs font-bold text-gray-500 mb-2">Bấm vào tên để chọn hoặc bỏ chọn ({luckyWheelCandidateIds.filter(id => wheelRoster.some(s => s.id === id)).length}/{wheelRoster.length}).</p>
                             <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
                               {wheelRoster.map(candidate => {
                                 const checked = luckyWheelCandidateIds.includes(candidate.id);
@@ -152,7 +152,7 @@ export const LuckyWheelModal: React.FC = () => {
                         {!isLuckyWheelSpinning && !luckyWheelResult && (
                           <div className="w-full space-y-5 animate-in zoom-in-95 duration-300">
                             <div className="text-6xl drop-shadow">🎡</div>
-                            <h3 className="text-3xl font-royal text-fuchsia-900 uppercase">Sẵn sàng quay</h3>
+                            <h3 className="text-3xl text-fuchsia-900 font-extrabold">Sẵn sàng quay</h3>
                             <p className="text-sm font-bold text-gray-500">
                               {luckyWheelMode === 'ludo-finish'
                                 ? 'Lượt cán đích ưu tiên 60% phần quà tốt và 40% phần quà không tốt.'
@@ -160,7 +160,7 @@ export const LuckyWheelModal: React.FC = () => {
                             </p>
                             <button
                               onClick={startLuckyWheelSpin}
-                              className="w-full bg-gradient-to-r from-amber-500 via-fuchsia-600 to-cyan-500 hover:brightness-110 text-white py-4 rounded-2xl font-black uppercase tracking-wider shadow-[0_0_28px_rgba(217,70,239,0.6)] transition-all"
+                              className="w-full bg-gradient-to-r from-amber-500 via-fuchsia-600 to-cyan-500 hover:brightness-110 text-white py-4 rounded-2xl font-black shadow-[0_0_28px_rgba(217,70,239,0.6)] transition-all"
                             >
                               Bắt Đầu Quay
                             </button>
@@ -170,7 +170,7 @@ export const LuckyWheelModal: React.FC = () => {
                         {isLuckyWheelSpinning && (
                           <div className="space-y-4 animate-pulse">
                             <div className="text-6xl">🎡</div>
-                            <h3 className="text-2xl font-royal text-fuchsia-900 uppercase">Đang quay...</h3>
+                            <h3 className="text-2xl text-fuchsia-900 font-extrabold">Đang quay...</h3>
                             <p className="text-sm font-bold text-gray-500">Bánh xe đang tăng tốc rồi chậm lại trong 3 giây cuối.</p>
                           </div>
                         )}
@@ -180,9 +180,9 @@ export const LuckyWheelModal: React.FC = () => {
                             <div className="flex flex-col items-center gap-3">
                               <StudentAvatar student={luckyWheelResult.student} className="w-24 h-24 rounded-full border-4 border-fuchsia-700 shadow-xl" />
                               <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-fuchsia-700">Trainer trúng thưởng</p>
+                                <p className="text-xs font-black text-fuchsia-700">Trainer trúng thưởng</p>
                                 <h3 className="text-3xl font-black text-gray-900">{luckyWheelResult.student.name}</h3>
-                                <p className="text-xs font-bold text-gray-400 uppercase">{luckyWheelResult.student.className}</p>
+                                <p className="text-xs font-bold text-gray-400">{luckyWheelResult.student.className}</p>
                               </div>
                             </div>
 
@@ -201,7 +201,7 @@ export const LuckyWheelModal: React.FC = () => {
                                 />
                               )}
                               {luckyWheelResult.pokemon?.isShiny && (
-                                <span className="mt-2 inline-flex rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-800">
+                                <span className="mt-2 inline-flex rounded-full border border-amber-300 bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">
                                   ✨ Shiny
                                 </span>
                               )}
@@ -219,7 +219,7 @@ export const LuckyWheelModal: React.FC = () => {
                                     closeLuckyWheel();
                                     openLudoForClass(luckyWheelResult.student.className, luckyWheelResult.student);
                                   }}
-                                  className="mt-4 bg-blue-700 hover:bg-blue-800 text-white px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider shadow"
+                                  className="mt-4 bg-blue-700 hover:bg-blue-800 text-white px-5 py-2.5 rounded-2xl text-xs font-black shadow"
                                 >
                                   Mở Đường Đua Cá Ngựa
                                 </button>
@@ -230,7 +230,7 @@ export const LuckyWheelModal: React.FC = () => {
                               onClick={() => {
                                 closeLuckyWheel();
                               }}
-                              className="w-full bg-fuchsia-800 hover:bg-fuchsia-900 text-white py-3.5 rounded-2xl font-black uppercase tracking-wider shadow-lg transition-all"
+                              className="w-full bg-fuchsia-800 hover:bg-fuchsia-900 text-white py-3.5 rounded-2xl font-black shadow-lg transition-all"
                             >
                               Hoàn tất
                             </button>
