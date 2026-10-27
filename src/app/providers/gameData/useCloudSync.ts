@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { fetchUserSettings, upsertUserSettings } from '../../../lib/supabaseData';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
-import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_RANKS_FEMALE, DEFAULT_RANKS_MALE, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, RANKS_KEY_FEMALE, RANKS_KEY_MALE, SKILLS_KEY, STORAGE_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
+import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS } from '../../../data/pokemonData';
 import { Student } from '../../../types';
@@ -11,7 +11,7 @@ import type { AuthUser } from '../../../features/auth/AuthContext';
 // Tải dữ liệu từ Supabase khi đăng nhập và tự đồng bộ ngược lên (debounce 1,5 giây, chỉ khi dữ liệu đổi).
 export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoading: boolean) => {
   const {
-    students, setStudents, ranksMale, setRanksMale, ranksFemale, setRanksFemale, skills,
+    students, setStudents, skills,
     setSkills, petSkills, setPetSkills, bossEncounterFrequency, setBossEncounterFrequency,
     bossStatesByClass, setBossStatesByClass, luckyWheelRewards, setLuckyWheelRewards,
     setLuckyWheelDisplayRewards, customLudoTiles, setCustomLudoTiles, posSoundUrl,
@@ -42,8 +42,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
             ? cloudData.students.map(normalizeStudentPokemonData)
             : [];
           if (cloudData.students && Array.isArray(cloudData.students)) setStudents(cloudStudents);
-          if (cloudData.ranksMale && Array.isArray(cloudData.ranksMale)) setRanksMale(cloudData.ranksMale);
-          if (cloudData.ranksFemale && Array.isArray(cloudData.ranksFemale)) setRanksFemale(cloudData.ranksFemale);
           if (cloudData.skills && Array.isArray(cloudData.skills)) setSkills(cloudData.skills);
           if (cloudData.petSkills && Array.isArray(cloudData.petSkills) && cloudData.petSkills.length > 0) {
             setPetSkills(cloudData.petSkills);
@@ -76,8 +74,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           // Save snapshot ref to prevent immediate re-sync of unchanged data
           lastSyncedSnapshotRef.current = JSON.stringify({
             students: cloudStudents,
-            ranksMale: cloudData.ranksMale || [],
-            ranksFemale: cloudData.ranksFemale || [],
             skills: cloudData.skills || [],
             petSkills: cloudData.petSkills || DEFAULT_PET_SKILLS,
             posSoundUrl: cloudData.posSoundUrl || '',
@@ -93,8 +89,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
 
           // Also save a fallback local copy
           localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudStudents));
-          if (cloudData.ranksMale) localStorage.setItem(RANKS_KEY_MALE, JSON.stringify(cloudData.ranksMale));
-          if (cloudData.ranksFemale) localStorage.setItem(RANKS_KEY_FEMALE, JSON.stringify(cloudData.ranksFemale));
           if (cloudData.skills) localStorage.setItem(SKILLS_KEY, JSON.stringify(cloudData.skills));
           if (cloudData.petSkills) localStorage.setItem(PET_SKILLS_KEY, JSON.stringify(cloudData.petSkills));
           if (cloudData.posSoundUrl) localStorage.setItem('imperial_sound_pos', cloudData.posSoundUrl);
@@ -114,11 +108,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
             }
           }
           
-          const savedMaleRanks = localStorage.getItem(RANKS_KEY_MALE);
-          const localMaleRanks = savedMaleRanks ? JSON.parse(savedMaleRanks) : DEFAULT_RANKS_MALE;
 
-          const savedFemaleRanks = localStorage.getItem(RANKS_KEY_FEMALE);
-          const localFemaleRanks = savedFemaleRanks ? JSON.parse(savedFemaleRanks) : DEFAULT_RANKS_FEMALE;
 
           const savedSkills = localStorage.getItem(SKILLS_KEY);
           const localSkills = savedSkills ? JSON.parse(savedSkills) : DEFAULT_SKILLS;
@@ -138,8 +128,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           // Push local state to cloud to prevent data loss on onboarding
           const updatedAt = await upsertUserSettings(user.uid, {
             students: localStudents,
-            ranksMale: localMaleRanks,
-            ranksFemale: localFemaleRanks,
             skills: localSkills,
             petSkills: localPetSkills,
             posSoundUrl,
@@ -155,8 +143,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
 
           lastSyncedSnapshotRef.current = JSON.stringify({
             students: localStudents,
-            ranksMale: localMaleRanks,
-            ranksFemale: localFemaleRanks,
             skills: localSkills,
             petSkills: localPetSkills,
             posSoundUrl,
@@ -171,8 +157,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           });
           
           setStudents(localStudents);
-          setRanksMale(localMaleRanks);
-          setRanksFemale(localFemaleRanks);
           setSkills(localSkills);
           setPetSkills(localPetSkills);
           setLuckyWheelRewards(localLuckyWheelRewards);
@@ -200,8 +184,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
 
     const currentSnapshot = JSON.stringify({
       students,
-      ranksMale,
-      ranksFemale,
       skills,
       petSkills,
       posSoundUrl,
@@ -227,8 +209,6 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
       try {
         const updatedAt = await upsertUserSettings(user.uid, {
           students,
-          ranksMale,
-          ranksFemale,
           skills,
           petSkills,
           posSoundUrl,
@@ -252,5 +232,5 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     }, 1500); // 1.5s debounce to group multiple rapid edits together
 
     return () => clearTimeout(timer);
-  }, [students, ranksMale, ranksFemale, skills, petSkills, posSoundUrl, negSoundUrl, timerSoundUrl, wheelSpinSoundUrl, wheelFinishSoundUrl, customLudoTiles, luckyWheelRewards, bossStatesByClass, bossEncounterFrequency, user, initialCloudLoadComplete, cloudLoadSuccess]);
+  }, [students, skills, petSkills, posSoundUrl, negSoundUrl, timerSoundUrl, wheelSpinSoundUrl, wheelFinishSoundUrl, customLudoTiles, luckyWheelRewards, bossStatesByClass, bossEncounterFrequency, user, initialCloudLoadComplete, cloudLoadSuccess]);
 };

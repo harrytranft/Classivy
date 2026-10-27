@@ -4,7 +4,7 @@ import path from 'node:path';
 
 // Smoke test "giữ nguyên hành vi" cho Phase 1.
 // - Dữ liệu mẫu: fixtures/sample-class.json (nạp như dữ liệu đám mây của một giáo viên giả).
-// - Không gọi mạng thật: Supabase, Gemini, thời tiết, âm thanh, ảnh đều bị chặn hoặc giả lập.
+// - Không gọi mạng thật: Supabase, thời tiết, âm thanh, ảnh đều bị chặn hoặc giả lập.
 // - Thời gian cố định và số ngẫu nhiên có seed để kết quả lặp lại được.
 // - Mỗi bước so sánh DOM (bỏ thuộc tính style vì animation) và dữ liệu đồng bộ lên "đám mây" với ảnh chụp gốc.
 // Cập nhật ảnh gốc khi CỐ Ý đổi giao diện: npm run smoke -- --update-snapshots
@@ -58,7 +58,7 @@ interface SmokeState {
   errors: string[];
 }
 
-const IGNORED_CONSOLE_ERRORS = [/Failed to load resource/, /net::ERR/, /Gemini Error/];
+const IGNORED_CONSOLE_ERRORS = [/Failed to load resource/, /net::ERR/];
 
 async function setupPage(page: Page, options: { loggedIn: boolean }): Promise<SmokeState> {
   const state: SmokeState = { upserts: [], dialogs: [], errors: [] };

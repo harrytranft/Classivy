@@ -3,13 +3,12 @@ import { PokemonUiEvent } from '../../domain/gameEvents';
 import { HatchAnnouncementItem, LevelUpAnnouncement } from '../../types/app';
 import { PokemonReleaseEvent } from '../../types';
 
-// Sự kiện giao diện dùng chung: toast Pokémon, level-up, thông báo nở trứng, hàng đợi Pokémon rời đi, thánh chỉ.
+// Sự kiện giao diện dùng chung: toast Pokémon, level-up, thông báo nở trứng, hàng đợi Pokémon rời đi.
 const useUiEventsValue = () => {
   const [pokemonReactionEvents, setPokemonReactionEvents] = useState<PokemonUiEvent[]>([]);
   const [pokemonReactionTitle, setPokemonReactionTitle] = useState('Tiến triển Pokémon');
   const [levelUpAnnouncement, setLevelUpAnnouncement] = useState<LevelUpAnnouncement | null>(null);
   const pokemonReactionTimerRef = useRef<number | null>(null);
-  const [edict, setEdict] = useState<string | null>(null);
   const [showHatchModal, setShowHatchModal] = useState(false);
   const [hatchSuccessMessage, setHatchSuccessMessage] = useState<string>('');
   const [hatchAnnouncementItems, setHatchAnnouncementItems] = useState<HatchAnnouncementItem[] | null>(null);
@@ -66,7 +65,7 @@ const useUiEventsValue = () => {
     pokemonReactionTimerRef, showHatchModal, setShowHatchModal, hatchSuccessMessage,
     setHatchSuccessMessage, hatchAnnouncementItems, setHatchAnnouncementItems,
     pokemonReleaseEvent, setPokemonReleaseEvent, pokemonReleaseQueue, setPokemonReleaseQueue,
-    edict, setEdict, showPokemonReaction, showHatchAnnouncement, queuePokemonReleaseEvents,
+    showPokemonReaction, showHatchAnnouncement, queuePokemonReleaseEvents,
     showNextPokemonReleaseEvent
   };
 };

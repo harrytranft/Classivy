@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_RANKS_FEMALE, DEFAULT_RANKS_MALE, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, RANKS_KEY_FEMALE, RANKS_KEY_MALE, SKILLS_KEY, STORAGE_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
+import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
 import { Student } from '../../../types';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, getRandomPokemon } from '../../../data/pokemonData';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
@@ -11,7 +11,7 @@ import type { AuthUser } from '../../../features/auth/AuthContext';
 // Lưu/đọc localStorage (chế độ chưa đăng nhập và các cài đặt luôn lưu máy) + đánh dấu expedition đến hạn.
 export const useLocalPersistence = (data: GameDataState, user: AuthUser | null, authLoading: boolean) => {
   const {
-    students, setStudents, ranksMale, setRanksMale, ranksFemale, setRanksFemale, skills,
+    students, setStudents, skills,
     setSkills, petSkills, setPetSkills, bossEncounterFrequency, setBossEncounterFrequency,
     bossStatesByClass, setBossStatesByClass, luckyWheelRewards, setLuckyWheelRewards,
     setLuckyWheelDisplayRewards, customLudoTiles, setPosSoundUrl, setNegSoundUrl,
@@ -58,13 +58,7 @@ export const useLocalPersistence = (data: GameDataState, user: AuthUser | null, 
         setStudents([]);
       }
 
-      const savedMaleRanks = localStorage.getItem(RANKS_KEY_MALE);
-      if (savedMaleRanks) setRanksMale(JSON.parse(savedMaleRanks));
-      else setRanksMale(DEFAULT_RANKS_MALE);
 
-      const savedFemaleRanks = localStorage.getItem(RANKS_KEY_FEMALE);
-      if (savedFemaleRanks) setRanksFemale(JSON.parse(savedFemaleRanks));
-      else setRanksFemale(DEFAULT_RANKS_FEMALE);
 
       const savedSkills = localStorage.getItem(SKILLS_KEY);
       if (savedSkills) setSkills(JSON.parse(savedSkills));
@@ -131,18 +125,6 @@ export const useLocalPersistence = (data: GameDataState, user: AuthUser | null, 
   useEffect(() => {
     localStorage.setItem(BOSS_ENCOUNTER_FREQUENCY_KEY, bossEncounterFrequency);
   }, [bossEncounterFrequency]);
-
-  useEffect(() => { 
-    if (!user) {
-      localStorage.setItem(RANKS_KEY_MALE, JSON.stringify(ranksMale)); 
-    }
-  }, [ranksMale, user]);
-
-  useEffect(() => { 
-    if (!user) {
-      localStorage.setItem(RANKS_KEY_FEMALE, JSON.stringify(ranksFemale)); 
-    }
-  }, [ranksFemale, user]);
 
   useEffect(() => { 
     if (!user) {

@@ -1,4 +1,4 @@
-import { Gender, HistoryItem, PokemonReleaseEvent, RankInfo, Student } from '../types';
+import { HistoryItem, PokemonReleaseEvent, Student } from '../types';
 import { HatchAnnouncementItem } from '../types/app';
 import { GameEventSource, PokemonUiEvent, applyGameEventToStudent, applyPetHpDeltaToStudent } from './gameEvents';
 import { normalizeStudentPokemonData } from './pokemonProgression';
@@ -12,14 +12,6 @@ export interface PointsUpdateInput {
   amount: number;
   reason: string;
   source: GameEventSource;
-  getRank: (points: number, gender: Gender) => RankInfo;
-}
-
-/** Đổi cấp bậc khi chỉ chấm điểm cho 1 học sinh: giao diện gọi Gemini để viết "thánh chỉ". */
-export interface RankChange {
-  studentName: string;
-  newTitle: string;
-  promoted: boolean;
 }
 
 export interface PointsUpdateResult {
@@ -28,27 +20,19 @@ export interface PointsUpdateResult {
   evolvedMessages: string[];
   progressionEvents: PokemonUiEvent[];
   releaseEvent: PokemonReleaseEvent | null;
-  rankChanges: RankChange[];
 }
 
 export const applyPointsToStudents = (students: Student[], input: PointsUpdateInput): PointsUpdateResult => {
-  const { ids, amount, reason, source, getRank } = input;
+  const { ids, amount, reason, source } = input;
   let hatchItems: HatchAnnouncementItem[] = [];
   let evolvedMessages: string[] = [];
   let progressionEvents: PokemonUiEvent[] = [];
   let releaseEventToShow: PokemonReleaseEvent | null = null;
-  const rankChanges: RankChange[] = [];
 
   const updatedStudents = students.map(s => {
     if (ids.includes(s.id)) {
-      const oldRank = getRank(s.points, s.gender);
       const newPoints = s.points + amount;
-      const newRank = getRank(newPoints, s.gender);
       const history: HistoryItem = { id: Date.now().toString() + Math.random(), amount, reason, timestamp: Date.now() };
-
-      if (ids.length === 1 && oldRank.id !== newRank.id) {
-        rankChanges.push({ studentName: s.name, newTitle: newRank.title, promoted: newPoints > s.points });
-      }
 
       let currentStudent = normalizeStudentPokemonData(s);
       const eggProgressAmount = source === 'solo' ? (amount > 0 ? amount : 0) : amount;
@@ -111,7 +95,6 @@ export const applyPointsToStudents = (students: Student[], input: PointsUpdateIn
     hatchItems,
     evolvedMessages,
     progressionEvents,
-    releaseEvent: releaseEventToShow,
-    rankChanges
+    releaseEvent: releaseEventToShow
   };
 };

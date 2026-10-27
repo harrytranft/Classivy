@@ -1,11 +1,9 @@
 import { supabase } from './supabaseClient';
-import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, RankInfo, Skill, Student, LudoTileSpec } from '../types';
+import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, Skill, Student, LudoTileSpec } from '../types';
 import { PetSkill } from '../data/pokemonData';
 
 export interface UserSettingsData {
   students: Student[];
-  ranksMale: RankInfo[];
-  ranksFemale: RankInfo[];
   skills: Skill[];
   petSkills?: PetSkill[];
   posSoundUrl: string;
@@ -54,8 +52,6 @@ export const fetchUserSettings = async (userId: string): Promise<UserSettingsDat
 
   return {
     students: Array.isArray(data.students) ? data.students : [],
-    ranksMale: Array.isArray(data.ranks_male) ? data.ranks_male : [],
-    ranksFemale: Array.isArray(data.ranks_female) ? data.ranks_female : [],
     skills: Array.isArray(data.skills) ? data.skills : [],
     petSkills: Array.isArray(data.pet_skills) ? data.pet_skills : undefined,
     posSoundUrl: data.pos_sound_url || '',
@@ -78,8 +74,6 @@ export const upsertUserSettings = async (userId: string, settings: UserSettingsD
     .upsert({
       user_id: userId,
       students: sanitizeForSupabase(settings.students || []),
-      ranks_male: sanitizeForSupabase(settings.ranksMale || []),
-      ranks_female: sanitizeForSupabase(settings.ranksFemale || []),
       skills: sanitizeForSupabase(settings.skills || []),
       pet_skills: sanitizeForSupabase(settings.petSkills || []),
       pos_sound_url: settings.posSoundUrl || '',

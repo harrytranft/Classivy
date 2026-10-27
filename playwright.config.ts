@@ -26,8 +26,7 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       VITE_SUPABASE_URL: 'https://smoke-test.invalid',
-      VITE_SUPABASE_ANON_KEY: 'smoke-anon-key',
-      GEMINI_API_KEY: ''
+      VITE_SUPABASE_ANON_KEY: 'smoke-anon-key'
     }
   }
 });

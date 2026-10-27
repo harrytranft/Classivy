@@ -10,7 +10,7 @@ export interface PointsActions {
 
 export const createPointsActions = (appState: AppState, app: AppActions): PointsActions => {
   const {
-    editingStudent, getRank, negSoundUrl, posSoundUrl, randomStudent, setEdict,
+    editingStudent, negSoundUrl, posSoundUrl, randomStudent,
     setEditingStudent, setFeedbackSource, setHatchAnnouncementItems, setHatchSuccessMessage,
     setIsMultiSelectMode, setManualPoints, setPokemonReleaseEvent, setRandomStudent,
     setSelectedStudentIds, setShowHatchModal, setShowRandomModal, setShowSkillModal,
@@ -29,15 +29,8 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
       hatchItems,
       evolvedMessages,
       progressionEvents,
-      releaseEvent: releaseEventToShow,
-      rankChanges
-    } = applyPointsToStudents(students, { ids, amount, reason, source, getRank });
-    rankChanges.forEach(change => {
-      // Gemini SDK is loaded on demand so it is not part of the first page load.
-      import('../../lib/geminiService')
-        .then(({ generateEdict }) => generateEdict(change.studentName, change.newTitle, change.promoted))
-        .then(setEdict);
-    });
+      releaseEvent: releaseEventToShow
+    } = applyPointsToStudents(students, { ids, amount, reason, source });
 
     setStudents(updatedStudents);
     if (releaseEventToShow) setPokemonReleaseEvent(releaseEventToShow);

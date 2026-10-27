@@ -1,13 +1,13 @@
 import React from 'react';
 import { AuthLoginForm } from './AuthLoginForm';
-import { DEFAULT_RANKS_FEMALE, DEFAULT_RANKS_MALE, DEFAULT_SKILLS } from '../../data/constants';
+import { DEFAULT_SKILLS } from '../../data/constants';
 import { useApp } from '../../app/AppContext';
 
 export const UserModal: React.FC = () => {
   const {
     confirmLogout, editingDisplayName, editingPhotoURL, logout, profileSaving,
     setConfirmLogout, setEditingDisplayName, setEditingPhotoURL, setInitialCloudLoadComplete,
-    setProfileSaving, setRanksFemale, setRanksMale, setShowUserModal, setSkills, setStudents,
+    setProfileSaving, setShowUserModal, setSkills, setStudents,
     showUserModal, updateUserProfile, user
   } = useApp();
   return (
@@ -143,8 +143,6 @@ export const UserModal: React.FC = () => {
                             setConfirmLogout(false);
                             // Clear states
                             setStudents([]);
-                            setRanksMale(DEFAULT_RANKS_MALE);
-                            setRanksFemale(DEFAULT_RANKS_FEMALE);
                             setSkills(DEFAULT_SKILLS);
                             setInitialCloudLoadComplete(false);
                           }}

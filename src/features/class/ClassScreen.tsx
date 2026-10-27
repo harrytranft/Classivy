@@ -5,7 +5,7 @@ import { useApp } from '../../app/AppContext';
 
 export const ClassScreen: React.FC = () => {
   const {
-    classes, currentClassStudents, filterClass, getRank, handleAddStudent, handleClaimAllRewards,
+    classes, currentClassStudents, filterClass, handleAddStudent, handleClaimAllRewards,
     handleDeleteStudents, handleOpenLuckyWheel, handleOpenShop, handleRandom,
     handleResetSelectedAura, handleToggleSelectAll, hoveredStudentCardId, isMultiSelectMode,
     isSyncing, lastSyncedTime, openAttendanceCheck, openHomeworkCheck, openLudoForClass,
@@ -57,7 +57,6 @@ export const ClassScreen: React.FC = () => {
           <div key={s.id} className="relative group">
             <StudentCard 
               student={s} 
-              getRank={getRank} 
               petSkills={petSkills}
               isSelected={selectedStudentIds.includes(s.id)}
               isDimmed={!!hoveredStudentCardId && hoveredStudentCardId !== s.id}

@@ -4,7 +4,6 @@ import { StatusDock } from '../components/StatusDock';
 import { PokemonReactionLayer } from '../features/pokemon/PokemonReactionLayer';
 import { AttendanceModal } from '../features/attendance/AttendanceModal';
 import { HomeworkModal } from '../features/homework/HomeworkModal';
-import { EdictModal } from '../features/students/EdictModal';
 import { ShopReviewModal } from '../features/shop/ShopReviewModal';
 import { LevelUpModal } from '../features/pokemon/LevelUpModal';
 import { NavDock } from './NavDock';
@@ -80,9 +79,6 @@ export const AppLayout: React.FC = () => {
 
       {/* MODAL: LUDO EVENT ACTION POPUP */}
       <LudoEventPopup />
-
-      {/*聖旨 EDICT DISPLAY */}
-      <EdictModal />
 
       {/* MODAL: CHÚC MỪNG POKEMON NỞ */}
       <HatchModal />

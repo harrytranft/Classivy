@@ -1,5 +1,5 @@
 import React from 'react';
-import { Gender, HomeworkStatus, RankInfo, Student } from '../types';
+import { HomeworkStatus, Student } from '../types';
 import { StudentAvatar } from './StudentAvatar';
 
 export type { HomeworkStatus };
@@ -8,7 +8,6 @@ interface HomeworkCheckModalProps {
   students: Student[];
   statuses: Record<string, HomeworkStatus>;
   lessonDateKey: string;
-  getRank: (pts: number, gender: Gender) => RankInfo;
   onToggle: (studentId: string) => void;
   onSetStatus: (studentId: string, status: HomeworkStatus) => void;
   onConfirm: () => void;
@@ -19,7 +18,6 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
   students,
   statuses,
   lessonDateKey,
-  getRank,
   onToggle,
   onSetStatus,
   onConfirm,
@@ -66,7 +64,6 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                 const lessonKey = `${student.className}:${lessonDateKey}`;
                 const alreadyChecked = student.pokemonProgress?.lastHomeworkLessonKey === lessonKey;
                 const status = alreadyChecked ? 'locked' : (statuses[student.id] || 'done');
-                getRank(student.points, student.gender);
 
                 return (
                   <div

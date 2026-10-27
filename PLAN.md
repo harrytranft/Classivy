@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-26 | **Phase hiện tại:** Phase 1 hoàn thành (gộp vào `main` 2026-10-27). Tiếp theo: Phase 2, bắt đầu từ task 2.0
+**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 2 (đang làm)
 
 ## Mục tiêu
 
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
-| 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Chưa bắt đầu | Không |
+| 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Đang làm | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Chưa bắt đầu | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
@@ -121,7 +121,7 @@ src/
 
 **Mục tiêu:** giao diện đúng nhận diện Classivy; bỏ thuật ngữ cung đình; không mất dữ liệu người dùng cũ.
 
-- [ ] 2.0 **Bỏ hệ cấp bậc** (quyết định D7, làm đầu tiên):
+- [x] 2.0 **Bỏ hệ cấp bậc** (quyết định D7, làm đầu tiên) - xong 2026-10-27, kết quả ở "Nhật ký kiểm chứng":
   - Bảng Ban thưởng/Phạt: thay 3 ô "Level Hiện Tại / Điểm lên Level / Điểm xuống Level" bằng Trainer Level (cấp + danh hiệu + tiến độ XP, như trên thẻ học sinh)
   - Bỏ hộp "Thánh chỉ" và toàn bộ Gemini (`lib/geminiService.ts`, gói `@google/genai`, biến `GEMINI_API_KEY` trong `.env.example`, README, `vite.config.ts`)
   - Bỏ `getRank`, state/lưu trữ `ranksMale`/`ranksFemale`, `DEFAULT_RANKS_*`, khoá localStorage cấp bậc, `handleAvatarUpload` (không dùng), `rankChanges` trong `domain/points.ts`
@@ -241,3 +241,11 @@ src/
 - Thử nhập file sao lưu cũ (2026-10-27, kiểm thử tự động, Supabase giả): xuất JSON từ code trước nhánh (`253253c`) rồi nhập vào code mới: thành công, 12/12 học sinh đúng điểm/Pokémon/trứng, không lỗi; dùng bảng điểm và hồ sơ sau khi nhập vẫn bình thường. Chưa thử với file sao lưu thật của Harry.
 - Trang riêng theo lớp (D8, 2026-10-27, kiểm thử tự động): `npm run typecheck` 0 lỗi; `npm test` 100 test đạt; `npm run build` thành công, không cảnh báo; `npm run smoke` 5/5 đạt hai lần liên tiếp, test định tuyến 6/6 lần lặp. Ảnh chụp dữ liệu đám mây sau mọi luồng không đổi. Ảnh giao diện cập nhật có chủ đích: trang chọn lớp mới, chữ "← Danh sách lớp" trong ô chọn lớp, trang con không còn vẽ lưới học sinh phía sau, danh sách tick ở Vòng quay (đã đối chiếu: ngoài các chỗ này không có dòng mới). Chưa thử tay.
 - Nghiệm thu S16 (2026-10-27): Harry thử thủ công trên bản preview Vercel của nhánh và đồng ý; gộp vào `main`. Không có migration, không thay đổi Supabase.
+
+**Phase 2 / task 2.0 - 2026-10-27** (kiểm thử tự động trên máy ảo; chưa thử tay; chưa chạy trên Vercel/Supabase thật):
+- Đã bỏ: `RankInfo`, `getRank`, `DEFAULT_RANKS_*`, khoá `imperial_ranks_*`, state `ranksMale`/`ranksFemale`, `handleAvatarUpload`, `rankChanges`, hộp "Thánh chỉ" (`EdictModal`, state `edict`), `lib/geminiService.ts`, gói `@google/genai`, `GEMINI_API_KEY` (README, `vite.config.ts`, cấu hình Playwright).
+- Bảng Ban thưởng/Phạt: thay 3 ô cấp bậc bằng khung Trainer Level (cấp, danh hiệu, thanh XP, "Trainer XP a/b") giống thẻ học sinh.
+- App thôi đọc/ghi `ranks_male`/`ranks_female` (giá trị cũ trên Supabase để nguyên; xoá cột ở Phase 3). Nhập file sao lưu đi qua `domain/backup.ts` (`pickBackupFields`) chỉ lấy trường còn dùng; test với `fixtures/sample-class.json` (có phần cấp bậc): nhập được, bỏ đúng phần cấp bậc.
+- `npm run typecheck`: 0 lỗi. `npm test`: 14 file, 103 test đạt (bỏ 1 test cấp bậc, thêm 4 test sao lưu). `npm run build`: thành công, không cảnh báo (chunk chính ~470 kB).
+- `npm run smoke`: lần đầu 2 nhóm đỏ đúng chỗ dự kiến; cập nhật ảnh gốc có chủ đích. Đã đối chiếu diff: `30-skill-modal.html` chỉ đổi khung bên trái (Trainer Level thay 3 ô cấp bậc); 10 file dữ liệu đám mây chỉ MẤT hai trường `ranks_male`/`ranks_female`, không thêm/đổi dòng nào khác. Chạy lại: 5/5 đạt.
+

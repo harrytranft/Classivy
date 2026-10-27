@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Student, RankInfo, Gender } from '../types';
+import { Student } from '../types';
 import { PetSkill } from '../data/pokemonData';
 import { getPokemonArtworkUrl, getPokemonDisplayName, getPokemonNatureDefinition, handlePokemonArtworkError } from '../domain/pokemonProgression';
 import { getBadgeDefinition, getTrainerLevelPercent, getTrainerTitleDefinition, normalizeTrainerProgress, trainerXpNeededForNextLevel } from '../domain/trainerProgression';
@@ -8,7 +8,6 @@ import { StudentAvatar } from './StudentAvatar';
 
 interface StudentCardProps {
   student: Student;
-  getRank: (pts: number, gender: Gender) => RankInfo;
   onSelect: (student: Student) => void;
   petSkills: PetSkill[];
   isSelected?: boolean;
@@ -18,14 +17,12 @@ interface StudentCardProps {
 
 export const StudentCard: React.FC<StudentCardProps> = ({
   student,
-  getRank,
   onSelect,
   petSkills,
   isSelected,
   isDimmed,
   onHoverChange
 }) => {
-  getRank(student.points, student.gender);
   const isAbsent = student.isAbsent;
 
   const egg = student.egg;

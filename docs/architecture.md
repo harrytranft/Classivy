@@ -16,19 +16,20 @@ src/features/<tính năng>/   state hook, actions, component giao diện của t
 src/domain/                 logic thuần (không React), có unit test
 src/components/             component giao diện dùng chung (thẻ học sinh, dock, modal điểm danh...)
 src/data/                   hằng số, dữ liệu Pokémon
-src/lib/                    Supabase, Gemini, âm thanh
+src/lib/                    Supabase, âm thanh
 src/types/                  kiểu dữ liệu (index.ts: dữ liệu; app.ts: kiểu riêng của giao diện)
 ```
 
 ## 2. Luồng dữ liệu
 
-1. **GameDataProvider** (`src/app/providers/`) giữ dữ liệu được lưu: học sinh, cấp bậc, kỹ năng, kỹ năng Pokémon, âm thanh, ô Cá Ngựa, phần thưởng Vòng quay, Boss theo lớp.
+1. **GameDataProvider** (`src/app/providers/`) giữ dữ liệu được lưu: học sinh, kỹ năng, kỹ năng Pokémon, âm thanh, ô Cá Ngựa, phần thưởng Vòng quay, Boss theo lớp.
    - `gameData/useGameDataState.ts`: khởi tạo state (một số đọc từ localStorage).
    - `gameData/useCloudSync.ts`: tải từ Supabase khi đăng nhập; tự đồng bộ lên sau 1,5 giây khi dữ liệu đổi.
    - `gameData/useLocalPersistence.ts`: lưu/đọc localStorage (khoá `imperial_*` giữ nguyên tới Phase 2).
-   - `gameData/backupActions.ts`: xuất/nhập JSON, sao lưu/khôi phục thủ công.
+   - `gameData/backupActions.ts`: xuất/nhập JSON, sao lưu/khôi phục thủ công. Nhập file chỉ lấy các trường còn dùng (`domain/backup.ts`), nên file cũ có phần cấp bậc vẫn nhập được.
+   - Cột `ranks_male`/`ranks_female` trên Supabase không còn được đọc/ghi (hệ cấp bậc đã bỏ, D7); xoá cột ở migration Phase 3.
    - Phase 3 sẽ thay phần đồng bộ (một snapshot JSON mỗi giáo viên) bằng bảng dữ liệu riêng; chỉ cần sửa trong thư mục này.
-2. **UiEventsProvider**: toast Pokémon, thông báo level-up, nở trứng, hàng đợi Pokémon rời đi, "thánh chỉ".
+2. **UiEventsProvider**: toast Pokémon, thông báo level-up, nở trứng, hàng đợi Pokémon rời đi.
 3. **AppProvider** (`AppContext.tsx`) ghép mỗi lần render:
    - `useAppState()`: dữ liệu + sự kiện + state của từng tính năng (`features/*/use*State.ts`) + giá trị suy ra (`useDerivedState`).
    - `createAppActions(state)`: gọi từng nhóm hành động `features/*/*Actions.ts`.
@@ -84,7 +85,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 - `/student/:id`: tải lại trang hoặc Back/Forward sẽ mở đúng học sinh (`useProfileRouteSync.ts`); id không tồn tại thì về `/class`.
 - Khi chuyển `/` -> `/class` giữ nguyên `?query` và `#hash` vì Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
 - `vercel.json` chuyển mọi đường dẫn về `index.html` để tải lại trang không bị 404.
-- Plaza, Hồ sơ, Cài đặt được tải khi mở lần đầu (`React.lazy`); Gemini SDK tải khi cần.
+- Plaza, Hồ sơ, Cài đặt được tải khi mở lần đầu (`React.lazy`).
 
 ## 5. Kiểm thử
 

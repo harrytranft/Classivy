@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
-import { Gender, RankInfo, Student } from '../../types';
+import { Student } from '../../types';
 import { getLocalDateKey } from '../../domain/dates';
 import { getNextEvolutionPreview } from '../../domain/pokemonProgression';
+import { getTrainerLevelPercent, getTrainerTitleDefinition, normalizeTrainerProgress, trainerXpNeededForNextLevel } from '../../domain/trainerProgression';
 import { getBossEncounterFrequencyOption, getBossTopContributors, normalizeClassBossState } from '../../domain/bossSystem';
 import { DEFAULT_LUDO_TILES, LUDO_FINISH_TILE } from '../../data/constants';
 import { BaseState } from './appState';
@@ -11,15 +12,10 @@ export const useDerivedState = (s: BaseState) => {
   const {
     activeBossRound, bossEncounterFrequency, bossStatesByClass, customLudoTiles,
     editingStudent, filterClass, luckyWheelDisplayRewards, luckyWheelRewards, ludoClassName,
-    pokemonReleaseEvent, ranksFemale, ranksMale, searchQuery, selectedStudentIds, sortType,
+    pokemonReleaseEvent, searchQuery, selectedStudentIds, sortType,
     students
   } = s;
 
-  const getRank = (points: number, gender: Gender): RankInfo => {
-    const list = gender === Gender.MALE ? ranksMale : ranksFemale;
-    const sorted = [...list].sort((a, b) => b.minPoints - a.minPoints);
-    return sorted.find(r => points >= r.minPoints) || list[0];
-  };
   const classes = useMemo(() => ['Tất cả', ...Array.from(new Set(students.map(s => s.className)))], [students]);
   const currentClassStudents = useMemo(() => {
     let list = students.filter(s => filterClass === 'Tất cả' || s.className === filterClass);
@@ -91,13 +87,14 @@ export const useDerivedState = (s: BaseState) => {
     const student = students.find(s => s.id === selectedStudentIds[0]);
     if (!student) return null;
 
-    const rank = getRank(student.points, student.gender);
-    const nextThreshold = (Math.floor(student.points / 50) + 1) * 50;
-    const pointsToNext = nextThreshold - student.points;
-    const demoteThreshold = Math.floor(student.points / 50) * 50 - 1;
-    const pointsToDemote = student.points - demoteThreshold;
-
-    return { student, rank, pointsToNext, pointsToDemote };
+    const trainerProgress = normalizeTrainerProgress(student);
+    return {
+      student,
+      trainerProgress,
+      trainerTitle: getTrainerTitleDefinition(trainerProgress.titleId),
+      trainerLevelPct: getTrainerLevelPercent(trainerProgress),
+      trainerXpNeeded: trainerXpNeededForNextLevel(trainerProgress.level)
+    };
   };
   const sidebarData = getSidebarData();
   const releaseStudent = pokemonReleaseEvent ? students.find(s => s.id === pokemonReleaseEvent.studentId) : undefined;
@@ -105,7 +102,7 @@ export const useDerivedState = (s: BaseState) => {
   const releaseEggShortfall = Math.max(0, releaseEggCost - (releaseStudent?.points || 0));
 
   return {
-    getRank, classes, currentClassStudents, giftPokemonRoster, presentStudents,
+    classes, currentClassStudents, giftPokemonRoster, presentStudents,
     homeworkLessonDateKey, editingPetEvolutionPreview, classOptions, activeRandomClassName,
     currentBossFrequencyOption, currentBossState, activeBossParty, studentsById,
     currentBossTopContributors, luckyWheelBackground, activeLudoClassName, ludoRaceStudents,

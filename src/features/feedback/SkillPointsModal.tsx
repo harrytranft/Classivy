@@ -53,19 +53,21 @@ export const SkillPointsModal: React.FC = () => {
                         <h3 className="text-2xl font-bold text-gray-800 mb-1 text-center">{sidebarData.student.name}</h3>
                         <p className="text-xs font-black uppercase text-gray-400 mb-4">{sidebarData.student.className}</p>
 
-                        <div className="w-full space-y-4 pt-6 border-t border-gray-200">
-                          <div className="text-center">
-                            <p className="text-[10px] font-black uppercase text-gray-400">Level Hiện Tại</p>
-                            <p className={`text-sm font-bold uppercase tracking-widest ${sidebarData.rank.color}`}>{sidebarData.rank.title}</p>
+                        <div className="w-full space-y-3 pt-6 border-t border-gray-200 text-center" data-testid="trainer-level-panel">
+                          <p className="text-[10px] font-black uppercase text-gray-400">Trainer Level</p>
+                          <p className="text-3xl font-black text-red-800">Lv.{sidebarData.trainerProgress.level}</p>
+                          <p className="inline-block rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-800 border border-amber-100">
+                            {sidebarData.trainerTitle.icon} {sidebarData.trainerTitle.name}
+                          </p>
+                          <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                            <div
+                              className="bg-red-800 h-full rounded-full transition-all duration-500"
+                              style={{ width: `${sidebarData.trainerLevelPct}%` }}
+                            />
                           </div>
-                          <div className="bg-green-100 p-4 rounded-2xl text-center border border-green-200">
-                            <p className="text-[10px] font-black uppercase text-green-700">Điểm lên Level</p>
-                            <p className="text-xl font-black text-green-800">+{sidebarData.pointsToNext}</p>
-                          </div>
-                          <div className="bg-red-100 p-4 rounded-2xl text-center border border-red-200">
-                            <p className="text-[10px] font-black uppercase text-red-700">Điểm xuống Level</p>
-                            <p className="text-xl font-black text-red-800">-{sidebarData.pointsToDemote}</p>
-                          </div>
+                          <p className="text-[10px] font-bold uppercase text-gray-400">
+                            Trainer XP {sidebarData.trainerProgress.xp}/{sidebarData.trainerXpNeeded}
+                          </p>
                         </div>
                       </>
                     ) : (

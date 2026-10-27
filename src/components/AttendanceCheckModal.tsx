@@ -1,12 +1,11 @@
 import React from 'react';
-import { AttendanceStatus, Gender, RankInfo, Student } from '../types';
+import { AttendanceStatus, Student } from '../types';
 import { StudentAvatar } from './StudentAvatar';
 
 interface AttendanceCheckModalProps {
   students: Student[];
   statuses: Record<string, AttendanceStatus>;
   lessonDateKey: string;
-  getRank: (pts: number, gender: Gender) => RankInfo;
   onSetStatus: (studentId: string, status: AttendanceStatus) => void;
   onConfirm: () => void;
   onClose: () => void;
@@ -28,7 +27,6 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
   students,
   statuses,
   lessonDateKey,
-  getRank,
   onSetStatus,
   onConfirm,
   onClose
@@ -66,7 +64,6 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
                 const lessonKey = lessonKeyFor(student);
                 const alreadyChecked = student.pokemonProgress?.lastAttendanceLessonKey === lessonKey;
                 const status = statuses[student.id] || student.attendanceStatus || (student.isAbsent ? 'absent' : 'present');
-                getRank(student.points, student.gender);
 
                 return (
                   <div
