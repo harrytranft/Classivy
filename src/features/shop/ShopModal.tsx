@@ -13,7 +13,7 @@ export const ShopModal: React.FC = () => {
     <>
       {showShopModal && (
         <div
-          className="fixed inset-0 z-[210] flex items-center justify-center bg-black/75 p-3 backdrop-blur-md animate-in fade-in duration-200"
+          className="classivy-game-modal fixed inset-0 z-[210] flex items-center justify-center bg-brand-forest-deep/60 p-3 backdrop-blur-md animate-in fade-in duration-200"
           onMouseDown={event => {
             if (event.target === event.currentTarget) {
                 setShowShopModal(false);
@@ -140,7 +140,7 @@ export const ShopModal: React.FC = () => {
 
           {selectedShopSkill && (
             <div
-              className="fixed inset-0 z-[240] flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm animate-in fade-in duration-150"
+              className="classivy-game-modal fixed inset-0 z-[240] flex items-center justify-center bg-brand-forest-deep/60 p-4 backdrop-blur-sm animate-in fade-in duration-150"
               onMouseDown={event => {
                 if (event.target === event.currentTarget) setSelectedShopSkill(null);
               }}

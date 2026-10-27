@@ -24,7 +24,7 @@ export const LuckyWheelModal: React.FC = () => {
                     closeLuckyWheel();
                   }
                 }}
-                className="fixed inset-0 z-[220] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md overflow-y-auto"
+                className="classivy-game-modal fixed inset-0 z-[220] flex items-center justify-center bg-brand-forest-deep/70 p-4 backdrop-blur-md overflow-y-auto"
               >
                 <div className="bg-[#17051f] w-full max-w-5xl rounded-[40px] shadow-[0_0_80px_rgba(217,70,239,0.55)] overflow-hidden animate-in zoom-in duration-300 relative border-4 border-fuchsia-500 my-auto">
                   <button

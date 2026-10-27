@@ -19,7 +19,7 @@ export const RandomModal: React.FC = () => {
       {showRandomModal && (
         <div 
           onClick={(e) => { if (e.target === e.currentTarget) setShowRandomModal(false); }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md overflow-y-auto"
+          className="classivy-game-modal fixed inset-0 z-[100] flex items-center justify-center bg-brand-forest-deep/60 p-4 backdrop-blur-md overflow-y-auto"
         >
           <div className="bg-white p-6 sm:p-8 rounded-[40px] w-full max-w-5xl text-center shadow-2xl animate-in zoom-in duration-300 relative border-4 border-red-800 my-auto">
             <button 

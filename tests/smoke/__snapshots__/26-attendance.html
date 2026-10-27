@@ -980,108 +980,117 @@
 </div>
 </div>
 </main>
-<div class="fixed inset-0 z-[175] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
-<div class="w-full max-w-4xl overflow-hidden rounded-[32px] border-4 border-sky-700 bg-white shadow-2xl">
-<div class="flex flex-col gap-3 border-b border-sky-100 bg-sky-700 p-5 text-white sm:flex-row sm:items-center sm:justify-between">
-<div>
-<p class="text-[10px] font-black uppercase tracking-[0.25em] text-sky-100">Attendance Check</p>
-<h2 class="text-2xl font-black uppercase tracking-wide">Check đi học</h2>
-<p class="text-xs font-bold text-sky-100">Ngày 2026-10-26 · 7 trainer trong lớp</p>
+<div class="fixed inset-0 flex items-center justify-center bg-brand-forest-deep/60 p-0 sm:p-4 animate-in fade-in duration-150 z-[175]">
+<div role="dialog" aria-modal="true" aria-labelledby="_r_0_" class="relative flex max-h-full w-full flex-col overflow-hidden bg-white shadow-[0_24px_60px_-18px_rgba(0,38,25,0.55)] sm:max-h-[92vh] sm:rounded-brand-lg max-w-5xl">
+<div class="flex shrink-0 items-start gap-3 px-6 pt-5 pb-4 border-b border-[#efece2]">
+<div class="grid h-11 w-11 shrink-0 place-items-center rounded-brand-md bg-[#f2f6ef] text-2xl text-brand-forest">✓</div>
+<div class="min-w-0 flex-1">
+<h2 id="_r_0_" class="text-xl font-extrabold leading-tight text-brand-ink">Điểm danh</h2>
+<p class="mt-1 text-sm text-brand-ink/70">Ngày 2026-10-26 · 7 Trainer trong lớp</p>
 </div>
-<button class="self-end rounded-2xl bg-white/15 px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-white/25 sm:self-auto">Đóng</button>
+<button type="button" aria-label="Đóng" class="-mr-2 grid h-10 w-10 shrink-0 place-items-center rounded-full text-brand-ink/60 transition-colors hover:bg-brand-forest/[0.07] hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-5 w-5" aria-hidden="true">
+<path d="M18 6 6 18">
+</path>
+<path d="m6 6 12 12">
+</path>
+</svg>
+</button>
 </div>
-<div class="max-h-[62vh] overflow-y-auto p-4 custom-scrollbar">
+<div class="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+<div class="custom-scrollbar">
 <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">K6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Khoa 6A</p>
 <p class="truncate text-[10px] font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">H6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Hà 6A</p>
 <p class="truncate text-[10px] font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-rose-300 bg-rose-50 text-rose-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-rose-300 bg-rose-50 text-rose-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">G6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Giang 6A</p>
 <p class="truncate text-[10px] font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-rose-300 bg-rose-50 text-rose-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-rose-300 bg-rose-50 text-rose-700">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">D6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Dũng 6A</p>
 <p class="truncate text-[10px] font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">C6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Chi 6A</p>
 <p class="truncate text-[10px] font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">B6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Bình 6A</p>
 <p class="truncate text-[10px] font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">A6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">An 6A</p>
 <p class="truncate text-[10px] font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-[11px] font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
 </div>
 </div>
-<div class="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-<div class="text-xs font-bold text-gray-600">
-<span class="font-black text-emerald-700">6</span> Có mặt · <span class="font-black text-amber-600">0</span> Muộn · <span class="font-black text-rose-600">1</span> Vắng · <span class="font-black text-gray-700">0</span> đã chốt</div>
-<button class="rounded-2xl bg-sky-700 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-sky-800 disabled:bg-gray-300 disabled:text-gray-500">Confirm Attendance</button>
+</div>
+<div class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-[#efece2] bg-[#fbfaf5] px-6 py-4">
+<div class="mr-auto text-sm font-semibold text-brand-ink/70">
+<span class="font-bold text-brand-emerald">6</span> có mặt · <span class="font-bold text-[#8f5500]">0</span> muộn · <span class="font-bold text-brand-danger">1</span> vắng · 0 đã chốt</div>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-brand-forest text-brand-cream hover:bg-brand-forest-deep shadow-[0_2px_8px_-2px_rgba(0,38,25,0.45)] h-11 px-4 text-sm gap-2">Chốt điểm danh</button>
 </div>
 </div>
 </div>

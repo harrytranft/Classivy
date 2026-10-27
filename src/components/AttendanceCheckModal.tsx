@@ -1,6 +1,7 @@
 import React from 'react';
 import { AttendanceStatus, Student } from '../types';
 import { StudentAvatar } from './StudentAvatar';
+import { Button, Chip, Modal } from './ui';
 
 interface AttendanceCheckModalProps {
   students: Student[];
@@ -39,23 +40,8 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
   const absentCount = students.filter(student => student.pokemonProgress?.lastAttendanceLessonKey !== lessonKeyFor(student) && statuses[student.id] === 'absent').length;
 
   return (
-    <div className="fixed inset-0 z-[175] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="w-full max-w-4xl overflow-hidden rounded-[32px] border-4 border-sky-700 bg-white shadow-2xl">
-        <div className="flex flex-col gap-3 border-b border-sky-100 bg-sky-700 p-5 text-white sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-sky-100">Attendance Check</p>
-            <h2 className="text-2xl font-black uppercase tracking-wide">Check đi học</h2>
-            <p className="text-xs font-bold text-sky-100">Ngày {lessonDateKey} · {students.length} trainer trong lớp</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="self-end rounded-2xl bg-white/15 px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-white/25 sm:self-auto"
-          >
-            Đóng
-          </button>
-        </div>
-
-        <div className="max-h-[62vh] overflow-y-auto p-4 custom-scrollbar">
+    <Modal onClose={onClose} title="Điểm danh" subtitle={`Ngày ${lessonDateKey} · ${students.length} Trainer trong lớp`} icon="✓" size="xl" zIndex="z-[175]" footer={<><div className="mr-auto text-sm font-semibold text-brand-ink/70"><span className="font-bold text-brand-emerald">{presentCount}</span> có mặt · <span className="font-bold text-[#8f5500]">{lateCount}</span> muộn · <span className="font-bold text-brand-danger">{absentCount}</span> vắng · {checkedCount} đã chốt</div><Button disabled={actionableCount <= 0} onClick={onConfirm}>Chốt điểm danh</Button></>}>
+        <div className="custom-scrollbar">
           {students.length === 0 ? (
             <p className="py-16 text-center text-sm font-bold text-gray-400">Không có trainer trong lớp hiện tại.</p>
           ) : (
@@ -68,8 +54,8 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
                 return (
                   <div
                     key={student.id}
-                    className={`flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all ${
-                      alreadyChecked ? 'border-gray-200 bg-gray-50 opacity-70' : statusStyles[status]
+                    className={`flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors ${
+                      alreadyChecked ? 'border-[#d9d6ca] bg-[#f1efe7] opacity-70' : statusStyles[status]
                     }`}
                   >
                     <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm" />
@@ -78,7 +64,7 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
                       <p className="truncate text-[10px] font-bold text-gray-500">{student.className}</p>
                     </div>
                     {alreadyChecked ? (
-                      <span className="shrink-0 rounded-full bg-gray-200 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-gray-600">Đã chốt</span>
+                      <Chip tone="neutral">Đã chốt</Chip>
                     ) : (
                       <div className="grid shrink-0 grid-cols-1 gap-1">
                         {(['present', 'late', 'absent'] as AttendanceStatus[]).map(value => (
@@ -86,8 +72,8 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
                             key={value}
                             type="button"
                             onClick={() => onSetStatus(student.id, value)}
-                            className={`rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all ${
-                              status === value ? statusStyles[value] : 'border-gray-200 bg-white text-gray-400 hover:text-gray-700'
+                            className={`rounded-full border px-3 py-1 text-[11px] font-bold transition-colors ${
+                              status === value ? statusStyles[value] : 'border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink'
                             }`}
                           >
                             {statusLabels[value]}
@@ -101,20 +87,6 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
             </div>
           )}
         </div>
-
-        <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-xs font-bold text-gray-600">
-            <span className="font-black text-emerald-700">{presentCount}</span> Có mặt · <span className="font-black text-amber-600">{lateCount}</span> Muộn · <span className="font-black text-rose-600">{absentCount}</span> Vắng · <span className="font-black text-gray-700">{checkedCount}</span> đã chốt
-          </div>
-          <button
-            disabled={actionableCount <= 0}
-            onClick={onConfirm}
-            className="rounded-2xl bg-sky-700 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-sky-800 disabled:bg-gray-300 disabled:text-gray-500"
-          >
-            Confirm Attendance
-          </button>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 };

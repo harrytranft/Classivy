@@ -10,7 +10,7 @@ export const PokemonReleaseModal: React.FC = () => {
   return (
     <>
             {pokemonReleaseEvent && (
-              <div className="fixed inset-0 z-[260] flex items-center justify-center bg-black/92 p-4 backdrop-blur-xl animate-in fade-in duration-300">
+              <div className="classivy-game-modal fixed inset-0 z-[260] flex items-center justify-center bg-brand-forest-deep/70 p-4 backdrop-blur-xl animate-in fade-in duration-300">
                 <div className="bg-rose-50 max-w-2xl w-full rounded-[36px] border-[8px] border-rose-700 p-6 sm:p-8 shadow-[0_0_90px_rgba(190,18,60,0.38)] text-center space-y-6 relative overflow-hidden">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(244,63,94,0.18),transparent_36%)] pointer-events-none" />
                   <div className="relative z-10 space-y-4">

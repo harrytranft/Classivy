@@ -11,7 +11,7 @@ export const HatchModal: React.FC = () => {
   return (
     <>
       {showHatchModal && (
-        <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black/90 p-4 backdrop-blur-xl animate-in fade-in duration-500">
+        <div className="classivy-game-modal fixed inset-0 z-[250] flex items-center justify-center bg-brand-forest-deep/70 p-4 backdrop-blur-xl animate-in fade-in duration-500">
           <div className="bg-amber-50/95 max-w-2xl w-full rounded-[45px] border-[10px] border-amber-400 p-8 shadow-[0_0_120px_rgba(245,158,11,0.6)] text-center space-y-6 relative overflow-hidden animate-in zoom-in-95 duration-500">
             {/* Ambient burst bg */}
             <div className="absolute inset-0 bg-radial-gradient from-amber-300/30 via-transparent to-transparent pointer-events-none" />

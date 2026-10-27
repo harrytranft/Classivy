@@ -12,7 +12,7 @@ export const SkillPointsModal: React.FC = () => {
   return (
     <>
             {showSkillModal && (
-              <div className="fixed inset-0 z-[220] flex items-center justify-center bg-black/80 p-0 sm:p-4 backdrop-blur-md">
+              <div className="classivy-game-modal fixed inset-0 z-[220] flex items-center justify-center bg-brand-forest-deep/60 p-0 sm:p-4 backdrop-blur-md">
                 <div className="bg-white w-full max-w-5xl rounded-3xl h-full sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col md:flex-row animate-in zoom-in duration-300 shadow-2xl">
 
                   {/* Sidebar Profile details from screenshot request */}

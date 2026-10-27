@@ -45,3 +45,15 @@ input, textarea, select {
 .classivy-reskin .font-royal {
   font-family: "Plus Jakarta Sans", "Be Vietnam Pro", system-ui, sans-serif !important;
 }
+
+/* Các modal game giữ màu trạng thái/reward riêng, nhưng không còn dùng serif hay primary Imperial. */
+.classivy-game-modal .font-royal {
+  font-family: "Plus Jakarta Sans", "Be Vietnam Pro", system-ui, sans-serif !important;
+  letter-spacing: -0.01em !important;
+}
+.classivy-game-modal button[class*="bg-red-"] {
+  background-color: #014a2d !important;
+}
+.classivy-game-modal button[class*="hover:bg-red-"]:hover {
+  background-color: #002619 !important;
+}

@@ -293,3 +293,11 @@ src/
 - Đổi primary đỏ còn lồng sâu trong Cài đặt/Hồ sơ thành `brand-forest`; phần xoá/cảnh báo vẫn đỏ vì là trạng thái nguy hiểm có nghĩa. Các heading `font-royal` trong bề mặt Hồ sơ được thay bằng Plus Jakarta Sans/Be Vietnam Pro theo `DESIGN.md`.
 - Cập nhật smoke test: bỏ snapshot `02-register.html` và không còn thao tác tạo tài khoản; cập nhật snapshot đăng nhập, Cài đặt và ba tab Hồ sơ. `npm run typecheck`, `npm test` (106/106) và `npm run build` đạt.
 
+**Phase 2 / Điểm danh và Bài tập - 2026-10-27:**
+- Reskin `AttendanceCheckModal` và `HomeworkCheckModal` bằng Modal/Button/Chip dùng chung. Đổi copy tiếng Anh còn sót sang tiếng Việt, giữ nguyên cách chọn trạng thái, số đã chốt và hành động ghi điểm.
+- Cập nhật snapshot `26-attendance.html` và `27-homework.html`. `npm run typecheck` đạt; cần chạy lại toàn bộ test/build/smoke ở cuối cụm.
+
+**Phase 2 / modal game còn lại - 2026-10-27:**
+- Đồng bộ lớp phủ của Random/Battle/Boss, Cá Ngựa, Vòng quay, Shop, Tặng Pokémon, Ấp trứng, Pokémon rời đội hình và Skill Points sang nền `forest-deep`; thay serif `font-royal` trong các modal game bằng font Classivy; các primary đỏ cũ chuyển thành `forest`, giữ đỏ cho trạng thái nguy hiểm.
+- `LevelUpModal` và `BossDefeatedModal` đã được chuyển sang Modal/Card/Button dùng chung. `npm run typecheck`, `npm test` (106/106) và `npm run build` đạt. Chạy `npm run smoke -- --update-snapshots` đã bắt đầu cập nhật snapshot (`20-random`); cần chạy/đối chiếu lại đầy đủ 6 nhóm trước khi chốt Phase 2.
+
