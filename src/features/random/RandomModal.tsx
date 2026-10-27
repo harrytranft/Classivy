@@ -21,7 +21,7 @@ export const RandomModal: React.FC = () => {
           onClick={(e) => { if (e.target === e.currentTarget) setShowRandomModal(false); }}
           className="classivy-game-modal fixed inset-0 z-[100] flex items-center justify-center bg-brand-forest-deep/60 p-4 backdrop-blur-md overflow-y-auto"
         >
-          <div className="bg-white p-6 sm:p-8 rounded-[40px] w-full max-w-5xl text-center shadow-2xl animate-in zoom-in duration-300 relative border-4 border-red-800 my-auto">
+          <div className="bg-white p-6 sm:p-8 rounded-brand-lg w-full max-w-5xl text-center shadow-2xl animate-in zoom-in duration-300 relative border border-[#e6e2d4] my-auto">
             <button 
               onClick={() => setShowRandomModal(false)} 
               className="absolute top-5 right-5 text-3xl text-gray-400 hover:text-red-800 transition-colors z-20"
@@ -30,7 +30,7 @@ export const RandomModal: React.FC = () => {
             </button>
 
             {/* MODE SWITCHER TABS */}
-            <div className="flex items-center justify-center gap-2 mb-6 bg-red-50 p-1.5 rounded-full border border-red-200 w-fit mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-6 bg-[#f4f8f1] p-1.5 rounded-full border border-brand-emerald/20 w-fit mx-auto">
               <button 
                 onClick={() => handleRandom('solo')} 
                 className={`px-5 py-2 rounded-full font-bold text-xs transition-all uppercase tracking-wider ${randomMode === 'solo' ? 'bg-red-800 text-white shadow-md' : 'text-red-900 hover:bg-red-100'}`}

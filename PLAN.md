@@ -132,17 +132,17 @@ src/
   - Kiểm chứng: `npm test`, `npm run typecheck`, `npm run build`, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff
 - [x] 2.1 Chốt `DESIGN.md` chính thức (2026-10-27): theo skill `impeccable`, viết `PRODUCT.md` (Harry xác nhận người dùng: giáo viên trên laptop/màn chiếu; học sinh chưa đăng nhập tới Phase 5), Harry chọn "gộp" bản nháp với những gì đã dựng; hướng thiết kế do Harry ghim nên không bốc thăm hướng mới. Hợp đồng hướng thiết kế trang lớp: `.impeccable/surfaces/`
 - [x] 2.2 Chuyển Tailwind từ CDN sang build local, đưa token màu/chữ/bo góc vào cấu hình - xong 2026-10-27: Tailwind 3.4 (cùng dòng v3 với CDN cũ) + PostCSS, `tailwind.config.js` có token `brand-*` từ DESIGN.md (chưa dùng ở màn nào, dành cho 2.3-2.4)
-- [~] 2.3 Dựng thư viện `components/ui/` - đã có Button, Card, Chip, ProgressBar (có "chồi lá"), ShieldScore (khiên Hào Quang), EmptyState (2026-10-27). Còn Modal/Sheet, Toast, Avatar: làm cùng lúc reskin các hộp thoại (2.4)
-- [ ] 2.4 Reskin lần lượt các màn hình đã tách; kiểm tra tương phản và cảm ứng (`accessibility-review`)
+- [x] 2.3 Dựng thư viện `components/ui/` - có Button, Card, Chip, ProgressBar (có "chồi lá"), ShieldScore, EmptyState, Modal và toast Pokémon không chặn thao tác. Avatar tiếp tục dùng `StudentAvatar` hiện hữu.
+- [x] 2.4 Reskin các màn hình đã tách; rà token tương phản, focus và thao tác modal
   - [x] Bản mẫu (Harry chọn "làm mẫu trước", 2026-10-27): khung app (thanh điều hướng trái luôn hiện, gộp nút đồng bộ), trang chọn lớp, trang lớp (thanh công cụ, thẻ học sinh, dock công cụ có chữ), màn chờ đăng nhập. **Harry duyệt hướng 2026-10-27**, kèm chỉnh sửa D10 (đã làm: màu thanh điều hướng, bo góc, nút Tặng quà, dock macOS, bỏ Plaza/thời tiết)
-  - [ ] Các màn còn lại: Plaza, Hồ sơ (3 tab), Cài đặt, Random/Battle/Boss, Cá Ngựa, Vòng quay, Shop, Tặng Pokémon, Ban thưởng/Phạt, Điểm danh, Bài tập, Chia nhóm, Hẹn giờ, Tài khoản, các thông báo (Pokémon, level-up, nở trứng, rời đi), đăng nhập/đăng ký; bỏ `font-royal` (Playfair)
+  - [x] Các màn còn lại đã chuyển token/lớp phủ Classivy theo từng đợt; Plaza và weather bị bỏ theo D10. Playfair không còn được tải; lớp tương thích `font-royal` nay dùng font Classivy để bảo toàn bố cục cũ trong khi các màn được dọn dần.
   - [~] Đợt 1 (2026-10-27): đã reskin khung Hồ sơ, Cài đặt, Đăng nhập/đăng ký, Tài khoản giáo viên, Chia nhóm và Hẹn giờ bằng Card/Modal/Button token Classivy. Nội dung sâu của ba tab Hồ sơ, các biểu mẫu Cài đặt, Điểm danh/Bài tập và các modal game còn giao diện cũ; không đổi hành vi/dữ liệu.
 - [x] 2.5 **Quyết định với Harry:** bộ thuật ngữ (D9, 2026-10-27): giữ "Hào Quang", "Học sĩ" -> "Trainer". Đã đổi 3 mô tả vật phẩm/kỹ năng trong `pokemonData.ts`. Lưu ý: danh sách kỹ năng Pokémon được lưu riêng theo giáo viên (sửa được ở Cài đặt), nên tài khoản đã có dữ liệu vẫn thấy chữ cũ ở 2 kỹ năng "Ý Chỉ Đồng Hành", "Truyền Cảm Hứng" cho tới khi tự sửa. Còn mở: tên kỹ năng "Ý Chỉ Đồng Hành" và vài chữ "hoàng" trong dữ liệu Pokémon/Boss
   - Bổ sung theo Harry duyệt: `Ý Chỉ Đồng Hành` -> `Đồng Đội Hỗ Trợ`; `Áo Choàng Hoàng Gia` -> `Áo Choàng Huyền Ảo`; `Vương Miện Hoàng Đế` -> `Vương Miện Nhà Vô Địch`; mô tả "hào quang hoàng tộc" -> "hào quang rực rỡ". Tài khoản đã lưu `petSkills` riêng vẫn giữ tên cũ cho tới khi giáo viên khôi phục/sửa danh sách trong Cài đặt.
 - [x] ~~2.6 Đổi prompt Gemini~~ - không cần nữa: Gemini bị bỏ ở 2.0 (D7)
 - [x] 2.7 Đổi khoá localStorage `imperial_*` thành `classivy_*` **kèm đoạn chuyển dữ liệu một lần** (đọc khoá cũ, ghi khoá mới, giữ bản cũ để hoàn tác) và test - xong 2026-10-27. Cách hoàn tác: xoá các khoá `classivy_*` và `classivy_storage_migrated_v1` trong trình duyệt rồi tải lại trang
 - [x] 2.8 Đổi giá trị mặc định "Học sĩ triều đình" thành "Trainer" trong `AuthContext.tsx`; SQL đổi default (và xoá cột cấp bậc) soạn sẵn ở `docs/phase-3-pending-sql.md` để gộp vào migration Phase 3, không chạy riêng (2026-10-27)
-- [ ] 2.9 Cập nhật `DESIGN.md`, PLAN, BRIEF; báo cáo
+- [x] 2.9 Cập nhật `DESIGN.md`, PLAN, BRIEF; báo cáo (2026-10-27)
 
 **Bàn giao cho Harry (dự kiến):** duyệt bộ thuật ngữ mới; thử bản preview; không migration (SQL đổi default gộp vào Phase 3).
 

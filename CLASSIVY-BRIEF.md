@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-27 (Phase 2: đã reskin đợt 1; còn các modal/màn game và rà truy cập)
+**Cập nhật lần cuối:** 2026-10-27 (Phase 2 hoàn thành; chờ Harry kiểm tra preview trước khi gộp)
 
 ## 1. Sản phẩm
 
@@ -32,7 +32,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 0 (nền móng và thương hiệu): hoàn thành.
 - Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
-- Phase 2 (nhánh `claude/phase2-rebranding`): xong 2.0 (bỏ cấp bậc + Gemini), 2.1 (`DESIGN.md` + `PRODUCT.md`), 2.2 (Tailwind 3.4 local), 2.5/2.8 ("Học sĩ" -> "Trainer"), 2.7 (khoá `classivy_*`) và sửa lỗi ghi đè bản lưu máy. 2.3 có Button/Card/Chip/ProgressBar/ShieldScore/EmptyState/Modal; 2.4 đã có shell/chọn lớp/trang lớp và đợt 1 gồm khung Hồ sơ, Cài đặt, Đăng nhập/tài khoản, Chia nhóm, Hẹn giờ. Các màn game và nội dung sâu của modal còn cần reskin.
+- Phase 2 hoàn thành trên nhánh `claude/phase2-rebranding`: bỏ cấp bậc/Gemini, hệ thiết kế + Tailwind local, thuật ngữ Trainer, localStorage `classivy_*`, Modal/Toast và reskin shell, lớp, hồ sơ, cài đặt, đăng nhập, công cụ, điểm danh/bài tập cùng các modal game. Playfair không còn được tải; lớp tương thích `font-royal` dùng font Classivy.
 - Chưa đổi schema, chưa có migration nào mới. App đã thôi đọc/ghi cột `ranks_male`/`ranks_female` (xoá cột ở Phase 3). Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
 
 ## 5. Bản đồ repo (hiện tại)
@@ -61,4 +61,4 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-Tiếp Phase 2: reskin nội dung ba tab Hồ sơ và Cài đặt, Điểm danh/Bài tập, rồi các luồng Random/Battle/Boss, Cá Ngựa, Vòng quay, Shop, Tặng Pokémon và thông báo. Sau đó bỏ mọi `font-royal`, rà truy cập (`accessibility-review`) và làm 2.9 tổng kết. Không chạy migration ở Phase 2; SQL trong `docs/phase-3-pending-sql.md` chỉ gộp vào migration Phase 3. Khi đổi giao diện, cập nhật snapshot smoke có chủ đích và xem lại diff.
+Tiếp theo là Phase 3: ADR data model, migration + RLS trên Supabase dev, script chuyển dữ liệu và đối chiếu. Không chạy migration riêng từ Phase 2: SQL trong `docs/phase-3-pending-sql.md` phải gộp vào migration Phase 3. Trước khi gộp Phase 2, Harry chạy full smoke/kiểm tra preview Vercel.
