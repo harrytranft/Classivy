@@ -2,7 +2,8 @@ import { defineConfig } from '@playwright/test';
 
 // Smoke test chạy ở máy giáo viên/CI, không chạm Supabase thật:
 // biến môi trường bên dưới ghi đè .env và mọi request tới Supabase bị chặn trong test.
-const PORT = 5179;
+// SMOKE_PORT: chạy song song nhiều bản (ví dụ nhiều thư mục làm việc) mà không tranh cổng.
+const PORT = Number(process.env.SMOKE_PORT) || 5179;
 
 export default defineConfig({
   testDir: './tests/smoke',

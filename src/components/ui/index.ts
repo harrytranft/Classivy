@@ -5,6 +5,8 @@ export { Card } from './Card';
 export { Chip } from './Chip';
 export type { ChipTone } from './Chip';
 export { EmptyState } from './EmptyState';
+export { Modal } from './Modal';
+export type { ModalProps, ModalSize } from './Modal';
 export { ProgressBar } from './ProgressBar';
 export type { ProgressTone } from './ProgressBar';
 export { ShieldScore } from './ShieldScore';

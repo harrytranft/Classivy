@@ -339,9 +339,8 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   await page.getByRole('button', { name: /Ban Thưởng \/ Phạt/ }).first().click();
   await page.locator('button.aspect-square').first().click();
   await snap(page, '35-solo-reward-opens-ludo', state);
-  // The Pokémon toast covers the screen with a click-to-close layer; this flow checks the roll itself,
-  // so press the button directly (as the test did before real CSS was applied) and keep the toast in the snapshots.
-  await page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ }).dispatchEvent('click');
+  // The Pokémon toast no longer blocks the screen: a normal click closes it and presses the button.
+  await page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ }).click();
   await page.waitForTimeout(1500);
   await snap(page, '36-after-ludo-roll', state);
   await snapCloud(page, '36-after-ludo-roll', state);
