@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "smoke": "playwright test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:db": "bash scripts/test-db.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.2",
