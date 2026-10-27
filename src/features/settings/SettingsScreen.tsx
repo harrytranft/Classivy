@@ -268,8 +268,8 @@ export const SettingsScreen: React.FC = () => {
       <SettingsSection id="data" icon="☁️" title="Dữ liệu" subtitle="Import/export danh sách trainer và JSON backup toàn bộ hệ thống." className="bg-[#f4f8f1] p-6 sm:p-8 rounded-brand-lg border border-brand-emerald/20 text-center space-y-6" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="bg-white p-6 rounded-3xl border border-red-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left space-y-1">
-            <h4 className="font-bold text-red-950 text-sm">Danh Sách Trainer (CSV / Excel)</h4>
-            <p className="text-xs text-red-800/80 font-sans">Nhập danh sách trainer từ bảng CSV.</p>
+            <h4 className="text-sm font-bold text-brand-ink">Danh Sách Trainer (CSV / Excel)</h4>
+            <p className="font-sans text-xs text-brand-ink/70">Nhập danh sách trainer từ bảng CSV.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-4 shrink-0 font-sans">
             <button onClick={() => {
@@ -280,8 +280,8 @@ export const SettingsScreen: React.FC = () => {
               link.href = URL.createObjectURL(blob);
               link.setAttribute("download", "mau_csv_trainer.csv");
               link.click();
-            }} className="bg-white border-2 border-red-800 text-red-800 p-3 px-6 rounded-2xl font-bold hover:bg-red-800 hover:text-white transition-all text-xs shadow-md">Mẫu Excel 📥</button>
-            <label className="bg-red-800 hover:bg-red-950 text-white p-3 px-6 rounded-2xl font-bold cursor-pointer transition-all text-xs shadow-md">
+            }} className="rounded-brand-md border-2 border-brand-forest bg-white p-3 px-6 text-xs font-bold text-brand-forest shadow-md transition-all hover:bg-brand-forest hover:text-brand-cream">Mẫu Excel 📥</button>
+            <label className="cursor-pointer rounded-brand-md bg-brand-forest p-3 px-6 text-xs font-bold text-brand-cream shadow-md transition-all hover:bg-brand-forest-deep">
               Tải Lên Danh Sách 📤
               <input type="file" accept=".csv" onChange={e => {
                 const file = e.target.files?.[0];

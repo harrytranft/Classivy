@@ -55,13 +55,13 @@ export const SkillPointsModal: React.FC = () => {
 
                         <div className="w-full space-y-3 pt-6 border-t border-gray-200 text-center" data-testid="trainer-level-panel">
                           <p className="text-[10px] font-black uppercase text-gray-400">Trainer Level</p>
-                          <p className="text-3xl font-black text-red-800">Lv.{sidebarData.trainerProgress.level}</p>
+                          <p className="text-3xl font-black text-brand-forest">Lv.{sidebarData.trainerProgress.level}</p>
                           <p className="inline-block rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-800 border border-amber-100">
                             {sidebarData.trainerTitle.icon} {sidebarData.trainerTitle.name}
                           </p>
                           <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
                             <div
-                              className="bg-red-800 h-full rounded-full transition-all duration-500"
+                              className="h-full rounded-full bg-brand-forest transition-all duration-500"
                               style={{ width: `${sidebarData.trainerLevelPct}%` }}
                             />
                           </div>

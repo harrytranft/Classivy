@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-27 (Phase 2 hoàn thành; chờ Harry kiểm tra preview trước khi gộp)
+**Cập nhật lần cuối:** 2026-10-27 (Phase 2 đã hoàn tất code; chờ Harry kiểm tra preview và full smoke trước khi gộp)
 
 ## 1. Sản phẩm
 
@@ -32,7 +32,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 0 (nền móng và thương hiệu): hoàn thành.
 - Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
-- Phase 2 hoàn thành trên nhánh `claude/phase2-rebranding`: bỏ cấp bậc/Gemini, hệ thiết kế + Tailwind local, thuật ngữ Trainer, localStorage `classivy_*`, Modal/Toast và reskin shell, lớp, hồ sơ, cài đặt, đăng nhập, công cụ, điểm danh/bài tập cùng các modal game. Playfair không còn được tải; lớp tương thích `font-royal` dùng font Classivy.
+- Phase 2 hoàn tất code trên nhánh `claude/phase2-rebranding`: bỏ cấp bậc/Gemini, hệ thiết kế + Tailwind local, thuật ngữ Trainer, localStorage `classivy_*`, Modal/Toast và reskin shell, lớp, hồ sơ, cài đặt, đăng nhập, công cụ, điểm danh/bài tập cùng các modal game. Vòng cuối đã làm lại Random và Tặng Pokémon theo nền kem/trắng, CTA xanh rừng/vàng, tăng tương phản và dọn CTA đỏ không có nghĩa cảnh báo. Playfair không còn được tải; UI chỉ nạp Plus Jakarta Sans + Be Vietnam Pro; `font-royal` là lớp tương thích ánh xạ về font Classivy và `font-[Inter]` đã bị bỏ khỏi Profile.
 - Chưa đổi schema, chưa có migration nào mới. App đã thôi đọc/ghi cột `ranks_male`/`ranks_female` (xoá cột ở Phase 3). Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
 
 ## 5. Bản đồ repo (hiện tại)
@@ -49,8 +49,8 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Dữ liệu học sinh nằm trong một cột JSON của giáo viên, chưa phải bảng riêng; đây là nút thắt cho mọi tính năng học sinh. Phần cần thay ở Phase 3 đã gom vào `src/app/providers/gameData/`.
 - Thuật ngữ: giữ "Hào Quang"; "Học sĩ" -> "Trainer" (D9); `Ý Chỉ Đồng Hành` -> `Đồng Đội Hỗ Trợ`; các phụ kiện mang tên cung đình đã đổi theo PLAN. Kỹ năng Pokémon lưu theo giáo viên nên tài khoản cũ vẫn thấy tên/mô tả cũ cho tới khi tự sửa hoặc khôi phục trong Cài đặt.
 - Đăng nhập hiện chỉ dành cho tài khoản đã tồn tại: email + mật khẩu. UI tạo tài khoản và Google login đã bỏ theo quyết định Harry; không xóa API nền để Phase 4 còn có thể dùng luồng giáo viên tạo tài khoản học sinh.
-- Đã reskin modal Điểm danh và Bài tập với component UI Classivy; các luồng game còn lại vẫn là đợt reskin tiếp theo.
-- Modal game đã được đồng bộ lớp phủ/xử lý typography Classivy; Level Up và Boss bị đánh bại dùng Modal chung. Cần hoàn tất vòng smoke snapshot và rà thủ công preview trước task 2.9.
+- Đã reskin modal Điểm danh/Bài tập và các luồng game. Random/Tặng Pokémon là vòng polish cuối; các CTA đỏ không mang nghĩa nguy hiểm đã dọn, còn đỏ dành cho lỗi/cảnh báo/trừ điểm hoặc sự kiện Cá Ngựa.
+- `npm run typecheck`, `npm test` (106/106) và `npm run build` đã đạt sau vòng polish. Snapshot Settings/Profile/Random/Gift đã cập nhật có chủ đích. Full smoke trong môi trường agent chưa kết thúc 6/6 vì preview server 5179 bị `net::ERR_CONNECTION_REFUSED` sau test đầu tiên; cần chạy lại ở terminal/CI sạch và rà thủ công preview trước khi gộp Phase 2.
 - SQL chờ gộp vào migration Phase 3: `docs/phase-3-pending-sql.md` (xoá cột cấp bậc, đổi tên mặc định).
 - Giới hạn gói miễn phí Supabase/Vercel (kể cả Edge Functions) cần xác minh lại trước Phase 3-4.
 

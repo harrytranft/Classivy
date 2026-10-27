@@ -158,7 +158,7 @@ export const ProfilePetView: React.FC = () => {
                             <div className="flex flex-wrap justify-end gap-3 pt-1">
                               <button 
                                 onClick={() => handleBuyNewEgg(editingStudent.id, 'normal')}
-                                className="bg-red-800 hover:bg-red-950 text-white font-bold text-xs p-3 px-5 rounded-2xl flex items-center gap-2 shadow-md transition-all active:translate-y-px font-sans"
+                                className="flex items-center gap-2 rounded-brand-md bg-brand-forest p-3 px-5 text-xs font-bold text-brand-cream shadow-md transition-all hover:bg-brand-forest-deep active:translate-y-px font-sans"
                               >
                                 <span>🥚🌟</span>
                                 <span>Trứng thường (10đ)</span>
@@ -178,7 +178,7 @@ export const ProfilePetView: React.FC = () => {
                         {editingStudent.pets && editingStudent.pets.length > 0 && (
                           <div className="bg-amber-50/10 p-6 rounded-3xl border border-amber-200/20 space-y-4">
                             <div className="text-left border-b pb-2 font-sans">
-                              <h4 className="font-royal text-lg text-amber-900 flex items-center gap-2">
+                              <h4 className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-brand-ink">
                                 <span>🦁</span>
                                 <span>Pokémon Đã Sở Hữu ({editingStudent.pets.length})</span>
                               </h4>
@@ -236,7 +236,7 @@ export const ProfilePetView: React.FC = () => {
                         {/* SECTION: YOUR NEW DIRECT PET ACTIVE SKILLS (LIMIT 2 USES) */}
                         {editingStudent.pet.skills && editingStudent.pet.skills.length > 0 && (
                           <div className="space-y-4 pt-4">
-                            <h4 className="font-royal text-xl text-indigo-900 border-b pb-2 flex items-center gap-2">
+                            <h4 className="flex items-center gap-2 border-b border-[#e6e2d4] pb-2 text-xl font-extrabold tracking-tight text-brand-ink">
                               <span>⚡</span>
                               <span>Bảo Bối Tuyệt Chiêu Hữu Dụng</span>
                             </h4>
@@ -261,7 +261,7 @@ export const ProfilePetView: React.FC = () => {
                                     </div>
                                     <button
                                       onClick={() => handleUsePetSkill(editingStudent.id, skId, sk.name)}
-                                      className="bg-red-800 hover:bg-red-950 text-white font-black text-[9px] px-3.5 py-2.5 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all shrink-0 font-sans"
+                                      className="shrink-0 rounded-brand-md bg-brand-forest px-3.5 py-2.5 text-[9px] font-bold tracking-wide text-brand-cream shadow transition-all hover:bg-brand-forest-deep active:translate-y-px font-sans"
                                     >
                                       Kích Hoạt
                                     </button>
@@ -274,17 +274,17 @@ export const ProfilePetView: React.FC = () => {
 
                         {/* SECTION: PET SKILLS DOJO */}
                         <div className="space-y-4 pt-4">
-                          <h4 className="font-royal text-xl text-purple-900 border-b pb-2 flex items-center gap-2">
+                          <h4 className="flex items-center gap-2 border-b border-[#e6e2d4] pb-2 text-xl font-extrabold tracking-tight text-brand-ink">
                             <span>🎓</span>
                             <span>Pokémon Skill Lab</span>
                           </h4>
                           <p className="text-xs text-purple-800/70 font-sans">Huấn luyện skill cho Pokémon để hỗ trợ trainer trong các hoạt động học tập.</p>
 
-                          <div className="space-y-2 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar font-sans font-[Inter]">
+                          <div className="space-y-2 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar font-sans">
                             {petSkills.map(sk => {
                               const isLearned = editingStudent.pet?.skills.includes(sk.id);
                               return (
-                                <div key={sk.id} className="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+                                <div key={sk.id} className="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
                                   <div className="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">
                                     {sk.icon}
                                   </div>
@@ -293,7 +293,7 @@ export const ProfilePetView: React.FC = () => {
                                     <h5 className="font-extrabold text-sm text-gray-800 mt-1">{sk.name}</h5>
                                     <p className="text-xs text-gray-400 mt-0.5 italic leading-relaxed">{sk.description}</p>
                                   </div>
-                                  <div className="shrink-0 text-right font-[Inter]">
+                                  <div className="shrink-0 text-right">
                                     {isLearned ? (
                                       <span className="bg-purple-100 text-purple-800 font-extrabold border border-purple-200 text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tighter">
                                         ☘️ Đã Giác Ngộ

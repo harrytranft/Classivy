@@ -123,7 +123,7 @@ export const ProfileEggView: React.FC = () => {
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <button
                                   onClick={() => handleBuyNewEgg(editingStudent.id, 'normal')}
-                                  className="w-full bg-red-800 hover:bg-red-950 text-white font-bold py-3.5 rounded-2xl shadow-md active:scale-95 transition-all text-xs uppercase"
+                                  className="w-full rounded-brand-md bg-brand-forest py-3.5 text-xs font-bold tracking-wide text-brand-cream shadow-md transition-all hover:bg-brand-forest-deep active:scale-95"
                                 >
                                   🥚 Trứng thường (10đ)
                                 </button>
