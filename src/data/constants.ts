@@ -1,14 +1,35 @@
 
 import { LuckyWheelReward, LudoTileSpec, Skill } from '../types';
 
-export const STORAGE_KEY = 'imperial_school_data_v6';
-export const SKILLS_KEY = 'imperial_skills_v6';
-export const PET_SKILLS_KEY = 'imperial_pet_skills_v1';
-export const LUCKY_WHEEL_REWARDS_KEY = 'imperial_lucky_wheel_rewards_v1';
-export const BOSS_STATES_KEY = 'imperial_boss_states_by_class_v1';
-export const BOSS_ENCOUNTER_FREQUENCY_KEY = 'imperial_boss_encounter_frequency_v1';
-export const WHEEL_SPIN_SOUND_KEY = 'imperial_sound_wheel_spin';
-export const WHEEL_FINISH_SOUND_KEY = 'imperial_sound_wheel_finish';
+// Khoá localStorage. Trước Phase 2 dùng tiền tố `imperial_*`; dữ liệu cũ được chép sang một lần
+// khi mở app (`domain/storageMigration.ts`), khoá cũ được giữ nguyên để có thể hoàn tác.
+export const STORAGE_KEY = 'classivy_school_data_v6';
+export const SKILLS_KEY = 'classivy_skills_v6';
+export const PET_SKILLS_KEY = 'classivy_pet_skills_v1';
+export const LUCKY_WHEEL_REWARDS_KEY = 'classivy_lucky_wheel_rewards_v1';
+export const BOSS_STATES_KEY = 'classivy_boss_states_by_class_v1';
+export const BOSS_ENCOUNTER_FREQUENCY_KEY = 'classivy_boss_encounter_frequency_v1';
+export const POS_SOUND_KEY = 'classivy_sound_pos';
+export const NEG_SOUND_KEY = 'classivy_sound_neg';
+export const TIMER_SOUND_KEY = 'classivy_sound_tim';
+export const WHEEL_SPIN_SOUND_KEY = 'classivy_sound_wheel_spin';
+export const WHEEL_FINISH_SOUND_KEY = 'classivy_sound_wheel_finish';
+
+/** Khoá mới -> khoá cũ (Imperial School). Chỉ dùng cho đoạn chuyển dữ liệu một lần. */
+export const LEGACY_STORAGE_KEYS: Record<string, string> = {
+  [STORAGE_KEY]: 'imperial_school_data_v6',
+  [SKILLS_KEY]: 'imperial_skills_v6',
+  [PET_SKILLS_KEY]: 'imperial_pet_skills_v1',
+  [LUCKY_WHEEL_REWARDS_KEY]: 'imperial_lucky_wheel_rewards_v1',
+  [BOSS_STATES_KEY]: 'imperial_boss_states_by_class_v1',
+  [BOSS_ENCOUNTER_FREQUENCY_KEY]: 'imperial_boss_encounter_frequency_v1',
+  [POS_SOUND_KEY]: 'imperial_sound_pos',
+  [NEG_SOUND_KEY]: 'imperial_sound_neg',
+  [TIMER_SOUND_KEY]: 'imperial_sound_tim',
+  [WHEEL_SPIN_SOUND_KEY]: 'imperial_sound_wheel_spin',
+  [WHEEL_FINISH_SOUND_KEY]: 'imperial_sound_wheel_finish'
+};
+export const STORAGE_MIGRATION_MARKER_KEY = 'classivy_storage_migrated_v1';
 
 export const DEFAULT_SKILLS: Skill[] = [
   // Positive

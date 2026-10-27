@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
+import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, NEG_SOUND_KEY, POS_SOUND_KEY, TIMER_SOUND_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
 import { Student } from '../../../types';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, getRandomPokemon } from '../../../data/pokemonData';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
@@ -68,9 +68,9 @@ export const useLocalPersistence = (data: GameDataState, user: AuthUser | null, 
       if (savedPetSkills) setPetSkills(JSON.parse(savedPetSkills));
       else setPetSkills(DEFAULT_PET_SKILLS);
       
-      const sPos = localStorage.getItem('imperial_sound_pos');
-      const sNeg = localStorage.getItem('imperial_sound_neg');
-      const sTim = localStorage.getItem('imperial_sound_tim');
+      const sPos = localStorage.getItem(POS_SOUND_KEY);
+      const sNeg = localStorage.getItem(NEG_SOUND_KEY);
+      const sTim = localStorage.getItem(TIMER_SOUND_KEY);
       const sWheelSpin = localStorage.getItem(WHEEL_SPIN_SOUND_KEY);
       const sWheelFinish = localStorage.getItem(WHEEL_FINISH_SOUND_KEY);
       if (sPos) setPosSoundUrl(sPos);

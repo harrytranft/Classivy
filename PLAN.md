@@ -134,7 +134,7 @@ src/
 - [ ] 2.4 Reskin lần lượt các màn hình đã tách; kiểm tra tương phản và cảm ứng (`accessibility-review`)
 - [ ] 2.5 **Quyết định với Harry:** bộ thuật ngữ thay cho các từ cung đình còn lại ("Học sĩ", "Hào Quang", lời trong UI...). Hệ cấp bậc và "Thánh chỉ" đã bỏ theo D7
 - [x] ~~2.6 Đổi prompt Gemini~~ - không cần nữa: Gemini bị bỏ ở 2.0 (D7)
-- [ ] 2.7 Đổi khoá localStorage `imperial_*` thành `classivy_*` **kèm đoạn chuyển dữ liệu một lần** (đọc khoá cũ, ghi khoá mới, giữ bản cũ để hoàn tác) và test
+- [x] 2.7 Đổi khoá localStorage `imperial_*` thành `classivy_*` **kèm đoạn chuyển dữ liệu một lần** (đọc khoá cũ, ghi khoá mới, giữ bản cũ để hoàn tác) và test - xong 2026-10-27. Cách hoàn tác: xoá các khoá `classivy_*` và `classivy_storage_migrated_v1` trong trình duyệt rồi tải lại trang
 - [ ] 2.8 Đổi giá trị mặc định "Học sĩ triều đình" trong `AuthContext.tsx`; chuẩn bị SQL đổi default trong schema (đưa vào migration ở Phase 3, không chạy riêng)
 - [ ] 2.9 Cập nhật `DESIGN.md`, PLAN, BRIEF; báo cáo
 
@@ -203,6 +203,7 @@ src/
 - ~~**[Lỗi game]** Cá Ngựa: bị Quái vật giữ, lắc 6 vẫn bị kẹt~~ → Harry duyệt sửa, **đã sửa 2026-10-26** (`checkMonsterEscape` trong `src/domain/ludo.ts`, có test).
 - ~~**[Lỗi có sẵn]** Danh sách cấp bậc rỗng làm trắng trang~~ → giải quyết bằng việc bỏ hệ cấp bậc (D7, task 2.0).
 - ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
+- **[Lỗi có sẵn, dữ liệu]** (phát hiện 2026-10-27 khi viết test 2.7) Lúc mở app, trước khi Supabase xác nhận đăng nhập xong, app ghi danh sách học sinh rỗng `[]` (và kỹ năng mặc định) đè lên bản lưu trên máy (`useLocalPersistence.ts`, các effect `if (!user)` chạy khi `authLoading`). Hậu quả: bản lưu trên máy gần như luôn rỗng, nên lần đăng nhập đầu tiên (đám mây chưa có dữ liệu) không mang được học sinh trên máy lên. Dữ liệu trên đám mây không bị ảnh hưởng. Đề xuất: chỉ ghi khi `!authLoading`. Chưa sửa vì đổi hành vi lưu dữ liệu - chờ Harry duyệt.
 - **[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt" khi danh sách đổi thứ tự sau khi chấm điểm. Xử lý cùng Phase 2.
 
 ## Quy trình sau mỗi Phase
@@ -248,4 +249,10 @@ src/
 - App thôi đọc/ghi `ranks_male`/`ranks_female` (giá trị cũ trên Supabase để nguyên; xoá cột ở Phase 3). Nhập file sao lưu đi qua `domain/backup.ts` (`pickBackupFields`) chỉ lấy trường còn dùng; test với `fixtures/sample-class.json` (có phần cấp bậc): nhập được, bỏ đúng phần cấp bậc.
 - `npm run typecheck`: 0 lỗi. `npm test`: 14 file, 103 test đạt (bỏ 1 test cấp bậc, thêm 4 test sao lưu). `npm run build`: thành công, không cảnh báo (chunk chính ~470 kB).
 - `npm run smoke`: lần đầu 2 nhóm đỏ đúng chỗ dự kiến; cập nhật ảnh gốc có chủ đích. Đã đối chiếu diff: `30-skill-modal.html` chỉ đổi khung bên trái (Trainer Level thay 3 ô cấp bậc); 10 file dữ liệu đám mây chỉ MẤT hai trường `ranks_male`/`ranks_female`, không thêm/đổi dòng nào khác. Chạy lại: 5/5 đạt.
+
+**Phase 2 / task 2.7 - 2026-10-27** (kiểm thử tự động trên máy ảo; chưa thử tay; chưa chạy trên Vercel/Supabase thật):
+- 11 khoá `imperial_*` đổi thành `classivy_*` (danh sách ở `LEGACY_STORAGE_KEYS`, `src/data/constants.ts`). Ba khoá âm thanh trước đây viết thẳng chuỗi nay dùng hằng số. Khoá không có tiền tố `imperial_` (`custom_ludo_tiles`, `trainer_weather_*`) giữ nguyên.
+- `domain/storageMigration.ts` chạy một lần trong `src/main.tsx` trước khi render: chỉ chép khi khoá mới trống, không xoá khoá cũ, ghi cờ `classivy_storage_migrated_v1`, không làm sập app nếu trình duyệt chặn localStorage. 6 unit test.
+- Smoke test mới (nhóm 6): máy có khoá cũ, đám mây trống -> lần đăng nhập đầu đẩy đúng tần suất Boss và phần thưởng Vòng quay đọc từ khoá cũ; khoá cũ còn nguyên. Đã thử tắt đoạn chuyển: test đỏ đúng chỗ (nhận `occasional` thay vì `rare`).
+- `npm run typecheck` 0 lỗi; `npm test` 15 file, 109 test đạt; `npm run build` thành công; `npm run smoke` 6/6 đạt, ảnh gốc 5 nhóm cũ không đổi.
 

@@ -25,7 +25,7 @@ src/types/                  kiểu dữ liệu (index.ts: dữ liệu; app.ts: k
 1. **GameDataProvider** (`src/app/providers/`) giữ dữ liệu được lưu: học sinh, kỹ năng, kỹ năng Pokémon, âm thanh, ô Cá Ngựa, phần thưởng Vòng quay, Boss theo lớp.
    - `gameData/useGameDataState.ts`: khởi tạo state (một số đọc từ localStorage).
    - `gameData/useCloudSync.ts`: tải từ Supabase khi đăng nhập; tự đồng bộ lên sau 1,5 giây khi dữ liệu đổi.
-   - `gameData/useLocalPersistence.ts`: lưu/đọc localStorage (khoá `imperial_*` giữ nguyên tới Phase 2).
+   - `gameData/useLocalPersistence.ts`: lưu/đọc localStorage (khoá `classivy_*`; khoá cũ `imperial_*` được chép sang một lần khi mở app ở `src/main.tsx` qua `domain/storageMigration.ts`, khoá cũ giữ nguyên để hoàn tác).
    - `gameData/backupActions.ts`: xuất/nhập JSON, sao lưu/khôi phục thủ công. Nhập file chỉ lấy các trường còn dùng (`domain/backup.ts`), nên file cũ có phần cấp bậc vẫn nhập được.
    - Cột `ranks_male`/`ranks_female` trên Supabase không còn được đọc/ghi (hệ cấp bậc đã bỏ, D7); xoá cột ở migration Phase 3.
    - Phase 3 sẽ thay phần đồng bộ (một snapshot JSON mỗi giáo viên) bằng bảng dữ liệu riêng; chỉ cần sửa trong thư mục này.

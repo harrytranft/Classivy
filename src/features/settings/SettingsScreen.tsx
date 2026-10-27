@@ -1,7 +1,7 @@
 import React from 'react';
 import { SettingsSection } from './SettingsSection';
 import { BOSS_ENCOUNTER_FREQUENCY_OPTIONS } from '../../domain/bossSystem';
-import { DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_LUDO_TILES, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../data/constants';
+import { DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_LUDO_TILES, NEG_SOUND_KEY, POS_SOUND_KEY, TIMER_SOUND_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../data/constants';
 import { Gender, LuckyWheelRewardType, Skill, Student } from '../../types';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS } from '../../data/pokemonData';
 import { createEgg } from '../../domain/eggs';
@@ -130,9 +130,9 @@ export const SettingsScreen: React.FC = () => {
         </div>
         <button
           onClick={() => {
-            localStorage.setItem('imperial_sound_pos', posSoundUrl);
-            localStorage.setItem('imperial_sound_neg', negSoundUrl);
-            localStorage.setItem('imperial_sound_tim', timerSoundUrl);
+            localStorage.setItem(POS_SOUND_KEY, posSoundUrl);
+            localStorage.setItem(NEG_SOUND_KEY, negSoundUrl);
+            localStorage.setItem(TIMER_SOUND_KEY, timerSoundUrl);
             localStorage.setItem(WHEEL_SPIN_SOUND_KEY, wheelSpinSoundUrl);
             localStorage.setItem(WHEEL_FINISH_SOUND_KEY, wheelFinishSoundUrl);
             alert("Đã lưu cài đặt âm thanh!");

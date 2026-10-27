@@ -60,11 +60,19 @@ interface SmokeState {
 
 const IGNORED_CONSOLE_ERRORS = [/Failed to load resource/, /net::ERR/];
 
-async function setupPage(page: Page, options: { loggedIn: boolean }): Promise<SmokeState> {
+interface SetupOptions {
+  loggedIn: boolean;
+  /** Cloud has no row yet (first login): the app pushes local data up. */
+  emptyCloud?: boolean;
+  /** localStorage values written before the app starts (e.g. old `imperial_*` keys). */
+  localStorageSeed?: Record<string, string>;
+}
+
+async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState> {
   const state: SmokeState = { upserts: [], dialogs: [], errors: [] };
 
   await page.clock.setFixedTime(FIXED_NOW);
-  await page.addInitScript(({ loggedIn, storageKey, session }) => {
+  await page.addInitScript(({ loggedIn, storageKey, session, seedValues }) => {
     // Seeded PRNG (mulberry32) so random picks, eggs and ids are deterministic.
     let seed = 20261026;
     const next = () => {
@@ -97,7 +105,11 @@ async function setupPage(page: Page, options: { loggedIn: boolean }): Promise<Sm
     if (loggedIn) {
       window.localStorage.setItem(storageKey, JSON.stringify(session));
     }
-  }, { loggedIn: options.loggedIn, storageKey: AUTH_STORAGE_KEY, session: fakeSession() });
+    if (!sessionStorage.getItem('smoke-seeded')) {
+      Object.entries(seedValues).forEach(([key, value]) => window.localStorage.setItem(key, value));
+      sessionStorage.setItem('smoke-seeded', '1');
+    }
+  }, { loggedIn: options.loggedIn, storageKey: AUTH_STORAGE_KEY, session: fakeSession(), seedValues: options.localStorageSeed || {} });
 
   await page.route(url => url.hostname === SUPABASE_HOST, async route => {
     const request = route.request();
@@ -107,7 +119,8 @@ async function setupPage(page: Page, options: { loggedIn: boolean }): Promise<Sm
         // Behave like a real cloud: return the latest saved row so reloads keep progress.
         const latest = state.upserts[state.upserts.length - 1] as Record<string, unknown> | undefined;
         const row = latest ? { ...cloudRow(), ...latest } : cloudRow();
-        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([row]) });
+        const rows = options.emptyCloud && !latest ? [] : [row];
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rows) });
         return;
       }
       state.upserts.push(request.postDataJSON());
@@ -140,14 +153,16 @@ async function setupPage(page: Page, options: { loggedIn: boolean }): Promise<Sm
   page.on('pageerror', error => state.errors.push(`pageerror: ${error.message}`));
 
   await page.goto('/');
-  await waitForApp(page, options.loggedIn);
+  await waitForApp(page, options.loggedIn, !options.emptyCloud);
   return state;
 }
 
-async function waitForApp(page: Page, loggedIn: boolean) {
+async function waitForApp(page: Page, loggedIn: boolean, expectSampleClass = true) {
   if (loggedIn) {
     // Data is loaded once either the class picker or a class page shows class 6A.
-    await page.locator('main select option[value="6A"], main button[aria-label="Vào lớp 6A"]').first().waitFor({ state: 'attached' });
+    if (expectSampleClass) {
+      await page.locator('main select option[value="6A"], main button[aria-label="Vào lớp 6A"]').first().waitFor({ state: 'attached' });
+    }
     await page.locator('button[title^="Trạng thái sync"]').waitFor({ state: 'attached' });
   }
   await page.waitForTimeout(800);
@@ -437,5 +452,39 @@ test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Ba
   await expect(page).toHaveURL(/\/class$/);
   await page.goto('/duong-dan-la');
   await expect(page).toHaveURL(/\/class$/);
+  expect(state.errors).toEqual([]);
+});
+
+test('chuyển khoá localStorage cũ imperial_* sang classivy_* (task 2.7)', async ({ page }) => {
+  // Máy đã dùng bản Imperial School, đám mây chưa có bản nào: lần đăng nhập đầu đẩy cài đặt trên máy lên.
+  const oldWheelRewards = [{ id: 'old-reward', label: 'Thưởng cũ', icon: '🎈', type: 'points', amount: 7, color: '#22c55e' }];
+  const state = await setupPage(page, {
+    loggedIn: true,
+    emptyCloud: true,
+    localStorageSeed: {
+      imperial_boss_encounter_frequency_v1: 'rare',
+      imperial_lucky_wheel_rewards_v1: JSON.stringify(oldWheelRewards),
+      imperial_ranks_male_v6: JSON.stringify(FIXTURE.ranksMale)
+    }
+  });
+  await page.waitForTimeout(2200);
+
+  expect(state.upserts.length).toBeGreaterThan(0);
+  const firstUpsert = state.upserts[0] as Record<string, unknown>;
+  expect(firstUpsert.boss_encounter_frequency).toBe('rare');
+  expect(firstUpsert.lucky_wheel_rewards).toEqual(oldWheelRewards);
+  expect(firstUpsert).not.toHaveProperty('ranks_male');
+
+  const stored = await page.evaluate(() => ({
+    newFrequency: window.localStorage.getItem('classivy_boss_encounter_frequency_v1'),
+    oldFrequency: window.localStorage.getItem('imperial_boss_encounter_frequency_v1'),
+    oldRewards: window.localStorage.getItem('imperial_lucky_wheel_rewards_v1'),
+    marker: window.localStorage.getItem('classivy_storage_migrated_v1')
+  }));
+  expect(stored.newFrequency).toBe('rare');
+  // Khoá cũ giữ nguyên để hoàn tác.
+  expect(stored.oldFrequency).toBe('rare');
+  expect(stored.oldRewards).toBe(JSON.stringify(oldWheelRewards));
+  expect(stored.marker).not.toBeNull();
   expect(state.errors).toEqual([]);
 });
