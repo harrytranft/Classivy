@@ -22,6 +22,7 @@
 | D3 | Tách App.tsx trước, làm dữ liệu/tài khoản sau | 2026-10-26 |
 | D4 | Bỏ chủ đề cung đình, giữ Pokémon/Boss theo nhận diện Classivy | 2026-10-26 |
 | D6 | North Star thiết kế "Lá non trong tấm khiên"; thư mục `.claude/` được commit | 2026-10-26 |
+| D7 | Bỏ hẳn hệ cấp bậc cung đình (Imperial School) và hộp "Thánh chỉ"/Gemini. Bảng Ban thưởng/Phạt hiển thị Trainer Level thay cho cấp bậc. Làm ở đầu Phase 2 | 2026-10-27 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -118,12 +119,19 @@ src/
 
 **Mục tiêu:** giao diện đúng nhận diện Classivy; bỏ thuật ngữ cung đình; không mất dữ liệu người dùng cũ.
 
+- [ ] 2.0 **Bỏ hệ cấp bậc** (quyết định D7, làm đầu tiên):
+  - Bảng Ban thưởng/Phạt: thay 3 ô "Level Hiện Tại / Điểm lên Level / Điểm xuống Level" bằng Trainer Level (cấp + danh hiệu + tiến độ XP, như trên thẻ học sinh)
+  - Bỏ hộp "Thánh chỉ" và toàn bộ Gemini (`lib/geminiService.ts`, gói `@google/genai`, biến `GEMINI_API_KEY` trong `.env.example`, README, `vite.config.ts`)
+  - Bỏ `getRank`, state/lưu trữ `ranksMale`/`ranksFemale`, `DEFAULT_RANKS_*`, khoá localStorage cấp bậc, `handleAvatarUpload` (không dùng), `rankChanges` trong `domain/points.ts`
+  - Dữ liệu: app thôi đọc/ghi `ranks_male`/`ranks_female`; KHÔNG đổi Supabase ở Phase 2 (xoá cột gộp vào migration Phase 3). File sao lưu cũ có phần cấp bậc vẫn nhập được (bỏ qua phần đó) - viết test cho việc này
+  - Lỗi "danh sách cấp bậc rỗng làm trắng trang" tự hết theo
+  - Kiểm chứng: `npm test`, `npm run typecheck`, `npm run build`, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff
 - [ ] 2.1 Chạy lại `impeccable document` (chế độ scan) và chốt `DESIGN.md` chính thức (North Star đã chốt: "Lá non trong tấm khiên")
 - [ ] 2.2 Chuyển Tailwind từ CDN sang build local, đưa token màu/chữ/bo góc vào cấu hình
 - [ ] 2.3 Dựng thư viện `components/ui/` (Button, Card, Chip, Avatar, Modal, Toast, ProgressBar, Badge, EmptyState)
 - [ ] 2.4 Reskin lần lượt các màn hình đã tách; kiểm tra tương phản và cảm ứng (`accessibility-review`)
-- [ ] 2.5 **Quyết định với Harry:** bộ thuật ngữ thay cho hệ cấp bậc cung đình (Vua/Hoàng hậu/Nô tài...), "Thánh chỉ", "Học sĩ"; tên cấp bậc mặc định
-- [ ] 2.6 Đổi prompt Gemini (`geminiService.ts`) sang giọng trung tính, thân thiện
+- [ ] 2.5 **Quyết định với Harry:** bộ thuật ngữ thay cho các từ cung đình còn lại ("Học sĩ", "Hào Quang", lời trong UI...). Hệ cấp bậc và "Thánh chỉ" đã bỏ theo D7
+- [x] ~~2.6 Đổi prompt Gemini~~ - không cần nữa: Gemini bị bỏ ở 2.0 (D7)
 - [ ] 2.7 Đổi khoá localStorage `imperial_*` thành `classivy_*` **kèm đoạn chuyển dữ liệu một lần** (đọc khoá cũ, ghi khoá mới, giữ bản cũ để hoàn tác) và test
 - [ ] 2.8 Đổi giá trị mặc định "Học sĩ triều đình" trong `AuthContext.tsx`; chuẩn bị SQL đổi default trong schema (đưa vào migration ở Phase 3, không chạy riêng)
 - [ ] 2.9 Cập nhật `DESIGN.md`, PLAN, BRIEF; báo cáo
@@ -139,7 +147,7 @@ src/
 **Mục tiêu:** học sinh, lớp, điểm là dữ liệu bảng thật, có RLS chặt, dữ liệu cũ được chuyển sang mà không mất.
 
 - [ ] 3.1 ADR về data model (`engineering:architecture`): bảng lớp, học sinh, thành viên lớp, sổ cái điểm, trạng thái tài khoản; cách giữ dữ liệu game (Pokémon, Boss, Ludo) dạng JSON hay bảng
-- [ ] 3.2 Viết migration trong `supabase/migrations/` (có phần hoàn tác), kèm RLS và test RLS
+- [ ] 3.2 Viết migration trong `supabase/migrations/` (có phần hoàn tác), kèm RLS và test RLS; gồm xoá cột `ranks_male`, `ranks_female` khỏi `user_settings` (D7)
 - [ ] 3.3 Script chuyển dữ liệu từ `user_settings.students` sang bảng mới, có chế độ chạy thử (dry-run) và đối chiếu số lượng
 - [ ] 3.4 Lớp truy cập dữ liệu mới trong app; giữ chế độ khách (guest) nếu còn dùng
 - [ ] 3.5 Kiểm tra trên **dự án Supabase dev/branch** trước; kiểm tra giới hạn gói miễn phí
@@ -191,7 +199,7 @@ src/
 
 - Có cần vai trò phụ huynh (xem điểm con) không? Hiện ngoài phạm vi.
 - ~~**[Lỗi game]** Cá Ngựa: bị Quái vật giữ, lắc 6 vẫn bị kẹt~~ → Harry duyệt sửa, **đã sửa 2026-10-26** (`checkMonsterEscape` trong `src/domain/ludo.ts`, có test).
-- **[Lỗi có sẵn, chờ Harry quyết]** Nếu bản trên đám mây có danh sách cấp bậc rỗng (ví dụ: nhập file JSON không có phần cấp bậc rồi đóng trang ngay trong ~2 giây; hoặc dòng dữ liệu được tạo với giá trị mặc định rỗng), lần đăng nhập sau bấm +/- trên thẻ học sinh sẽ làm app trắng trang. Đề xuất: khi danh sách rỗng thì dùng cấp bậc mặc định, và khi nhập JSON thiếu cấp bậc thì giữ cấp bậc hiện tại khi gửi lên đám mây.
+- ~~**[Lỗi có sẵn]** Danh sách cấp bậc rỗng làm trắng trang~~ → giải quyết bằng việc bỏ hệ cấp bậc (D7, task 2.0).
 - ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
 - **[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt" khi danh sách đổi thứ tự sau khi chấm điểm. Xử lý cùng Phase 2.
 
@@ -228,3 +236,4 @@ src/
 **Sau Phase 1 - 2026-10-26** (theo duyệt của Harry; kiểm thử tự động, chưa thử tay, chưa chạy trên Vercel/Supabase thật):
 - Sửa lỗi Cá Ngựa lắc 6 vẫn bị Quái vật giữ; cài `@types/react`/`@types/react-dom`, sửa lỗi kiểu (`npm run typecheck`: 0 lỗi, trước đó ~20 lỗi); xoá `.sync-out.tgz`.
 - `npm test`: 13 file, 97 test đạt. `npm run build`: thành công. `npm run smoke`: 5/5 đạt (ảnh gốc không đổi vì luồng thử không đi vào ô Quái vật).
+- Thử nhập file sao lưu cũ (2026-10-27, kiểm thử tự động, Supabase giả): xuất JSON từ code trước nhánh (`253253c`) rồi nhập vào code mới: thành công, 12/12 học sinh đúng điểm/Pokémon/trứng, không lỗi; dùng bảng điểm và hồ sơ sau khi nhập vẫn bình thường. Chưa thử với file sao lưu thật của Harry.

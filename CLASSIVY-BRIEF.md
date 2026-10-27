@@ -23,6 +23,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 - Bạn bè chỉ trong cùng lớp; không chat tự do.
 - North Star thiết kế: **"Lá non trong tấm khiên"** (Harry xác nhận 2026-10-26).
 - Thư mục `.claude/` (skills) được commit vào git.
+- Bỏ hệ cấp bậc cung đình và "Thánh chỉ"/Gemini; bảng Ban thưởng/Phạt dùng Trainer Level (D7, 2026-10-27) - làm ở task 2.0 đầu Phase 2.
 - Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
 
 ## 4. Trạng thái hiện tại
@@ -44,7 +45,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 ## 6. Rủi ro đã biết
 
 - Dữ liệu học sinh nằm trong một cột JSON của giáo viên, chưa phải bảng riêng; đây là nút thắt cho mọi tính năng học sinh. Phần cần thay ở Phase 3 đã gom vào `src/app/providers/gameData/`.
-- Lỗi có sẵn chờ Harry quyết: danh sách cấp bậc rỗng trên đám mây làm app trắng trang khi bấm +/- (xem Đề xuất phát sinh). Lỗi Cá Ngựa lắc 6 đã sửa.
+- Lỗi cấp bậc rỗng làm trắng trang: sẽ hết khi bỏ hệ cấp bậc (task 2.0). Lỗi Cá Ngựa lắc 6 đã sửa.
 - Khoá localStorage còn tiền tố `imperial_*`; đổi tên phải có đoạn chuyển dữ liệu để không mất dữ liệu khách (Phase 2).
 - Nội dung game còn từ ngữ cung đình (rank, Thánh chỉ, prompt Gemini); sẽ đổi ở Phase 2.
 - Giới hạn gói miễn phí Supabase/Vercel (kể cả Edge Functions) cần xác minh lại trước Phase 3-4.
@@ -53,9 +54,8 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 
 - Từ ngữ thay cho hệ cấp bậc cung đình (Phase 2).
 - Có thêm vai trò phụ huynh hay không (chưa nằm trong phạm vi).
-- Có sửa lỗi cấp bậc rỗng hay không.
 
 ## 8. Bước tiếp theo
 
 1. Harry: chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh `refactor/phase-1-split` (dùng dữ liệu mẫu hoặc bản sao lưu, không dùng tài khoản thật nếu chưa xuất JSON). Đạt thì gộp vào `main`.
-2. Phase 2: hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage (kèm chuyển dữ liệu). Khi đổi giao diện, cập nhật ảnh gốc smoke test (`npm run smoke -- --update-snapshots`).
+2. Phase 2: bắt đầu bằng task 2.0 bỏ hệ cấp bậc + Gemini (D7); sau đó hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage (kèm chuyển dữ liệu). Khi đổi giao diện, cập nhật ảnh gốc smoke test (`npm run smoke -- --update-snapshots`).
