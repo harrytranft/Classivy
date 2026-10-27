@@ -462,6 +462,8 @@ test('chuyển khoá localStorage cũ imperial_* sang classivy_* (task 2.7)', as
     loggedIn: true,
     emptyCloud: true,
     localStorageSeed: {
+      imperial_school_data_v6: JSON.stringify(FIXTURE.students),
+      imperial_skills_v6: JSON.stringify(FIXTURE.skills),
       imperial_boss_encounter_frequency_v1: 'rare',
       imperial_lucky_wheel_rewards_v1: JSON.stringify(oldWheelRewards),
       imperial_ranks_male_v6: JSON.stringify(FIXTURE.ranksMale)
@@ -473,6 +475,9 @@ test('chuyển khoá localStorage cũ imperial_* sang classivy_* (task 2.7)', as
   const firstUpsert = state.upserts[0] as Record<string, unknown>;
   expect(firstUpsert.boss_encounter_frequency).toBe('rare');
   expect(firstUpsert.lucky_wheel_rewards).toEqual(oldWheelRewards);
+  // Học sinh lưu trên máy không bị ghi đè bằng [] trước khi đăng nhập xong (lỗi cũ, sửa 2026-10-27).
+  expect((firstUpsert.students as { id: string }[]).map(s => s.id)).toEqual(FIXTURE.students.map((s: { id: string }) => s.id));
+  expect(firstUpsert.skills).toEqual(FIXTURE.skills);
   expect(firstUpsert).not.toHaveProperty('ranks_male');
 
   const stored = await page.evaluate(() => ({

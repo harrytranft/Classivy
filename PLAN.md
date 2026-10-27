@@ -203,7 +203,7 @@ src/
 - ~~**[Lỗi game]** Cá Ngựa: bị Quái vật giữ, lắc 6 vẫn bị kẹt~~ → Harry duyệt sửa, **đã sửa 2026-10-26** (`checkMonsterEscape` trong `src/domain/ludo.ts`, có test).
 - ~~**[Lỗi có sẵn]** Danh sách cấp bậc rỗng làm trắng trang~~ → giải quyết bằng việc bỏ hệ cấp bậc (D7, task 2.0).
 - ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
-- **[Lỗi có sẵn, dữ liệu]** (phát hiện 2026-10-27 khi viết test 2.7) Lúc mở app, trước khi Supabase xác nhận đăng nhập xong, app ghi danh sách học sinh rỗng `[]` (và kỹ năng mặc định) đè lên bản lưu trên máy (`useLocalPersistence.ts`, các effect `if (!user)` chạy khi `authLoading`). Hậu quả: bản lưu trên máy gần như luôn rỗng, nên lần đăng nhập đầu tiên (đám mây chưa có dữ liệu) không mang được học sinh trên máy lên. Dữ liệu trên đám mây không bị ảnh hưởng. Đề xuất: chỉ ghi khi `!authLoading`. Chưa sửa vì đổi hành vi lưu dữ liệu - chờ Harry duyệt.
+- ~~**[Lỗi có sẵn, dữ liệu]** Trước khi đăng nhập xong, app ghi `[]` đè bản lưu học sinh trên máy~~ → Harry duyệt, **đã sửa 2026-10-27** (`useLocalPersistence.ts` chỉ ghi khi `!authLoading`; smoke test nhóm 6 kiểm tra học sinh trên máy được đẩy lên đám mây ở lần đăng nhập đầu; bỏ bản sửa thì test đỏ).
 - **[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt" khi danh sách đổi thứ tự sau khi chấm điểm. Xử lý cùng Phase 2.
 
 ## Quy trình sau mỗi Phase

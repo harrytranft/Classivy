@@ -110,27 +110,30 @@ export const useLocalPersistence = (data: GameDataState, user: AuthUser | null, 
     }
   }, [authLoading, user]);
 
-  useEffect(() => { 
-    if (!user) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(students)); 
+  useEffect(() => {
+    // Chờ biết trạng thái đăng nhập: lúc đang tải, state còn là giá trị rỗng ban đầu và sẽ đè mất bản lưu trên máy.
+    if (!authLoading && !user) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
     }
-  }, [students, user]);
+  }, [students, user, authLoading]);
 
   useEffect(() => {
-    if (!user) {
+    // Chờ biết trạng thái đăng nhập: lúc đang tải, state còn là giá trị rỗng ban đầu và sẽ đè mất bản lưu trên máy.
+    if (!authLoading && !user) {
       localStorage.setItem(BOSS_STATES_KEY, JSON.stringify(bossStatesByClass));
     }
-  }, [bossStatesByClass, user]);
+  }, [bossStatesByClass, user, authLoading]);
 
   useEffect(() => {
     localStorage.setItem(BOSS_ENCOUNTER_FREQUENCY_KEY, bossEncounterFrequency);
   }, [bossEncounterFrequency]);
 
-  useEffect(() => { 
-    if (!user) {
-      localStorage.setItem(SKILLS_KEY, JSON.stringify(skills)); 
+  useEffect(() => {
+    // Chờ biết trạng thái đăng nhập: lúc đang tải, state còn là giá trị rỗng ban đầu và sẽ đè mất bản lưu trên máy.
+    if (!authLoading && !user) {
+      localStorage.setItem(SKILLS_KEY, JSON.stringify(skills));
     }
-  }, [skills, user]);
+  }, [skills, user, authLoading]);
 
   useEffect(() => {
     localStorage.setItem(LUCKY_WHEEL_REWARDS_KEY, JSON.stringify(luckyWheelRewards));
