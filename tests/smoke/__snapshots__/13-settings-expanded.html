@@ -1,165 +1,175 @@
-<div class="min-h-screen bg-[radial-gradient(circle_at_50%_0%,#fffbf2_0%,#f5ebe0_100%)] pb-32">
-<div class="fixed left-0 top-1/2 z-50 h-40 w-5 -translate-y-1/2 group/nav">
-<nav class="absolute left-0 top-1/2 flex -translate-y-1/2 -translate-x-[calc(100%-18px)] flex-col items-center gap-3 rounded-r-[28px] border-2 border-white/90 bg-red-950/80 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(120,20,20,0.3)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/nav:translate-x-0 focus-within:translate-x-0">
-<button type="button" title="Trainer Plaza" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">🏞️</button>
-<button type="button" title="Lớp Học" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">📚</button>
-<button type="button" title="Tặng Pokémon" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/50 bg-gradient-to-br from-emerald-300 via-amber-300 to-fuchsia-400 text-white hover:scale-110 hover:shadow-[0_0_28px_rgba(251,191,36,0.45)]">🎁</button>
-<button type="button" title="Cài Đặt" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-amber-200 bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 text-red-950 ring-4 ring-amber-200/35">⚙️</button>
-<button type="button" title="Tài khoản giáo viên" class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg transition-all hover:scale-110 active:scale-95">
-<img class="h-10 w-10 rounded-xl border border-white/80 object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
+<div class="min-h-screen bg-brand-cream pb-36 pl-[84px]">
+<div class="group/nav fixed inset-y-0 left-0 z-50 flex w-[84px] flex-col items-center rounded-r-[28px] bg-brand-shield py-4 text-brand-cream shadow-[4px_0_18px_-6px_rgba(1,72,47,0.45)]">
+<img alt="Classivy" class="mb-5 h-11 w-11 rounded-brand-md" src="/brand/classivy-app-icon-dark.png">
+<nav aria-label="Điều hướng chính" class="flex flex-1 flex-col items-center gap-1.5">
+<button type="button" title="Lớp Học" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-6 w-6" aria-hidden="true">
+<path d="M12 7v14">
+</path>
+<path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z">
+</path>
+</svg>
+<span>Lớp học</span>
+</button>
+<button type="button" title="Tặng Pokémon" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gift h-6 w-6" aria-hidden="true">
+<rect x="3" y="8" width="18" height="4" rx="1">
+</rect>
+<path d="M12 8v13">
+</path>
+<path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7">
+</path>
+<path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5">
+</path>
+</svg>
+<span>Tặng quà</span>
+</button>
+<button type="button" title="Cài Đặt" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors bg-brand-cream text-brand-forest-deep" aria-current="page">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings h-6 w-6" aria-hidden="true">
+<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+</path>
+<circle cx="12" cy="12" r="3">
+</circle>
+</svg>
+<span>Cài đặt</span>
+</button>
+<div class="flex-1">
+</div>
+<div class="group/status flex flex-col items-center gap-1 border-t border-white/10 pt-3">
+<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" aria-label="Sao lưu đám mây" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload h-5 w-5" aria-hidden="true">
+<path d="M12 13v8">
+</path>
+<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242">
+</path>
+<path d="m8 17 4-4 4 4">
+</path>
+</svg>
+</button>
+<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" aria-label="Khôi phục dữ liệu" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history h-5 w-5" aria-hidden="true">
+<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
+</path>
+<path d="M3 3v5h5">
+</path>
+<path d="M12 7v5l4 2">
+</path>
+</svg>
+</button>
+<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" aria-label="Trạng thái sync" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream text-brand-leaf">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check h-5 w-5" aria-hidden="true">
+<circle cx="12" cy="12" r="10">
+</circle>
+<path d="m9 12 2 2 4-4">
+</path>
+</svg>
+</button>
+</div>
+<button type="button" title="Tài khoản giáo viên" class="mt-3 grid h-12 w-12 place-items-center overflow-hidden rounded-full ring-2 ring-brand-gold/70 transition-shadow hover:ring-brand-gold">
+<img class="h-full w-full bg-brand-cream object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
 </button>
 </nav>
 </div>
-<div class="fixed right-0 top-1/2 z-50 h-28 w-5 -translate-y-1/2 group/status">
-<div class="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-[calc(100%-18px)] flex-col items-center justify-center gap-3 rounded-l-[28px] border-2 border-white/90 bg-white/75 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(20,50,120,0.22)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/status:translate-x-0 focus-within:translate-x-0">
-<div class="relative group/item">
-<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-sky-300 via-blue-500 to-indigo-700 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">☁️</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Sao lưu đám mây</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-amber-200 via-orange-400 to-red-600 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">🔄</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Khôi phục dữ liệu</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-emerald-300 via-teal-500 to-emerald-800 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">✅</span>
-<span class="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_8px_rgba(52,211,153,0.9)]">
-</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Trạng thái sync</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-</div>
-</div>
 <main class="max-w-7xl mx-auto p-6">
-<div class="animate-in slide-in-from-bottom-4 duration-500 space-y-8 pb-12">
-<h2 class="text-3xl font-royal text-teal-800 text-center uppercase">Trainer Settings</h2>
-<section class="bg-white p-10 rounded-[40px] border shadow-sm space-y-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
-<div class="flex items-center gap-3 min-w-0">
-<span class="text-3xl shrink-0">☀️</span>
-<div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Weather Plaza</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Cài vị trí để Trainer Plaza đổi nắng, mưa hoặc trời tối theo thời tiết thật.</p>
-</div>
-</div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Weather Plaza" title="Ẩn Weather Plaza">
-<span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
-</span>
-</button>
-</div>
-<div class="grid grid-cols-1 gap-4 rounded-[32px] border border-sky-100 bg-sky-50/60 p-5 md:grid-cols-[1fr_auto_auto]">
-<input placeholder="Nhập thành phố hoặc địa chỉ, ví dụ: Hanoi" class="rounded-2xl border border-sky-200 bg-white px-4 py-3 text-sm font-bold text-sky-950 outline-none focus:ring-4 focus:ring-sky-100" value="Hanoi">
-<button class="rounded-2xl bg-sky-700 px-5 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-sky-800 disabled:opacity-50">Update Weather</button>
-<button class="rounded-2xl border border-sky-200 bg-white px-5 py-3 text-xs font-black uppercase tracking-wider text-sky-800 shadow-sm hover:bg-sky-50 disabled:opacity-50">Auto Location</button>
-<div class="md:col-span-3 text-xs font-bold text-sky-900/70">Failed to fetch</div>
-</div>
-</section>
-<section class="bg-white p-10 rounded-[40px] border shadow-sm space-y-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<div class="animate-in slide-in-from-bottom-4 space-y-6 pb-12 duration-500">
+<header class="rounded-brand-lg border border-[#e6e2d4] bg-[#f4f8f1] px-6 py-7 sm:px-8">
+<p class="text-sm font-semibold text-brand-forest">Không gian giáo viên</p>
+<h2 class="mt-1 text-3xl font-extrabold tracking-tight text-brand-ink">Cài đặt lớp học</h2>
+<p class="mt-2 max-w-2xl text-sm leading-6 text-brand-ink/70">Tuỳ chỉnh hoạt động, phần thưởng và công cụ. Các thay đổi được đồng bộ cùng dữ liệu lớp.</p>
+</header>
+<section class="bg-white p-6 sm:p-8 rounded-brand-lg border border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] space-y-6">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">👹</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Boss Raid</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Cài tần suất Boss xuất hiện sau các lượt Random Solo/Battle.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Boss Raid</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Cài tần suất Boss xuất hiện sau các lượt Random Solo/Battle.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Boss Raid" title="Ẩn Boss Raid">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Boss Raid" title="Ẩn Boss Raid">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
 </div>
-<div class="rounded-[32px] border border-red-100 bg-gradient-to-br from-red-50 via-white to-amber-50 p-5 text-left shadow-sm">
+<div class="rounded-brand-lg border border-brand-emerald/20 bg-[#f4f8f1] p-5 text-left shadow-sm">
 <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-<button class="rounded-3xl border-2 p-4 text-left transition-all border-red-100 bg-white text-red-950 hover:border-red-300 hover:bg-red-50">
-<p class="text-sm font-black uppercase tracking-wider">Thường xuyên</p>
-<p class="mt-2 text-xs font-bold leading-relaxed text-red-700">Boss xuất hiện sau khoảng 3-5 lượt Random.</p>
+<button class="rounded-3xl border-2 p-4 text-left transition-all border-[#e6e2d4] bg-white text-brand-ink hover:border-brand-emerald hover:bg-brand-cream">
+<p class="text-sm font-black">Thường xuyên</p>
+<p class="mt-2 text-xs font-bold leading-relaxed text-brand-ink/70">Boss xuất hiện sau khoảng 3-5 lượt Random.</p>
 </button>
-<button class="rounded-3xl border-2 p-4 text-left transition-all border-red-700 bg-red-800 text-white shadow-xl shadow-red-900/20">
-<p class="text-sm font-black uppercase tracking-wider">Thỉnh thoảng</p>
-<p class="mt-2 text-xs font-bold leading-relaxed text-red-50">Boss xuất hiện sau khoảng 6-9 lượt Random.</p>
+<button class="rounded-3xl border-2 p-4 text-left transition-all border-brand-forest bg-brand-forest text-brand-cream shadow-xl shadow-brand-forest/20">
+<p class="text-sm font-black">Thỉnh thoảng</p>
+<p class="mt-2 text-xs font-bold leading-relaxed text-brand-cream/85">Boss xuất hiện sau khoảng 6-9 lượt Random.</p>
 </button>
-<button class="rounded-3xl border-2 p-4 text-left transition-all border-red-100 bg-white text-red-950 hover:border-red-300 hover:bg-red-50">
-<p class="text-sm font-black uppercase tracking-wider">Hiếm khi</p>
-<p class="mt-2 text-xs font-bold leading-relaxed text-red-700">Boss xuất hiện sau khoảng 10-14 lượt Random.</p>
+<button class="rounded-3xl border-2 p-4 text-left transition-all border-[#e6e2d4] bg-white text-brand-ink hover:border-brand-emerald hover:bg-brand-cream">
+<p class="text-sm font-black">Hiếm khi</p>
+<p class="mt-2 text-xs font-bold leading-relaxed text-brand-ink/70">Boss xuất hiện sau khoảng 10-14 lượt Random.</p>
 </button>
 </div>
-<div class="mt-4 grid grid-cols-1 gap-3 rounded-3xl border border-amber-200 bg-white/80 p-4 text-xs font-black text-amber-950 md:grid-cols-3">
+<div class="mt-4 grid grid-cols-1 gap-3 rounded-brand-md border border-[#e6e2d4] bg-white p-4 text-xs font-bold text-brand-ink md:grid-cols-3">
 <div>
-<p class="uppercase tracking-[0.18em] text-amber-500">Đang chọn</p>
-<p class="mt-1 text-base text-red-900">Thỉnh thoảng</p>
+<p class="text-brand-ink/60">Đang chọn</p>
+<p class="mt-1 text-base text-brand-ink">Thỉnh thoảng</p>
 </div>
 <div>
-<p class="uppercase tracking-[0.18em] text-amber-500">Khoảng xuất hiện</p>
-<p class="mt-1 text-base text-red-900">6-9 Random</p>
+<p class="text-brand-ink/60">Khoảng xuất hiện</p>
+<p class="mt-1 text-base text-brand-ink">6-9 Random</p>
 </div>
 <div>
-<p class="uppercase tracking-[0.18em] text-amber-500">Lớp hiện tại</p>
-<p class="mt-1 text-base text-red-900">0/9 lượt</p>
+<p class="text-brand-ink/60">Lớp hiện tại</p>
+<p class="mt-1 text-base text-brand-ink">0/9 lượt</p>
 </div>
 </div>
 </div>
 </section>
-<section class="bg-white p-10 rounded-[40px] border shadow-sm space-y-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<section class="bg-white p-6 sm:p-8 rounded-brand-lg border border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] space-y-6">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">🔊</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Cài Đặt Âm Thanh</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Youtube hoặc audio URL cho cộng điểm, trừ điểm, timer và vòng quay may mắn.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Cài Đặt Âm Thanh</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Youtube hoặc audio URL cho cộng điểm, trừ điểm, timer và vòng quay may mắn.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Cài Đặt Âm Thanh" title="Ẩn Cài Đặt Âm Thanh">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Cài Đặt Âm Thanh" title="Ẩn Cài Đặt Âm Thanh">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
 <div class="space-y-2">
-<label class="text-[10px] font-black uppercase text-gray-400">Cộng Điểm (Tích cực)</label>
+<label class="text-xs font-black text-gray-400">Cộng Điểm (Tích cực)</label>
 <input class="w-full border p-3 rounded-xl text-xs outline-none focus:ring-2 ring-red-800/20" placeholder="Link âm thanh..." value="https://actions.google.com/sounds/v1/foley/ting.ogg">
 </div>
 <div class="space-y-2">
-<label class="text-[10px] font-black uppercase text-gray-400">Trừ Điểm (Cần cố gắng)</label>
+<label class="text-xs font-black text-gray-400">Trừ Điểm (Cần cố gắng)</label>
 <input class="w-full border p-3 rounded-xl text-xs outline-none focus:ring-2 ring-red-800/20" placeholder="Link âm thanh..." value="https://actions.google.com/sounds/v1/alarms/beep_short.ogg">
 </div>
 <div class="space-y-2">
-<label class="text-[10px] font-black uppercase text-gray-400">Timer Hết Giờ</label>
+<label class="text-xs font-black text-gray-400">Timer Hết Giờ</label>
 <input class="w-full border p-3 rounded-xl text-xs outline-none focus:ring-2 ring-red-800/20" placeholder="Link âm thanh..." value="https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg">
 </div>
 <div class="space-y-2">
-<label class="text-[10px] font-black uppercase text-gray-400">Vòng Quay Đang Quay</label>
+<label class="text-xs font-black text-gray-400">Vòng Quay Đang Quay</label>
 <input class="w-full border p-3 rounded-xl text-xs outline-none focus:ring-2 ring-red-800/20" placeholder="Link âm thanh..." value="https://actions.google.com/sounds/v1/transportation/airport_departure_chime.ogg">
 </div>
 <div class="space-y-2">
-<label class="text-[10px] font-black uppercase text-gray-400">Vòng Quay Kết Thúc</label>
+<label class="text-xs font-black text-gray-400">Vòng Quay Kết Thúc</label>
 <input class="w-full border p-3 rounded-xl text-xs outline-none focus:ring-2 ring-red-800/20" placeholder="Link âm thanh..." value="https://actions.google.com/sounds/v1/cartoon/concussive_hit_guitar_boing.ogg">
 </div>
 </div>
-<button class="bg-red-800 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-red-900 transition-all uppercase text-xs">Lưu Âm Thanh</button>
+<button class="bg-brand-forest text-brand-cream px-8 py-3 rounded-brand-md font-bold shadow-lg hover:bg-brand-forest-deep transition-all text-sm">Lưu Âm Thanh</button>
 </section>
-<section class="bg-white p-10 rounded-[40px] border shadow-sm space-y-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<section class="bg-white p-6 sm:p-8 rounded-brand-lg border border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] space-y-6">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">✨</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Công Trạng</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Tùy chỉnh điểm cộng/trừ trong bảng feedback.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Công Trạng</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Tùy chỉnh điểm cộng/trừ trong bảng feedback.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Công Trạng" title="Ẩn Công Trạng">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Công Trạng" title="Ẩn Công Trạng">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
@@ -169,7 +179,7 @@
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 <div class="space-y-4">
-<h4 class="font-bold text-sm uppercase tracking-[0.2em] opacity-40 text-purple-800">Tích Cực</h4>
+<h4 class="font-bold text-sm opacity-40 text-purple-800">Tích Cực</h4>
 <div class="bg-white p-4 rounded-2xl border flex items-center gap-3 group shadow-sm">
 <input class="w-10 h-10 text-xl text-center bg-gray-50 rounded-lg outline-none focus:ring-2 ring-purple-100" value="✅">
 <input class="flex-1 min-w-0 font-bold text-sm outline-none bg-transparent border-b border-transparent focus:border-purple-200" placeholder="Tên skill..." value="Trả lời đúng">
@@ -268,7 +278,7 @@
 </div>
 </div>
 <div class="space-y-4">
-<h4 class="font-bold text-sm uppercase tracking-[0.2em] opacity-40 text-purple-800">Cần Cố Gắng</h4>
+<h4 class="font-bold text-sm opacity-40 text-purple-800">Cần Cố Gắng</h4>
 <div class="bg-white p-4 rounded-2xl border flex items-center gap-3 group shadow-sm">
 <input class="w-10 h-10 text-xl text-center bg-gray-50 rounded-lg outline-none focus:ring-2 ring-purple-100" value="❓">
 <input class="flex-1 min-w-0 font-bold text-sm outline-none bg-transparent border-b border-transparent focus:border-purple-200" placeholder="Tên skill..." value="Không trả lời được">
@@ -392,16 +402,16 @@
 </div>
 </div>
 </section>
-<section class="bg-white p-10 rounded-[40px] border shadow-sm space-y-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<section class="bg-white p-6 sm:p-8 rounded-brand-lg border border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] space-y-6">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">⚡</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Skills Pokémon</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Tùy chỉnh skill Pokémon, giá mua và mô tả hiển thị trong hồ sơ trainer.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Skills Pokémon</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Tùy chỉnh skill Pokémon, giá mua và mô tả hiển thị trong hồ sơ trainer.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Skills Pokémon" title="Ẩn Skills Pokémon">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Skills Pokémon" title="Ẩn Skills Pokémon">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
@@ -459,11 +469,11 @@
 <div class="bg-white p-4 rounded-3xl border border-indigo-100 shadow-sm space-y-3">
 <div class="grid grid-cols-[48px_1fr_86px_auto] gap-3 items-center">
 <input class="w-12 h-12 text-2xl text-center bg-indigo-50 rounded-2xl outline-none focus:ring-2 ring-indigo-100" value="📜">
-<input class="min-w-0 font-black text-sm border-b border-transparent focus:border-indigo-200 outline-none" value="Ý Chỉ Đồng Hành">
+<input class="min-w-0 font-black text-sm border-b border-transparent focus:border-indigo-200 outline-none" value="Đồng Đội Hỗ Trợ">
 <input class="w-full text-center font-black text-xs p-2 bg-indigo-50 rounded-xl outline-none focus:ring-2 ring-indigo-100" type="number" value="26">
 <button class="text-gray-300 hover:text-red-500 transition-colors p-2">🗑️</button>
 </div>
-<textarea class="w-full min-h-20 border border-indigo-100 rounded-2xl p-3 text-xs outline-none focus:ring-2 ring-indigo-100 resize-y">Được phép chỉ định một học sĩ bất kỳ thảo luận nhóm hỗ trợ trả lời câu hỏi.</textarea>
+<textarea class="w-full min-h-20 border border-indigo-100 rounded-2xl p-3 text-xs outline-none focus:ring-2 ring-indigo-100 resize-y">Được phép mời một Trainer bất kỳ cùng thảo luận để hỗ trợ trả lời câu hỏi.</textarea>
 </div>
 <div class="bg-white p-4 rounded-3xl border border-indigo-100 shadow-sm space-y-3">
 <div class="grid grid-cols-[48px_1fr_86px_auto] gap-3 items-center">
@@ -571,7 +581,7 @@
 <input class="w-full text-center font-black text-xs p-2 bg-indigo-50 rounded-xl outline-none focus:ring-2 ring-indigo-100" type="number" value="18">
 <button class="text-gray-300 hover:text-red-500 transition-colors p-2">🗑️</button>
 </div>
-<textarea class="w-full min-h-20 border border-indigo-100 rounded-2xl p-3 text-xs outline-none focus:ring-2 ring-indigo-100 resize-y">Học sĩ dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi.</textarea>
+<textarea class="w-full min-h-20 border border-indigo-100 rounded-2xl p-3 text-xs outline-none focus:ring-2 ring-indigo-100 resize-y">Trainer dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi.</textarea>
 </div>
 <div class="bg-white p-4 rounded-3xl border border-indigo-100 shadow-sm space-y-3">
 <div class="grid grid-cols-[48px_1fr_86px_auto] gap-3 items-center">
@@ -612,46 +622,46 @@
 </div>
 </section>
 <section class="bg-emerald-50 p-6 sm:p-10 rounded-[40px] border-4 border-emerald-200 text-left space-y-6 my-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">🧬</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Reset Pokémon</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Đưa toàn bộ Pokémon hiện có về Level 1 mà vẫn giữ Hào Quang, HP, kỹ năng và phụ kiện.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Reset Pokémon</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Đưa toàn bộ Pokémon hiện có về Level 1 mà vẫn giữ Hào Quang, HP, kỹ năng và phụ kiện.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Reset Pokémon" title="Ẩn Reset Pokémon">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Reset Pokémon" title="Ẩn Reset Pokémon">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
 </div>
 <div class="bg-white p-6 rounded-3xl border border-emerald-100 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
 <div class="text-left space-y-1">
-<h4 class="font-black text-emerald-950 text-sm uppercase">Reset Level Pokémon</h4>
-<p class="text-xs text-emerald-800/80 font-sans">Tất cả Pokémon của trainer sẽ trở về Level 1, XP/Mastery về 0.</p>
+<h4 class="font-black text-emerald-950 text-sm">Reset Level Pokémon</h4>
+<p class="text-xs text-emerald-800/80">Tất cả Pokémon của trainer sẽ trở về Level 1, XP/Mastery về 0.</p>
 </div>
-<button class="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all">Reset Level</button>
+<button class="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-3 rounded-2xl font-black text-xs shadow-lg active:scale-95 transition-all">Reset Level</button>
 </div>
 </section>
 <section class="bg-amber-50 p-6 sm:p-10 rounded-[40px] border-4 border-amber-300 text-left space-y-6 my-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">🐴</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Customize Cá Ngựa</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Thêm, chỉnh sửa hoặc xóa ô đặc biệt trên bàn cờ 0-49.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Customize Cá Ngựa</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Thêm, chỉnh sửa hoặc xóa ô đặc biệt trên bàn cờ 0-49.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Customize Cá Ngựa" title="Ẩn Customize Cá Ngựa">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Customize Cá Ngựa" title="Ẩn Customize Cá Ngựa">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
 </div>
 <div class="flex justify-end">
-<button class="bg-amber-200 hover:bg-amber-300 text-amber-950 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all">Khôi Phục Mặc Định 🔄</button>
+<button class="bg-amber-200 hover:bg-amber-300 text-amber-950 px-4 py-2 rounded-xl text-xs font-bold transition-all">Khôi Phục Mặc Định 🔄</button>
 </div>
 <div class="bg-white p-5 rounded-3xl border-2 border-amber-200 space-y-4">
-<h4 class="font-black text-amber-950 text-sm uppercase">Thêm/Sửa Ô Đặc Biệt Mới</h4>
+<h4 class="font-black text-amber-950 text-sm">Thêm/Sửa Ô Đặc Biệt Mới</h4>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
 <input min="0" max="49" class="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" type="number" value="0">
 <input placeholder="Tên ô đặc biệt" class="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" type="text" value="">
@@ -669,30 +679,30 @@
 </div>
 <input placeholder="Mô tả khi dẫm vào ô..." class="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" type="text" value="">
 <div class="flex gap-2">
-<button class="bg-amber-600 hover:bg-amber-700 text-white font-black px-6 py-2.5 rounded-xl text-xs uppercase tracking-wider shadow">Lưu Ô Đặc Biệt</button>
+<button class="bg-amber-600 hover:bg-amber-700 text-white font-black px-6 py-2.5 rounded-xl text-xs shadow">Lưu Ô Đặc Biệt</button>
 </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
 </div>
 </section>
 <section class="bg-fuchsia-50 p-6 sm:p-10 rounded-[40px] border-4 border-fuchsia-200 text-left space-y-6 my-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">🎡</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Customize Vòng Quay May Mắn</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Tùy chỉnh phần thưởng, hình phạt, HP, Pokémon skill và lượt lắc Cá Ngựa.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Customize Vòng Quay May Mắn</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Tùy chỉnh phần thưởng, hình phạt, HP, Pokémon skill và lượt lắc Cá Ngựa.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Customize Vòng Quay May Mắn" title="Ẩn Customize Vòng Quay May Mắn">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Customize Vòng Quay May Mắn" title="Ẩn Customize Vòng Quay May Mắn">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
 </div>
 <div class="flex flex-wrap justify-end gap-3">
-<button class="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all">+ Thêm Mục Quay</button>
-<button class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all">+ Thêm Lượt Cá Ngựa</button>
-<button class="bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-950 px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all border border-fuchsia-200">Khôi Phục Mặc Định</button>
+<button class="bg-fuchsia-700 hover:bg-fuchsia-800 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">+ Thêm Mục Quay</button>
+<button class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-bold transition-all">+ Thêm Lượt Cá Ngựa</button>
+<button class="bg-fuchsia-100 hover:bg-fuchsia-200 text-fuchsia-950 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-fuchsia-200">Khôi Phục Mặc Định</button>
 </div>
 <div class="space-y-3 max-h-[520px] overflow-y-auto pr-1 custom-scrollbar">
 <div class="bg-white p-4 rounded-3xl border border-fuchsia-100 shadow-sm space-y-3">
@@ -1321,37 +1331,37 @@
 </div>
 </div>
 </section>
-<section class="bg-red-50 p-6 sm:p-12 rounded-[50px] border-4 border-red-100 text-center space-y-8">
-<div class="flex items-center justify-between gap-4 border-b pb-4">
+<section class="bg-[#f4f8f1] p-6 sm:p-8 rounded-brand-lg border border-brand-emerald/20 text-center space-y-6">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">
 <span class="text-3xl shrink-0">☁️</span>
 <div class="min-w-0">
-<h3 class="text-2xl font-royal text-red-800">Dữ liệu</h3>
-<p class="text-xs text-stone-500 font-bold mt-1">Import/export danh sách trainer và JSON backup toàn bộ hệ thống.</p>
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Dữ liệu</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Import/export danh sách trainer và JSON backup toàn bộ hệ thống.</p>
 </div>
 </div>
-<button type="button" class="shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all bg-red-800 border-red-900" aria-label="Ẩn Dữ liệu" title="Ẩn Dữ liệu">
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Dữ liệu" title="Ẩn Dữ liệu">
 <span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
 </span>
 </button>
 </div>
 <div class="bg-white p-6 rounded-3xl border border-red-100 flex flex-col sm:flex-row items-center justify-between gap-4">
 <div class="text-left space-y-1">
-<h4 class="font-bold text-red-950 text-sm">Danh Sách Trainer (CSV / Excel)</h4>
-<p class="text-xs text-red-800/80 font-sans">Nhập danh sách trainer từ bảng CSV.</p>
+<h4 class="text-sm font-bold text-brand-ink">Danh Sách Trainer (CSV / Excel)</h4>
+<p class="text-xs text-brand-ink/70">Nhập danh sách trainer từ bảng CSV.</p>
 </div>
-<div class="flex flex-wrap justify-center gap-4 shrink-0 font-sans">
-<button class="bg-white border-2 border-red-800 text-red-800 p-3 px-6 rounded-2xl font-bold hover:bg-red-800 hover:text-white transition-all text-xs shadow-md">Mẫu Excel 📥</button>
-<label class="bg-red-800 hover:bg-red-950 text-white p-3 px-6 rounded-2xl font-bold cursor-pointer transition-all text-xs shadow-md">Tải Lên Danh Sách 📤<input accept=".csv" class="hidden" type="file">
+<div class="flex flex-wrap justify-center gap-4 shrink-0">
+<button class="rounded-brand-md border-2 border-brand-forest bg-white p-3 px-6 text-xs font-bold text-brand-forest shadow-md transition-all hover:bg-brand-forest hover:text-brand-cream">Mẫu Excel 📥</button>
+<label class="cursor-pointer rounded-brand-md bg-brand-forest p-3 px-6 text-xs font-bold text-brand-cream shadow-md transition-all hover:bg-brand-forest-deep">Tải Lên Danh Sách 📤<input accept=".csv" class="hidden" type="file">
 </label>
 </div>
 </div>
 <div class="bg-white p-6 rounded-3xl border border-red-100 flex flex-col sm:flex-row items-center justify-between gap-4">
 <div class="text-left space-y-1">
 <h4 class="font-bold text-red-950 text-sm">Sao Lưu Toàn Bộ Hệ Thống (JSON Backup)</h4>
-<p class="text-xs text-red-800/80 font-sans">Bao gồm trainer, điểm, lịch sử, Pokémon, công trạng, Pokémon skills và âm thanh.</p>
+<p class="text-xs text-red-800/80">Bao gồm trainer, điểm, lịch sử, Pokémon, công trạng, Pokémon skills và âm thanh.</p>
 </div>
-<div class="flex flex-wrap justify-center gap-4 shrink-0 font-sans">
+<div class="flex flex-wrap justify-center gap-4 shrink-0">
 <button class="bg-[#D4AF37] hover:bg-amber-600 text-white p-3 px-6 rounded-2xl font-bold transition-all text-xs shadow-md">Export JSON Backup 📦</button>
 <label class="bg-teal-700 hover:bg-teal-900 text-white p-3 px-6 rounded-2xl font-bold cursor-pointer transition-all text-xs shadow-md">Import JSON Restore 📥<input accept=".json" class="hidden" type="file">
 </label>

@@ -13,7 +13,7 @@ export const ClassPageGuard: React.FC<{ children: React.ReactNode }> = ({ childr
     <div className="rounded-3xl border-2 border-dashed border-gray-200 p-10 text-center space-y-4">
       <p className="text-4xl">🔍</p>
       <p className="font-black text-gray-700">Không tìm thấy lớp "{routeClassName}".</p>
-      <Link to={SCREEN_PATHS.class} className="inline-block bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-red-900">
+      <Link to={SCREEN_PATHS.class} className="inline-block rounded-brand-md bg-brand-forest px-6 py-3 font-bold text-brand-cream shadow-lg hover:bg-brand-forest-deep">
         Về danh sách lớp
       </Link>
     </div>

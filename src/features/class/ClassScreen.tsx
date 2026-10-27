@@ -1,67 +1,67 @@
 import React from 'react';
 import { StudentCard } from '../../components/StudentCard';
-import { LiquidDock } from '../../components/LiquidDock';
+import { ClassDock } from '../../components/ClassDock';
+import { Button } from '../../components/ui';
+import { BookCheck, ChevronDown, ClipboardCheck, Minus, Plus, Search, UserCheck, UserPlus, UserX } from 'lucide-react';
 import { useApp } from '../../app/AppContext';
 
 export const ClassScreen: React.FC = () => {
   const {
-    classes, currentClassStudents, filterClass, getRank, handleAddStudent, handleClaimAllRewards,
+    classes, currentClassStudents, filterClass, handleAddStudent, handleClaimAllRewards,
     handleDeleteStudents, handleOpenLuckyWheel, handleOpenShop, handleRandom,
-    handleResetSelectedAura, handleToggleSelectAll, hoveredStudentCardId, isMultiSelectMode,
+    handleResetSelectedAura, handleToggleSelectAll, isMultiSelectMode,
     isSyncing, lastSyncedTime, openAttendanceCheck, openHomeworkCheck, openLudoForClass,
     petSkills, searchQuery, selectedStudentIds, setActiveTab, setCurrentScreen,
-    setEditingStudent, setFeedbackSource, setFilterClass, setHoveredStudentCardId,
+    setEditingStudent, setFeedbackSource, setFilterClass,
     setIsMultiSelectMode, setSearchQuery, setSelectedStudentIds, setShowGroupModal,
     setShowSkillModal, setShowTimerModal, toggleAttendance
   } = useApp();
   return (
     <div className="animate-in fade-in duration-300">
-      <div className="flex flex-wrap gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border items-center">
-        <input type="text" placeholder="Tìm kiếm trainer..." className="flex-1 p-3 rounded-xl border outline-none focus:ring-2 ring-red-800/20" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+      <div className="mb-8 flex flex-wrap items-center gap-3 rounded-brand-lg border border-[#e6e2d4] bg-white p-3 shadow-[0_1px_2px_rgba(12,37,39,0.04)]">
+        <label className="relative flex min-w-[220px] flex-1 items-center">
+          <Search className="pointer-events-none absolute left-3.5 h-5 w-5 text-brand-ink/45" aria-hidden />
+          <input
+            type="text"
+            placeholder="Tìm kiếm trainer..."
+            className="h-11 w-full rounded-brand-md border border-[#dcd8c8] bg-brand-cream pl-11 pr-3 text-[15px] text-brand-ink outline-none placeholder:text-brand-ink/65 focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/25"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </label>
 
         <div className="relative">
           <select
             value={filterClass}
             onChange={e => setFilterClass(e.target.value)}
-            className="bg-white text-red-950 border-2 border-amber-200 px-4 py-3 pr-9 rounded-xl outline-none font-black text-xs appearance-none hover:border-amber-400 transition-all cursor-pointer shadow-sm"
+            aria-label="Chọn lớp"
+            className="h-11 cursor-pointer appearance-none rounded-brand-md border border-brand-forest/25 bg-white pl-4 pr-10 text-[15px] font-bold text-brand-forest outline-none transition-colors hover:border-brand-forest/50 focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/25"
           >
             <option value="Tất cả">← Danh sách lớp</option>
             {classes.filter(c => c !== 'Tất cả').map(c => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-amber-700">
-            <span className="text-[10px]">▼</span>
-          </div>
+          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-forest" aria-hidden />
         </div>
 
-        <button
-          onClick={openAttendanceCheck}
-          className="bg-sky-700 text-white px-5 py-3 rounded-xl font-black shadow-lg hover:bg-sky-800 transition-all uppercase text-xs tracking-wider"
-        >
-          🧭 Check đi học
-        </button>
-
-        <button
-          onClick={openHomeworkCheck}
-          className="bg-emerald-700 text-white px-5 py-3 rounded-xl font-black shadow-lg hover:bg-emerald-800 transition-all uppercase text-xs tracking-wider"
-        >
-          📚 Check Homework
-        </button>
-
-        <button onClick={handleAddStudent} className="bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-red-900 transition-all">+ Thêm Trainer</button>
+        <Button variant="secondary" icon={<ClipboardCheck className="h-[18px] w-[18px]" aria-hidden />} onClick={openAttendanceCheck}>
+          Check đi học
+        </Button>
+        <Button variant="secondary" icon={<BookCheck className="h-[18px] w-[18px]" aria-hidden />} onClick={openHomeworkCheck}>
+          Check Homework
+        </Button>
+        <Button icon={<UserPlus className="h-[18px] w-[18px]" aria-hidden />} onClick={handleAddStudent}>Thêm Trainer</Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {currentClassStudents.map(s => (
-          <div key={s.id} className="relative group">
-            <StudentCard 
-              student={s} 
-              getRank={getRank} 
+          <div key={s.id} className="group relative">
+            <StudentCard
+              student={s}
               petSkills={petSkills}
               isSelected={selectedStudentIds.includes(s.id)}
-              isDimmed={!!hoveredStudentCardId && hoveredStudentCardId !== s.id}
-              onHoverChange={setHoveredStudentCardId}
+              showClassName={filterClass === 'Tất cả'}
               onSelect={(st) => {
                 if (isMultiSelectMode) {
                   setSelectedStudentIds(prev => prev.includes(st.id) ? prev.filter(id => id !== st.id) : [...prev, st.id]);
@@ -69,21 +69,42 @@ export const ClassScreen: React.FC = () => {
                   setEditingStudent(st);
                   setCurrentScreen('profile');
                 }
-              }} 
+              }}
             />
-            <div className="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={(e) => { e.stopPropagation(); toggleAttendance(s.id); }} className="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
-            </div>
-            <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-              <button onClick={(e) => { e.stopPropagation(); setSelectedStudentIds([s.id]); setActiveTab('positive'); setFeedbackSource('manual'); setShowSkillModal(true); }} className="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-              <button onClick={(e) => { e.stopPropagation(); setSelectedStudentIds([s.id]); setActiveTab('negative'); setFeedbackSource('manual'); setShowSkillModal(true); }} className="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+            <div className="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+              <button
+                type="button"
+                aria-label={s.isAbsent ? `Đánh dấu ${s.name} có mặt` : `Đánh dấu ${s.name} vắng`}
+                title={s.isAbsent ? 'Đánh dấu có mặt' : 'Đánh dấu vắng'}
+                onClick={(e) => { e.stopPropagation(); toggleAttendance(s.id); }}
+                className="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest"
+              >
+                {s.isAbsent ? <UserCheck className="h-5 w-5" aria-hidden /> : <UserX className="h-5 w-5" aria-hidden />}
+              </button>
+              <button
+                type="button"
+                aria-label={`Cộng điểm ${s.name}`}
+                title="Ban thưởng"
+                onClick={(e) => { e.stopPropagation(); setSelectedStudentIds([s.id]); setActiveTab('positive'); setFeedbackSource('manual'); setShowSkillModal(true); }}
+                className="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest"
+              >
+                <Plus className="h-5 w-5" strokeWidth={3} aria-hidden />
+              </button>
+              <button
+                type="button"
+                aria-label={`Trừ điểm ${s.name}`}
+                title="Cần cố gắng"
+                onClick={(e) => { e.stopPropagation(); setSelectedStudentIds([s.id]); setActiveTab('negative'); setFeedbackSource('manual'); setShowSkillModal(true); }}
+                className="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]"
+              >
+                <Minus className="h-5 w-5" strokeWidth={3} aria-hidden />
+              </button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* CLASS BOTTOM TOOLS - LIQUID GLASS FLOATING DOCK WITH MAGNIFICATION */}
-      <LiquidDock
+      <ClassDock
         onRandom={handleRandom}
         onLudo={() => openLudoForClass()}
         onLuckyWheel={handleOpenLuckyWheel}

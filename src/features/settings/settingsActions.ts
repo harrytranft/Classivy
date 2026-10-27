@@ -1,5 +1,5 @@
 import React from 'react';
-import { BossEncounterFrequency, Gender, LuckyWheelReward, LuckyWheelRewardType, LudoTileSpec, RankInfo, Skill } from '../../types';
+import { BossEncounterFrequency, LuckyWheelReward, LuckyWheelRewardType, LudoTileSpec, Skill } from '../../types';
 import { PetSkill } from '../../data/pokemonData';
 import { BOSS_ENCOUNTER_FREQUENCY_KEY } from '../../data/constants';
 import { normalizeClassBossState, recalibrateBossEncounterFrequency } from '../../domain/bossSystem';
@@ -14,7 +14,6 @@ export interface SettingsActions {
   editCustomTile: (tile: LudoTileSpec) => void;
   deleteCustomTile: (index: number) => void;
   resetTileForm: () => void;
-  handleAvatarUpload: (gender: Gender, rankId: string, e: React.ChangeEvent<HTMLInputElement>) => void;
   updateSkill: (id: string, field: keyof Skill, value: any) => void;
   updatePetSkill: (id: string, field: keyof PetSkill, value: any) => void;
   addPetSkill: () => void;
@@ -28,7 +27,7 @@ export const createSettingsActions = (appState: AppState, app: AppActions): Sett
   const {
     editingStudent, editingTileIndex, randomStudent, setBossEncounterFrequency,
     setBossStatesByClass, setCustomLudoTiles, setEditingStudent, setEditingTileIndex,
-    setLuckyWheelRewards, setPetSkills, setRandomStudent, setRanksFemale, setRanksMale,
+    setLuckyWheelRewards, setPetSkills, setRandomStudent,
     setSettingsCollapsed, setSkills, setStudents, setTileFormDesc, setTileFormIcon,
     setTileFormIndex, setTileFormTitle, setTileFormType, setTileFormValue, showPokemonReaction,
     students, tileFormDesc, tileFormIcon, tileFormIndex, tileFormTitle, tileFormType,
@@ -112,18 +111,6 @@ export const createSettingsActions = (appState: AppState, app: AppActions): Sett
     setEditingTileIndex(null);
   };
 
-  const handleAvatarUpload = (gender: Gender, rankId: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      const updater = (prev: RankInfo[]) => prev.map(r => r.id === rankId ? { ...r, avatar: base64 } : r);
-      if (gender === Gender.MALE) setRanksMale(updater); else setRanksFemale(updater);
-    };
-    reader.readAsDataURL(file);
-  };
-
   const updateSkill = (id: string, field: keyof Skill, value: any) => {
     setSkills(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
   };
@@ -184,7 +171,7 @@ export const createSettingsActions = (appState: AppState, app: AppActions): Sett
 
   return {
     handleResetPokemonLevels, handleSaveCustomTile, editCustomTile, deleteCustomTile,
-    resetTileForm, handleAvatarUpload, updateSkill, updatePetSkill, addPetSkill,
+    resetTileForm, updateSkill, updatePetSkill, addPetSkill,
     updateLuckyWheelReward, addLuckyWheelReward, toggleSettingsSection,
     handleBossEncounterFrequencyChange
   };

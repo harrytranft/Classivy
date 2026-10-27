@@ -19,7 +19,7 @@ export const WeeklyChestPanel = ({ student }: { student: Student }) => {
     <div className="rounded-[32px] border border-sky-200 bg-sky-50/70 p-5 text-left shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h4 className="font-royal text-xl text-sky-950">🎁 Weekly Chest</h4>
+          <h4 className="text-xl text-sky-950 font-extrabold">🎁 Weekly Chest</h4>
           <p className="mt-1 text-xs font-bold text-sky-900/70">
             Tuần {chest.weekKey} · {chest.claimed ? 'Đã nhận' : chest.progress >= 100 ? 'Sẵn sàng mở' : `${chest.progress}/100`}
           </p>
@@ -32,7 +32,7 @@ export const WeeklyChestPanel = ({ student }: { student: Student }) => {
             setStudents(prev => prev.map(current => current.id === student.id ? result.student : current));
             showPokemonReaction([{ type: 'random-drop', message: result.message }], 'Weekly Chest');
           }}
-          className="rounded-2xl bg-sky-700 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-white shadow-md hover:bg-sky-800 disabled:bg-stone-200 disabled:text-stone-500"
+          className="rounded-2xl bg-sky-700 px-4 py-2 text-xs font-black text-white shadow-md hover:bg-sky-800 disabled:bg-stone-200 disabled:text-stone-500"
         >
           Mở rương
         </button>
@@ -52,7 +52,7 @@ export const WeeklyChestPanel = ({ student }: { student: Student }) => {
                 setStudents(prev => prev.map(current => current.id === student.id ? result.student : current));
                 showPokemonReaction([{ type: 'random-drop', message: result.message }], 'Craft Egg');
               }}
-              className="rounded-xl bg-amber-600 px-3 py-1.5 text-[9px] font-black uppercase text-white disabled:bg-stone-200 disabled:text-stone-500"
+              className="rounded-xl bg-amber-600 px-3 py-1.5 text-xs font-black text-white disabled:bg-stone-200 disabled:text-stone-500"
             >
               Craft
             </button>

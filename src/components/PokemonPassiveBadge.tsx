@@ -13,7 +13,7 @@ export const PokemonPassiveBadge: React.FC<PokemonPassiveBadgeProps> = ({ passiv
 
   return (
     <span
-      className={`inline-flex items-center min-w-0 gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[9px] font-black uppercase tracking-wide text-indigo-800 ${className}`}
+      className={`inline-flex items-center min-w-0 gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-xs font-black text-indigo-800 ${className}`}
       title={passive.description}
     >
       <span className="shrink-0">{getPassiveIcon(passive.id)}</span>

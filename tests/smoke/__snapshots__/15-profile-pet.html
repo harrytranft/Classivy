@@ -1,63 +1,93 @@
-<div class="min-h-screen bg-[radial-gradient(circle_at_50%_0%,#fffbf2_0%,#f5ebe0_100%)] pb-32">
-<div class="fixed left-0 top-1/2 z-50 h-40 w-5 -translate-y-1/2 group/nav">
-<nav class="absolute left-0 top-1/2 flex -translate-y-1/2 -translate-x-[calc(100%-18px)] flex-col items-center gap-3 rounded-r-[28px] border-2 border-white/90 bg-red-950/80 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(120,20,20,0.3)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/nav:translate-x-0 focus-within:translate-x-0">
-<button type="button" title="Trainer Plaza" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">🏞️</button>
-<button type="button" title="Lớp Học" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">📚</button>
-<button type="button" title="Tặng Pokémon" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/50 bg-gradient-to-br from-emerald-300 via-amber-300 to-fuchsia-400 text-white hover:scale-110 hover:shadow-[0_0_28px_rgba(251,191,36,0.45)]">🎁</button>
-<button type="button" title="Cài Đặt" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">⚙️</button>
-<button type="button" title="Tài khoản giáo viên" class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg transition-all hover:scale-110 active:scale-95">
-<img class="h-10 w-10 rounded-xl border border-white/80 object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
+<div class="min-h-screen bg-brand-cream pb-36 pl-[84px]">
+<div class="group/nav fixed inset-y-0 left-0 z-50 flex w-[84px] flex-col items-center rounded-r-[28px] bg-brand-shield py-4 text-brand-cream shadow-[4px_0_18px_-6px_rgba(1,72,47,0.45)]">
+<img alt="Classivy" class="mb-5 h-11 w-11 rounded-brand-md" src="/brand/classivy-app-icon-dark.png">
+<nav aria-label="Điều hướng chính" class="flex flex-1 flex-col items-center gap-1.5">
+<button type="button" title="Lớp Học" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-6 w-6" aria-hidden="true">
+<path d="M12 7v14">
+</path>
+<path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z">
+</path>
+</svg>
+<span>Lớp học</span>
+</button>
+<button type="button" title="Tặng Pokémon" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gift h-6 w-6" aria-hidden="true">
+<rect x="3" y="8" width="18" height="4" rx="1">
+</rect>
+<path d="M12 8v13">
+</path>
+<path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7">
+</path>
+<path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5">
+</path>
+</svg>
+<span>Tặng quà</span>
+</button>
+<button type="button" title="Cài Đặt" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings h-6 w-6" aria-hidden="true">
+<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+</path>
+<circle cx="12" cy="12" r="3">
+</circle>
+</svg>
+<span>Cài đặt</span>
+</button>
+<div class="flex-1">
+</div>
+<div class="group/status flex flex-col items-center gap-1 border-t border-white/10 pt-3">
+<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" aria-label="Sao lưu đám mây" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload h-5 w-5" aria-hidden="true">
+<path d="M12 13v8">
+</path>
+<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242">
+</path>
+<path d="m8 17 4-4 4 4">
+</path>
+</svg>
+</button>
+<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" aria-label="Khôi phục dữ liệu" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history h-5 w-5" aria-hidden="true">
+<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
+</path>
+<path d="M3 3v5h5">
+</path>
+<path d="M12 7v5l4 2">
+</path>
+</svg>
+</button>
+<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" aria-label="Trạng thái sync" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream text-brand-leaf">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check h-5 w-5" aria-hidden="true">
+<circle cx="12" cy="12" r="10">
+</circle>
+<path d="m9 12 2 2 4-4">
+</path>
+</svg>
+</button>
+</div>
+<button type="button" title="Tài khoản giáo viên" class="mt-3 grid h-12 w-12 place-items-center overflow-hidden rounded-full ring-2 ring-brand-gold/70 transition-shadow hover:ring-brand-gold">
+<img class="h-full w-full bg-brand-cream object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
 </button>
 </nav>
 </div>
-<div class="fixed right-0 top-1/2 z-50 h-28 w-5 -translate-y-1/2 group/status">
-<div class="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-[calc(100%-18px)] flex-col items-center justify-center gap-3 rounded-l-[28px] border-2 border-white/90 bg-white/75 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(20,50,120,0.22)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/status:translate-x-0 focus-within:translate-x-0">
-<div class="relative group/item">
-<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-sky-300 via-blue-500 to-indigo-700 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">☁️</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Sao lưu đám mây</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-amber-200 via-orange-400 to-red-600 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">🔄</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Khôi phục dữ liệu</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-emerald-300 via-teal-500 to-emerald-800 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">✅</span>
-<span class="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_8px_rgba(52,211,153,0.9)]">
-</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Trạng thái sync</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-</div>
-</div>
 <main class="max-w-7xl mx-auto p-6">
-<div class="bg-white p-6 sm:p-10 rounded-3xl border shadow-2xl max-w-4xl mx-auto space-y-8 animate-in slide-in-from-right-4 duration-500">
-<div class="flex justify-between items-center border-b pb-4">
-<h2 class="text-2xl sm:text-3xl font-royal text-red-800">Hồ Sơ Trainer</h2>
-<button class="text-sm font-black uppercase text-gray-400 hover:text-red-800 transition-colors">← Quay lại lớp</button>
+<div class="mx-auto max-w-4xl space-y-6 rounded-brand-lg border border-[#e6e2d4] bg-white p-6 shadow-[0_6px_18px_-8px_rgba(12,37,39,0.14)] animate-in slide-in-from-right-4 duration-500 sm:p-8">
+<div class="flex items-center justify-between border-b border-[#e6e2d4] pb-4">
+<div>
+<p class="text-sm font-semibold text-brand-forest">Hành trình của Trainer</p>
+<h2 class="mt-1 text-2xl font-extrabold tracking-tight text-brand-ink sm:text-3xl">Hồ sơ Trainer</h2>
 </div>
-<div class="flex border-b border-gray-100 shrink-0">
-<button class="flex-1 py-3 text-xs sm:text-sm font-black border-b-4 transition-all tracking-wider text-gray-400 border-transparent hover:text-gray-600">📜 TIỂU SỬ &amp; CÔNG TRẠNG</button>
-<button class="flex-1 py-3 text-xs sm:text-sm font-black border-b-4 transition-all tracking-wider flex items-center justify-center gap-2 text-amber-600 border-amber-600">
+<button class="text-sm font-bold text-brand-forest transition-colors hover:text-brand-forest-deep">← Quay lại lớp</button>
+</div>
+<div class="flex shrink-0 overflow-x-auto border-b border-[#e6e2d4]">
+<button class="min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors border-transparent text-brand-ink/60 hover:text-brand-ink">📜 Tiểu sử &amp; công trạng</button>
+<button class="min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors flex items-center justify-center gap-2 border-brand-gold text-brand-forest">
 <span>🔥</span>
-<span>LINH THÚ HỘ MỆNH</span>
+<span>Linh thú hộ mệnh</span>
 </button>
-<button class="flex-1 py-3 text-xs sm:text-sm font-black border-b-4 transition-all tracking-wider flex items-center justify-center gap-2 text-gray-400 border-transparent hover:text-gray-600">
+<button class="min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors flex items-center justify-center gap-2 border-transparent text-brand-ink/60 hover:text-brand-ink">
 <span>🔮</span>
-<span>HỢP NHẤT LINH THÚ</span>
+<span>Hợp nhất linh thú</span>
 </button>
 </div>
 <div class="space-y-10 animate-in fade-in duration-300">
@@ -65,7 +95,7 @@
 <div class="rounded-[32px] border border-amber-200 bg-amber-50/60 p-5 text-left shadow-sm">
 <div class="flex flex-wrap items-start justify-between gap-3">
 <div>
-<h4 class="font-royal text-xl text-amber-950">🥚 Egg Inventory</h4>
+<h4 class="text-xl text-amber-950 font-extrabold">🥚 Egg Inventory</h4>
 <p class="mt-1 text-xs font-bold text-amber-900/70">Trứng huyền thoại x1</p>
 </div>
 </div>
@@ -73,16 +103,16 @@
 <div class="flex items-center justify-between gap-3 rounded-2xl border border-amber-100 bg-white p-3">
 <div>
 <p class="text-xs font-black text-amber-950">Trứng huyền thoại</p>
-<p class="text-[10px] font-bold text-stone-400">Cần 30 Hào Quang để nở</p>
+<p class="text-xs font-bold text-stone-400">Cần 30 Hào Quang để nở</p>
 </div>
-<button class="rounded-xl bg-amber-600 px-3 py-2 text-[10px] font-black uppercase tracking-wider text-white shadow-sm hover:bg-amber-700 disabled:bg-stone-200 disabled:text-stone-500">Bắt đầu ấp</button>
+<button class="rounded-xl bg-amber-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-amber-700 disabled:bg-stone-200 disabled:text-stone-500">Bắt đầu ấp</button>
 </div>
 </div>
 </div>
 <div class="rounded-[32px] border border-emerald-200 bg-emerald-50/70 p-5 text-left shadow-sm">
 <div class="flex flex-wrap items-center justify-between gap-3">
 <div>
-<h4 class="font-royal text-xl text-emerald-950">🧭 Pokémon Expedition</h4>
+<h4 class="text-xl text-emerald-950 font-extrabold">🧭 Pokémon Expedition</h4>
 <p class="mt-1 text-xs font-bold text-emerald-900/70">Chưa có expedition. Chốt điểm danh buổi mới để tự bắt đầu.</p>
 </div>
 </div>
@@ -90,10 +120,10 @@
 <div class="rounded-[32px] border border-sky-200 bg-sky-50/70 p-5 text-left shadow-sm">
 <div class="flex flex-wrap items-center justify-between gap-3">
 <div>
-<h4 class="font-royal text-xl text-sky-950">🎁 Weekly Chest</h4>
+<h4 class="text-xl text-sky-950 font-extrabold">🎁 Weekly Chest</h4>
 <p class="mt-1 text-xs font-bold text-sky-900/70">Tuần 2026-W44 · 0/100</p>
 </div>
-<button disabled="" class="rounded-2xl bg-sky-700 px-4 py-2 text-[10px] font-black uppercase tracking-wider text-white shadow-md hover:bg-sky-800 disabled:bg-stone-200 disabled:text-stone-500">Mở rương</button>
+<button disabled="" class="rounded-2xl bg-sky-700 px-4 py-2 text-xs font-black text-white shadow-md hover:bg-sky-800 disabled:bg-stone-200 disabled:text-stone-500">Mở rương</button>
 </div>
 <div class="mt-3 h-2 overflow-hidden rounded-full bg-white">
 <div class="h-full rounded-full bg-sky-600">
@@ -102,11 +132,11 @@
 <div class="mt-4 grid gap-2 sm:grid-cols-2">
 <div class="flex items-center justify-between rounded-2xl bg-white p-3 text-xs font-black text-sky-950">
 <span>Trứng thường Fragment: 12/10</span>
-<button class="rounded-xl bg-amber-600 px-3 py-1.5 text-[9px] font-black uppercase text-white disabled:bg-stone-200 disabled:text-stone-500">Craft</button>
+<button class="rounded-xl bg-amber-600 px-3 py-1.5 text-xs font-black text-white disabled:bg-stone-200 disabled:text-stone-500">Craft</button>
 </div>
 <div class="flex items-center justify-between rounded-2xl bg-white p-3 text-xs font-black text-sky-950">
 <span>Trứng đặc biệt Fragment: 3/10</span>
-<button disabled="" class="rounded-xl bg-amber-600 px-3 py-1.5 text-[9px] font-black uppercase text-white disabled:bg-stone-200 disabled:text-stone-500">Craft</button>
+<button disabled="" class="rounded-xl bg-amber-600 px-3 py-1.5 text-xs font-black text-white disabled:bg-stone-200 disabled:text-stone-500">Craft</button>
 </div>
 </div>
 </div>
@@ -114,73 +144,73 @@
 <div class="shrink-0 w-44 h-44 bg-white rounded-2xl border-4 border-amber-300 p-4 flex items-center justify-center relative shadow-lg overflow-hidden group">
 <div class="absolute inset-0 bg-radial-gradient from-amber-200/50 via-transparent to-transparent opacity-60 group-hover:scale-125 transition-transform">
 </div>
-<img referrerpolicy="no-referrer" class="w-full h-full object-contain relative z-10 drop-shadow-xl animate-in duration-500 hover:rotate-6 transition-transform" alt="Bulbasaur" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<img referrerpolicy="no-referrer" class="w-full h-full object-contain relative z-10 drop-shadow-xl animate-in duration-500 hover:rotate-6 transition-transform" alt="Bulbasaur" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
 <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-20">
-<span class="bg-amber-500 text-white font-black text-[7px] px-1.5 py-0.5 rounded uppercase tracking-tighter shadow-sm border border-white">Grass</span>
-<span class="bg-amber-500 text-white font-black text-[7px] px-1.5 py-0.5 rounded uppercase tracking-tighter shadow-sm border border-white">Poison</span>
+<span class="bg-amber-500 text-white font-black text-[10px] px-1.5 py-0.5 rounded tracking-tighter shadow-sm border border-white">Grass</span>
+<span class="bg-amber-500 text-white font-black text-[10px] px-1.5 py-0.5 rounded tracking-tighter shadow-sm border border-white">Poison</span>
 </div>
 </div>
 <div class="flex-1 w-full space-y-4">
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-100 pb-3">
 <div>
-<span class="bg-amber-100 text-amber-900 font-black text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider block w-max">Pokémon Đồng Hành</span>
+<span class="bg-amber-100 text-amber-900 font-black text-xs px-2.5 py-0.5 rounded-full block w-max">Pokémon Đồng Hành</span>
 <h3 class="text-2xl font-black text-amber-950 mt-1">Bulbasaur</h3>
 <p class="text-xs font-bold text-amber-900/60">Bulbasaur · Lv.1</p>
 </div>
 <div class="text-right sm:text-right">
-<p class="text-[9px] uppercase font-bold text-gray-400">Tài chính của bạn</p>
+<p class="text-xs font-bold text-gray-400">Tài chính của bạn</p>
 <p class="text-xl font-black text-red-800">15đ Hào Quang</p>
 </div>
 </div>
 <div>
-<label class="text-[10px] uppercase font-bold text-gray-400 block mb-1">Đặt Biệt Danh Thú Cưng</label>
+<label class="text-xs font-bold text-gray-400 block mb-1">Đặt Biệt Danh Thú Cưng</label>
 <input class="w-full border p-2.5 rounded-xl bg-white focus:ring-2 ring-amber-500/30 outline-none text-sm font-bold text-amber-950 border-amber-200" placeholder="Biệt danh mới cho pet..." value="">
 </div>
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 font-sans">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
 <div class="bg-white border border-amber-100 rounded-2xl p-3">
-<p class="text-[9px] uppercase font-black text-gray-400">Level</p>
+<p class="text-xs font-black text-gray-400">Level</p>
 <p class="text-sm font-black text-amber-950">Lv.1</p>
 </div>
 <div class="bg-white border border-amber-100 rounded-2xl p-3">
-<p class="text-[9px] uppercase font-black text-gray-400">HP</p>
+<p class="text-xs font-black text-gray-400">HP</p>
 <p class="text-sm font-black text-emerald-700">45/100</p>
 </div>
 <div class="bg-white border border-amber-100 rounded-2xl p-3">
-<p class="text-[9px] uppercase font-black text-gray-400">XP</p>
+<p class="text-xs font-black text-gray-400">XP</p>
 <p class="text-sm font-black text-amber-950">0/30</p>
 </div>
 <div class="bg-white border border-amber-100 rounded-2xl p-3">
-<p class="text-[9px] uppercase font-black text-gray-400">Bond</p>
+<p class="text-xs font-black text-gray-400">Bond</p>
 <p class="text-sm font-black text-pink-700">10/100</p>
 </div>
 <div class="bg-white border border-amber-100 rounded-2xl p-3">
-<p class="text-[9px] uppercase font-black text-gray-400">Charge</p>
+<p class="text-xs font-black text-gray-400">Charge</p>
 <p class="text-sm font-black text-indigo-700">0/5</p>
 </div>
 <div class="bg-white border border-amber-100 rounded-2xl p-3 min-w-0">
-<p class="text-[9px] uppercase font-black text-gray-400">Passive</p>
+<p class="text-xs font-black text-gray-400">Passive</p>
 <div class="mt-1 min-w-0">
-<span class="inline-flex items-center min-w-0 gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-[9px] font-black uppercase tracking-wide text-indigo-800 max-w-full" title="Tang XP tu homework.">
+<span class="inline-flex items-center min-w-0 gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-2 py-1 text-xs font-black text-indigo-800 max-w-full" title="Tang XP tu homework.">
 <span class="shrink-0">🌱</span>
 <span class="truncate">Growth</span>
 </span>
 </div>
 </div>
 </div>
-<div class="rounded-2xl border border-amber-200 bg-white p-3 font-sans">
-<p class="text-[9px] uppercase font-black text-gray-400">Evolution Preview</p>
+<div class="rounded-2xl border border-amber-200 bg-white p-3">
+<p class="text-xs font-black text-gray-400">Evolution Preview</p>
 <p class="text-sm font-black text-amber-950">Next Evolution: Lv. 5 · Ivysaur</p>
 </div>
-<div class="rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-amber-50 p-4 font-sans shadow-sm">
+<div class="rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-amber-50 p-4 shadow-sm">
 <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
 <div>
-<p class="text-[9px] uppercase font-black text-indigo-500">Passive &amp; Quà tự động</p>
+<p class="text-xs font-black text-indigo-500">Passive &amp; Quà tự động</p>
 <div class="mt-2">
 <p class="text-sm font-black text-indigo-950">🌱 Growth</p>
 <p class="mt-1 text-xs font-bold leading-relaxed text-indigo-900/70">Tang XP tu homework.</p>
 </div>
 </div>
-<div class="rounded-2xl border border-white bg-white/80 p-3 text-[10px] font-black text-amber-950 shadow-inner sm:w-72">
+<div class="rounded-2xl border border-white bg-white/80 p-3 text-xs font-black text-amber-950 shadow-inner sm:w-72">
 <p>Lv.5 / Lv.12 / Lv.20 / Lv.30: kiểm tra tiến hóa theo loài.</p>
 <p class="mt-1">Mỗi lần lên level: Bond +1 và thông báo Level Up ở giữa màn hình.</p>
 <p class="mt-1">Charge 5/5: câu trả lời Solo tích cực kế tiếp được tăng XP.</p>
@@ -189,11 +219,11 @@
 </div>
 </div>
 <div class="flex flex-wrap justify-end gap-3 pt-1">
-<button class="bg-red-800 hover:bg-red-950 text-white font-bold text-xs p-3 px-5 rounded-2xl flex items-center gap-2 shadow-md transition-all active:translate-y-px font-sans">
+<button class="flex items-center gap-2 rounded-brand-md bg-brand-forest p-3 px-5 text-xs font-bold text-brand-cream shadow-md transition-all hover:bg-brand-forest-deep active:translate-y-px">
 <span>🥚🌟</span>
 <span>Trứng thường (10đ)</span>
 </button>
-<button class="bg-purple-700 hover:bg-purple-900 text-white font-bold text-xs p-3 px-5 rounded-2xl flex items-center gap-2 shadow-md transition-all active:translate-y-px font-sans">
+<button class="bg-purple-700 hover:bg-purple-900 text-white font-bold text-xs p-3 px-5 rounded-2xl flex items-center gap-2 shadow-md transition-all active:translate-y-px">
 <span>✨🥚</span>
 <span>Trứng đặc biệt (20đ)</span>
 </button>
@@ -201,288 +231,288 @@
 </div>
 </div>
 <div class="bg-amber-50/10 p-6 rounded-3xl border border-amber-200/20 space-y-4">
-<div class="text-left border-b pb-2 font-sans">
-<h4 class="font-royal text-lg text-amber-900 flex items-center gap-2">
+<div class="text-left border-b pb-2">
+<h4 class="flex items-center gap-2 text-lg font-extrabold tracking-tight text-brand-ink">
 <span>🦁</span>
 <span>Pokémon Đã Sở Hữu (2)</span>
 </h4>
 <p class="text-xs text-amber-950/60 mt-0.5">Lựa chọn một Pokémon trong bộ sưu tập để đồng hành cùng trainer.</p>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[190px] overflow-y-auto pr-2 custom-scrollbar font-sans">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[190px] overflow-y-auto pr-2 custom-scrollbar">
 <div class="p-3 bg-white border rounded-2xl flex items-center justify-between gap-3 shadow-xs transition-all border-amber-400 ring-2 ring-amber-100">
 <div class="flex items-center gap-2 min-w-0">
-<img class="w-10 h-10 object-contain shrink-0" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<img class="w-10 h-10 object-contain shrink-0" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
 <div class="min-w-0">
 <h5 class="font-extrabold text-xs text-gray-800 truncate">Bulbasaur</h5>
-<span class="text-[8px] bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-black uppercase tracking-tight">Grass/Poison</span>
-<p class="mt-1 text-[9px] font-black text-gray-400">Lv.1 · HP 45 · Bond 10</p>
+<span class="text-[10px] bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-black tracking-tight">Grass/Poison</span>
+<p class="mt-1 text-xs font-black text-gray-400">Lv.1 · HP 45 · Bond 10</p>
 </div>
 </div>
-<span class="text-[9px] bg-amber-500 text-white font-extrabold px-2.5 py-1.5 rounded-full uppercase tracking-tighter shrink-0">ĐANG ĐỒNG HÀNH</span>
+<span class="text-xs bg-amber-500 text-white font-extrabold px-2.5 py-1.5 rounded-full tracking-tighter shrink-0">ĐANG ĐỒNG HÀNH</span>
 </div>
 <div class="p-3 bg-white border rounded-2xl flex items-center justify-between gap-3 shadow-xs transition-all border-gray-100">
 <div class="flex items-center gap-2 min-w-0">
-<img class="w-10 h-10 object-contain shrink-0" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<img class="w-10 h-10 object-contain shrink-0" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
 <div class="min-w-0">
 <h5 class="font-extrabold text-xs text-gray-800 truncate">Charmander</h5>
-<span class="text-[8px] bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-black uppercase tracking-tight">Fire</span>
-<p class="mt-1 text-[9px] font-black text-gray-400">Lv.1 · HP 80 · Bond 20</p>
+<span class="text-[10px] bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-black tracking-tight">Fire</span>
+<p class="mt-1 text-xs font-black text-gray-400">Lv.1 · HP 80 · Bond 20</p>
 </div>
 </div>
 <div class="flex shrink-0 flex-col gap-1.5">
-<button class="bg-gray-100 hover:bg-amber-100 text-amber-950 text-[9px] font-bold px-3 py-1.5 rounded-xl border border-amber-200 uppercase tracking-wider shadow-xs transition-all">Active ⚔️</button>
-<button class="text-[9px] font-bold px-3 py-1.5 rounded-xl border uppercase tracking-wider shadow-xs transition-all bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-emerald-200">Support</button>
+<button class="bg-gray-100 hover:bg-amber-100 text-amber-950 text-xs font-bold px-3 py-1.5 rounded-xl border border-amber-200 shadow-xs transition-all">Active ⚔️</button>
+<button class="text-xs font-bold px-3 py-1.5 rounded-xl border shadow-xs transition-all bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-emerald-200">Support</button>
 </div>
 </div>
 </div>
 </div>
 <div class="space-y-4 pt-4">
-<h4 class="font-royal text-xl text-purple-900 border-b pb-2 flex items-center gap-2">
+<h4 class="flex items-center gap-2 border-b border-[#e6e2d4] pb-2 text-xl font-extrabold tracking-tight text-brand-ink">
 <span>🎓</span>
 <span>Pokémon Skill Lab</span>
 </h4>
-<p class="text-xs text-purple-800/70 font-sans">Huấn luyện skill cho Pokémon để hỗ trợ trainer trong các hoạt động học tập.</p>
-<div class="space-y-2 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar font-sans font-[Inter]">
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<p class="text-xs text-purple-800/70">Huấn luyện skill cho Pokémon để hỗ trợ trainer trong các hoạt động học tập.</p>
+<div class="space-y-2 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">💨</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Skill Né Trực Diện</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Khi giáo viên gọi trả lời câu hỏi khó, có quyền trao lại quyền trả lời cho bạn khác.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (25đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (25đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🛡️</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Lá Chắn Hộ Vệ</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Giảm 50% số điểm bị phạt của lần đầu sai sót trong ngày.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🎰</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Pháp Bảo Nhân Đôi</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Cơ hội nhân đôi (+100%) số điểm nhận được từ một câu trả lời xuất sắc.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (30đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (30đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🤝</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Hộ Tống Đồng Đội</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Được tặng tối đa 3 điểm của mình để cứu viện một bạn khác bị phạt.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🔄</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Đổi Đề Thần Tốc</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Yêu cầu Thầy/Cô đổi câu hỏi khác dễ hơn nếu câu hiện tại quá khó.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (22đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (22đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">📜</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
-<h5 class="font-extrabold text-sm text-gray-800 mt-1">Ý Chỉ Đồng Hành</h5>
-<p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Được phép chỉ định một học sĩ bất kỳ thảo luận nhóm hỗ trợ trả lời câu hỏi.</p>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<h5 class="font-extrabold text-sm text-gray-800 mt-1">Đồng Đội Hỗ Trợ</h5>
+<p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Được phép mời một Trainer bất kỳ cùng thảo luận để hỗ trợ trả lời câu hỏi.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (26đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (26đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🎫</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Kim Bài Miễn Tử</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Bỏ qua một lần bị trừ điểm (muộn học, quên bài tập, nghịch đồ, vv.)</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (40đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (40đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">👁️</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Mắt Thần Trí Tuệ</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Được nhận một gợi ý trực tiếp từ Thầy/Cô trước khi chốt đáp án.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (24đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (24đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">📖</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Trợ Thủ Tra Cứu</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Được đặc cách mở vở xem tài liệu hoặc tra cứu trong vòng 30 giây.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (16đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (16đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">⚡</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Cướp Quyền Tranh Đoạt</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Được ưu tiên tuyệt đối giành quyền phát biểu đầu tiên khi giơ tay.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🔗</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Đồng Tâm Hiệp Lực</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Khi bạn cùng bàn của bạn trả lời đúng, bạn cũng được cộng ké 1 điểm ấm lòng.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (30đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (30đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🎡</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Vòng Quay Tự Tin</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Nhận ngay +2 điểm nếu bạn được gọi trúng qua nút Random.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (24đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (24đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🌫️</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Tàng Hình Chi Thuật</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Bật ẩn thân để không bị gọi tên trả lời câu hỏi hoặc giao nhiệm vụ trong 1 tiết học.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (28đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (28đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">💥</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Khiên Chắn Phản Đòn</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Phá giải hoàn toàn trò đùa giỡn, cướp điểm từ bạn bè khác.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (18đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (18đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">⚔️</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Song Kiếm Hợp Bích</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Đồng trả lời câu hỏi khó cùng 1 bạn khác, cả 2 đều được hưởng trọn số điểm cộng.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (25đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (25đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">⚖️</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Sám Hối Thu Hồi</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Xin phục hồi 50% số điểm vừa bị trừ bằng cách hứa tiếp thu tích cực.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (25đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (25đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">✨</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Phúc Lành Trấn An</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Khiến cả lớp nhận hiệu ứng cộng thêm 1 điểm khi ai đó trả lời đúng.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🗣️</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Truyền Cảm Hứng</h5>
-<p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Học sĩ dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi.</p>
+<p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Trainer dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (18đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (18đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">💚</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Bạch Ngọc Chữa Lành</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Rút lại 1 kết quả trừ điểm gần nhất trong ngày hôm nay của chính mình.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (22đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (22đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">🎖️</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Ủy Thác Trạng Nguyên</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Nhờ vả Trạng Nguyên bảng xếp hạng gánh tạ câu hỏi và chia đôi cát-xê điểm.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (35đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (35đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">⏳</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Bẻ Cong Thời Gian</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Yêu cầu cộng thêm 10 giây thời gian suy nghĩ bài kiểm tra hoặc trả lời câu hỏi.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (20đ)</button>
 </div>
 </div>
-<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all font-[Inter]">
+<div class="bg-white p-4 border border-gray-100 rounded-3xl flex items-center justify-between gap-4 shadow-sm hover:border-purple-200 hover:bg-purple-50/10 transition-all">
 <div class="w-10 h-10 shrink-0 bg-purple-50 rounded-2xl flex items-center justify-center text-2xl border border-purple-100">👑</div>
 <div class="flex-1 min-w-0 text-left">
-<span class="text-[8px] tracking-widest font-black uppercase text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
+<span class="text-[10px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-100">Trainer skill</span>
 <h5 class="font-extrabold text-sm text-gray-800 mt-1">Sức Mạnh Thiên Tử</h5>
 <p class="text-xs text-gray-400 mt-0.5 italic leading-relaxed">Lần thăng cấp tiếp theo của bạn sẽ cộng thêm 5 điểm Hào Quang bonus.</p>
 </div>
-<div class="shrink-0 text-right font-[Inter]">
-<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-[10px] px-4 py-2 rounded-2xl uppercase tracking-tight shadow active:translate-y-px transition-all">Rèn (50đ)</button>
+<div class="shrink-0 text-right">
+<button class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-xs px-4 py-2 rounded-2xl tracking-tight shadow active:translate-y-px transition-all">Rèn (50đ)</button>
 </div>
 </div>
 </div>

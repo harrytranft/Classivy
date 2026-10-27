@@ -1,14 +1,12 @@
 import { useRef, useState } from 'react';
-import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, LudoTileSpec, RankInfo, Skill, Student } from '../../../types';
-import { BOSS_ENCOUNTER_FREQUENCY_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_LUDO_TILES, DEFAULT_RANKS_FEMALE, DEFAULT_RANKS_MALE, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY } from '../../../data/constants';
+import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, LudoTileSpec, Skill, Student } from '../../../types';
+import { BOSS_ENCOUNTER_FREQUENCY_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_LUDO_TILES, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY } from '../../../data/constants';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, PetSkill } from '../../../data/pokemonData';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency } from '../../../domain/bossSystem';
 
 // State dữ liệu lớp học dùng chung. Khởi tạo giống hệt App.tsx cũ (một số giá trị đọc từ localStorage).
 export const useGameDataState = () => {
   const [students, setStudents] = useState<Student[]>([]);
-  const [ranksMale, setRanksMale] = useState<RankInfo[]>(DEFAULT_RANKS_MALE);
-  const [ranksFemale, setRanksFemale] = useState<RankInfo[]>(DEFAULT_RANKS_FEMALE);
   const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS);
 
   const [petSkills, setPetSkills] = useState<PetSkill[]>(() => {
@@ -70,7 +68,7 @@ export const useGameDataState = () => {
   const lastSyncedSnapshotRef = useRef<string>('');
 
   return {
-    students, setStudents, ranksMale, setRanksMale, ranksFemale, setRanksFemale, skills,
+    students, setStudents, skills,
     setSkills, petSkills, setPetSkills, bossEncounterFrequency, setBossEncounterFrequency,
     bossStatesByClass, setBossStatesByClass, luckyWheelRewards, setLuckyWheelRewards,
     luckyWheelDisplayRewards, setLuckyWheelDisplayRewards, customLudoTiles, setCustomLudoTiles,

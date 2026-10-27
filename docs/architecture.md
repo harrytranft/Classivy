@@ -7,7 +7,7 @@ Tài liệu cho người và AI agent làm việc trên repo. Cập nhật lần
 ```
 src/main.tsx                React root (StrictMode + AuthProvider)
 src/app/App.tsx             BrowserRouter -> GameDataProvider -> UiEventsProvider -> AppProvider -> AppRoutes
-src/app/AppRoutes.tsx       /class (mặc định), /plaza, /settings, /student/:id; / và đường dẫn lạ -> /class
+src/app/AppRoutes.tsx       /class (mặc định), /settings, /student/:id; / và đường dẫn lạ -> /class
 src/app/AppLayout.tsx       Cổng đăng nhập, thanh điều hướng, dock trạng thái, <Outlet/> và mọi hộp thoại toàn cục
 src/app/AppContext.tsx      useApp(): state + hành động của toàn app (giống phạm vi của App.tsx cũ)
 src/app/controller/         appState.ts (gom state), appActions.ts (gom hành động), useDerivedState.ts (giá trị suy ra)
@@ -16,19 +16,20 @@ src/features/<tính năng>/   state hook, actions, component giao diện của t
 src/domain/                 logic thuần (không React), có unit test
 src/components/             component giao diện dùng chung (thẻ học sinh, dock, modal điểm danh...)
 src/data/                   hằng số, dữ liệu Pokémon
-src/lib/                    Supabase, Gemini, âm thanh
+src/lib/                    Supabase, âm thanh
 src/types/                  kiểu dữ liệu (index.ts: dữ liệu; app.ts: kiểu riêng của giao diện)
 ```
 
 ## 2. Luồng dữ liệu
 
-1. **GameDataProvider** (`src/app/providers/`) giữ dữ liệu được lưu: học sinh, cấp bậc, kỹ năng, kỹ năng Pokémon, âm thanh, ô Cá Ngựa, phần thưởng Vòng quay, Boss theo lớp.
+1. **GameDataProvider** (`src/app/providers/`) giữ dữ liệu được lưu: học sinh, kỹ năng, kỹ năng Pokémon, âm thanh, ô Cá Ngựa, phần thưởng Vòng quay, Boss theo lớp.
    - `gameData/useGameDataState.ts`: khởi tạo state (một số đọc từ localStorage).
    - `gameData/useCloudSync.ts`: tải từ Supabase khi đăng nhập; tự đồng bộ lên sau 1,5 giây khi dữ liệu đổi.
-   - `gameData/useLocalPersistence.ts`: lưu/đọc localStorage (khoá `imperial_*` giữ nguyên tới Phase 2).
-   - `gameData/backupActions.ts`: xuất/nhập JSON, sao lưu/khôi phục thủ công.
+   - `gameData/useLocalPersistence.ts`: lưu/đọc localStorage (khoá `classivy_*`; khoá cũ `imperial_*` được chép sang một lần khi mở app ở `src/main.tsx` qua `domain/storageMigration.ts`, khoá cũ giữ nguyên để hoàn tác).
+   - `gameData/backupActions.ts`: xuất/nhập JSON, sao lưu/khôi phục thủ công. Nhập file chỉ lấy các trường còn dùng (`domain/backup.ts`), nên file cũ có phần cấp bậc vẫn nhập được.
+   - Cột `ranks_male`/`ranks_female` trên Supabase không còn được đọc/ghi (hệ cấp bậc đã bỏ, D7); xoá cột ở migration Phase 3.
    - Phase 3 sẽ thay phần đồng bộ (một snapshot JSON mỗi giáo viên) bằng bảng dữ liệu riêng; chỉ cần sửa trong thư mục này.
-2. **UiEventsProvider**: toast Pokémon, thông báo level-up, nở trứng, hàng đợi Pokémon rời đi, "thánh chỉ".
+2. **UiEventsProvider**: toast Pokémon, thông báo level-up, nở trứng, hàng đợi Pokémon rời đi.
 3. **AppProvider** (`AppContext.tsx`) ghép mỗi lần render:
    - `useAppState()`: dữ liệu + sự kiện + state của từng tính năng (`features/*/use*State.ts`) + giá trị suy ra (`useDerivedState`).
    - `createAppActions(state)`: gọi từng nhóm hành động `features/*/*Actions.ts`.
@@ -63,7 +64,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 | Shop | `features/shop` | `eggs.ts` |
 | Pokémon (trứng, skill, hợp nhất, tặng, rời đi) | `features/pokemon`, `features/profile` | `pokemonProgression.ts`, `pokemonCollection.ts`, `progression.ts`, `gameEvents.ts`, `expeditionSystem.ts` |
 | Cài đặt | `features/settings` | - |
-| Chia nhóm, hẹn giờ, thời tiết | `features/tools` | `weather.ts` |
+| Chia nhóm, hẹn giờ | `features/tools` | |
 | Đăng nhập, tài khoản giáo viên | `features/auth` | - |
 
 ## 4. Định tuyến
@@ -75,7 +76,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 | `/class/<lớp>/ca-ngua` | Cá Ngựa của lớp |
 | `/class/<lớp>/vong-quay` | Vòng quay may mắn (tick chọn học sinh ngay trên trang) |
 | `/class/<lớp>/tang-pokemon` | Tặng Pokémon |
-| `/plaza`, `/settings`, `/student/<id>` | Plaza, Cài đặt, Hồ sơ |
+| `/settings`, `/student/<id>` | Cài đặt, Hồ sơ (Plaza đã bỏ 2026-10-27; `/plaza` về `/class`) |
 
 - Lớp đang chọn (`filterClass`) lấy từ URL (`src/app/useClassRoute.ts`); ngoài trang lớp thì app nhớ lớp mở gần nhất. Cờ `showLudoModal`, `showLuckyWheelModal`, `showGiftPokemonModal` cũng lấy từ URL; mở/đóng bằng `goToClassPage` (đóng dùng `replace` để không tạo thêm bước Back).
 - Đóng Vòng quay sau khi về đích Cá Ngựa thì quay lại bàn cờ; đóng Tặng Pokémon thì về trang đã mở nó.
@@ -84,7 +85,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 - `/student/:id`: tải lại trang hoặc Back/Forward sẽ mở đúng học sinh (`useProfileRouteSync.ts`); id không tồn tại thì về `/class`.
 - Khi chuyển `/` -> `/class` giữ nguyên `?query` và `#hash` vì Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
 - `vercel.json` chuyển mọi đường dẫn về `index.html` để tải lại trang không bị 404.
-- Plaza, Hồ sơ, Cài đặt được tải khi mở lần đầu (`React.lazy`); Gemini SDK tải khi cần.
+- Hồ sơ, Cài đặt, Cá Ngựa, Vòng quay, Tặng Pokémon được tải khi mở lần đầu (`React.lazy`).
 
 ## 5. Kiểm thử
 

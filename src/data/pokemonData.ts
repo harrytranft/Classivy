@@ -1050,18 +1050,18 @@ export const LIST_POKEMONS: PokemonInfo[] = [
 ];
 
 export const LIST_ACCESSORIES: Accessory[] = [
-  { id: 'acc_cape', name: 'Áo Choàng Hoàng Gia', icon: '🧥', cost: 15, description: 'Tăng vẻ uy nghiêm, khiến Pet trông như một vị Đại thần quyền quý.' },
-  { id: 'acc_crown', name: 'Vương Miện Hoàng Đế', icon: '👑', cost: 30, description: 'Phụ kiện tối thượng thể hiện vị thế bá chủ triều đình.' },
+  { id: 'acc_cape', name: 'Áo Choàng Huyền Ảo', icon: '🧥', cost: 15, description: 'Tạo vẻ ngoài nổi bật cho Pet trong mỗi hành trình học tập.' },
+  { id: 'acc_crown', name: 'Vương Miện Nhà Vô Địch', icon: '👑', cost: 30, description: 'Phụ kiện nổi bật dành cho những khoảnh khắc chiến thắng của Trainer.' },
   { id: 'acc_hat', name: 'Nón Thám Hiểm', icon: '🤠', cost: 10, description: 'Mang đậm phong cách phiêu lưu, thích hợp cho việc học hỏi cái mới.' },
   { id: 'acc_scarf', name: 'Khăn Choàng Đỏ Thắm', icon: '🧣', cost: 10, description: 'Chiếc khăn giữ ấm cổ sành điệu, tôn lên khí chất thông tuệ.' },
   { id: 'acc_glasses', name: 'Kính Mắt Ngầu Lòi', icon: '🕶️', cost: 12, description: 'Làm mờ mắt tất cả những câu hỏi khó nhằn của Thầy Cô.' },
   { id: 'acc_bandana', name: 'Băng Trán Ninja', icon: '🥷', cost: 12, description: 'Đeo vào đầu để gia tăng tinh thần tập trung cao độ trong lớp học.' },
   { id: 'acc_backpack', name: 'Ba-lô Nhỏ Sách Vở', icon: '🎒', cost: 15, description: 'Chiếc balo tiện lợi có chứa kẹo ngọt tiếp thêm năng lượng.' },
-  { id: 'acc_wings', name: 'Đôi Cánh Thiên Thần', icon: '🪶', cost: 25, description: 'Tỏa ra ánh hào quang hoàng tộc chói lọi xung quanh Pet.' },
+  { id: 'acc_wings', name: 'Đôi Cánh Thiên Thần', icon: '🪶', cost: 25, description: 'Tỏa ra ánh hào quang rực rỡ xung quanh Pet.' },
   { id: 'acc_mustache', name: 'Râu Quý Tộc Giáo Sư', icon: '🥸', cost: 10, description: 'Tạo vẻ ngoài trưởng thành, uyên bác đầy thuyết phục.' },
   { id: 'acc_ring', name: 'Nhẫn Ngọc Triệu Phú', icon: '💍', cost: 15, description: 'Hột xoàn siêu to khổng lồ lấp lánh khẳng định độ giàu có.' },
   { id: 'acc_shield', name: 'Khiên Chắn Trạng Nguyên', icon: '🛡️', cost: 18, description: 'Chiếc khiên nhỏ giúp tăng tinh thần vững chãi trước áp lực kiểm tra.' },
-  { id: 'acc_halo', name: 'Vòng Hào Quang Trí Tuệ', icon: '😇', cost: 20, description: 'Vòng sáng thánh thiện chứng nhận học sĩ chăm ngoan học giỏi.' }
+  { id: 'acc_halo', name: 'Vòng Hào Quang Trí Tuệ', icon: '😇', cost: 20, description: 'Vòng sáng thánh thiện chứng nhận Trainer chăm ngoan học giỏi.' }
 ];
 
 export const LIST_PET_SKILLS: PetSkill[] = [
@@ -1070,7 +1070,7 @@ export const LIST_PET_SKILLS: PetSkill[] = [
   { id: 'sk_double', name: 'Pháp Bảo Nhân Đôi', icon: '🎰', cost: 30, description: 'Cơ hội nhân đôi (+100%) số điểm nhận được từ một câu trả lời xuất sắc.' },
   { id: 'sk_rescue', name: 'Hộ Tống Đồng Đội', icon: '🤝', cost: 20, description: 'Được tặng tối đa 3 điểm của mình để cứu viện một bạn khác bị phạt.' },
   { id: 'sk_swap', name: 'Đổi Đề Thần Tốc', icon: '🔄', cost: 22, description: 'Yêu cầu Thầy/Cô đổi câu hỏi khác dễ hơn nếu câu hiện tại quá khó.' },
-  { id: 'sk_decree', name: 'Ý Chỉ Đồng Hành', icon: '📜', cost: 26, description: 'Được phép chỉ định một học sĩ bất kỳ thảo luận nhóm hỗ trợ trả lời câu hỏi.' },
+  { id: 'sk_decree', name: 'Đồng Đội Hỗ Trợ', icon: '📜', cost: 26, description: 'Được phép mời một Trainer bất kỳ cùng thảo luận để hỗ trợ trả lời câu hỏi.' },
   { id: 'sk_survival', name: 'Kim Bài Miễn Tử', icon: '🎫', cost: 40, description: 'Bỏ qua một lần bị trừ điểm (muộn học, quên bài tập, nghịch đồ, vv.)' },
   { id: 'sk_clairvoyance', name: 'Mắt Thần Trí Tuệ', icon: '👁️', cost: 24, description: 'Được nhận một gợi ý trực tiếp từ Thầy/Cô trước khi chốt đáp án.' },
   { id: 'sk_companion', name: 'Trợ Thủ Tra Cứu', icon: '📖', cost: 16, description: 'Được đặc cách mở vở xem tài liệu hoặc tra cứu trong vòng 30 giây.' },
@@ -1082,7 +1082,7 @@ export const LIST_PET_SKILLS: PetSkill[] = [
   { id: 'sk_dual', name: 'Song Kiếm Hợp Bích', icon: '⚔️', cost: 25, description: 'Đồng trả lời câu hỏi khó cùng 1 bạn khác, cả 2 đều được hưởng trọn số điểm cộng.' },
   { id: 'sk_recovery', name: 'Sám Hối Thu Hồi', icon: '⚖️', cost: 25, description: 'Xin phục hồi 50% số điểm vừa bị trừ bằng cách hứa tiếp thu tích cực.' },
   { id: 'sk_blessing', name: 'Phúc Lành Trấn An', icon: '✨', cost: 20, description: 'Khiến cả lớp nhận hiệu ứng cộng thêm 1 điểm khi ai đó trả lời đúng.' },
-  { id: 'sk_inspire', name: 'Truyền Cảm Hứng', icon: '🗣️', cost: 18, description: 'Học sĩ dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi.' },
+  { id: 'sk_inspire', name: 'Truyền Cảm Hứng', icon: '🗣️', cost: 18, description: 'Trainer dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi.' },
   { id: 'sk_healing', name: 'Bạch Ngọc Chữa Lành', icon: '💚', cost: 22, description: 'Rút lại 1 kết quả trừ điểm gần nhất trong ngày hôm nay của chính mình.' },
   { id: 'sk_scholar', name: 'Ủy Thác Trạng Nguyên', icon: '🎖️', cost: 35, description: 'Nhờ vả Trạng Nguyên bảng xếp hạng gánh tạ câu hỏi và chia đôi cát-xê điểm.' },
   { id: 'sk_time_warp', name: 'Bẻ Cong Thời Gian', icon: '⏳', cost: 20, description: 'Yêu cầu cộng thêm 10 giây thời gian suy nghĩ bài kiểm tra hoặc trả lời câu hỏi.' },

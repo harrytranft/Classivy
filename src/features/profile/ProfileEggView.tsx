@@ -36,7 +36,7 @@ export const ProfileEggView: React.FC = () => {
                                 style={{ width: `${Math.min(100, Math.max(0, ((editingStudent.egg ? editingStudent.egg.progress : 0) / getEggRequiredProgress(editingStudent.egg)) * 100))}%` }}
                               />
                             </div>
-                            <p className="text-xs text-gray-400 italic font-sans leading-relaxed">
+                            <p className="text-xs text-gray-400 italic leading-relaxed">
                               {editingStudent.egg && editingStudent.egg.progress >= getEggRequiredProgress(editingStudent.egg)
                                 ? 'Chúc mừng! Có sinh mệnh sắp vươn mình ra khỏi lớp vỏ mỏng manh!'
                                 : editingStudent.egg && editingStudent.egg.progress >= Math.ceil(getEggRequiredProgress(editingStudent.egg) * 0.7)
@@ -101,7 +101,7 @@ export const ProfileEggView: React.FC = () => {
                                   setEditingStudent(currentMerged);
                                   setStudents(prev => prev.map(s => s.id === editingStudent.id ? currentMerged : s));
                                 }}
-                                className="w-full bg-amber-500 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-amber-600 active:scale-95 transition-all text-xs uppercase"
+                                className="w-full bg-amber-500 text-white font-bold py-3.5 rounded-2xl shadow-md hover:bg-amber-600 active:scale-95 transition-all text-xs"
                               >
                                 🧪 Ủng Hộ +1đ Hào Quang Ấp Trứng
                               </button>
@@ -113,7 +113,7 @@ export const ProfileEggView: React.FC = () => {
                                   <button
                                     disabled={remainingProgress <= 0 || editingStudent.points < remainingProgress}
                                     onClick={() => handleSpendAuraToHatchEgg(editingStudent.id)}
-                                    className="w-full rounded-2xl bg-emerald-700 py-3.5 text-xs font-black uppercase tracking-wider text-white shadow-md transition-all hover:bg-emerald-800 active:scale-95 disabled:bg-stone-200 disabled:text-stone-500"
+                                    className="w-full rounded-2xl bg-emerald-700 py-3.5 text-xs font-black text-white shadow-md transition-all hover:bg-emerald-800 active:scale-95 disabled:bg-stone-200 disabled:text-stone-500"
                                   >
                                     🎁 Đổi {remainingProgress}đ Hào Quang để ấp nhanh
                                   </button>
@@ -123,13 +123,13 @@ export const ProfileEggView: React.FC = () => {
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <button
                                   onClick={() => handleBuyNewEgg(editingStudent.id, 'normal')}
-                                  className="w-full bg-red-800 hover:bg-red-950 text-white font-bold py-3.5 rounded-2xl shadow-md active:scale-95 transition-all text-xs uppercase"
+                                  className="w-full rounded-brand-md bg-brand-forest py-3.5 text-xs font-bold text-brand-cream shadow-md transition-all hover:bg-brand-forest-deep active:scale-95"
                                 >
                                   🥚 Trứng thường (10đ)
                                 </button>
                                 <button
                                   onClick={() => handleBuyNewEgg(editingStudent.id, 'special')}
-                                  className="w-full bg-purple-700 hover:bg-purple-900 text-white font-bold py-3.5 rounded-2xl shadow-md active:scale-95 transition-all text-xs uppercase"
+                                  className="w-full bg-purple-700 hover:bg-purple-900 text-white font-bold py-3.5 rounded-2xl shadow-md active:scale-95 transition-all text-xs"
                                 >
                                   ✨ Trứng đặc biệt (20đ)
                                 </button>
@@ -176,7 +176,7 @@ export const ProfileEggView: React.FC = () => {
                                        `Tin vui! ${getPokemonDisplayName(updatedPet)} đã nở từ trứng và sẵn sàng đồng hành cùng ${editingStudent.name}.`
                                      );
                                    }}
-                                   className="w-full bg-green-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-green-700 animate-bounce transition-all uppercase text-xs"
+                                   className="w-full bg-green-600 text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-green-700 animate-bounce transition-all text-xs"
                                  >
                                    🐣 TIẾN HÀNH GÕ VỎ - NỞ TRỨNG NGAY! 🐣
                                  </button>
@@ -192,16 +192,16 @@ export const ProfileEggView: React.FC = () => {
                         {/* OWNED PORTFOLIO SELECTION IN EGG SCREEN (WHEN WAITING FOR HATCH) */}
                         {editingStudent.pets && editingStudent.pets.length > 0 && (
                           <div className="bg-amber-50/30 p-6 rounded-[32px] border border-amber-200/30 space-y-4">
-                            <div className="text-left font-sans">
-                              <h4 className="font-royal text-lg text-amber-900 flex items-center gap-2">
+                            <div className="text-left">
+                              <h4 className="text-lg text-amber-900 flex items-center gap-2 font-extrabold">
                                 <span>🦁</span>
                                 <span>Danh Sách Pokémon Sở Hữu ({editingStudent.pets.length})</span>
                               </h4>
-                              <p className="text-xs text-amber-950/60 font-sans mt-0.5">Chọn Pokémon đã nở trước đó để tiếp tục đồng hành.</p>
+                              <p className="text-xs text-amber-950/60 mt-0.5">Chọn Pokémon đã nở trước đó để tiếp tục đồng hành.</p>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
                               {editingStudent.pets.map(p => (
-                                <div key={p.instanceId || `${p.dexId}-${p.name}`} className="p-3 bg-white border border-gray-100 rounded-2xl flex items-center justify-between gap-3 shadow-xs font-sans">
+                                <div key={p.instanceId || `${p.dexId}-${p.name}`} className="p-3 bg-white border border-gray-100 rounded-2xl flex items-center justify-between gap-3 shadow-xs">
                                   <div className="flex items-center gap-2 min-w-0">
                                     <img 
                                       src={getPokemonArtworkUrl(p)}
@@ -210,13 +210,13 @@ export const ProfileEggView: React.FC = () => {
                                     />
                                     <div className="min-w-0">
                                       <h5 className="font-extrabold text-xs text-gray-800 truncate">{p.isShiny ? '✨ ' : ''}{getPokemonDisplayName(p)}</h5>
-                                      <span className="text-[8px] bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-black uppercase tracking-tight">{p.types.join('/')}</span>
-                                      <p className="mt-1 text-[9px] font-black text-gray-400">Lv.{p.level || 1} · HP {p.hp ?? 100} · Bond {p.bond || 0}</p>
+                                      <span className="text-[10px] bg-amber-100 text-amber-900 border border-amber-200 px-1.5 py-0.5 rounded font-black tracking-tight">{p.types.join('/')}</span>
+                                      <p className="mt-1 text-xs font-black text-gray-400">Lv.{p.level || 1} · HP {p.hp ?? 100} · Bond {p.bond || 0}</p>
                                     </div>
                                   </div>
                                   <button 
                                     onClick={() => handleSelectActivePet(editingStudent.id, p)}
-                                    className="bg-amber-500 hover:bg-amber-600 text-white text-[9px] font-bold px-3 py-1.5 rounded-xl uppercase tracking-wider shadow-sm transition-all shrink-0"
+                                    className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm transition-all shrink-0"
                                   >
                                     Chọn Đồng Hành ⚔️
                                   </button>

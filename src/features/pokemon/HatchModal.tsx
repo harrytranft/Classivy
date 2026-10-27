@@ -11,12 +11,12 @@ export const HatchModal: React.FC = () => {
   return (
     <>
       {showHatchModal && (
-        <div className="fixed inset-0 z-[250] flex items-center justify-center bg-black/90 p-4 backdrop-blur-xl animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[250] flex items-center justify-center bg-brand-forest-deep/70 p-4 backdrop-blur-xl animate-in fade-in duration-500">
           <div className="bg-amber-50/95 max-w-2xl w-full rounded-[45px] border-[10px] border-amber-400 p-8 shadow-[0_0_120px_rgba(245,158,11,0.6)] text-center space-y-6 relative overflow-hidden animate-in zoom-in-95 duration-500">
             {/* Ambient burst bg */}
             <div className="absolute inset-0 bg-radial-gradient from-amber-300/30 via-transparent to-transparent pointer-events-none" />
 
-            <h3 className="text-3xl font-royal text-amber-800 uppercase tracking-widest">🐣 Pokémon Thức Giấc 🐣</h3>
+            <h3 className="text-3xl text-amber-800 font-extrabold">🐣 Pokémon Thức Giấc 🐣</h3>
 
             {!hatchAnnouncementItems && (
               <div className="relative inline-block py-6">
@@ -69,13 +69,13 @@ export const HatchModal: React.FC = () => {
                   setHatchAnnouncementItems(null);
                   new Audio(posSoundUrl).play().catch(() => {});
                 }} 
-                className="bg-amber-500 text-white px-10 py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-amber-600 hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-2xl border-b-4 border-amber-700"
+                className="bg-amber-500 text-white px-10 py-4 rounded-xl font-bold hover:bg-amber-600 hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-2xl border-b-4 border-amber-700"
               >
                 Cực Kỳ Đáng Yêu
               </button>
             </div>
 
-            <div className="text-[9px] uppercase font-bold text-amber-900/40 tracking-wider">Trainer Hub - Pokémon Companion</div>
+            <div className="text-xs font-bold text-amber-900/40">Trainer Hub - Pokémon Companion</div>
           </div>
         </div>
       )}

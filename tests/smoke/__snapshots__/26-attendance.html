@@ -1,741 +1,1096 @@
-<div class="min-h-screen bg-[radial-gradient(circle_at_50%_0%,#fffbf2_0%,#f5ebe0_100%)] pb-32">
-<div class="fixed left-0 top-1/2 z-50 h-40 w-5 -translate-y-1/2 group/nav">
-<nav class="absolute left-0 top-1/2 flex -translate-y-1/2 -translate-x-[calc(100%-18px)] flex-col items-center gap-3 rounded-r-[28px] border-2 border-white/90 bg-red-950/80 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(120,20,20,0.3)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/nav:translate-x-0 focus-within:translate-x-0">
-<button type="button" title="Trainer Plaza" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">🏞️</button>
-<button type="button" title="Lớp Học" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-amber-200 bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 text-red-950 ring-4 ring-amber-200/35">📚</button>
-<button type="button" title="Tặng Pokémon" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/50 bg-gradient-to-br from-emerald-300 via-amber-300 to-fuchsia-400 text-white hover:scale-110 hover:shadow-[0_0_28px_rgba(251,191,36,0.45)]">🎁</button>
-<button type="button" title="Cài Đặt" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">⚙️</button>
-<button type="button" title="Tài khoản giáo viên" class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg transition-all hover:scale-110 active:scale-95">
-<img class="h-10 w-10 rounded-xl border border-white/80 object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
+<div class="min-h-screen bg-brand-cream pb-36 pl-[84px]">
+<div class="group/nav fixed inset-y-0 left-0 z-50 flex w-[84px] flex-col items-center rounded-r-[28px] bg-brand-shield py-4 text-brand-cream shadow-[4px_0_18px_-6px_rgba(1,72,47,0.45)]">
+<img alt="Classivy" class="mb-5 h-11 w-11 rounded-brand-md" src="/brand/classivy-app-icon-dark.png">
+<nav aria-label="Điều hướng chính" class="flex flex-1 flex-col items-center gap-1.5">
+<button type="button" title="Lớp Học" aria-current="page" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors bg-brand-cream text-brand-forest-deep">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-6 w-6" aria-hidden="true">
+<path d="M12 7v14">
+</path>
+<path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z">
+</path>
+</svg>
+<span>Lớp học</span>
+</button>
+<button type="button" title="Tặng Pokémon" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gift h-6 w-6" aria-hidden="true">
+<rect x="3" y="8" width="18" height="4" rx="1">
+</rect>
+<path d="M12 8v13">
+</path>
+<path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7">
+</path>
+<path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5">
+</path>
+</svg>
+<span>Tặng quà</span>
+</button>
+<button type="button" title="Cài Đặt" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings h-6 w-6" aria-hidden="true">
+<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+</path>
+<circle cx="12" cy="12" r="3">
+</circle>
+</svg>
+<span>Cài đặt</span>
+</button>
+<div class="flex-1">
+</div>
+<div class="group/status flex flex-col items-center gap-1 border-t border-white/10 pt-3">
+<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" aria-label="Sao lưu đám mây" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload h-5 w-5" aria-hidden="true">
+<path d="M12 13v8">
+</path>
+<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242">
+</path>
+<path d="m8 17 4-4 4 4">
+</path>
+</svg>
+</button>
+<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" aria-label="Khôi phục dữ liệu" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history h-5 w-5" aria-hidden="true">
+<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
+</path>
+<path d="M3 3v5h5">
+</path>
+<path d="M12 7v5l4 2">
+</path>
+</svg>
+</button>
+<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" aria-label="Trạng thái sync" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream text-brand-leaf">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check h-5 w-5" aria-hidden="true">
+<circle cx="12" cy="12" r="10">
+</circle>
+<path d="m9 12 2 2 4-4">
+</path>
+</svg>
+</button>
+</div>
+<button type="button" title="Tài khoản giáo viên" class="mt-3 grid h-12 w-12 place-items-center overflow-hidden rounded-full ring-2 ring-brand-gold/70 transition-shadow hover:ring-brand-gold">
+<img class="h-full w-full bg-brand-cream object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
 </button>
 </nav>
 </div>
-<div class="fixed right-0 top-1/2 z-50 h-28 w-5 -translate-y-1/2 group/status">
-<div class="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-[calc(100%-18px)] flex-col items-center justify-center gap-3 rounded-l-[28px] border-2 border-white/90 bg-white/75 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(20,50,120,0.22)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/status:translate-x-0 focus-within:translate-x-0">
-<div class="relative group/item">
-<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-sky-300 via-blue-500 to-indigo-700 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">☁️</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Sao lưu đám mây</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-amber-200 via-orange-400 to-red-600 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">🔄</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Khôi phục dữ liệu</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-emerald-300 via-teal-500 to-emerald-800 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">✅</span>
-<span class="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_8px_rgba(52,211,153,0.9)]">
-</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Trạng thái sync</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-</div>
-</div>
 <main class="max-w-7xl mx-auto p-6">
 <div class="animate-in fade-in duration-300">
-<div class="flex flex-wrap gap-4 mb-8 bg-gray-50 p-4 rounded-2xl border items-center">
-<input placeholder="Tìm kiếm trainer..." class="flex-1 p-3 rounded-xl border outline-none focus:ring-2 ring-red-800/20" type="text" value="">
+<div class="mb-8 flex flex-wrap items-center gap-3 rounded-brand-lg border border-[#e6e2d4] bg-white p-3 shadow-[0_1px_2px_rgba(12,37,39,0.04)]">
+<label class="relative flex min-w-[220px] flex-1 items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search pointer-events-none absolute left-3.5 h-5 w-5 text-brand-ink/45" aria-hidden="true">
+<circle cx="11" cy="11" r="8">
+</circle>
+<path d="m21 21-4.3-4.3">
+</path>
+</svg>
+<input placeholder="Tìm kiếm trainer..." class="h-11 w-full rounded-brand-md border border-[#dcd8c8] bg-brand-cream pl-11 pr-3 text-[15px] text-brand-ink outline-none placeholder:text-brand-ink/65 focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/25" type="text" value="">
+</label>
 <div class="relative">
-<select class="bg-white text-red-950 border-2 border-amber-200 px-4 py-3 pr-9 rounded-xl outline-none font-black text-xs appearance-none hover:border-amber-400 transition-all cursor-pointer shadow-sm">
+<select aria-label="Chọn lớp" class="h-11 cursor-pointer appearance-none rounded-brand-md border border-brand-forest/25 bg-white pl-4 pr-10 text-[15px] font-bold text-brand-forest outline-none transition-colors hover:border-brand-forest/50 focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/25">
 <option value="Tất cả">← Danh sách lớp</option>
 <option value="6A">6A</option>
 <option value="7B">7B</option>
 </select>
-<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-amber-700">
-<span class="text-[10px]">▼</span>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-forest" aria-hidden="true">
+<path d="m6 9 6 6 6-6">
+</path>
+</svg>
+</div>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check h-[18px] w-[18px]" aria-hidden="true">
+<rect width="8" height="4" x="8" y="2" rx="1" ry="1">
+</rect>
+<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
+</path>
+<path d="m9 14 2 2 4-4">
+</path>
+</svg>Check đi học</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-check h-[18px] w-[18px]" aria-hidden="true">
+<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20">
+</path>
+<path d="m9 9.5 2 2 4-4">
+</path>
+</svg>Check Homework</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-brand-forest text-brand-cream hover:bg-brand-forest-deep shadow-[0_2px_8px_-2px_rgba(0,38,25,0.45)] h-11 px-4 text-sm gap-2">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus h-[18px] w-[18px]" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<line x1="19" x2="19" y1="8" y2="14">
+</line>
+<line x1="22" x2="16" y1="11" y2="11">
+</line>
+</svg>Thêm Trainer</button>
+</div>
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+<div class="group relative">
+<div role="button" tabindex="0" aria-label="Khoa 6A" class="relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200 border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<div class="flex items-start gap-4">
+<div class="relative h-16 w-16 shrink-0">
+<div class="h-full w-full rounded-brand-md grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">K6</div>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<div class="group/poke relative shrink-0">
+<img referrerpolicy="no-referrer" alt="Bulbasaur" class="h-7 w-7 object-contain transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<div class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 hidden w-56 flex-col rounded-brand-md bg-brand-forest-deep p-3 text-brand-cream shadow-[0_12px_30px_-8px_rgba(0,38,25,0.6)] group-hover/poke:flex">
+<img referrerpolicy="no-referrer" alt="Bulbasaur" class="mx-auto my-1 h-24 w-24 object-contain" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<p class="text-center text-sm font-bold text-brand-gold-light">Bulbasaur</p>
+<p class="text-center text-[12px] text-brand-cream/70">Grass, Poison</p>
+<div class="mt-2 border-t border-white/15 pt-2">
+<p class="mb-1 text-[12px] font-bold text-brand-leaf">Kỹ năng sở hữu (0):</p>
+<p class="text-center text-[12px] italic text-brand-cream/60">Chưa có kỹ năng</p>
 </div>
 </div>
-<button class="bg-sky-700 text-white px-5 py-3 rounded-xl font-black shadow-lg hover:bg-sky-800 transition-all uppercase text-xs tracking-wider">🧭 Check đi học</button>
-<button class="bg-emerald-700 text-white px-5 py-3 rounded-xl font-black shadow-lg hover:bg-emerald-800 transition-all uppercase text-xs tracking-wider">📚 Check Homework</button>
-<button class="bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-red-900 transition-all">+ Thêm Trainer</button>
 </div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-<div class="relative group">
-<div class="relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group bg-white/85 border-white/90 shadow-[0_10px_30px_rgba(120,20,20,0.07)] hover:border-cyan-300 hover:-translate-y-3 hover:scale-[1.035] hover:bg-white hover:shadow-[0_0_0_3px_rgba(34,211,238,0.35),0_28px_70px_-12px_rgba(14,165,233,0.55),0_0_55px_rgba(250,204,21,0.35)]">
-<div class="absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60">6A</div>
-<div class="flex items-center gap-5 mt-4">
-<div class="w-20 h-20 shrink-0 relative">
-<div class="w-full h-full rounded-[24px] border-4 border-white shadow-lg grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">K6</div>
+<h3 class="truncate text-xl font-extrabold leading-tight text-brand-ink">Khoa 6A</h3>
 </div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2">
-<div class="relative group/poke shrink-0">
-<img referrerpolicy="no-referrer" alt="Bulbasaur" class="w-8 h-8 object-contain cursor-pointer transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<div class="absolute left-0 bottom-full mb-2 hidden group-hover/poke:flex flex-col bg-amber-950 text-white p-3 rounded-2xl shadow-2xl z-50 w-52 border border-amber-400/40 pointer-events-none animate-in fade-in zoom-in duration-200">
-<img referrerpolicy="no-referrer" alt="Bulbasaur" class="w-24 h-24 object-contain mx-auto my-1" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<p class="font-extrabold text-amber-300 text-sm text-center">Bulbasaur</p>
-<p class="text-[10px] text-amber-200/80 text-center uppercase font-mono">Grass, Poison</p>
-<div class="mt-2 border-t border-amber-800/60 pt-1.5">
-<p class="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Kỹ năng sở hữu (0):</p>
-<p class="text-[9px] text-amber-200/60 italic text-center">Chưa có kỹ năng</p>
+<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-forest text-brand-cream border-brand-forest">Lv.1</span>
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-gold-light text-[#6b4a00] border-[#f4dc8a]">🌱 Rookie Trainer</span>
 </div>
 </div>
 </div>
-<h3 class="text-xl font-bold text-gray-800 truncate">Khoa 6A</h3>
+<div class="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
+<div class="relative grid h-11 w-11 shrink-0 place-items-center rounded-brand-sm bg-white p-0.5">
+<img referrerpolicy="no-referrer" class="h-full w-full object-contain" alt="Bulbasaur" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
 </div>
-<p class="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-<div class="mt-1 flex items-center gap-1.5">
-<span class="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">Lv.1</span>
-<span class="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">🌱 Rookie Trainer</span>
-</div>
-</div>
-</div>
-<div class="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
-<div class="w-10 h-10 shrink-0 bg-white rounded-xl border border-amber-200 p-0.5 flex items-center justify-center shadow-sm relative group/pet animate-in fade-in zoom-in duration-300">
-<img referrerpolicy="no-referrer" class="w-full h-full object-contain" alt="Bulbasaur" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-</div>
-<div class="flex-1 min-w-0">
+<div class="min-w-0 flex-1">
 <div class="flex items-center justify-between gap-1.5">
-<p class="text-xs font-black text-amber-700 truncate">Bulbasaur · Lv.1</p>
-<span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">❤️ HP: 75/100</span>
+<p class="truncate text-[13px] font-bold text-brand-forest">Bulbasaur · Lv.1</p>
+<span class="shrink-0 text-[12px] font-bold tabular-nums text-[#1d6a40]">HP 75/100</span>
 </div>
-<div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
-<div class="h-full rounded-full transition-all duration-500 bg-emerald-500">
-</div>
-</div>
-<p class="text-[8px] text-gray-400 truncate mt-0.5">🔎 Curious Nature · Chưa có kỹ năng bổ trợ</p>
+<div role="progressbar" aria-label="HP của Bulbasaur" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" class="relative w-full rounded-full bg-[#ebe8dc] h-1.5 mt-1.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-<div class="flex-1">
-<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-<div class="bg-red-800 h-full rounded-full transition-all duration-1000">
+<p class="mt-1 truncate text-[12px] text-brand-ink/65">🔎 Curious Nature · Chưa có kỹ năng bổ trợ</p>
 </div>
 </div>
-<p class="text-[8px] uppercase opacity-30 mt-1 font-bold">Trainer XP 0/80</p>
-</div>
-<div class="ml-6 flex flex-col items-end">
-<p class="text-3xl font-black leading-none text-gray-900">105</p>
-<p class="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-</div>
+<div class="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+<div class="min-w-0 flex-1">
+<div role="progressbar" aria-label="Trainer XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="relative w-full rounded-full bg-[#ebe8dc] h-2.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
+<p class="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">Trainer XP 0/80</p>
 </div>
-<div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<button class="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-<button class="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+<div class="flex shrink-0 flex-col items-center">
+<div class="relative grid place-items-center h-[64px] w-[56px]">
+<svg viewBox="0 0 56 64" class="absolute inset-0 h-full w-full" aria-hidden="true">
+<path d="M28 2 52 10v20c0 15.5-10.2 26.4-24 32C14.2 56.4 4 45.5 4 30V10L28 2Z" class="fill-brand-forest stroke-brand-gold" stroke-width="3" stroke-linejoin="round">
+</path>
+<path d="M28 8 46 14v15c0 11.6-7.4 20-18 24.6" fill="none" class="stroke-brand-gold-light/30" stroke-width="1.5">
+</path>
+</svg>
+<span class="relative -mt-1 font-extrabold leading-none tabular-nums tracking-tight text-xl text-brand-gold-light">105</span>
 </div>
-</div>
-<div class="relative group">
-<div class="relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group bg-white/85 border-white/90 shadow-[0_10px_30px_rgba(120,20,20,0.07)] hover:border-cyan-300 hover:-translate-y-3 hover:scale-[1.035] hover:bg-white hover:shadow-[0_0_0_3px_rgba(34,211,238,0.35),0_28px_70px_-12px_rgba(14,165,233,0.55),0_0_55px_rgba(250,204,21,0.35)]">
-<div class="absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60">6A</div>
-<div class="flex items-center gap-5 mt-4">
-<div class="w-20 h-20 shrink-0 relative">
-<div class="w-full h-full rounded-[24px] border-4 border-white shadow-lg grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">H6</div>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2">
-<h3 class="text-xl font-bold text-gray-800 truncate">Hà 6A</h3>
-</div>
-<p class="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-<div class="mt-1 flex items-center gap-1.5">
-<span class="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">Lv.1</span>
-<span class="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">🌱 Rookie Trainer</span>
+<span class="mt-1 text-[12px] font-bold leading-none text-brand-ink/70">Hào Quang</span>
 </div>
 </div>
 </div>
-<div class="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
-<div class="text-2xl transform transition-transform duration-500 hover:rotate-12">🥚⚡</div>
-<div class="flex-1 min-w-0">
-<div class="flex justify-between items-center text-[10px]">
-<span class="font-bold text-gray-600">Ấp Trứng Pokémon</span>
-<span class="font-black text-amber-500">4/10đ</span>
-</div>
-<div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1 max-w-full">
-<div class="bg-amber-500 h-full rounded-full transition-all duration-500">
-</div>
-</div>
-<p class="text-[8px] text-gray-400 mt-0.5 truncate italic">Nứt nhẹ rạn vỏ</p>
-</div>
-</div>
-<div class="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-<div class="flex-1">
-<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-<div class="bg-red-800 h-full rounded-full transition-all duration-1000">
-</div>
-</div>
-<p class="text-[8px] uppercase opacity-30 mt-1 font-bold">Trainer XP 0/80</p>
-</div>
-<div class="ml-6 flex flex-col items-end">
-<p class="text-3xl font-black leading-none text-gray-900">90</p>
-<p class="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-</div>
-</div>
-</div>
-<div class="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
-</div>
-<div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<button class="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-<button class="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+<div class="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+<button type="button" aria-label="Đánh dấu Khoa 6A vắng" title="Đánh dấu vắng" class="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x h-5 w-5" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<line x1="17" x2="22" y1="8" y2="13">
+</line>
+<line x1="22" x2="17" y1="8" y2="13">
+</line>
+</svg>
+</button>
+<button type="button" aria-label="Cộng điểm Khoa 6A" title="Ban thưởng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+<path d="M12 5v14">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Trừ điểm Khoa 6A" title="Cần cố gắng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+</svg>
+</button>
 </div>
 </div>
-<div class="relative group">
-<div class="relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group bg-stone-100/80 grayscale border-stone-300 opacity-60 shadow-xs">
-<div class="absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60">6A</div>
-<div class="flex items-center gap-5 mt-4">
-<div class="w-20 h-20 shrink-0 relative">
-<div class="w-full h-full rounded-[24px] border-4 border-white shadow-lg grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">G6</div>
-<div class="absolute inset-0 bg-gray-900/60 rounded-[24px] flex items-center justify-center text-[10px] text-white font-black uppercase tracking-widest">VẮNG</div>
+<div class="group relative">
+<div role="button" tabindex="0" aria-label="Hà 6A" class="relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200 border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<div class="flex items-start gap-4">
+<div class="relative h-16 w-16 shrink-0">
+<div class="h-full w-full rounded-brand-md grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">H6</div>
 </div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2">
-<div class="relative group/poke shrink-0">
-<img referrerpolicy="no-referrer" alt="Jigglypuff" class="w-8 h-8 object-contain cursor-pointer transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EJigglypuff%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%20%2F%20Fairy%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<div class="absolute left-0 bottom-full mb-2 hidden group-hover/poke:flex flex-col bg-amber-950 text-white p-3 rounded-2xl shadow-2xl z-50 w-52 border border-amber-400/40 pointer-events-none animate-in fade-in zoom-in duration-200">
-<img referrerpolicy="no-referrer" alt="Jigglypuff" class="w-24 h-24 object-contain mx-auto my-1" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EJigglypuff%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%20%2F%20Fairy%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<p class="font-extrabold text-amber-300 text-sm text-center">Jigglypuff</p>
-<p class="text-[10px] text-amber-200/80 text-center uppercase font-mono">Normal, Fairy</p>
-<div class="mt-2 border-t border-amber-800/60 pt-1.5">
-<p class="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Kỹ năng sở hữu (0):</p>
-<p class="text-[9px] text-amber-200/60 italic text-center">Chưa có kỹ năng</p>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<h3 class="truncate text-xl font-extrabold leading-tight text-brand-ink">Hà 6A</h3>
+</div>
+<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-forest text-brand-cream border-brand-forest">Lv.1</span>
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-gold-light text-[#6b4a00] border-[#f4dc8a]">🌱 Rookie Trainer</span>
 </div>
 </div>
 </div>
-<h3 class="text-xl font-bold text-gray-800 truncate">Giang 6A</h3>
+<div class="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
+<div class="text-2xl" aria-hidden="true">🥚⚡</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center justify-between gap-2 text-[13px]">
+<span class="truncate font-bold text-brand-ink/80">Ấp Trứng Pokémon</span>
+<span class="font-bold tabular-nums text-[#8f5500]">4/10đ</span>
 </div>
-<p class="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-<div class="mt-1 flex items-center gap-1.5">
-<span class="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">Lv.1</span>
-<span class="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">🌱 Rookie Trainer</span>
+<div role="progressbar" aria-label="Tiến độ ấp trứng" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" class="relative w-full rounded-full bg-[#ebe8dc] h-1.5 mt-1.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-gold">
+</div>
+</div>
+<p class="mt-1 truncate text-[12px] italic text-brand-ink/65">Nứt nhẹ rạn vỏ</p>
+</div>
+</div>
+<div class="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+<div class="min-w-0 flex-1">
+<div role="progressbar" aria-label="Trainer XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="relative w-full rounded-full bg-[#ebe8dc] h-2.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
+</div>
+</div>
+<p class="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">Trainer XP 0/80</p>
+</div>
+<div class="flex shrink-0 flex-col items-center">
+<div class="relative grid place-items-center h-[64px] w-[56px]">
+<svg viewBox="0 0 56 64" class="absolute inset-0 h-full w-full" aria-hidden="true">
+<path d="M28 2 52 10v20c0 15.5-10.2 26.4-24 32C14.2 56.4 4 45.5 4 30V10L28 2Z" class="fill-brand-forest stroke-brand-gold" stroke-width="3" stroke-linejoin="round">
+</path>
+<path d="M28 8 46 14v15c0 11.6-7.4 20-18 24.6" fill="none" class="stroke-brand-gold-light/30" stroke-width="1.5">
+</path>
+</svg>
+<span class="relative -mt-1 font-extrabold leading-none tabular-nums tracking-tight text-xl text-brand-gold-light">90</span>
+</div>
+<span class="mt-1 text-[12px] font-bold leading-none text-brand-ink/70">Hào Quang</span>
 </div>
 </div>
 </div>
-<div class="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
-<div class="w-10 h-10 shrink-0 bg-white rounded-xl border border-amber-200 p-0.5 flex items-center justify-center shadow-sm relative group/pet animate-in fade-in zoom-in duration-300">
-<img referrerpolicy="no-referrer" class="w-full h-full object-contain" alt="Jigglypuff" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EJigglypuff%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%20%2F%20Fairy%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<div class="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+<button type="button" aria-label="Đánh dấu Hà 6A vắng" title="Đánh dấu vắng" class="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x h-5 w-5" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<line x1="17" x2="22" y1="8" y2="13">
+</line>
+<line x1="22" x2="17" y1="8" y2="13">
+</line>
+</svg>
+</button>
+<button type="button" aria-label="Cộng điểm Hà 6A" title="Ban thưởng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+<path d="M12 5v14">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Trừ điểm Hà 6A" title="Cần cố gắng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+</svg>
+</button>
 </div>
-<div class="flex-1 min-w-0">
+</div>
+<div class="group relative">
+<div role="button" tabindex="0" aria-label="Giang 6A" class="relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200 border-[#e3e0d3] bg-[#f6f5ef] opacity-70 grayscale">
+<div class="flex items-start gap-4">
+<div class="relative h-16 w-16 shrink-0">
+<div class="h-full w-full rounded-brand-md grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">G6</div>
+<div class="absolute inset-0 grid place-items-center rounded-brand-md bg-brand-ink/65 text-[12px] font-bold text-white">VẮNG</div>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<div class="group/poke relative shrink-0">
+<img referrerpolicy="no-referrer" alt="Jigglypuff" class="h-7 w-7 object-contain transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EJigglypuff%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%20%2F%20Fairy%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<div class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 hidden w-56 flex-col rounded-brand-md bg-brand-forest-deep p-3 text-brand-cream shadow-[0_12px_30px_-8px_rgba(0,38,25,0.6)] group-hover/poke:flex">
+<img referrerpolicy="no-referrer" alt="Jigglypuff" class="mx-auto my-1 h-24 w-24 object-contain" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EJigglypuff%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%20%2F%20Fairy%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<p class="text-center text-sm font-bold text-brand-gold-light">Jigglypuff</p>
+<p class="text-center text-[12px] text-brand-cream/70">Normal, Fairy</p>
+<div class="mt-2 border-t border-white/15 pt-2">
+<p class="mb-1 text-[12px] font-bold text-brand-leaf">Kỹ năng sở hữu (0):</p>
+<p class="text-center text-[12px] italic text-brand-cream/60">Chưa có kỹ năng</p>
+</div>
+</div>
+</div>
+<h3 class="truncate text-xl font-extrabold leading-tight text-brand-ink">Giang 6A</h3>
+</div>
+<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-forest text-brand-cream border-brand-forest">Lv.1</span>
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-gold-light text-[#6b4a00] border-[#f4dc8a]">🌱 Rookie Trainer</span>
+</div>
+</div>
+</div>
+<div class="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
+<div class="relative grid h-11 w-11 shrink-0 place-items-center rounded-brand-sm bg-white p-0.5">
+<img referrerpolicy="no-referrer" class="h-full w-full object-contain" alt="Jigglypuff" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EJigglypuff%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%20%2F%20Fairy%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+</div>
+<div class="min-w-0 flex-1">
 <div class="flex items-center justify-between gap-1.5">
-<p class="text-xs font-black text-amber-700 truncate">Jigglypuff · Lv.1</p>
-<span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">❤️ HP: 65/100</span>
+<p class="truncate text-[13px] font-bold text-brand-forest">Jigglypuff · Lv.1</p>
+<span class="shrink-0 text-[12px] font-bold tabular-nums text-[#1d6a40]">HP 65/100</span>
 </div>
-<div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
-<div class="h-full rounded-full transition-all duration-500 bg-emerald-500">
-</div>
-</div>
-<p class="text-[8px] text-gray-400 truncate mt-0.5">🌿 Calm Nature · Chưa có kỹ năng bổ trợ</p>
+<div role="progressbar" aria-label="HP của Jigglypuff" aria-valuemin="0" aria-valuemax="100" aria-valuenow="65" class="relative w-full rounded-full bg-[#ebe8dc] h-1.5 mt-1.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-<div class="flex-1">
-<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-<div class="bg-red-800 h-full rounded-full transition-all duration-1000">
+<p class="mt-1 truncate text-[12px] text-brand-ink/65">🌿 Calm Nature · Chưa có kỹ năng bổ trợ</p>
 </div>
 </div>
-<p class="text-[8px] uppercase opacity-30 mt-1 font-bold">Trainer XP 0/80</p>
-</div>
-<div class="ml-6 flex flex-col items-end">
-<p class="text-3xl font-black leading-none text-gray-900">75</p>
-<p class="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-</div>
+<div class="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+<div class="min-w-0 flex-1">
+<div role="progressbar" aria-label="Trainer XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="relative w-full rounded-full bg-[#ebe8dc] h-2.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
+<p class="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">Trainer XP 0/80</p>
 </div>
-<div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<button class="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-<button class="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+<div class="flex shrink-0 flex-col items-center">
+<div class="relative grid place-items-center h-[64px] w-[56px]">
+<svg viewBox="0 0 56 64" class="absolute inset-0 h-full w-full" aria-hidden="true">
+<path d="M28 2 52 10v20c0 15.5-10.2 26.4-24 32C14.2 56.4 4 45.5 4 30V10L28 2Z" class="fill-brand-forest stroke-brand-gold" stroke-width="3" stroke-linejoin="round">
+</path>
+<path d="M28 8 46 14v15c0 11.6-7.4 20-18 24.6" fill="none" class="stroke-brand-gold-light/30" stroke-width="1.5">
+</path>
+</svg>
+<span class="relative -mt-1 font-extrabold leading-none tabular-nums tracking-tight text-xl text-brand-gold-light">75</span>
 </div>
-</div>
-<div class="relative group">
-<div class="relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group bg-white/85 border-white/90 shadow-[0_10px_30px_rgba(120,20,20,0.07)] hover:border-cyan-300 hover:-translate-y-3 hover:scale-[1.035] hover:bg-white hover:shadow-[0_0_0_3px_rgba(34,211,238,0.35),0_28px_70px_-12px_rgba(14,165,233,0.55),0_0_55px_rgba(250,204,21,0.35)]">
-<div class="absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60">6A</div>
-<div class="flex items-center gap-5 mt-4">
-<div class="w-20 h-20 shrink-0 relative">
-<div class="w-full h-full rounded-[24px] border-4 border-white shadow-lg grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">D6</div>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2">
-<div class="relative group/poke shrink-0">
-<img referrerpolicy="no-referrer" alt="Eevee" class="w-8 h-8 object-contain cursor-pointer transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EEevee%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<div class="absolute left-0 bottom-full mb-2 hidden group-hover/poke:flex flex-col bg-amber-950 text-white p-3 rounded-2xl shadow-2xl z-50 w-52 border border-amber-400/40 pointer-events-none animate-in fade-in zoom-in duration-200">
-<img referrerpolicy="no-referrer" alt="Eevee" class="w-24 h-24 object-contain mx-auto my-1" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EEevee%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<p class="font-extrabold text-amber-300 text-sm text-center">Eevee</p>
-<p class="text-[10px] text-amber-200/80 text-center uppercase font-mono">Normal</p>
-<div class="mt-2 border-t border-amber-800/60 pt-1.5">
-<p class="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Kỹ năng sở hữu (0):</p>
-<p class="text-[9px] text-amber-200/60 italic text-center">Chưa có kỹ năng</p>
+<span class="mt-1 text-[12px] font-bold leading-none text-brand-ink/70">Hào Quang</span>
 </div>
 </div>
 </div>
-<h3 class="text-xl font-bold text-gray-800 truncate">Dũng 6A</h3>
+<div class="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+<button type="button" aria-label="Đánh dấu Giang 6A có mặt" title="Đánh dấu có mặt" class="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check h-5 w-5" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<polyline points="16 11 18 13 22 9">
+</polyline>
+</svg>
+</button>
+<button type="button" aria-label="Cộng điểm Giang 6A" title="Ban thưởng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+<path d="M12 5v14">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Trừ điểm Giang 6A" title="Cần cố gắng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+</svg>
+</button>
 </div>
-<p class="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-<div class="mt-1 flex items-center gap-1.5">
-<span class="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">Lv.1</span>
-<span class="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">🌱 Rookie Trainer</span>
+</div>
+<div class="group relative">
+<div role="button" tabindex="0" aria-label="Dũng 6A" class="relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200 border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<div class="flex items-start gap-4">
+<div class="relative h-16 w-16 shrink-0">
+<div class="h-full w-full rounded-brand-md grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">D6</div>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<div class="group/poke relative shrink-0">
+<img referrerpolicy="no-referrer" alt="Eevee" class="h-7 w-7 object-contain transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EEevee%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<div class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 hidden w-56 flex-col rounded-brand-md bg-brand-forest-deep p-3 text-brand-cream shadow-[0_12px_30px_-8px_rgba(0,38,25,0.6)] group-hover/poke:flex">
+<img referrerpolicy="no-referrer" alt="Eevee" class="mx-auto my-1 h-24 w-24 object-contain" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EEevee%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<p class="text-center text-sm font-bold text-brand-gold-light">Eevee</p>
+<p class="text-center text-[12px] text-brand-cream/70">Normal</p>
+<div class="mt-2 border-t border-white/15 pt-2">
+<p class="mb-1 text-[12px] font-bold text-brand-leaf">Kỹ năng sở hữu (0):</p>
+<p class="text-center text-[12px] italic text-brand-cream/60">Chưa có kỹ năng</p>
 </div>
 </div>
 </div>
-<div class="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
-<div class="w-10 h-10 shrink-0 bg-white rounded-xl border border-amber-200 p-0.5 flex items-center justify-center shadow-sm relative group/pet animate-in fade-in zoom-in duration-300">
-<img referrerpolicy="no-referrer" class="w-full h-full object-contain" alt="Eevee" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EEevee%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<h3 class="truncate text-xl font-extrabold leading-tight text-brand-ink">Dũng 6A</h3>
 </div>
-<div class="flex-1 min-w-0">
+<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-forest text-brand-cream border-brand-forest">Lv.1</span>
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-gold-light text-[#6b4a00] border-[#f4dc8a]">🌱 Rookie Trainer</span>
+</div>
+</div>
+</div>
+<div class="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
+<div class="relative grid h-11 w-11 shrink-0 place-items-center rounded-brand-sm bg-white p-0.5">
+<img referrerpolicy="no-referrer" class="h-full w-full object-contain" alt="Eevee" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EEevee%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3ENormal%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+</div>
+<div class="min-w-0 flex-1">
 <div class="flex items-center justify-between gap-1.5">
-<p class="text-xs font-black text-amber-700 truncate">Eevee · Lv.1</p>
-<span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">❤️ HP: 60/100</span>
+<p class="truncate text-[13px] font-bold text-brand-forest">Eevee · Lv.1</p>
+<span class="shrink-0 text-[12px] font-bold tabular-nums text-[#1d6a40]">HP 60/100</span>
 </div>
-<div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
-<div class="h-full rounded-full transition-all duration-500 bg-emerald-500">
-</div>
-</div>
-<p class="text-[8px] text-gray-400 truncate mt-0.5">💖 Loyal Nature · Chưa có kỹ năng bổ trợ</p>
+<div role="progressbar" aria-label="HP của Eevee" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" class="relative w-full rounded-full bg-[#ebe8dc] h-1.5 mt-1.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-<div class="flex-1">
-<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-<div class="bg-red-800 h-full rounded-full transition-all duration-1000">
+<p class="mt-1 truncate text-[12px] text-brand-ink/65">💖 Loyal Nature · Chưa có kỹ năng bổ trợ</p>
 </div>
 </div>
-<p class="text-[8px] uppercase opacity-30 mt-1 font-bold">Trainer XP 0/80</p>
-</div>
-<div class="ml-6 flex flex-col items-end">
-<p class="text-3xl font-black leading-none text-gray-900">60</p>
-<p class="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-</div>
+<div class="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+<div class="min-w-0 flex-1">
+<div role="progressbar" aria-label="Trainer XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="relative w-full rounded-full bg-[#ebe8dc] h-2.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
+<p class="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">Trainer XP 0/80</p>
 </div>
-<div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<button class="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-<button class="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+<div class="flex shrink-0 flex-col items-center">
+<div class="relative grid place-items-center h-[64px] w-[56px]">
+<svg viewBox="0 0 56 64" class="absolute inset-0 h-full w-full" aria-hidden="true">
+<path d="M28 2 52 10v20c0 15.5-10.2 26.4-24 32C14.2 56.4 4 45.5 4 30V10L28 2Z" class="fill-brand-forest stroke-brand-gold" stroke-width="3" stroke-linejoin="round">
+</path>
+<path d="M28 8 46 14v15c0 11.6-7.4 20-18 24.6" fill="none" class="stroke-brand-gold-light/30" stroke-width="1.5">
+</path>
+</svg>
+<span class="relative -mt-1 font-extrabold leading-none tabular-nums tracking-tight text-xl text-brand-gold-light">60</span>
 </div>
-</div>
-<div class="relative group">
-<div class="relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group bg-white/85 border-white/90 shadow-[0_10px_30px_rgba(120,20,20,0.07)] hover:border-cyan-300 hover:-translate-y-3 hover:scale-[1.035] hover:bg-white hover:shadow-[0_0_0_3px_rgba(34,211,238,0.35),0_28px_70px_-12px_rgba(14,165,233,0.55),0_0_55px_rgba(250,204,21,0.35)]">
-<div class="absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60">6A</div>
-<div class="flex items-center gap-5 mt-4">
-<div class="w-20 h-20 shrink-0 relative">
-<div class="w-full h-full rounded-[24px] border-4 border-white shadow-lg grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">C6</div>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2">
-<h3 class="text-xl font-bold text-gray-800 truncate">Chi 6A</h3>
-</div>
-<p class="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-<div class="mt-1 flex items-center gap-1.5">
-<span class="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">Lv.1</span>
-<span class="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">🌱 Rookie Trainer</span>
+<span class="mt-1 text-[12px] font-bold leading-none text-brand-ink/70">Hào Quang</span>
 </div>
 </div>
 </div>
-<div class="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
-<div class="text-2xl transform transition-transform duration-500 hover:rotate-12">🥚⚡</div>
-<div class="flex-1 min-w-0">
-<div class="flex justify-between items-center text-[10px]">
-<span class="font-bold text-gray-600">Ấp Trứng Pokémon</span>
-<span class="font-black text-amber-500">4/10đ</span>
-</div>
-<div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1 max-w-full">
-<div class="bg-amber-500 h-full rounded-full transition-all duration-500">
-</div>
-</div>
-<p class="text-[8px] text-gray-400 mt-0.5 truncate italic">Nứt nhẹ rạn vỏ</p>
-</div>
-</div>
-<div class="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-<div class="flex-1">
-<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-<div class="bg-red-800 h-full rounded-full transition-all duration-1000">
-</div>
-</div>
-<p class="text-[8px] uppercase opacity-30 mt-1 font-bold">Trainer XP 0/80</p>
-</div>
-<div class="ml-6 flex flex-col items-end">
-<p class="text-3xl font-black leading-none text-gray-900">45</p>
-<p class="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-</div>
-</div>
-</div>
-<div class="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
-</div>
-<div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<button class="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-<button class="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+<div class="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+<button type="button" aria-label="Đánh dấu Dũng 6A vắng" title="Đánh dấu vắng" class="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x h-5 w-5" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<line x1="17" x2="22" y1="8" y2="13">
+</line>
+<line x1="22" x2="17" y1="8" y2="13">
+</line>
+</svg>
+</button>
+<button type="button" aria-label="Cộng điểm Dũng 6A" title="Ban thưởng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+<path d="M12 5v14">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Trừ điểm Dũng 6A" title="Cần cố gắng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+</svg>
+</button>
 </div>
 </div>
-<div class="relative group">
-<div class="relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group bg-white/85 border-white/90 shadow-[0_10px_30px_rgba(120,20,20,0.07)] hover:border-cyan-300 hover:-translate-y-3 hover:scale-[1.035] hover:bg-white hover:shadow-[0_0_0_3px_rgba(34,211,238,0.35),0_28px_70px_-12px_rgba(14,165,233,0.55),0_0_55px_rgba(250,204,21,0.35)]">
-<div class="absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60">6A</div>
-<div class="flex items-center gap-5 mt-4">
-<div class="w-20 h-20 shrink-0 relative">
-<div class="w-full h-full rounded-[24px] border-4 border-white shadow-lg grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">B6</div>
+<div class="group relative">
+<div role="button" tabindex="0" aria-label="Chi 6A" class="relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200 border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<div class="flex items-start gap-4">
+<div class="relative h-16 w-16 shrink-0">
+<div class="h-full w-full rounded-brand-md grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">C6</div>
 </div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2">
-<div class="relative group/poke shrink-0">
-<img referrerpolicy="no-referrer" alt="Charmander" class="w-8 h-8 object-contain cursor-pointer transition-transform group-hover/poke:scale-125 rounded-full bg-amber-100 ring-2 ring-amber-300" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="12">
-<div class="absolute left-0 bottom-full mb-2 hidden group-hover/poke:flex flex-col bg-amber-950 text-white p-3 rounded-2xl shadow-2xl z-50 w-52 border border-amber-400/40 pointer-events-none animate-in fade-in zoom-in duration-200">
-<img referrerpolicy="no-referrer" alt="Charmander" class="w-24 h-24 object-contain mx-auto my-1" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="12">
-<p class="font-extrabold text-amber-300 text-sm text-center">✨ Charmander</p>
-<p class="text-[10px] text-amber-200/80 text-center uppercase font-mono">Fire</p>
-<div class="mt-2 border-t border-amber-800/60 pt-1.5">
-<p class="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Kỹ năng sở hữu (0):</p>
-<p class="text-[9px] text-amber-200/60 italic text-center">Chưa có kỹ năng</p>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<h3 class="truncate text-xl font-extrabold leading-tight text-brand-ink">Chi 6A</h3>
+</div>
+<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-forest text-brand-cream border-brand-forest">Lv.1</span>
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-gold-light text-[#6b4a00] border-[#f4dc8a]">🌱 Rookie Trainer</span>
 </div>
 </div>
 </div>
-<h3 class="text-xl font-bold text-gray-800 truncate">Bình 6A</h3>
+<div class="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
+<div class="text-2xl" aria-hidden="true">🥚⚡</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center justify-between gap-2 text-[13px]">
+<span class="truncate font-bold text-brand-ink/80">Ấp Trứng Pokémon</span>
+<span class="font-bold tabular-nums text-[#8f5500]">4/10đ</span>
 </div>
-<p class="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-<div class="mt-1 flex items-center gap-1.5">
-<span class="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">Lv.1</span>
-<span class="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">🌱 Rookie Trainer</span>
+<div role="progressbar" aria-label="Tiến độ ấp trứng" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" class="relative w-full rounded-full bg-[#ebe8dc] h-1.5 mt-1.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-gold">
+</div>
+</div>
+<p class="mt-1 truncate text-[12px] italic text-brand-ink/65">Nứt nhẹ rạn vỏ</p>
+</div>
+</div>
+<div class="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+<div class="min-w-0 flex-1">
+<div role="progressbar" aria-label="Trainer XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="relative w-full rounded-full bg-[#ebe8dc] h-2.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
+</div>
+</div>
+<p class="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">Trainer XP 0/80</p>
+</div>
+<div class="flex shrink-0 flex-col items-center">
+<div class="relative grid place-items-center h-[64px] w-[56px]">
+<svg viewBox="0 0 56 64" class="absolute inset-0 h-full w-full" aria-hidden="true">
+<path d="M28 2 52 10v20c0 15.5-10.2 26.4-24 32C14.2 56.4 4 45.5 4 30V10L28 2Z" class="fill-brand-forest stroke-brand-gold" stroke-width="3" stroke-linejoin="round">
+</path>
+<path d="M28 8 46 14v15c0 11.6-7.4 20-18 24.6" fill="none" class="stroke-brand-gold-light/30" stroke-width="1.5">
+</path>
+</svg>
+<span class="relative -mt-1 font-extrabold leading-none tabular-nums tracking-tight text-xl text-brand-gold-light">45</span>
+</div>
+<span class="mt-1 text-[12px] font-bold leading-none text-brand-ink/70">Hào Quang</span>
 </div>
 </div>
 </div>
-<div class="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
-<div class="w-10 h-10 shrink-0 bg-white rounded-xl border border-amber-200 p-0.5 flex items-center justify-center shadow-sm relative group/pet animate-in fade-in zoom-in duration-300">
-<img referrerpolicy="no-referrer" class="w-full h-full object-contain" alt="Charmander" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="12">
+<div class="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+<button type="button" aria-label="Đánh dấu Chi 6A vắng" title="Đánh dấu vắng" class="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x h-5 w-5" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<line x1="17" x2="22" y1="8" y2="13">
+</line>
+<line x1="22" x2="17" y1="8" y2="13">
+</line>
+</svg>
+</button>
+<button type="button" aria-label="Cộng điểm Chi 6A" title="Ban thưởng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+<path d="M12 5v14">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Trừ điểm Chi 6A" title="Cần cố gắng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+</svg>
+</button>
 </div>
-<div class="flex-1 min-w-0">
+</div>
+<div class="group relative">
+<div role="button" tabindex="0" aria-label="Bình 6A" class="relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200 border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<div class="flex items-start gap-4">
+<div class="relative h-16 w-16 shrink-0">
+<div class="h-full w-full rounded-brand-md grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">B6</div>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<div class="group/poke relative shrink-0">
+<img referrerpolicy="no-referrer" alt="Charmander" class="h-7 w-7 object-contain transition-transform group-hover/poke:scale-125 rounded-full bg-brand-gold-light ring-2 ring-brand-gold" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="12">
+<div class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 hidden w-56 flex-col rounded-brand-md bg-brand-forest-deep p-3 text-brand-cream shadow-[0_12px_30px_-8px_rgba(0,38,25,0.6)] group-hover/poke:flex">
+<img referrerpolicy="no-referrer" alt="Charmander" class="mx-auto my-1 h-24 w-24 object-contain" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="12">
+<p class="text-center text-sm font-bold text-brand-gold-light">✨ Charmander</p>
+<p class="text-center text-[12px] text-brand-cream/70">Fire</p>
+<div class="mt-2 border-t border-white/15 pt-2">
+<p class="mb-1 text-[12px] font-bold text-brand-leaf">Kỹ năng sở hữu (0):</p>
+<p class="text-center text-[12px] italic text-brand-cream/60">Chưa có kỹ năng</p>
+</div>
+</div>
+</div>
+<h3 class="truncate text-xl font-extrabold leading-tight text-brand-ink">Bình 6A</h3>
+</div>
+<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-forest text-brand-cream border-brand-forest">Lv.1</span>
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-gold-light text-[#6b4a00] border-[#f4dc8a]">🌱 Rookie Trainer</span>
+</div>
+</div>
+</div>
+<div class="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
+<div class="relative grid h-11 w-11 shrink-0 place-items-center rounded-brand-sm bg-white p-0.5">
+<img referrerpolicy="no-referrer" class="h-full w-full object-contain" alt="Charmander" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3ECharmander%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EFire%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="12">
+</div>
+<div class="min-w-0 flex-1">
 <div class="flex items-center justify-between gap-1.5">
-<p class="text-xs font-black text-amber-700 truncate">✨ Charmander · Lv.1</p>
-<span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">❤️ HP: 50/100</span>
+<p class="truncate text-[13px] font-bold text-brand-forest">✨ Charmander · Lv.1</p>
+<span class="shrink-0 text-[12px] font-bold tabular-nums text-[#1d6a40]">HP 50/100</span>
 </div>
-<div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
-<div class="h-full rounded-full transition-all duration-500 bg-amber-500">
-</div>
-</div>
-<p class="text-[8px] text-gray-400 truncate mt-0.5">💖 Loyal Nature · Chưa có kỹ năng bổ trợ</p>
+<div role="progressbar" aria-label="HP của Charmander" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" class="relative w-full rounded-full bg-[#ebe8dc] h-1.5 mt-1.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-[#e39a1b]">
 </div>
 </div>
-<div class="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-<div class="flex-1">
-<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-<div class="bg-red-800 h-full rounded-full transition-all duration-1000">
+<p class="mt-1 truncate text-[12px] text-brand-ink/65">💖 Loyal Nature · Chưa có kỹ năng bổ trợ</p>
 </div>
 </div>
-<p class="text-[8px] uppercase opacity-30 mt-1 font-bold">Trainer XP 0/80</p>
-</div>
-<div class="ml-6 flex flex-col items-end">
-<p class="text-3xl font-black leading-none text-gray-900">30</p>
-<p class="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-</div>
+<div class="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+<div class="min-w-0 flex-1">
+<div role="progressbar" aria-label="Trainer XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="relative w-full rounded-full bg-[#ebe8dc] h-2.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
+<p class="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">Trainer XP 0/80</p>
 </div>
-<div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<button class="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-<button class="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+<div class="flex shrink-0 flex-col items-center">
+<div class="relative grid place-items-center h-[64px] w-[56px]">
+<svg viewBox="0 0 56 64" class="absolute inset-0 h-full w-full" aria-hidden="true">
+<path d="M28 2 52 10v20c0 15.5-10.2 26.4-24 32C14.2 56.4 4 45.5 4 30V10L28 2Z" class="fill-brand-forest stroke-brand-gold" stroke-width="3" stroke-linejoin="round">
+</path>
+<path d="M28 8 46 14v15c0 11.6-7.4 20-18 24.6" fill="none" class="stroke-brand-gold-light/30" stroke-width="1.5">
+</path>
+</svg>
+<span class="relative -mt-1 font-extrabold leading-none tabular-nums tracking-tight text-xl text-brand-gold-light">30</span>
 </div>
-</div>
-<div class="relative group">
-<div class="relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group bg-white/85 border-white/90 shadow-[0_10px_30px_rgba(120,20,20,0.07)] hover:border-cyan-300 hover:-translate-y-3 hover:scale-[1.035] hover:bg-white hover:shadow-[0_0_0_3px_rgba(34,211,238,0.35),0_28px_70px_-12px_rgba(14,165,233,0.55),0_0_55px_rgba(250,204,21,0.35)]">
-<div class="absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60">6A</div>
-<div class="flex items-center gap-5 mt-4">
-<div class="w-20 h-20 shrink-0 relative">
-<div class="w-full h-full rounded-[24px] border-4 border-white shadow-lg grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">A6</div>
-</div>
-<div class="flex-1 min-w-0">
-<div class="flex items-center gap-2">
-<div class="relative group/poke shrink-0">
-<img referrerpolicy="no-referrer" alt="Bulbasaur" class="w-8 h-8 object-contain cursor-pointer transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<div class="absolute left-0 bottom-full mb-2 hidden group-hover/poke:flex flex-col bg-amber-950 text-white p-3 rounded-2xl shadow-2xl z-50 w-52 border border-amber-400/40 pointer-events-none animate-in fade-in zoom-in duration-200">
-<img referrerpolicy="no-referrer" alt="Bulbasaur" class="w-24 h-24 object-contain mx-auto my-1" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
-<p class="font-extrabold text-amber-300 text-sm text-center">Bulbasaur</p>
-<p class="text-[10px] text-amber-200/80 text-center uppercase font-mono">Grass, Poison</p>
-<div class="mt-2 border-t border-amber-800/60 pt-1.5">
-<p class="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Kỹ năng sở hữu (0):</p>
-<p class="text-[9px] text-amber-200/60 italic text-center">Chưa có kỹ năng</p>
+<span class="mt-1 text-[12px] font-bold leading-none text-brand-ink/70">Hào Quang</span>
 </div>
 </div>
 </div>
-<h3 class="text-xl font-bold text-gray-800 truncate">An 6A</h3>
+<div class="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+<button type="button" aria-label="Đánh dấu Bình 6A vắng" title="Đánh dấu vắng" class="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x h-5 w-5" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<line x1="17" x2="22" y1="8" y2="13">
+</line>
+<line x1="22" x2="17" y1="8" y2="13">
+</line>
+</svg>
+</button>
+<button type="button" aria-label="Cộng điểm Bình 6A" title="Ban thưởng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+<path d="M12 5v14">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Trừ điểm Bình 6A" title="Cần cố gắng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+</svg>
+</button>
 </div>
-<p class="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-<div class="mt-1 flex items-center gap-1.5">
-<span class="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">Lv.1</span>
-<span class="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">🌱 Rookie Trainer</span>
+</div>
+<div class="group relative">
+<div role="button" tabindex="0" aria-label="An 6A" class="relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200 border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<div class="flex items-start gap-4">
+<div class="relative h-16 w-16 shrink-0">
+<div class="h-full w-full rounded-brand-md grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">A6</div>
+</div>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<div class="group/poke relative shrink-0">
+<img referrerpolicy="no-referrer" alt="Bulbasaur" class="h-7 w-7 object-contain transition-transform group-hover/poke:scale-125" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<div class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 hidden w-56 flex-col rounded-brand-md bg-brand-forest-deep p-3 text-brand-cream shadow-[0_12px_30px_-8px_rgba(0,38,25,0.6)] group-hover/poke:flex">
+<img referrerpolicy="no-referrer" alt="Bulbasaur" class="mx-auto my-1 h-24 w-24 object-contain" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<p class="text-center text-sm font-bold text-brand-gold-light">Bulbasaur</p>
+<p class="text-center text-[12px] text-brand-cream/70">Grass, Poison</p>
+<div class="mt-2 border-t border-white/15 pt-2">
+<p class="mb-1 text-[12px] font-bold text-brand-leaf">Kỹ năng sở hữu (0):</p>
+<p class="text-center text-[12px] italic text-brand-cream/60">Chưa có kỹ năng</p>
 </div>
 </div>
 </div>
-<div class="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
-<div class="w-10 h-10 shrink-0 bg-white rounded-xl border border-amber-200 p-0.5 flex items-center justify-center shadow-sm relative group/pet animate-in fade-in zoom-in duration-300">
-<img referrerpolicy="no-referrer" class="w-full h-full object-contain" alt="Bulbasaur" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<h3 class="truncate text-xl font-extrabold leading-tight text-brand-ink">An 6A</h3>
 </div>
-<div class="flex-1 min-w-0">
+<div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-forest text-brand-cream border-brand-forest">Lv.1</span>
+<span class="inline-flex max-w-full items-center gap-1 truncate rounded-full border px-2 py-0.5 text-[12px] font-bold leading-4 bg-brand-gold-light text-[#6b4a00] border-[#f4dc8a]">🌱 Rookie Trainer</span>
+</div>
+</div>
+</div>
+<div class="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
+<div class="relative grid h-11 w-11 shrink-0 place-items-center rounded-brand-sm bg-white p-0.5">
+<img referrerpolicy="no-referrer" class="h-full w-full object-contain" alt="Bulbasaur" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EBulbasaur%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EGrass%20%2F%20Poison%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+</div>
+<div class="min-w-0 flex-1">
 <div class="flex items-center justify-between gap-1.5">
-<p class="text-xs font-black text-amber-700 truncate">Bulbasaur · Lv.1</p>
-<span class="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">❤️ HP: 45/100</span>
+<p class="truncate text-[13px] font-bold text-brand-forest">Bulbasaur · Lv.1</p>
+<span class="shrink-0 text-[12px] font-bold tabular-nums text-[#1d6a40]">HP 45/100</span>
 </div>
-<div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
-<div class="h-full rounded-full transition-all duration-500 bg-amber-500">
-</div>
-</div>
-<p class="text-[8px] text-gray-400 truncate mt-0.5">🍀 Lucky Nature · Chưa có kỹ năng bổ trợ</p>
+<div role="progressbar" aria-label="HP của Bulbasaur" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" class="relative w-full rounded-full bg-[#ebe8dc] h-1.5 mt-1.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-[#e39a1b]">
 </div>
 </div>
-<div class="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-<div class="flex-1">
-<div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-<div class="bg-red-800 h-full rounded-full transition-all duration-1000">
+<p class="mt-1 truncate text-[12px] text-brand-ink/65">🍀 Lucky Nature · Chưa có kỹ năng bổ trợ</p>
 </div>
 </div>
-<p class="text-[8px] uppercase opacity-30 mt-1 font-bold">Trainer XP 0/80</p>
-</div>
-<div class="ml-6 flex flex-col items-end">
-<p class="text-3xl font-black leading-none text-gray-900">15</p>
-<p class="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-</div>
+<div class="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+<div class="min-w-0 flex-1">
+<div role="progressbar" aria-label="Trainer XP" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" class="relative w-full rounded-full bg-[#ebe8dc] h-2.5">
+<div class="h-full rounded-full transition-[width] duration-700 ease-out bg-brand-emerald">
 </div>
 </div>
-<div class="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="bg-white/95 p-2 rounded-lg border shadow-sm text-[10px] font-bold">VẮNG/CÓ</button>
+<p class="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">Trainer XP 0/80</p>
 </div>
-<div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<button class="bg-green-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">+</button>
-<button class="bg-red-500 text-white w-10 h-10 rounded-full shadow-lg font-bold text-xl">-</button>
+<div class="flex shrink-0 flex-col items-center">
+<div class="relative grid place-items-center h-[64px] w-[56px]">
+<svg viewBox="0 0 56 64" class="absolute inset-0 h-full w-full" aria-hidden="true">
+<path d="M28 2 52 10v20c0 15.5-10.2 26.4-24 32C14.2 56.4 4 45.5 4 30V10L28 2Z" class="fill-brand-forest stroke-brand-gold" stroke-width="3" stroke-linejoin="round">
+</path>
+<path d="M28 8 46 14v15c0 11.6-7.4 20-18 24.6" fill="none" class="stroke-brand-gold-light/30" stroke-width="1.5">
+</path>
+</svg>
+<span class="relative -mt-1 font-extrabold leading-none tabular-nums tracking-tight text-xl text-brand-gold-light">15</span>
+</div>
+<span class="mt-1 text-[12px] font-bold leading-none text-brand-ink/70">Hào Quang</span>
 </div>
 </div>
 </div>
-<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[98vw]">
-<div class="liquid-glass-dock relative px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-full shadow-[0_25px_60px_-10px_rgba(120,20,20,0.25)] border-2 border-white/90 backdrop-blur-2xl bg-white/75 flex items-center justify-center gap-2 sm:gap-3.5 transition-all duration-300 ease-out">
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-amber-400 via-rose-500 to-red-600">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">🎲</span>
+<div class="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+<button type="button" aria-label="Đánh dấu An 6A vắng" title="Đánh dấu vắng" class="grid h-10 w-10 place-items-center rounded-full border border-[#dcd8c8] bg-white text-brand-ink/75 shadow-sm transition-colors hover:border-brand-forest/40 hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x h-5 w-5" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<line x1="17" x2="22" y1="8" y2="13">
+</line>
+<line x1="22" x2="17" y1="8" y2="13">
+</line>
+</svg>
+</button>
+<button type="button" aria-label="Cộng điểm An 6A" title="Ban thưởng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-emerald text-white shadow-[0_2px_8px_-2px_rgba(1,74,45,0.5)] transition-colors hover:bg-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+<path d="M12 5v14">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Trừ điểm An 6A" title="Cần cố gắng" class="grid h-10 w-10 place-items-center rounded-full bg-brand-danger text-white shadow-[0_2px_8px_-2px_rgba(150,40,25,0.5)] transition-colors hover:bg-[#a5301f]">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus h-5 w-5" aria-hidden="true">
+<path d="M5 12h14">
+</path>
+</svg>
 </button>
 </div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-amber-300 via-amber-500 to-orange-600">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
 </div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">🐴</span>
+</div>
+<div class="pointer-events-none fixed bottom-4 left-[84px] right-0 z-40 flex justify-center px-4">
+<div role="toolbar" aria-label="Công cụ lớp" class="pointer-events-auto flex max-w-full items-end gap-1.5 rounded-[24px] border border-[#e6e2d4] bg-white px-3 pb-2 pt-2.5 shadow-[0_2px_6px_rgba(12,37,39,0.06),0_18px_40px_-14px_rgba(0,38,25,0.35)]">
+<button type="button" title="Rút Thăm Ngẫu Nhiên" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dices h-full w-full" aria-hidden="true">
+<rect width="12" height="12" x="2" y="10" rx="2" ry="2">
+</rect>
+<path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6">
+</path>
+<path d="M6 18h.01">
+</path>
+<path d="M10 14h.01">
+</path>
+<path d="M15 6h.01">
+</path>
+<path d="M18 9h.01">
+</path>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Random</span>
 </button>
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-rose-400 via-fuchsia-500 to-purple-700">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">🎡</span>
+<button type="button" title="Đua Cá Ngựa" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag h-full w-full" aria-hidden="true">
+<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z">
+</path>
+<line x1="4" x2="4" y1="22" y2="15">
+</line>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Cá Ngựa</span>
 </button>
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-cyan-300 via-emerald-400 to-teal-700">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">🛒</span>
+<button type="button" title="Vòng quay may mắn" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ferris-wheel h-full w-full" aria-hidden="true">
+<circle cx="12" cy="12" r="2">
+</circle>
+<path d="M12 2v4">
+</path>
+<path d="m6.8 15-3.5 2">
+</path>
+<path d="m20.7 7-3.5 2">
+</path>
+<path d="M6.8 9 3.3 7">
+</path>
+<path d="m20.7 17-3.5-2">
+</path>
+<path d="m9 22 3-8 3 8">
+</path>
+<path d="M8 22h8">
+</path>
+<path d="M18 18.7a9 9 0 1 0-12 0">
+</path>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Vòng quay</span>
 </button>
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">👥</span>
+<button type="button" title="Shop" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag h-full w-full" aria-hidden="true">
+<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z">
+</path>
+<path d="M3 6h18">
+</path>
+<path d="M16 10a4 4 0 0 1-8 0">
+</path>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Shop</span>
 </button>
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-purple-400 via-fuchsia-500 to-pink-600">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">⏲️</span>
+<button type="button" title="Chia Nhóm Tự Động" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-full w-full" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<path d="M22 21v-2a4 4 0 0 0-3-3.87">
+</path>
+<path d="M16 3.13a4 4 0 0 1 0 7.75">
+</path>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Chia nhóm</span>
 </button>
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-700">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">☑️</span>
+<button type="button" title="Đồng Hồ Bấm Giờ" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-timer h-full w-full" aria-hidden="true">
+<line x1="10" x2="14" y1="2" y2="2">
+</line>
+<line x1="12" x2="15" y1="14" y2="11">
+</line>
+<circle cx="12" cy="14" r="8">
+</circle>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Hẹn giờ</span>
 </button>
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-amber-100 via-amber-200 to-amber-300 text-amber-950">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">🖐️</span>
+<button type="button" title="Chọn Tất Cả Trainer" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-check h-full w-full" aria-hidden="true">
+<path d="M18 6 7 17l-5-5">
+</path>
+<path d="m22 10-7.5 7.5L13 16">
+</path>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Chọn hết</span>
 </button>
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 active:scale-90 hover:shadow-2xl bg-gradient-to-br from-rose-100 via-red-200 to-red-400 text-red-950">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">🧹</span>
+<button type="button" title="Chọn Nhiều Trainer" aria-pressed="false" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand h-full w-full" aria-hidden="true">
+<path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2">
+</path>
+<path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2">
+</path>
+<path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8">
+</path>
+<path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15">
+</path>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Chọn nhiều</span>
 </button>
-</div>
-<div class="h-8 w-[1.5px] bg-gradient-to-b from-red-400/20 via-red-900/30 to-red-400/20 mx-1 shrink-0">
-</div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-default">
-<button type="button" class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 bg-gradient-to-br from-stone-950 via-black to-stone-800 hover:shadow-2xl" title="GMT+7: 09:00:00 · Sync gần nhất: 09:00:00">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none">
-</div>
-<div class="relative shrink-0 rounded-full bg-white shadow-inner ring-2 ring-stone-900/20">
-<span class="absolute left-1/2 top-1 -translate-x-1/2 text-[9px] font-black leading-none text-stone-950">12</span>
-<span class="absolute right-1 top-1/2 -translate-y-1/2 text-[9px] font-black leading-none text-stone-950">3</span>
-<span class="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] font-black leading-none text-stone-950">6</span>
-<span class="absolute left-1 top-1/2 -translate-y-1/2 text-[9px] font-black leading-none text-stone-950">9</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
+<button type="button" title="Reset Hào Quang" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eraser h-full w-full" aria-hidden="true">
+<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21">
+</path>
+<path d="M22 21H7">
+</path>
+<path d="m5 11 9 9">
+</path>
+</svg>
 </span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
 </span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 h-1.5 w-0.5 rounded-full bg-stone-500">
-</span>
-<span class="absolute left-1/2 top-1/2 origin-bottom rounded-full bg-stone-950">
-</span>
-<span class="absolute left-1/2 top-1/2 origin-bottom rounded-full bg-stone-950">
-</span>
-<span class="absolute left-1/2 top-1/2 origin-bottom rounded-full bg-red-600">
-</span>
-<span class="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-400 ring-2 ring-stone-950">
-</span>
-</div>
+<span class="whitespace-nowrap text-brand-forest">Reset điểm</span>
 </button>
+<div class="mx-1 mb-6 h-10 w-px shrink-0 self-end bg-[#e6e2d4]">
 </div>
-<div class="relative group flex flex-col items-center justify-end shrink-0 cursor-pointer">
-<button type="button" class="relative rounded-2xl flex items-center justify-center transition-all duration-200 ease-out shadow-lg border border-white/80 bg-gradient-to-br from-emerald-400 via-amber-400 to-orange-600 hover:shadow-2xl active:scale-90" title="Nhận quà cả lớp">
-<div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-transparent via-white/30 to-white/60 pointer-events-none">
-</div>
-<span class="text-2xl transition-all duration-200 select-none drop-shadow-md z-10 text-white">🎁</span>
+<button type="button" title="GMT+7: 09:00:00 · Sync gần nhất: 09:00:00" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-default">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-[#f2f6ef] text-brand-forest group-hover/tile:bg-[#e4eee0]">
+<span class="grid place-items-center">
+<svg viewBox="0 0 40 40" class="h-full w-full" aria-hidden="true">
+<circle cx="20" cy="20" r="18" class="fill-brand-cream stroke-brand-gold" stroke-width="2">
+</circle>
+<line x1="20" y1="4.5" x2="20" y2="8" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(0 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(30 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(60 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="8" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(90 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(120 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(150 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="8" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(180 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(210 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(240 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="8" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(270 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(300 20 20)">
+</line>
+<line x1="20" y1="4.5" x2="20" y2="6.5" stroke-width="1.5" class="stroke-brand-forest/60" transform="rotate(330 20 20)">
+</line>
+<line x1="20" y1="20" x2="20" y2="12" stroke-width="2.8" stroke-linecap="round" class="stroke-brand-forest-deep" transform="rotate(270 20 20)">
+</line>
+<line x1="20" y1="20" x2="20" y2="8" stroke-width="2" stroke-linecap="round" class="stroke-brand-forest-deep" transform="rotate(0 20 20)">
+</line>
+<line x1="20" y1="20" x2="20" y2="6.5" stroke-width="1" stroke-linecap="round" class="stroke-brand-danger" transform="rotate(0 20 20)">
+</line>
+<circle cx="20" cy="20" r="2" class="fill-brand-gold">
+</circle>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">09:00</span>
 </button>
-</div>
+<button type="button" title="Nhận quà cả lớp" class="group/tile flex shrink-0 flex-col items-center justify-end gap-1 px-0.5 text-[12px] font-bold leading-none cursor-pointer">
+<span class="grid place-items-center rounded-[16px] transition-colors bg-brand-gold text-brand-forest-deep shadow-[0_4px_12px_-4px_rgba(160,110,10,0.55)] group-hover/tile:bg-[#e9ab32]">
+<span class="grid place-items-center">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gift h-full w-full" aria-hidden="true">
+<rect x="3" y="8" width="18" height="4" rx="1">
+</rect>
+<path d="M12 8v13">
+</path>
+<path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7">
+</path>
+<path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5">
+</path>
+</svg>
+</span>
+</span>
+<span class="whitespace-nowrap text-brand-forest">Nhận quà</span>
+</button>
 </div>
 </div>
 </div>
 </main>
-<div class="fixed inset-0 z-[175] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
-<div class="w-full max-w-4xl overflow-hidden rounded-[32px] border-4 border-sky-700 bg-white shadow-2xl">
-<div class="flex flex-col gap-3 border-b border-sky-100 bg-sky-700 p-5 text-white sm:flex-row sm:items-center sm:justify-between">
-<div>
-<p class="text-[10px] font-black uppercase tracking-[0.25em] text-sky-100">Attendance Check</p>
-<h2 class="text-2xl font-black uppercase tracking-wide">Check đi học</h2>
-<p class="text-xs font-bold text-sky-100">Ngày 2026-10-26 · 7 trainer trong lớp</p>
+<div class="fixed inset-0 flex items-center justify-center bg-brand-forest-deep/60 p-0 sm:p-4 animate-in fade-in duration-150 z-[175]">
+<div role="dialog" aria-modal="true" tabindex="-1" aria-labelledby="_r_0_" class="relative flex max-h-full w-full flex-col overflow-hidden bg-white outline-none shadow-[0_24px_60px_-18px_rgba(0,38,25,0.55)] sm:max-h-[92vh] sm:rounded-brand-lg max-w-5xl">
+<div class="flex shrink-0 items-start gap-3 px-6 pt-5 pb-4 border-b border-[#efece2]">
+<div class="grid h-11 w-11 shrink-0 place-items-center rounded-brand-md bg-[#f2f6ef] text-2xl text-brand-forest">✓</div>
+<div class="min-w-0 flex-1">
+<h2 id="_r_0_" class="text-xl font-extrabold leading-tight text-brand-ink">Điểm danh</h2>
+<p class="mt-1 text-sm text-brand-ink/70">Ngày 2026-10-26 · 7 Trainer trong lớp</p>
 </div>
-<button class="self-end rounded-2xl bg-white/15 px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-white/25 sm:self-auto">Đóng</button>
+<button type="button" aria-label="Đóng" class="-mr-2 grid h-10 w-10 shrink-0 place-items-center rounded-full text-brand-ink/60 transition-colors hover:bg-brand-forest/[0.07] hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-5 w-5" aria-hidden="true">
+<path d="M18 6 6 18">
+</path>
+<path d="m6 6 12 12">
+</path>
+</svg>
+</button>
 </div>
-<div class="max-h-[62vh] overflow-y-auto p-4 custom-scrollbar">
+<div class="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+<div class="custom-scrollbar">
 <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">K6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Khoa 6A</p>
-<p class="truncate text-[10px] font-bold text-gray-500">6A</p>
+<p class="truncate text-xs font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">H6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Hà 6A</p>
-<p class="truncate text-[10px] font-bold text-gray-500">6A</p>
+<p class="truncate text-xs font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-rose-300 bg-rose-50 text-rose-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-rose-300 bg-rose-50 text-rose-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">G6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Giang 6A</p>
-<p class="truncate text-[10px] font-bold text-gray-500">6A</p>
+<p class="truncate text-xs font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-rose-300 bg-rose-50 text-rose-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-rose-300 bg-rose-50 text-rose-700">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">D6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Dũng 6A</p>
-<p class="truncate text-[10px] font-bold text-gray-500">6A</p>
+<p class="truncate text-xs font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">C6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Chi 6A</p>
-<p class="truncate text-[10px] font-bold text-gray-500">6A</p>
+<p class="truncate text-xs font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">B6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">Bình 6A</p>
-<p class="truncate text-[10px] font-bold text-gray-500">6A</p>
+<p class="truncate text-xs font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
-<div class="flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all border-emerald-300 bg-emerald-50 text-emerald-700">
+<div class="flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">
 <div class="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">A6</div>
 <div class="min-w-0 flex-1">
 <p class="truncate text-sm font-black text-gray-900">An 6A</p>
-<p class="truncate text-[10px] font-bold text-gray-500">6A</p>
+<p class="truncate text-xs font-bold text-gray-500">6A</p>
 </div>
 <div class="grid shrink-0 grid-cols-1 gap-1">
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Muộn</button>
-<button type="button" class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all border-gray-200 bg-white text-gray-400 hover:text-gray-700">Vắng</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-emerald-300 bg-emerald-50 text-emerald-700">Có mặt</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Muộn</button>
+<button type="button" class="rounded-full border px-3 py-1 text-xs font-bold transition-colors border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink">Vắng</button>
 </div>
 </div>
 </div>
 </div>
-<div class="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-<div class="text-xs font-bold text-gray-600">
-<span class="font-black text-emerald-700">6</span> Có mặt · <span class="font-black text-amber-600">0</span> Muộn · <span class="font-black text-rose-600">1</span> Vắng · <span class="font-black text-gray-700">0</span> đã chốt</div>
-<button class="rounded-2xl bg-sky-700 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-sky-800 disabled:bg-gray-300 disabled:text-gray-500">Confirm Attendance</button>
+</div>
+<div class="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-[#efece2] bg-[#fbfaf5] px-6 py-4">
+<div class="mr-auto text-sm font-semibold text-brand-ink/70">
+<span class="font-bold text-brand-emerald">6</span> có mặt · <span class="font-bold text-[#8f5500]">0</span> muộn · <span class="font-bold text-brand-danger">1</span> vắng · 0 đã chốt</div>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-brand-forest text-brand-cream hover:bg-brand-forest-deep shadow-[0_2px_8px_-2px_rgba(0,38,25,0.45)] h-11 px-4 text-sm gap-2">Chốt điểm danh</button>
 </div>
 </div>
 </div>

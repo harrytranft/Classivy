@@ -1,7 +1,7 @@
 ---
 name: Classivy
 description: Lớp học gamification cho giáo viên và học sinh cấp 2 - lá non lớn lên trong tấm khiên an toàn.
-status: draft-seed (North Star đã được Harry xác nhận 2026-10-26)
+status: official (chốt 2026-10-27, task 2.1; reskin đang làm theo từng màn)
 colors:
   forest-deep: "#002619"
   forest: "#014a2d"
@@ -16,6 +16,11 @@ colors:
   violet-deep: "#7036a3"
   violet-soft: "#bb66dd"
   cream: "#fefdf9"
+  surface: "#ffffff"
+  line: "#e6e2d4"
+  tint-leaf: "#f4f8f1"
+  tint-muted: "#f1efe7"
+  track: "#ebe8dc"
   ink: "#0c2527"
   danger: "#c0392b"
   warning: "#f3bc4c"
@@ -80,11 +85,23 @@ components:
     textColor: "{colors.forest-deep}"
     rounded: "{rounded.pill}"
     padding: "4px 12px"
+  nav-rail:
+    backgroundColor: "{colors.forest}"
+    textColor: "{colors.cream}"
+    width: "84px"
+  nav-item-active:
+    backgroundColor: "{colors.cream}"
+    textColor: "{colors.forest-deep}"
+    rounded: "{rounded.md}"
+  shield-score:
+    backgroundColor: "{colors.forest}"
+    textColor: "{colors.gold-light}"
+    size: "56px x 64px"
 ---
 
 # Design System: Classivy
 
-> Trạng thái: **bản nháp (seed) dựng từ bộ logo**. Chưa có code theo hệ thiết kế này. Sẽ chạy lại chế độ "scan" và chốt chính thức ở Phase 2. Các mục đánh dấu *(đề xuất)* cần Harry xác nhận.
+> Trạng thái: **chính thức** (task 2.1, 2026-10-27; gộp bản nháp từ logo với những gì đã dựng thật). Token nằm trong `tailwind.config.js` dưới tiền tố `brand-` (ví dụ `bg-brand-forest`, `rounded-brand-lg`); thành phần ở `src/components/ui/`. Màn đã reskin: khung app (thanh điều hướng trái), trang chọn lớp, trang lớp (thanh công cụ, thẻ học sinh, dock công cụ), bảng chờ đăng nhập. Các màn còn lại vẫn mang giao diện đỏ-vàng cũ cho tới khi reskin (task 2.4).
 
 ## Overview
 
@@ -109,32 +126,63 @@ Bảng màu lấy trực tiếp từ logo (đã đo trên 4 file gốc trong `br
 - **Xanh lá (`emerald` #298353, `leaf` #53c777, `leaf-soft` #a9d584):** tiến bộ, thành công, thanh XP/HP đầy.
 - **Vàng (`gold` #f3bc4c, `gold-deep` #dbbe58, `gold-light` #fef1a5):** điểm, phần thưởng, viền khiên. Dùng tiết kiệm để giữ ý nghĩa "phần thưởng".
 - **Tím (`violet` #984fc2, `violet-deep` #7036a3, `violet-soft` #bb66dd):** tương tác xã hội, quà tặng, bạn bè.
-- **Trung tính:** nền `cream` #fefdf9, chữ `ink` #0c2527. Không dùng đen thuần hay trắng thuần cho nền chính.
-- **Trạng thái:** `danger` #c0392b (đề xuất, chưa có trong logo), `success` = `emerald`, `warning` = `gold`.
+- **Trung tính:** nền trang `cream` #fefdf9, chữ `ink` #0c2527. Thẻ và thanh công cụ dùng `surface` trắng với viền `line` #e6e2d4 để nổi trên nền kem. `tint-leaf` #f4f8f1 cho ô Pokémon/tiến bộ trong thẻ, `tint-muted` #f1efe7 cho chip trung tính, `track` #ebe8dc cho rãnh thanh tiến độ. Chữ phụ dùng `ink` ở độ đậm 65-70% (không dùng xám rời).
+- **Trạng thái:** `danger` #c0392b (trừ điểm, HP thấp, xoá), `success` = `emerald`, `warning` = `gold` (chữ cảnh báo trên nền sáng dùng #8f5500 để đủ tương phản).
+
+**Vai trò theo vùng (chiến lược "đủ bảng màu, khung đậm"):** thanh điều hướng trái là một khối xanh lấy đúng nền biểu tượng app (`bg-brand-shield`: sáng #0a9a69 quanh logo, đậm dần #04774f -> #015638 -> #043624), bo tròn hai góc phải 28px; nội dung trên nền `cream`; vàng chỉ xuất hiện ở điểm Hào Quang (tấm khiên), nút "Nhận quà" và danh hiệu; tím chỉ ở "Tặng quà"/xã hội.
+
+**Tương phản đã đo (2026-10-27):** chữ phụ ink 65% trên trắng 5,1:1; trên `tint-leaf` 4,9:1; nhãn điều hướng cream 80% trên `forest-deep` 10,6:1; "Tặng quà" `violet-soft` trên `forest-deep` 4,7:1; số điểm `gold-light` trên `forest` 9,1:1; chữ trên nút `danger` 5,4:1; chữ `forest-deep` trên nút vàng 9,4:1. Không dùng `ink` 50-60% cho chữ (dưới 4,5:1).
 
 Quy tắc: chữ trên nền `forest`/`forest-deep` dùng `cream`; chữ trên nền `gold` dùng `forest-deep`. Mọi cặp chữ/nền phải đạt tương phản WCAG AA (kiểm tra bằng skill `accessibility-review` ở Phase 2).
 
 ## Typography
 
-Giữ hai họ chữ đang dùng trong app (Plus Jakarta Sans, Be Vietnam Pro) vì hỗ trợ tiếng Việt tốt. Bỏ Playfair Display (chữ "hoàng gia" của bản cũ) khi reskin. Cỡ chữ nền tối thiểu 16px trên điện thoại; nhãn nhỏ không dưới 13px.
+Một họ chữ cho toàn app: **Plus Jakarta Sans** (chính), **Be Vietnam Pro** (dự phòng), đều có bộ dấu tiếng Việt; tải từ Google Fonts trong `index.html`. Trong `tailwind.config.js`, `fontFamily.sans` (và tên gọi khác `font-brand`) trỏ tới bộ này, nên `<body>` và mọi class `font-sans` dùng cùng một phông; không thêm `font-[...]`, serif hay phông khác. Playfair Display (`font-royal`) đã bỏ hẳn (2026-10-27).
+
+- Tiêu đề trang 30px/800, tên học sinh trên thẻ 20px/800, chữ thường 15px, nút 14px/700.
+- Số (điểm, HP, XP, giờ) dùng `tabular-nums` để không nhảy khi thay đổi.
+- Cỡ tối thiểu: màn giáo viên (laptop/màn chiếu) 12px cho nhãn gọn (chip, nhãn điều hướng, chữ phụ trên thẻ); cổng học sinh trên điện thoại (Phase 5) chữ nền 16px, nhãn 13px.
+- Không viết hoa toàn bộ và giãn chữ cho nhãn (thói quen của bản cũ); dùng độ đậm và cỡ chữ để phân cấp. Tiêu đề khối dùng `font-extrabold`.
+- Cỡ chữ nhỏ nhất trong code: `text-xs` (12px); riêng nhãn trong ô bàn cờ Cá Ngựa và huy hiệu nhỏ dùng 10px.
 
 ## Layout
 
-- Hai bố cục tách bạch: **Giáo viên** (nhiều thông tin, thao tác nhanh, dock điều hướng) và **Học sinh** (một cột, ưu tiên điện thoại, nút lớn dễ bấm, tối thiểu 44px).
+- Hai bố cục tách bạch: **Giáo viên** (nhiều thông tin, thao tác nhanh) và **Học sinh** (một cột, ưu tiên điện thoại, nút lớn dễ bấm, tối thiểu 44px).
+- Khung giáo viên: thanh điều hướng trái cố định rộng 84px, luôn hiện (icon + chữ trắng; mục đang mở nền kem; "Tặng quà" cũng trắng như các mục khác, Harry duyệt 2026-10-27), cuối thanh là sao lưu / khôi phục / trạng thái đồng bộ và ảnh tài khoản. Không giấu điều hướng ngoài mép màn hình.
+- Trang lớp: thanh công cụ trên cùng (tìm kiếm, chọn lớp, Check đi học, Check Homework, Thêm Trainer), lưới thẻ học sinh 1-4 cột, dock công cụ cố định ở đáy: mỗi nút là ô icon 52px + chữ ngắn; **phóng to kiểu dock macOS** (ô gần con trỏ to dần tới 84px theo khoảng cách, tầm ảnh hưởng 140px, lò xo `motion`; rời chuột thì co về). Người dùng bật "giảm chuyển động" thì không phóng to.
 - Lưới 4/8px; khoảng cách giữa các nhóm nội dung dùng `lg` (24px).
 - Phản hồi đầy đủ ở ba điểm: điện thoại, máy tính bảng, máy chiếu lớp học.
 
 ## Elevation & Depth
 
-Phẳng theo lớp màu là chính (cream trên cream-đậm hơn), bóng mềm chỉ dùng cho thẻ nổi và hộp thoại. Hiệu ứng "liquid glass" đang có ở dock được cân nhắc giữ lại ở Phase 2 nếu đạt tương phản và hiệu năng trên máy yếu.
+Phẳng theo lớp màu là chính: nền `cream`, bề mặt `surface` trắng có viền `line`. Bóng luôn có độ lệch xuống và mờ mềm, ví dụ thẻ `0 1px 2px rgba(12,37,39,.04), 0 6px 18px -8px rgba(12,37,39,.14)`; khi rê chuột thẻ nhích lên 2px và bóng ngả xanh. Dock đáy có bóng sâu hơn để tách khỏi lưới thẻ. **Đã bỏ "liquid glass"** (kính mờ, viền trắng phát sáng, lớp bóng loáng) của bản cũ: tốn hiệu năng trên máy yếu, giảm tương phản trên màn chiếu.
 
 ## Shapes
 
-Bo góc 8 / 14 / 22px và dạng viên thuốc cho chip. Hình khiên và chiếc lá là hai hình biểu tượng chính; ngôi sao bốn cánh dùng làm tia lấp lánh khi thưởng.
+Bo góc 8 / 14 / 22px (`rounded-brand-sm/md/lg`) và dạng viên thuốc cho chip. Thẻ và thanh công cụ 22px, nút và ô nhập 14px, ô nhỏ trong thẻ 8-14px.
+
+Hình khiên và chiếc lá là hai hình biểu tượng chính và cũng là **dấu ấn riêng** của giao diện:
+- **Tấm khiên Hào Quang** (`ShieldScore`): điểm của mỗi học sinh nằm trong tấm khiên `forest` viền `gold`, số `gold-light`. Điểm âm đổi sang khiên nền đỏ nhạt viền `danger`.
+- **Chồi lá** (`ProgressBar sprout`): thanh Trainer XP có chiếc lá non ở đầu, lớn dần theo tiến độ.
+Ngôi sao bốn cánh dùng làm tia lấp lánh khi thưởng (chưa làm).
 
 ## Components
 
-Các thành phần chuẩn sẽ nằm trong `src/components/ui/` sau Phase 2: Button (primary, reward, secondary, ghost), Card, Chip, Avatar, Modal/Sheet, Toast, ProgressBar (HP/XP), Badge, EmptyState. Mỗi thành phần phải có đủ các trạng thái: mặc định, hover, focus, disabled, loading, lỗi.
+Thành phần trong `src/components/ui/` (nhập qua `src/components/ui/index.ts`):
+
+- **Button**: `primary` (forest), `reward` (vàng, chỉ cho phần thưởng), `secondary` (trắng viền forest), `ghost`, `danger`; cỡ `sm` 36px / `md` 44px / `lg` 48px; có `icon`, `loading` (vòng xoay + `aria-busy`), `disabled` (mờ 50%). Nhấn: nhích xuống 1px.
+- **Chip**: tông `neutral`, `forest`, `leaf`, `gold`, `violet`, `danger`, `sky`; cấp, danh hiệu, chuỗi, tên lớp.
+- **ProgressBar**: tông `leaf`, `gold`, `warning`, `danger`, `muted`; `sprout` cho XP; luôn có `label` cho trình đọc màn hình (`role="progressbar"`).
+- **ShieldScore**: điểm Hào Quang trong tấm khiên.
+- **Card**: bề mặt trắng viền `line`, bo 22px. Không lồng Card trong Card.
+- **EmptyState**: icon, tiêu đề, lời giải thích, hành động.
+- **Modal**: nền phủ `forest-deep` 60%, thẻ trắng bo 22px, tiêu đề + icon + nút X (`aria-label`), phím Esc để đóng, bấm nền để đóng (tắt được), giữ thứ tự chồng lớp qua `zIndex`; cỡ `sm/md/lg/xl/full`; vùng `footer` cho nút hành động.
+- **Thông báo Pokémon** (`PokemonReactionToast`): thẻ nổi trên cùng, không phủ chặn màn hình; bấm ra chỗ khác hoặc Esc thì tắt, và cú bấm đó vẫn tác dụng lên nút bên dưới.
+- Chưa làm: Sheet cho điện thoại, Avatar chuẩn (dùng `StudentAvatar`).
+
+Biểu tượng điều khiển (điều hướng, thanh công cụ, dock, nút trên thẻ) dùng bộ `lucide-react`, nét 2px, cỡ 18-24px. Emoji chỉ dùng cho **nội dung game** (kỹ năng, phần thưởng, Pokémon, danh hiệu) vì giáo viên tự đặt.
+
+Trạng thái bắt buộc: hover, focus bàn phím (viền `emerald` 3px, lệch 2px, đặt chung trong `src/index.css`), disabled, loading, trống, lỗi. Nút chỉ hiện khi rê chuột (vắng/có, cộng/trừ trên thẻ) cũng phải hiện khi focus bằng bàn phím. Bôi chọn chữ nền `gold-light`, thanh cuộn màu `forest`.
 
 Biểu tượng ứng dụng: `public/brand/classivy-app-icon-dark.png` (nền xanh) và `classivy-app-icon-light.png` (nền sáng). Logo ngang: `classivy-logo-horizontal.png`. Chỉ dùng logo gốc, không vẽ lại, không kéo méo, chừa lề tối thiểu bằng chiều rộng ngôi sao nhỏ.
 
@@ -149,6 +197,9 @@ Biểu tượng ứng dụng: `public/brand/classivy-app-icon-dark.png` (nền x
 **Không nên:**
 
 - Không dùng họa tiết, thuật ngữ cung đình của bản cũ (Vua, Hoàng hậu, Nô tài, Thánh chỉ...).
+- Không dùng nút gradient nhiều màu, lớp bóng loáng, kính mờ trang trí, chữ gradient.
+- Không làm mờ các thẻ khác khi rê chuột vào một thẻ (bản cũ có, gây lỗi "kẹt mờ"; đã bỏ).
+- Không dùng emoji thay icon cho nút điều khiển của app.
 - Không hiển thị bảng xếp hạng tạo cảm giác bêu xấu; điểm âm và xếp hạng cuối lớp không công khai cho học sinh khác.
 - Không dùng chỉ màu để truyền đạt trạng thái; luôn kèm biểu tượng hoặc chữ.
 - Không gắn nhãn hay biểu tượng gây hiểu nhầm là sản phẩm của bên thứ ba.

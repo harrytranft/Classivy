@@ -1,36 +1,35 @@
 
-import { Gender, LuckyWheelReward, LudoTileSpec, RankInfo, Skill } from '../types';
+import { LuckyWheelReward, LudoTileSpec, Skill } from '../types';
 
-export const STORAGE_KEY = 'imperial_school_data_v6';
-export const RANKS_KEY_MALE = 'imperial_ranks_male_v6';
-export const RANKS_KEY_FEMALE = 'imperial_ranks_female_v6';
-export const SKILLS_KEY = 'imperial_skills_v6';
-export const PET_SKILLS_KEY = 'imperial_pet_skills_v1';
-export const LUCKY_WHEEL_REWARDS_KEY = 'imperial_lucky_wheel_rewards_v1';
-export const BOSS_STATES_KEY = 'imperial_boss_states_by_class_v1';
-export const BOSS_ENCOUNTER_FREQUENCY_KEY = 'imperial_boss_encounter_frequency_v1';
-export const WHEEL_SPIN_SOUND_KEY = 'imperial_sound_wheel_spin';
-export const WHEEL_FINISH_SOUND_KEY = 'imperial_sound_wheel_finish';
+// Khoá localStorage. Trước Phase 2 dùng tiền tố `imperial_*`; dữ liệu cũ được chép sang một lần
+// khi mở app (`domain/storageMigration.ts`), khoá cũ được giữ nguyên để có thể hoàn tác.
+export const STORAGE_KEY = 'classivy_school_data_v6';
+export const SKILLS_KEY = 'classivy_skills_v6';
+export const PET_SKILLS_KEY = 'classivy_pet_skills_v1';
+export const LUCKY_WHEEL_REWARDS_KEY = 'classivy_lucky_wheel_rewards_v1';
+export const BOSS_STATES_KEY = 'classivy_boss_states_by_class_v1';
+export const BOSS_ENCOUNTER_FREQUENCY_KEY = 'classivy_boss_encounter_frequency_v1';
+export const POS_SOUND_KEY = 'classivy_sound_pos';
+export const NEG_SOUND_KEY = 'classivy_sound_neg';
+export const TIMER_SOUND_KEY = 'classivy_sound_tim';
+export const WHEEL_SPIN_SOUND_KEY = 'classivy_sound_wheel_spin';
+export const WHEEL_FINISH_SOUND_KEY = 'classivy_sound_wheel_finish';
 
-export const DEFAULT_RANKS_MALE: RankInfo[] = [
-  { id: 'm1', level: -1, title: 'Nô tài', minPoints: -999, maxPoints: -1, color: 'text-gray-500', avatar: '' },
-  { id: 'm2', level: 0, title: 'Thường dân', minPoints: 0, maxPoints: 49, color: 'text-green-600', avatar: '' },
-  { id: 'm3', level: 1, title: 'Thị vệ', minPoints: 50, maxPoints: 99, color: 'text-blue-600', avatar: '' },
-  { id: 'm4', level: 2, title: 'Trainer Pro', minPoints: 100, maxPoints: 149, color: 'text-cyan-700', avatar: '' },
-  { id: 'm5', level: 3, title: 'Ace Trainer', minPoints: 150, maxPoints: 199, color: 'text-indigo-700', avatar: '' },
-  { id: 'm6', level: 4, title: 'Thân vương', minPoints: 200, maxPoints: 249, color: 'text-orange-600', avatar: '' },
-  { id: 'm7', level: 5, title: 'Champion Trainer', minPoints: 250, maxPoints: 99999, color: 'text-red-600 font-bold', avatar: '' },
-];
-
-export const DEFAULT_RANKS_FEMALE: RankInfo[] = [
-  { id: 'f1', level: -1, title: 'Nô tì', minPoints: -999, maxPoints: -1, color: 'text-gray-500', avatar: '' },
-  { id: 'f2', level: 0, title: 'Thường dân', minPoints: 0, maxPoints: 49, color: 'text-green-600', avatar: '' },
-  { id: 'f3', level: 1, title: 'Tú nữ', minPoints: 50, maxPoints: 99, color: 'text-pink-600', avatar: '' },
-  { id: 'f4', level: 2, title: 'Trainer Pro', minPoints: 100, maxPoints: 149, color: 'text-red-500', avatar: '' },
-  { id: 'f5', level: 3, title: 'Quý phi', minPoints: 150, maxPoints: 199, color: 'text-rose-600', avatar: '' },
-  { id: 'f6', level: 4, title: 'Elite Trainer', minPoints: 200, maxPoints: 249, color: 'text-orange-600', avatar: '' },
-  { id: 'f7', level: 5, title: 'Champion Trainer', minPoints: 250, maxPoints: 99999, color: 'text-red-600 font-bold', avatar: '' },
-];
+/** Khoá mới -> khoá cũ (Imperial School). Chỉ dùng cho đoạn chuyển dữ liệu một lần. */
+export const LEGACY_STORAGE_KEYS: Record<string, string> = {
+  [STORAGE_KEY]: 'imperial_school_data_v6',
+  [SKILLS_KEY]: 'imperial_skills_v6',
+  [PET_SKILLS_KEY]: 'imperial_pet_skills_v1',
+  [LUCKY_WHEEL_REWARDS_KEY]: 'imperial_lucky_wheel_rewards_v1',
+  [BOSS_STATES_KEY]: 'imperial_boss_states_by_class_v1',
+  [BOSS_ENCOUNTER_FREQUENCY_KEY]: 'imperial_boss_encounter_frequency_v1',
+  [POS_SOUND_KEY]: 'imperial_sound_pos',
+  [NEG_SOUND_KEY]: 'imperial_sound_neg',
+  [TIMER_SOUND_KEY]: 'imperial_sound_tim',
+  [WHEEL_SPIN_SOUND_KEY]: 'imperial_sound_wheel_spin',
+  [WHEEL_FINISH_SOUND_KEY]: 'imperial_sound_wheel_finish'
+};
+export const STORAGE_MIGRATION_MARKER_KEY = 'classivy_storage_migrated_v1';
 
 export const DEFAULT_SKILLS: Skill[] = [
   // Positive

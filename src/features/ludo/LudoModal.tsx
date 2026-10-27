@@ -15,25 +15,25 @@ export const LudoModal: React.FC = () => {
   return (
     <>
       {showLudoModal && (
-        <div className="fixed inset-0 z-[120] flex flex-col overflow-hidden bg-[radial-gradient(circle_at_20%_0%,rgba(250,204,21,0.28),transparent_30%),radial-gradient(circle_at_90%_20%,rgba(239,68,68,0.24),transparent_34%),linear-gradient(135deg,#1e1207,#451a03_48%,#111827)] backdrop-blur-md animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[120] flex flex-col overflow-hidden bg-brand-forest-deep backdrop-blur-md animate-in fade-in duration-300">
           <div className="border-b-4 border-amber-400/80 bg-black/45 p-4 px-6 text-amber-100 shadow-2xl backdrop-blur-xl shrink-0 flex justify-between items-center">
             <div className="flex items-center gap-3">
               <span className="grid h-12 w-12 place-items-center rounded-2xl border border-amber-200/60 bg-amber-300 text-3xl shadow-[0_0_28px_rgba(251,191,36,0.55)]">🐴</span>
               <div>
-                <h2 className="text-xl font-royal uppercase tracking-widest text-amber-300">Đường Đua Cá Ngựa (50 Ô)</h2>
-                <p className="text-[10px] text-amber-100/85">Lớp {activeLudoClassName || 'Chưa chọn'} - 1 ô chỉ có 1 trainer đứng, trừ ô 0.</p>
+                <h2 className="text-xl text-amber-300 font-extrabold">Đường Đua Cá Ngựa (50 Ô)</h2>
+                <p className="text-xs text-amber-100/85">Lớp {activeLudoClassName || 'Chưa chọn'} - 1 ô chỉ có 1 trainer đứng, trừ ô 0.</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <button
                 disabled={ludoRolling || battleLudoQueue.length > 0}
                 onClick={handleRandomFromLudo}
-                className="rounded-xl border border-emerald-300/70 bg-emerald-500/25 px-5 py-2 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-all hover:bg-emerald-500/35 disabled:cursor-not-allowed disabled:opacity-45"
+                className="rounded-xl border border-emerald-300/70 bg-emerald-500/25 px-5 py-2 text-xs font-black text-white shadow-lg transition-all hover:bg-emerald-500/35 disabled:cursor-not-allowed disabled:opacity-45"
                 title={battleLudoQueue.length > 0 ? 'Hoàn tất queue Cá Ngựa trước khi Random tiếp.' : 'Quay lại Random tiếp'}
               >
                 🎲 Random Tiếp
               </button>
-              <button onClick={() => { setBattleLudoQueue([]); setLudoReturnHint(null); closeLudoPage(); }} className="rounded-xl border border-amber-300/70 bg-amber-400/20 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-amber-400/30">
+              <button onClick={() => { setBattleLudoQueue([]); setLudoReturnHint(null); closeLudoPage(); }} className="rounded-xl border border-amber-300/70 bg-amber-400/20 px-5 py-2 text-xs font-bold text-white shadow-lg transition-all hover:bg-amber-400/30">
                 ← Quay Lại Lớp
               </button>
             </div>
@@ -41,11 +41,11 @@ export const LudoModal: React.FC = () => {
 
           <div className="flex-1 p-4 overflow-y-auto max-w-7xl mx-auto w-full flex flex-col lg:flex-row gap-6">
             {/* Left side: Interactive Board */}
-            <div className="flex-1 rounded-[34px] border-4 border-amber-300/90 bg-white/88 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl space-y-5">
+            <div className="flex-1 rounded-[34px] border-4 border-amber-300/90 bg-white/90 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl space-y-5">
               <div className="flex flex-col gap-3 border-b border-amber-200 pb-3 xl:flex-row xl:items-center xl:justify-between">
                 <div>
                   <h3 className="font-extrabold text-amber-950 text-base">Battle Race Board - Ô 0 đến {LUDO_FINISH_TILE}</h3>
-                  <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                  <p className="mt-1 text-xs font-bold text-amber-700">
                     Càng gần đích càng nhiều bẫy lùi, restart và quái vật giữ cổng.
                   </p>
                 </div>
@@ -93,10 +93,10 @@ export const LudoModal: React.FC = () => {
                       } ${hasActiveStudent ? 'ring-4 ring-cyan-300/70 scale-[1.03]' : ''}`}
                     >
                       <div className="flex justify-between items-center w-full px-1">
-                        <span className="text-[10px] font-black text-amber-950">{tileIdx}</span>
+                        <span className="text-xs font-black text-amber-950">{tileIdx}</span>
                         {spec && <span className="text-sm drop-shadow-xs">{spec.icon}</span>}
-                        {tileIdx === 0 && <span className="text-[7px] font-black bg-green-700 text-white px-1 py-0.2 rounded uppercase tracking-wider">XUẤT PHÁT</span>}
-                        {tileIdx === LUDO_FINISH_TILE && <span className="rounded bg-yellow-600 px-1 text-[7px] font-black uppercase tracking-wider text-white">ĐÍCH</span>}
+                        {tileIdx === 0 && <span className="text-[10px] font-black bg-green-700 text-white px-1 py-0.2 rounded">Xuất phát</span>}
+                        {tileIdx === LUDO_FINISH_TILE && <span className="rounded bg-yellow-600 px-1 text-[10px] font-black text-white">ĐÍCH</span>}
                       </div>
 
                       <div className="flex flex-wrap justify-center gap-1 my-1 z-10">
@@ -110,7 +110,7 @@ export const LudoModal: React.FC = () => {
                             className="relative group"
                           >
                             <StudentAvatar student={st} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-amber-900 shadow-md ring-2 ring-amber-300 transform group-hover:scale-125 transition-transform duration-200" />
-                            <div className="absolute -bottom-1 -right-1 bg-amber-900 text-amber-100 text-[8px] font-black px-1 rounded-full border border-white shadow-xs max-w-[36px] truncate">
+                            <div className="absolute -bottom-1 -right-1 bg-amber-900 text-amber-100 text-[10px] font-black px-1 rounded-full border border-white shadow-xs max-w-[36px] truncate">
                               {st.name.split(' ').pop()}
                             </div>
                           </motion.div>
@@ -123,7 +123,7 @@ export const LudoModal: React.FC = () => {
 
               {/* Logs area - High contrast & readable */}
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-2xl border-2 border-amber-300 shadow-md space-y-2">
-                <p className="text-amber-950 font-black text-xs uppercase tracking-wider border-b border-amber-200 pb-1 flex items-center gap-1.5">
+                <p className="text-amber-950 font-black text-xs border-b border-amber-200 pb-1 flex items-center gap-1.5">
                   <span>📜</span> Nhật ký đua cá ngựa:
                 </p>
                 <div className="max-h-48 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
@@ -145,7 +145,7 @@ export const LudoModal: React.FC = () => {
                 <div className="space-y-3">
                   {battleLudoQueue.length > 0 ? (
                     <div className="rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 p-3 shadow-inner">
-                      <p className="mb-2 text-[10px] font-black uppercase tracking-wider text-amber-900">
+                      <p className="mb-2 text-xs font-black text-amber-900">
                         Queue {ludoReturnHint === 'boss' ? 'Boss' : ludoReturnHint === 'solo' ? 'Solo' : 'Battle'} tự động
                       </p>
                       <div className="space-y-1.5">
@@ -155,7 +155,7 @@ export const LudoModal: React.FC = () => {
                           return (
                             <div key={`${turn.studentId}-${index}`} className={`flex items-center justify-between rounded-xl px-2.5 py-2 text-xs font-black ${index === 0 ? 'bg-amber-600 text-white' : 'bg-white text-amber-950 border border-amber-200'}`}>
                               <span>{index + 1}. {queuedStudent.name}</span>
-                              <span className="text-[9px] uppercase">{turn.role === 'winner' ? 'Thắng' : turn.role === 'loser' ? 'Thua' : turn.role === 'boss' ? 'Boss' : 'Hòa'}</span>
+                              <span className="text-xs">{turn.role === 'winner' ? 'Thắng' : turn.role === 'loser' ? 'Thua' : turn.role === 'boss' ? 'Boss' : 'Hòa'}</span>
                             </div>
                           );
                         })}
@@ -163,7 +163,7 @@ export const LudoModal: React.FC = () => {
                     </div>
                   ) : (
                     <>
-                      <label className="text-[10px] font-black uppercase text-amber-900 block">Chọn Trainer Trả Lời Đúng:</label>
+                      <label className="text-xs font-black text-amber-900 block">Chọn Trainer Trả Lời Đúng:</label>
                       <select
                         value={ludoActiveStudent?.id || ''}
                         onChange={e => {
@@ -185,12 +185,12 @@ export const LudoModal: React.FC = () => {
                       <StudentAvatar student={ludoActiveStudent} className="h-14 w-14 rounded-2xl border-2 border-amber-600 shadow-md" />
                       <div className="min-w-0">
                         <h4 className="font-extrabold text-amber-950 text-sm">{ludoActiveStudent.name}</h4>
-                        <p className="text-[10px] font-bold text-amber-800">Đang ở ô: {ludoPositions[ludoActiveStudent.id] || 0} / {LUDO_FINISH_TILE}</p>
+                        <p className="text-xs font-bold text-amber-800">Đang ở ô: {ludoPositions[ludoActiveStudent.id] || 0} / {LUDO_FINISH_TILE}</p>
                         {(ludoBonusRolls[ludoActiveStudent.id] || 0) > 0 && (
-                          <span className="text-[9px] font-black text-blue-700 bg-blue-100 border border-blue-200 px-1.5 py-0.5 rounded">🎁 Còn {ludoBonusRolls[ludoActiveStudent.id]} lượt lắc bonus</span>
+                          <span className="text-xs font-black text-blue-700 bg-blue-100 border border-blue-200 px-1.5 py-0.5 rounded">🎁 Còn {ludoBonusRolls[ludoActiveStudent.id]} lượt lắc bonus</span>
                         )}
                         {ludoMonsterStuck[ludoActiveStudent.id] && (
-                          <span className="text-[9px] font-black text-red-600 bg-red-100 border border-red-200 px-1.5 py-0.5 rounded">👹 Đang bị Quái vật kẹt! Cần lắc xí ngầu 6</span>
+                          <span className="text-xs font-black text-red-600 bg-red-100 border border-red-200 px-1.5 py-0.5 rounded">👹 Đang bị Quái vật kẹt! Cần lắc xí ngầu 6</span>
                         )}
                       </div>
                     </div>
@@ -210,7 +210,7 @@ export const LudoModal: React.FC = () => {
                     if (!ludoActiveStudent) return;
                     handleLudoRollDice(ludoActiveStudent, { isBonusRoll: (ludoBonusRolls[ludoActiveStudent.id] || 0) > 0 });
                   }}
-                  className="w-full rounded-2xl bg-gradient-to-r from-red-700 via-amber-600 to-orange-600 py-4 text-sm font-black uppercase tracking-wider text-white shadow-xl transition-all hover:scale-[1.02] hover:shadow-[0_18px_45px_rgba(180,83,9,0.35)] disabled:scale-100 disabled:opacity-40"
+                  className="w-full rounded-2xl bg-gradient-to-r from-red-700 via-amber-600 to-orange-600 py-4 text-sm font-black text-white shadow-xl transition-all hover:scale-[1.02] hover:shadow-[0_18px_45px_rgba(180,83,9,0.35)] disabled:scale-100 disabled:opacity-40"
                 >
                   {ludoRolling
                     ? 'Đang Đổ Xí Ngầu...'

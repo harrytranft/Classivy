@@ -205,16 +205,6 @@ export interface LuckyWheelReward {
   color: string;
 }
 
-export interface RankInfo {
-  id: string;
-  level: number;
-  title: string;
-  minPoints: number;
-  maxPoints: number;
-  color: string;
-  avatar?: string; // Base64 string from user upload
-}
-
 export interface Skill {
   id: string;
   name: string;

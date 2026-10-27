@@ -1,10 +1,8 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
-import { StatusDock } from '../components/StatusDock';
 import { PokemonReactionLayer } from '../features/pokemon/PokemonReactionLayer';
 import { AttendanceModal } from '../features/attendance/AttendanceModal';
 import { HomeworkModal } from '../features/homework/HomeworkModal';
-import { EdictModal } from '../features/students/EdictModal';
 import { ShopReviewModal } from '../features/shop/ShopReviewModal';
 import { LevelUpModal } from '../features/pokemon/LevelUpModal';
 import { NavDock } from './NavDock';
@@ -22,16 +20,13 @@ import { RandomModal } from '../features/random/RandomModal';
 import { useApp } from './AppContext';
 
 export const AppLayout: React.FC = () => {
-  const {
-    authLoading, handleBackupToCloud, handleRestoreFromCloud,
-    isSyncing, lastSyncedTime, user
-  } = useApp();
+  const { authLoading, user } = useApp();
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#5d4037] flex flex-col items-center justify-center text-white font-sans">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#D4AF37] mb-4"></div>
-        <p className="font-royal uppercase tracking-widest text-xs text-[#D4AF37]">Đang kết nối Trainer Hub...</p>
+      <div className="min-h-screen bg-brand-forest-deep flex flex-col items-center justify-center text-brand-cream">
+        <div className="h-11 w-11 animate-spin rounded-full border-[3px] border-brand-gold border-t-transparent mb-4" aria-hidden></div>
+        <p className="text-sm font-bold text-brand-cream/80">Đang kết nối Classivy...</p>
       </div>
     );
   }
@@ -43,21 +38,13 @@ export const AppLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_50%_0%,#fffbf2_0%,#f5ebe0_100%)] pb-32">
+    <div className="min-h-screen bg-brand-cream pb-36 pl-[84px]">
       <PokemonReactionLayer />
 
       <LevelUpModal />
 
       {/* LEFT NAV DOCK */}
       <NavDock />
-
-      <StatusDock
-        user={user}
-        isSyncing={isSyncing}
-        lastSyncedTime={lastSyncedTime}
-        onBackup={handleBackupToCloud}
-        onRestore={handleRestoreFromCloud}
-      />
 
       {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto p-6">
@@ -80,9 +67,6 @@ export const AppLayout: React.FC = () => {
 
       {/* MODAL: LUDO EVENT ACTION POPUP */}
       <LudoEventPopup />
-
-      {/*聖旨 EDICT DISPLAY */}
-      <EdictModal />
 
       {/* MODAL: CHÚC MỪNG POKEMON NỞ */}
       <HatchModal />

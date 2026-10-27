@@ -19,33 +19,33 @@ export const RandomModal: React.FC = () => {
       {showRandomModal && (
         <div 
           onClick={(e) => { if (e.target === e.currentTarget) setShowRandomModal(false); }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md overflow-y-auto"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-forest-deep/60 p-4 backdrop-blur-md overflow-y-auto"
         >
-          <div className="bg-white p-6 sm:p-8 rounded-[40px] w-full max-w-5xl text-center shadow-2xl animate-in zoom-in duration-300 relative border-4 border-red-800 my-auto">
+          <div className="bg-white p-6 sm:p-8 rounded-brand-lg w-full max-w-5xl text-center shadow-2xl animate-in zoom-in duration-300 relative border border-[#e6e2d4] my-auto">
             <button 
               onClick={() => setShowRandomModal(false)} 
-              className="absolute top-5 right-5 text-3xl text-gray-400 hover:text-red-800 transition-colors z-20"
+              className="absolute top-5 right-5 text-3xl text-brand-ink/45 hover:text-brand-forest transition-colors z-20"
             >
               &times;
             </button>
 
             {/* MODE SWITCHER TABS */}
-            <div className="flex items-center justify-center gap-2 mb-6 bg-red-50 p-1.5 rounded-full border border-red-200 w-fit mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-6 bg-[#f4f8f1] p-1.5 rounded-full border border-brand-emerald/20 w-fit mx-auto">
               <button 
                 onClick={() => handleRandom('solo')} 
-                className={`px-5 py-2 rounded-full font-bold text-xs transition-all uppercase tracking-wider ${randomMode === 'solo' ? 'bg-red-800 text-white shadow-md' : 'text-red-900 hover:bg-red-100'}`}
+                className={`px-5 py-2 rounded-full font-bold text-sm transition-colors ${randomMode === 'solo' ? 'bg-brand-forest text-brand-cream shadow-md' : 'text-brand-ink/70 hover:bg-white'}`}
               >
                 👤 Chế độ Solo
               </button>
               <button 
                 onClick={() => handleRandom('battle')} 
-                className={`px-5 py-2 rounded-full font-bold text-xs transition-all uppercase tracking-wider ${randomMode === 'battle' ? 'bg-red-800 text-white shadow-md' : 'text-red-900 hover:bg-red-100'}`}
+                className={`px-5 py-2 rounded-full font-bold text-sm transition-colors ${randomMode === 'battle' ? 'bg-brand-forest text-brand-cream shadow-md' : 'text-brand-ink/70 hover:bg-white'}`}
               >
                 ⚔️ Chế độ Battle
               </button>
               <button
                 onClick={() => handleRandom('boss')}
-                className={`px-5 py-2 rounded-full font-bold text-xs transition-all uppercase tracking-wider ${randomMode === 'boss' ? 'bg-red-800 text-white shadow-md' : 'text-red-900 hover:bg-red-100'}`}
+                className={`px-5 py-2 rounded-full font-bold text-sm transition-colors ${randomMode === 'boss' ? 'bg-brand-forest text-brand-cream shadow-md' : 'text-brand-ink/70 hover:bg-white'}`}
               >
                 👹 Boss
               </button>
@@ -68,13 +68,13 @@ export const RandomModal: React.FC = () => {
                     onFailure={() => handleResolveBossRound('failure')}
                   />
                 ) : (
-                  <div className="mx-auto max-w-2xl rounded-[32px] border-2 border-red-100 bg-red-50 p-8 text-center">
+                  <div className="mx-auto max-w-2xl rounded-brand-lg border border-brand-emerald/20 bg-[#f4f8f1] p-8 text-center">
                     <div className="text-6xl">👹</div>
-                    <h2 className="mt-4 text-3xl font-royal text-red-900">Boss đang ẩn nấp</h2>
-                    <p className="mt-3 text-sm font-bold text-red-800">
+                    <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-brand-ink">Boss đang ẩn nấp</h2>
+                    <p className="mt-3 text-sm font-semibold text-brand-ink/70">
                       Boss vẫn đang ở đâu đó. Tiếp tục Random Solo/Battle để tìm Boss.
                     </p>
-                    <p className="mt-4 rounded-2xl bg-white px-4 py-3 text-xs font-black uppercase tracking-wider text-red-700">
+                    <p className="mt-4 rounded-brand-md bg-white px-4 py-3 text-xs font-bold text-brand-forest">
                       {currentBossState
                         ? `Boss Frequency: ${currentBossFrequencyOption.label} · ${currentBossState.randomsSinceLastEncounter}/${currentBossState.nextEncounterAt} Random`
                         : 'Chọn một lớp cụ thể để kích hoạt Boss Raid per-class.'}
@@ -90,14 +90,14 @@ export const RandomModal: React.FC = () => {
                             style={{ width: `${Math.max(0, Math.min(100, (currentBossState.boss.currentHp / currentBossState.boss.maxHp) * 100))}%` }}
                           />
                         </div>
-                        <p className="mt-1 text-[10px] font-black text-stone-500">
+                        <p className="mt-1 text-xs font-black text-stone-500">
                           HP {currentBossState.boss.currentHp}/{currentBossState.boss.maxHp}
                         </p>
                       </div>
                     )}
                     <button
                       onClick={() => handleRandom()}
-                      className="mt-5 w-full rounded-2xl bg-amber-500 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-amber-600"
+                      className="mt-5 w-full rounded-brand-md bg-brand-forest py-3 text-xs font-bold text-brand-cream shadow-lg hover:bg-brand-forest-deep"
                     >
                       🎲 Random Tiếp
                     </button>
@@ -109,12 +109,12 @@ export const RandomModal: React.FC = () => {
             {/* SOLO MODE */}
             {randomMode === 'solo' && randomStudent && (
               <>
-                <h2 className="text-2xl font-royal text-red-800 mb-6 uppercase tracking-wider">Kén Chọn Ngẫu Nhiên (Solo)</h2>
+                <h2 className="mb-6 text-2xl font-extrabold tracking-tight text-brand-ink">Chọn ngẫu nhiên</h2>
 
                 <div className="flex items-center justify-center gap-6 mb-6">
                   <div className="relative">
-                    <StudentAvatar student={randomStudent} className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-red-800 shadow-xl" />
-                    <div className="absolute top-0 right-0 bg-red-800 text-white w-9 h-9 rounded-full flex items-center justify-center font-bold border-2 border-white shadow text-sm">
+                    <StudentAvatar student={randomStudent} className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-brand-forest shadow-xl" />
+                    <div className="absolute top-0 right-0 bg-brand-forest text-brand-cream w-9 h-9 rounded-full flex items-center justify-center font-bold border-2 border-white shadow text-sm">
                       {randomStudent.points}
                     </div>
                   </div>
@@ -128,14 +128,14 @@ export const RandomModal: React.FC = () => {
                 </div>
 
                 <div className="mb-6">
-                  <h3 className="text-2xl sm:text-3xl font-bold text-gray-800">{randomStudent.name}</h3>
-                  <p className="opacity-50 font-black uppercase tracking-widest text-xs mt-1">{randomStudent.className}</p>
+                  <h3 className="text-2xl font-extrabold tracking-tight text-brand-ink sm:text-3xl">{randomStudent.name}</h3>
+                  <p className="mt-1 text-xs font-bold text-brand-ink/60">{randomStudent.className}</p>
                 </div>
 
                 {/* SKILLS BOUGHT FOR POKEMON DISPLAY & USE DIRECTLY */}
                 {randomStudent.pet?.skills && randomStudent.pet.skills.length > 0 && (
                   <div className="mb-6 p-4 bg-indigo-50/60 rounded-3xl border border-indigo-100 text-left">
-                    <p className="text-[10px] font-black uppercase text-indigo-900 tracking-wider mb-2">⚡ Tuyệt Chiêu Pokémon Có Thể Kích Hoạt (Tối Đa 2 Lần):</p>
+                    <p className="text-xs font-black text-indigo-900 mb-2">⚡ Tuyệt Chiêu Pokémon Có Thể Kích Hoạt (Tối Đa 2 Lần):</p>
                     <div className="space-y-2 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
                       {randomStudent.pet.skills.map(skId => {
                         const sk = petSkills.find(x => x.id === skId);
@@ -147,8 +147,8 @@ export const RandomModal: React.FC = () => {
                             <div className="flex items-center gap-2 min-w-0">
                               <span className="text-xl">{sk.icon}</span>
                               <div className="min-w-0">
-                                <p className="text-xs font-bold text-gray-800 truncate">{sk.name}</p>
-                                <span className="text-[9px] text-indigo-600 font-semibold">Còn {remainingUses}/2 lượt</span>
+                              <p className="truncate text-xs font-bold text-brand-ink">{sk.name}</p>
+                                <span className="text-xs text-indigo-600 font-semibold">Còn {remainingUses}/2 lượt</span>
                               </div>
                             </div>
                             <button
@@ -158,7 +158,7 @@ export const RandomModal: React.FC = () => {
                                 const updated = students.find(s => s.id === randomStudent.id);
                                 if (updated) setRandomStudent(updated);
                               }}
-                              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-black text-[9px] px-3 py-1.5 rounded-xl uppercase tracking-wider shrink-0"
+                              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-black text-xs px-3 py-1.5 rounded-xl shrink-0"
                             >
                               Sử Dụng
                             </button>
@@ -172,20 +172,20 @@ export const RandomModal: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button 
                     onClick={() => { setFeedbackSource('solo'); setShowSkillModal(true); }} 
-                    className="flex-1 bg-red-800 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg hover:bg-red-900 uppercase tracking-wider"
+                    className="flex-1 rounded-brand-md bg-brand-forest py-3.5 text-sm font-bold text-brand-cream shadow-lg hover:bg-brand-forest-deep"
                   >
                     Ban Thưởng / Phạt
                   </button>
                   <button 
                     onClick={() => handleRandom()} 
-                    className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg uppercase tracking-wider flex items-center justify-center gap-2"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-brand-md bg-brand-gold py-3.5 text-sm font-bold text-brand-forest-deep shadow-lg hover:bg-brand-gold-dark"
                   >
                     <span>🎲</span> Random Tiếp
                   </button>
                 </div>
                 <button 
                   onClick={() => setShowRandomModal(false)} 
-                  className="mt-3 text-gray-400 font-bold py-1 uppercase text-xs hover:text-gray-600"
+                  className="mt-3 py-1 text-xs font-bold text-brand-ink/55 hover:text-brand-forest"
                 >
                   Đóng lại
                 </button>
@@ -195,14 +195,14 @@ export const RandomModal: React.FC = () => {
             {/* BATTLE MODE */}
             {randomMode === 'battle' && battleStudentA && battleStudentB && (
               <>
-                <h2 className="text-2xl font-royal text-red-800 mb-2 uppercase tracking-wider">⚡ Trận Quyết Đấu (Battle) ⚡</h2>
-                <p className="text-xs text-gray-500 mb-6 italic">Nhập điểm hoặc bấm nút cộng điểm cho mỗi trainer. Người thắng được cộng HP theo điểm chênh lệch, người thua bị trừ HP chênh lệch!</p>
+                <h2 className="mb-2 text-2xl font-extrabold tracking-tight text-brand-ink">⚡ Trận quyết đấu</h2>
+                <p className="mb-6 text-xs leading-relaxed text-brand-ink/65">Nhập hoặc bấm cộng điểm cho mỗi trainer. Người thắng được cộng HP theo điểm chênh lệch, người thua bị trừ tương ứng.</p>
 
                 {battleResultSummary ? (
                   <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-3xl border-4 border-amber-400 space-y-6 shadow-xl animate-in zoom-in-95 duration-200 text-left">
                     <div className="text-center space-y-2">
                       <span className="text-4xl">🏆</span>
-                      <h3 className="text-2xl font-black text-amber-950 uppercase tracking-wide">
+                      <h3 className="text-2xl font-black text-amber-950">
                         {battleResultSummary.winner ? `Chiến Thắng: ${battleResultSummary.winner.name}` : 'Trận Đấu Hòa!'}
                       </h3>
                       <p className="text-sm font-bold text-amber-900 whitespace-pre-line bg-white/90 p-4 rounded-2xl border border-amber-200 shadow-xs">
@@ -212,7 +212,7 @@ export const RandomModal: React.FC = () => {
 
                     {/* Ordered Cá Ngựa turns after Battle */}
                     <div className="bg-white p-4 rounded-2xl border-2 border-amber-300 space-y-3">
-                      <p className="text-xs font-black uppercase text-amber-950 tracking-wider text-center">
+                      <p className="text-xs font-black text-amber-950 text-center">
                         🎲 Thứ Tự Lắc Cá Ngựa Sau Battle:
                       </p>
                       {battleResultSummary.ludoTurns.length > 0 ? (
@@ -224,7 +224,7 @@ export const RandomModal: React.FC = () => {
                               return (
                                 <div key={`${turn.studentId}-${index}`} className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
                                   <span className="text-xs font-black text-amber-950">{index + 1}. {turnStudent.name}</span>
-                                  <span className="text-[10px] font-black uppercase text-amber-700">
+                                  <span className="text-xs font-black text-amber-700">
                                     {turn.role === 'winner' ? 'Thắng - lắc trước' : turn.role === 'loser' ? 'Thua - lắc sau' : 'Hòa'}
                                   </span>
                                 </div>
@@ -236,7 +236,7 @@ export const RandomModal: React.FC = () => {
                               setShowRandomModal(false);
                               openBattleLudoTurns(battleResultSummary.ludoTurns);
                             }}
-                            className="w-full bg-amber-600 hover:bg-amber-700 text-white p-3 rounded-xl font-black text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 transition-all border-2 border-amber-400"
+                            className="w-full bg-amber-600 hover:bg-amber-700 text-white p-3 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 transition-all border-2 border-amber-400"
                           >
                             <span>🎲</span> Mở Cá Ngựa Theo Thứ Tự
                           </button>
@@ -251,13 +251,13 @@ export const RandomModal: React.FC = () => {
                     <div className="flex gap-3">
                       <button 
                         onClick={() => handleRandom('battle')} 
-                        className="flex-1 bg-red-800 text-white py-3 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-red-900 shadow"
+                        className="flex-1 rounded-brand-md bg-brand-forest py-3 text-xs font-bold text-brand-cream shadow hover:bg-brand-forest-deep"
                       >
                         ⚔️ Quyết Đấu Trận Mới
                       </button>
                       <button 
                         onClick={() => setShowRandomModal(false)} 
-                        className="px-5 bg-gray-200 text-gray-700 font-bold py-3 rounded-xl text-xs uppercase hover:bg-gray-300"
+                        className="rounded-brand-md bg-[#e9e7de] px-5 py-3 text-xs font-bold text-brand-ink hover:bg-[#dedbd0]"
                       >
                         Đóng
                       </button>
@@ -268,12 +268,12 @@ export const RandomModal: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                       {/* STUDENT A CARD */}
                       <div className="bg-amber-50/80 p-4 rounded-3xl border-2 border-amber-300 flex flex-col items-center">
-                        <span className="bg-amber-500 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
+                        <span className="bg-amber-500 text-white text-xs font-black px-2.5 py-0.5 rounded-full mb-2">
                           Trainer A
                         </span>
                         <StudentAvatar student={battleStudentA} className="w-20 h-20 rounded-full border-4 border-amber-400 shadow-md mb-2" />
-                        <h4 className="font-extrabold text-gray-800 text-base">{battleStudentA.name}</h4>
-                        <p className="text-[10px] text-gray-500 font-bold mb-2">Hào quang: {battleStudentA.points}đ</p>
+                        <h4 className="text-base font-extrabold text-brand-ink">{battleStudentA.name}</h4>
+                        <p className="mb-2 text-xs font-bold text-brand-ink/65">Hào quang: {battleStudentA.points}đ</p>
 
                         <PokemonMiniStatus
                           pet={battleStudentA.pet}
@@ -286,7 +286,7 @@ export const RandomModal: React.FC = () => {
                         />
 
                         <div className="w-full">
-                          <p className="text-[10px] font-black uppercase text-amber-800 mb-1">Điểm Battle Vòng Này:</p>
+                          <p className="text-xs font-black text-amber-800 mb-1">Điểm Battle Vòng Này:</p>
                           <div className="flex items-center justify-center gap-1 mb-2">
                             {[-1, +1, +2, +3, +5].map(pts => (
                               <button
@@ -309,12 +309,12 @@ export const RandomModal: React.FC = () => {
 
                       {/* STUDENT B CARD */}
                       <div className="bg-purple-50/80 p-4 rounded-3xl border-2 border-purple-300 flex flex-col items-center">
-                        <span className="bg-purple-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
+                        <span className="bg-purple-600 text-white text-xs font-black px-2.5 py-0.5 rounded-full mb-2">
                           Trainer B
                         </span>
                         <StudentAvatar student={battleStudentB} className="w-20 h-20 rounded-full border-4 border-purple-400 shadow-md mb-2" />
-                        <h4 className="font-extrabold text-gray-800 text-base">{battleStudentB.name}</h4>
-                        <p className="text-[10px] text-gray-500 font-bold mb-2">Hào quang: {battleStudentB.points}đ</p>
+                        <h4 className="text-base font-extrabold text-brand-ink">{battleStudentB.name}</h4>
+                        <p className="mb-2 text-xs font-bold text-brand-ink/65">Hào quang: {battleStudentB.points}đ</p>
 
                         <PokemonMiniStatus
                           pet={battleStudentB.pet}
@@ -327,7 +327,7 @@ export const RandomModal: React.FC = () => {
                         />
 
                         <div className="w-full">
-                          <p className="text-[10px] font-black uppercase text-purple-800 mb-1">Điểm Battle Vòng Này:</p>
+                          <p className="text-xs font-black text-purple-800 mb-1">Điểm Battle Vòng Này:</p>
                           <div className="flex items-center justify-center gap-1 mb-2">
                             {[-1, +1, +2, +3, +5].map(pts => (
                               <button
@@ -352,13 +352,13 @@ export const RandomModal: React.FC = () => {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <button 
                         onClick={handleResolveBattle} 
-                        className="flex-1 bg-red-800 text-white py-3.5 rounded-2xl font-black text-sm shadow-xl hover:bg-red-900 uppercase tracking-wider flex items-center justify-center gap-2"
+                        className="flex flex-1 items-center justify-center gap-2 rounded-brand-md bg-brand-forest py-3.5 text-sm font-bold text-brand-cream shadow-xl hover:bg-brand-forest-deep"
                       >
                         <span>⚔️</span> Chốt Trận & Trao Thưởng
                       </button>
                       <button 
                         onClick={() => handleRandom()} 
-                        className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg uppercase tracking-wider flex items-center justify-center gap-2"
+                        className="flex flex-1 items-center justify-center gap-2 rounded-brand-md bg-brand-gold py-3.5 text-sm font-bold text-brand-forest-deep shadow-lg hover:bg-brand-gold-dark"
                       >
                         <span>🎲</span> Random Tiếp
                       </button>
@@ -367,7 +367,7 @@ export const RandomModal: React.FC = () => {
                 )}
                 <button 
                   onClick={() => setShowRandomModal(false)} 
-                  className="mt-3 text-gray-400 font-bold py-1 uppercase text-xs hover:text-gray-600"
+                  className="mt-3 py-1 text-xs font-bold text-brand-ink/55 hover:text-brand-forest"
                 >
                   Đóng lại
                 </button>

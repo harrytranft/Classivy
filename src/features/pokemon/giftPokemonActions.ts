@@ -36,7 +36,7 @@ export const createGiftPokemonActions = (appState: AppState, app: AppActions): G
 
   const closeGiftPokemonModal = () => {
     resetGiftPokemonFlow();
-    // Quay về trang đã mở Tặng Pokémon (ví dụ Plaza); mở thẳng bằng đường dẫn thì về trang lớp.
+    // Quay về trang đã mở Tặng Pokémon (ví dụ Cài đặt); mở thẳng bằng đường dẫn thì về trang lớp.
     if (routeReturnTo) navigateTo(routeReturnTo, { replace: true });
     else goToClassPage(filterClass, null, { replace: true });
   };

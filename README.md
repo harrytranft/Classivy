@@ -14,7 +14,6 @@ Yêu cầu: Node.js 20+.
 2. Tạo `.env.local` theo `.env.example`:
    - `VITE_SUPABASE_URL=...`
    - `VITE_SUPABASE_ANON_KEY=...`
-   - `GEMINI_API_KEY=...` (tuỳ chọn, cho lời thông báo AI)
 3. `npm run dev` (cổng 3000)
 
 Kiểm thử và build:

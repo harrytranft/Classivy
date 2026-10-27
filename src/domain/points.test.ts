@@ -1,18 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { DEFAULT_RANKS_FEMALE, DEFAULT_RANKS_MALE } from '../data/constants';
-import { Gender, RankInfo, Student } from '../types';
+import { Gender, Student } from '../types';
 import { applyPointsToStudents, PointsUpdateInput } from './points';
 import { createPokemonPetFromDexId } from './pokemonProgression';
 
 // Characterization tests: ghi lại hành vi cộng/trừ điểm như trước khi tách khỏi App.tsx.
 
 const NOW = new Date('2026-10-26T09:00:00+07:00').getTime();
-
-const getRank = (points: number, gender: Gender): RankInfo => {
-  const list = gender === Gender.MALE ? DEFAULT_RANKS_MALE : DEFAULT_RANKS_FEMALE;
-  const sorted = [...list].sort((a, b) => b.minPoints - a.minPoints);
-  return sorted.find(rank => points >= rank.minPoints) || list[0];
-};
 
 const makeStudent = (overrides: Partial<Student> = {}): Student => ({
   id: 'stu-1',
@@ -35,7 +28,7 @@ const withPet = (overrides: Partial<Student> = {}, hp = 50): Student => {
 };
 
 const run = (students: Student[], input: Partial<PointsUpdateInput>) =>
-  applyPointsToStudents(students, { ids: ['stu-1'], amount: 5, reason: 'Phát biểu', source: 'manual', getRank, ...input });
+  applyPointsToStudents(students, { ids: ['stu-1'], amount: 5, reason: 'Phát biểu', source: 'manual', ...input });
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -58,7 +51,6 @@ describe('applyPointsToStudents', () => {
     expect(updated.pet?.hp).toBe(55);
     expect(result.students[1]).toBe(other);
     expect(result.releaseEvent).toBeNull();
-    expect(result.rankChanges).toEqual([]);
   });
 
   it('moves the egg forward by the same amount and hatches it when full', () => {
@@ -90,17 +82,6 @@ describe('applyPointsToStudents', () => {
     expect(result.releaseEvent?.studentId).toBe('stu-1');
     expect(result.students[0].pet).toBeUndefined();
     expect(result.students[0].points).toBe(15);
-  });
-
-  it('reports a rank change only when a single trainer is scored', () => {
-    const single = run([makeStudent({ points: 48 })], { amount: 5 });
-    expect(single.rankChanges).toEqual([{ studentName: 'An', newTitle: 'Thị vệ', promoted: true }]);
-
-    const demoted = run([makeStudent({ points: 50 })], { amount: -5 });
-    expect(demoted.rankChanges).toEqual([{ studentName: 'An', newTitle: 'Thường dân', promoted: false }]);
-
-    const group = run([makeStudent({ points: 48 }), makeStudent({ id: 'stu-2', points: 48 })], { ids: ['stu-1', 'stu-2'], amount: 5 });
-    expect(group.rankChanges).toEqual([]);
   });
 
   it('gives trainer XP and weekly chest progress for a positive solo answer only', () => {

@@ -2,7 +2,7 @@ import { EggKind, PokemonPet, Student, StudentEgg, LuckyWheelReward } from './in
 import { PetSkill } from '../data/pokemonData';
 import { PokemonUiEvent } from '../domain/gameEvents';
 
-export type Screen = 'plaza' | 'class' | 'profile' | 'settings';
+export type Screen = 'class' | 'profile' | 'settings';
 export type RandomMode = 'solo' | 'battle' | 'boss';
 
 export interface LuckyWheelResult {

@@ -1,31 +1,30 @@
-
 import React from 'react';
-import { Student, RankInfo, Gender } from '../types';
+import { Check } from 'lucide-react';
+import { Student } from '../types';
 import { PetSkill } from '../data/pokemonData';
 import { getPokemonArtworkUrl, getPokemonDisplayName, getPokemonNatureDefinition, handlePokemonArtworkError } from '../domain/pokemonProgression';
 import { getBadgeDefinition, getTrainerLevelPercent, getTrainerTitleDefinition, normalizeTrainerProgress, trainerXpNeededForNextLevel } from '../domain/trainerProgression';
 import { StudentAvatar } from './StudentAvatar';
+import { Chip, ChipTone, ProgressBar, ShieldScore, cx } from './ui';
 
 interface StudentCardProps {
   student: Student;
-  getRank: (pts: number, gender: Gender) => RankInfo;
   onSelect: (student: Student) => void;
   petSkills: PetSkill[];
   isSelected?: boolean;
-  isDimmed?: boolean;
-  onHoverChange?: (studentId: string | null) => void;
+  /** Hiện tên lớp trên thẻ (khi xem nhiều lớp cùng lúc). Trên trang của một lớp thì thừa. */
+  showClassName?: boolean;
 }
+
+const hpTone = (hp: number) => (hp > 50 ? 'leaf' : hp > 20 ? 'warning' : 'danger') as 'leaf' | 'warning' | 'danger';
 
 export const StudentCard: React.FC<StudentCardProps> = ({
   student,
-  getRank,
   onSelect,
   petSkills,
   isSelected,
-  isDimmed,
-  onHoverChange
+  showClassName
 }) => {
-  getRank(student.points, student.gender);
   const isAbsent = student.isAbsent;
 
   const egg = student.egg;
@@ -38,206 +37,185 @@ export const StudentCard: React.FC<StudentCardProps> = ({
     .map(badge => getBadgeDefinition(badge.badgeId))
     .filter(Boolean)
     .slice(0, 4);
-  const petDanger = !!pet && (pet.hp ?? 100) <= 20;
+  const petHp = pet?.hp ?? 100;
+  const petDanger = !!pet && petHp <= 20;
   const masteryAuraClass = pet && (pet.masteryStars || 0) >= 5
-    ? 'ring-2 ring-fuchsia-400 shadow-[0_0_22px_rgba(217,70,239,0.55)]'
+    ? 'ring-2 ring-brand-violet'
     : pet && (pet.masteryStars || 0) >= 3
-      ? 'ring-2 ring-amber-300 shadow-[0_0_18px_rgba(251,191,36,0.45)]'
+      ? 'ring-2 ring-brand-gold'
       : '';
   const eggRequiredProgress = egg?.requiredProgress || 10;
-  const streakBadges = [
-    { key: 'attendance', label: 'Đi học', value: progress?.attendanceStreak || 0, tone: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
-    { key: 'answer', label: 'Answer', value: progress?.answerStreak || 0, tone: 'bg-sky-50 text-sky-700 border-sky-200' },
-    { key: 'battle', label: 'Battle', value: progress?.battleWinStreak || 0, tone: 'bg-violet-50 text-violet-700 border-violet-200' },
-    { key: 'homework', label: 'Homework', value: progress?.homeworkStreak || 0, tone: 'bg-emerald-50 text-emerald-700 border-emerald-200' }
+  const streakBadges: { key: string; label: string; value: number; tone: ChipTone }[] = [
+    { key: 'attendance', label: 'Đi học', value: progress?.attendanceStreak || 0, tone: 'sky' as ChipTone },
+    { key: 'answer', label: 'Answer', value: progress?.answerStreak || 0, tone: 'leaf' as ChipTone },
+    { key: 'battle', label: 'Battle', value: progress?.battleWinStreak || 0, tone: 'violet' as ChipTone },
+    { key: 'homework', label: 'Homework', value: progress?.homeworkStreak || 0, tone: 'gold' as ChipTone }
   ].filter(badge => badge.value > 0);
 
   // Helper to determine egg appearance based on hatch progress
   const getEggStatusText = (progress: number) => {
-    if (progress >= eggRequiredProgress) return { emoji: '🐣', label: 'Sẵn sàng nở!', color: 'text-green-600' };
-    if (progress >= Math.ceil(eggRequiredProgress * 0.7)) return { emoji: '🥚💥', label: 'Nứt sâu, rục rịch!', color: 'text-orange-500 animate-pulse' };
-    if (progress >= Math.ceil(eggRequiredProgress * 0.4)) return { emoji: '🥚⚡', label: 'Nứt nhẹ rạn vỏ', color: 'text-amber-500' };
-    return { emoji: '🥚', label: 'Trứng nguyên vẹn', color: 'text-gray-400' };
+    if (progress >= eggRequiredProgress) return { emoji: '🐣', label: 'Sẵn sàng nở!', color: 'text-brand-emerald' };
+    if (progress >= Math.ceil(eggRequiredProgress * 0.7)) return { emoji: '🥚💥', label: 'Nứt sâu, rục rịch!', color: 'text-[#8f5500] animate-pulse' };
+    if (progress >= Math.ceil(eggRequiredProgress * 0.4)) return { emoji: '🥚⚡', label: 'Nứt nhẹ rạn vỏ', color: 'text-[#8f5500]' };
+    return { emoji: '🥚', label: 'Trứng nguyên vẹn', color: 'text-brand-ink/60' };
   };
 
-  const eggStatus = egg ? getEggStatusText(egg.progress) : { emoji: '🥚', label: 'Đang ấp trứng', color: 'text-gray-400' };
+  const eggStatus = egg ? getEggStatusText(egg.progress) : { emoji: '🥚', label: 'Đang ấp trứng', color: 'text-brand-ink/60' };
 
   return (
-    <div 
+    <div
       onClick={() => onSelect(student)}
-      onMouseEnter={() => onHoverChange?.(student.id)}
-      onMouseLeave={() => onHoverChange?.(null)}
-      className={`relative h-[360px] rounded-[32px] p-5 cursor-pointer flex flex-col gap-4 transition-all duration-300 border-2 backdrop-blur-xl group ${
-        isSelected 
-          ? 'border-red-800 bg-red-100/90 ring-8 ring-red-800/20 shadow-2xl scale-[1.02] -translate-y-2' 
-          : isAbsent 
-            ? 'bg-stone-100/80 grayscale border-stone-300 opacity-60 shadow-xs' 
-            : 'bg-white/85 border-white/90 shadow-[0_10px_30px_rgba(120,20,20,0.07)] hover:border-cyan-300 hover:-translate-y-3 hover:scale-[1.035] hover:bg-white hover:shadow-[0_0_0_3px_rgba(34,211,238,0.35),0_28px_70px_-12px_rgba(14,165,233,0.55),0_0_55px_rgba(250,204,21,0.35)]'
-      } ${isDimmed ? 'opacity-35 brightness-75 saturate-50 scale-[0.98]' : ''}`}
+      // Vào được bằng phím Tab; Enter/Space mở như bấm chuột (chỉ khi focus đang ở chính thẻ, không phải nút con).
+      role="button"
+      tabIndex={0}
+      aria-label={student.name}
+      onKeyDown={event => {
+        if (event.target !== event.currentTarget || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        onSelect(student);
+      }}
+      className={cx(
+        'relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200',
+        isSelected
+          ? 'border-brand-forest shadow-[0_0_0_3px_#014a2d,0_10px_24px_-10px_rgba(0,38,25,0.45)]'
+          : isAbsent
+            ? 'border-[#e3e0d3] bg-[#f6f5ef] opacity-70 grayscale'
+            : 'border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]'
+      )}
     >
-      <div className={`absolute top-0 right-0 px-4 py-2 text-[9px] rounded-bl-2xl uppercase font-black tracking-widest ${isSelected ? 'bg-red-800 text-white shadow-md' : 'bg-amber-100/80 text-amber-900 border-b border-l border-amber-200/60'}`}>
-        {student.className}
-      </div>
-
-      <div className="flex items-center gap-5 mt-4">
-        <div className="w-20 h-20 shrink-0 relative">
-          <StudentAvatar student={student} className="w-full h-full rounded-[24px] border-4 border-white shadow-lg" />
+      <div className="flex items-start gap-4">
+        <div className="relative h-16 w-16 shrink-0">
+          <StudentAvatar student={student} className="h-full w-full rounded-brand-md" />
           {isAbsent && (
-            <div className="absolute inset-0 bg-gray-900/60 rounded-[24px] flex items-center justify-center text-[10px] text-white font-black uppercase tracking-widest">VẮNG</div>
+            <div className="absolute inset-0 grid place-items-center rounded-brand-md bg-brand-ink/65 text-[12px] font-bold text-white">VẮNG</div>
           )}
           {isSelected && (
-            <div className="absolute -top-3 -right-3 bg-red-800 text-white w-8 h-8 rounded-full border-4 border-white flex items-center justify-center font-bold text-sm shadow-lg">✓</div>
+            <div className="absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-full border-2 border-white bg-brand-forest text-brand-cream">
+              <Check className="h-4 w-4" strokeWidth={3} aria-hidden />
+            </div>
           )}
         </div>
-        
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            {/* Pokemon immediately to the left of student's name inside the name tag */}
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
             {pet && (
-              <div className="relative group/poke shrink-0">
-                <img 
+              <div className="group/poke relative shrink-0">
+                <img
                   referrerPolicy="no-referrer"
                   src={getPokemonArtworkUrl(pet)}
                   onError={event => handlePokemonArtworkError(event, pet)}
                   alt={getPokemonDisplayName(pet)}
-                  className={`w-8 h-8 object-contain cursor-pointer transition-transform group-hover/poke:scale-125 ${pet.isShiny ? 'rounded-full bg-amber-100 ring-2 ring-amber-300' : ''} ${petDanger ? 'rounded-full ring-2 ring-red-500 animate-pulse' : masteryAuraClass}`}
+                  className={cx('h-7 w-7 object-contain transition-transform group-hover/poke:scale-125', pet.isShiny && 'rounded-full bg-brand-gold-light ring-2 ring-brand-gold', petDanger ? 'animate-pulse rounded-full ring-2 ring-brand-danger' : masteryAuraClass)}
                 />
-                {/* Hover preview card showing enlarged Pokemon, name, and skills */}
-                <div className="absolute left-0 bottom-full mb-2 hidden group-hover/poke:flex flex-col bg-amber-950 text-white p-3 rounded-2xl shadow-2xl z-50 w-52 border border-amber-400/40 pointer-events-none animate-in fade-in zoom-in duration-200">
-                  <img 
+                <div className="pointer-events-none absolute bottom-full left-0 z-50 mb-2 hidden w-56 flex-col rounded-brand-md bg-brand-forest-deep p-3 text-brand-cream shadow-[0_12px_30px_-8px_rgba(0,38,25,0.6)] group-hover/poke:flex">
+                  <img
                     referrerPolicy="no-referrer"
                     src={getPokemonArtworkUrl(pet)}
                     onError={event => handlePokemonArtworkError(event, pet)}
                     alt={getPokemonDisplayName(pet)}
-                    className="w-24 h-24 object-contain mx-auto my-1"
+                    className="mx-auto my-1 h-24 w-24 object-contain"
                   />
-                  <p className="font-extrabold text-amber-300 text-sm text-center">{pet.isShiny ? '✨ ' : ''}{getPokemonDisplayName(pet)}</p>
-                  <p className="text-[10px] text-amber-200/80 text-center uppercase font-mono">{pet.types?.join(', ')}</p>
-                  <div className="mt-2 border-t border-amber-800/60 pt-1.5">
-                    <p className="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Kỹ năng sở hữu ({pet.skills?.length || 0}):</p>
+                  <p className="text-center text-sm font-bold text-brand-gold-light">{pet.isShiny ? '✨ ' : ''}{getPokemonDisplayName(pet)}</p>
+                  <p className="text-center text-[12px] text-brand-cream/70">{pet.types?.join(', ')}</p>
+                  <div className="mt-2 border-t border-white/15 pt-2">
+                    <p className="mb-1 text-[12px] font-bold text-brand-leaf">Kỹ năng sở hữu ({pet.skills?.length || 0}):</p>
                     {pet.skills && pet.skills.length > 0 ? (
-                      <div className="flex flex-col gap-1 max-h-32 overflow-y-auto">
+                      <div className="flex max-h-32 flex-col gap-1 overflow-y-auto">
                         {pet.skills.map(skId => {
                           const sk = petSkills.find(s => s.id === skId);
                           return (
-                            <div key={skId} className="bg-amber-900/80 text-amber-100 text-[10px] p-1.5 rounded-lg border border-amber-700/50 flex items-center gap-1.5">
+                            <div key={skId} className="flex items-center gap-1.5 rounded-brand-sm bg-white/10 p-1.5 text-[12px]">
                               <span className="text-sm">{sk?.icon || '✨'}</span>
                               <div className="min-w-0">
-                                <p className="font-bold truncate">{sk?.name || skId}</p>
-                                <p className="text-[8px] text-amber-300/80 line-clamp-1">{sk?.description}</p>
+                                <p className="truncate font-bold">{sk?.name || skId}</p>
+                                <p className="line-clamp-1 text-xs text-brand-cream/70">{sk?.description}</p>
                               </div>
                             </div>
                           );
                         })}
                       </div>
                     ) : (
-                      <p className="text-[9px] text-amber-200/60 italic text-center">Chưa có kỹ năng</p>
+                      <p className="text-center text-[12px] italic text-brand-cream/60">Chưa có kỹ năng</p>
                     )}
                   </div>
                 </div>
               </div>
             )}
-            <h3 className="text-xl font-bold text-gray-800 truncate">{student.name}</h3>
+            <h3 className="truncate text-xl font-extrabold leading-tight text-brand-ink">{student.name}</h3>
           </div>
-          <p className="text-[10px] uppercase font-black tracking-widest text-teal-700">Pokemon Trainer</p>
-          <div className="mt-1 flex items-center gap-1.5">
-            <span className="rounded-full bg-red-50 px-2 py-0.5 text-[8px] font-black uppercase tracking-tight text-red-800 border border-red-100">
-              Lv.{trainerProgress.level}
-            </span>
-            <span className="truncate rounded-full bg-amber-50 px-2 py-0.5 text-[8px] font-black text-amber-800 border border-amber-100">
-              {trainerTitle.icon} {trainerTitle.name}
-            </span>
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            <Chip tone="forest">Lv.{trainerProgress.level}</Chip>
+            <Chip tone="gold">{trainerTitle.icon} {trainerTitle.name}</Chip>
+            {showClassName && <Chip tone="neutral">{student.className}</Chip>}
           </div>
           {streakBadges.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
+            <div className="mt-1.5 flex flex-wrap gap-1">
               {streakBadges.map(badge => (
-                <span key={badge.key} className={`rounded-full border px-2 py-0.5 text-[8px] font-black uppercase tracking-tight ${badge.tone}`}>
-                  {badge.label} x{badge.value}
-                </span>
+                <Chip key={badge.key} tone={badge.tone}>{badge.label} x{badge.value}</Chip>
               ))}
             </div>
           )}
         </div>
+
       </div>
 
-      {/* NEW POKEMON COMPANION STATUS COMPONENT */}
-      <div className="bg-gray-50/70 p-3 rounded-2xl border border-gray-100/50 flex items-center gap-3 mt-1 min-h-[92px]">
+      <div className="flex min-h-[84px] items-center gap-3 rounded-brand-md bg-[#f4f8f1] p-3">
         {pet ? (
           <>
-            <div className={`w-10 h-10 shrink-0 bg-white rounded-xl border border-amber-200 p-0.5 flex items-center justify-center shadow-sm relative group/pet animate-in fade-in zoom-in duration-300 ${petDanger ? 'ring-2 ring-red-500 animate-pulse' : masteryAuraClass}`}>
-              <img 
+            <div className={cx('relative grid h-11 w-11 shrink-0 place-items-center rounded-brand-sm bg-white p-0.5', petDanger ? 'animate-pulse ring-2 ring-brand-danger' : masteryAuraClass)}>
+              <img
                 referrerPolicy="no-referrer"
                 src={getPokemonArtworkUrl(pet)}
                 onError={event => handlePokemonArtworkError(event, pet)}
-                className="w-full h-full object-contain"
+                className="h-full w-full object-contain"
                 alt={getPokemonDisplayName(pet)}
               />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-1.5">
-                <p className="text-xs font-black text-amber-700 truncate">{pet.isShiny ? '✨ ' : ''}{getPokemonDisplayName(pet)} · Lv.{pet.level || 1}</p>
-                <span className="text-[9px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
-                  ❤️ HP: {pet.hp ?? 100}/100
+                <p className="truncate text-[13px] font-bold text-brand-forest">{pet.isShiny ? '✨ ' : ''}{getPokemonDisplayName(pet)} · Lv.{pet.level || 1}</p>
+                <span className={cx('shrink-0 text-[12px] font-bold tabular-nums', petDanger ? 'text-brand-danger' : 'text-[#1d6a40]')}>
+                  HP {petHp}/100
                 </span>
               </div>
-              <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1">
-                <div 
-                  className={`h-full rounded-full transition-all duration-500 ${(pet.hp ?? 100) > 50 ? 'bg-emerald-500' : (pet.hp ?? 100) > 20 ? 'bg-amber-500' : 'bg-red-500'}`}
-                  style={{ width: `${Math.min(100, Math.max(0, pet.hp ?? 100))}%` }}
-                />
-              </div>
-              <p className="text-[8px] text-gray-400 truncate mt-0.5">
+              <ProgressBar value={petHp} tone={hpTone(petHp)} label={`HP của ${getPokemonDisplayName(pet)}`} className="mt-1.5" />
+              <p className="mt-1 truncate text-[12px] text-brand-ink/65">
                 {getPokemonNatureDefinition(pet.natureId).icon} {getPokemonNatureDefinition(pet.natureId).name} Nature · {pet.skills.length > 0 ? `${pet.skills.length} tuyệt chiêu` : 'Chưa có kỹ năng bổ trợ'}
               </p>
             </div>
           </>
         ) : (
           <>
-            <div className={`text-2xl transform transition-transform duration-500 hover:rotate-12 ${egg && egg.progress >= Math.ceil(eggRequiredProgress * 0.7) ? 'animate-bounce' : ''}`}>
+            <div className={cx('text-2xl', egg && egg.progress >= Math.ceil(eggRequiredProgress * 0.7) && 'animate-bounce')} aria-hidden>
               {eggStatus.emoji}
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-center text-[10px]">
-                <span className="font-bold text-gray-600">Ấp Trứng Pokémon</span>
-                <span className={`font-black ${eggStatus.color}`}>{egg ? egg.progress : 0}/{eggRequiredProgress}đ</span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between gap-2 text-[13px]">
+                <span className="truncate font-bold text-brand-ink/80">Ấp Trứng Pokémon</span>
+                <span className={cx('font-bold tabular-nums', eggStatus.color)}>{egg ? egg.progress : 0}/{eggRequiredProgress}đ</span>
               </div>
-              <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden mt-1 max-w-full">
-                <div 
-                  className="bg-amber-500 h-full rounded-full transition-all duration-500"
-                  style={{ width: `${Math.min(100, Math.max(0, ((egg ? egg.progress : 0) / eggRequiredProgress) * 100))}%` }}
-                />
-              </div>
-              <p className="text-[8px] text-gray-400 mt-0.5 truncate italic">{eggStatus.label}</p>
+              <ProgressBar value={((egg ? egg.progress : 0) / eggRequiredProgress) * 100} tone="gold" label="Tiến độ ấp trứng" className="mt-1.5" />
+              <p className="mt-1 truncate text-[12px] italic text-brand-ink/65">{eggStatus.label}</p>
             </div>
           </>
         )}
       </div>
 
-      <div className="mt-auto flex justify-between items-end pt-4 border-t border-gray-50">
-        <div className="flex-1">
-           <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-              <div 
-                className="bg-red-800 h-full rounded-full transition-all duration-1000"
-                style={{ width: `${trainerLevelPct}%` }}
-              />
-           </div>
-           <p className="text-[8px] uppercase opacity-30 mt-1 font-bold">
-             Trainer XP {trainerProgress.xp}/{trainerXpNeededForNextLevel(trainerProgress.level)}
-           </p>
-           {earnedBadgeViews.length > 0 && (
-             <div className="mt-1 flex gap-1">
-               {earnedBadgeViews.map(badge => (
-                 <span key={badge!.id} className="text-[10px]" title={badge!.name}>{badge!.icon}</span>
-               ))}
-             </div>
-           )}
+      <div className="mt-auto flex items-end gap-4 border-t border-[#efece2] pt-4">
+        <div className="min-w-0 flex-1">
+          <ProgressBar value={trainerLevelPct} tone="leaf" sprout size="md" label="Trainer XP" />
+          <p className="mt-1.5 text-[12px] font-bold tabular-nums text-brand-ink/65">
+            Trainer XP {trainerProgress.xp}/{trainerXpNeededForNextLevel(trainerProgress.level)}
+          </p>
+          {earnedBadgeViews.length > 0 && (
+            <div className="mt-1 flex gap-1">
+              {earnedBadgeViews.map(badge => (
+                <span key={badge!.id} className="text-sm" title={badge!.name}>{badge!.icon}</span>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="ml-6 flex flex-col items-end">
-           <p className={`text-3xl font-black leading-none ${student.points >= 0 ? 'text-gray-900' : 'text-red-600'}`}>
-             {student.points}
-           </p>
-           <p className="text-[8px] uppercase font-black opacity-30 mt-1">Hào Quang</p>
-        </div>
+        <ShieldScore points={student.points} />
       </div>
     </div>
   );

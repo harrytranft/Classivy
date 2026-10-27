@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 
-const FALLBACK_DISPLAY_NAME = "Học sĩ triều đình";
+const FALLBACK_DISPLAY_NAME = "Trainer";
 const FALLBACK_AVATAR = "https://api.dicebear.com/7.x/bottts/svg";
 
 export interface AuthUser {

@@ -1,142 +1,170 @@
-<div class="min-h-screen bg-[radial-gradient(circle_at_50%_0%,#fffbf2_0%,#f5ebe0_100%)] pb-32">
-<div class="fixed inset-0 z-[320] animate-in fade-in duration-150">
-<div class="absolute left-1/2 top-24 w-[min(92vw,460px)] -translate-x-1/2 animate-in slide-in-from-top-4 zoom-in-95 duration-200">
-<div class="relative rounded-3xl border-4 border-amber-300 bg-white/95 p-4 pr-12 text-left shadow-[0_18px_50px_rgba(120,53,15,0.25)] backdrop-blur">
-<button class="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full border border-amber-200 bg-amber-50 text-xs font-black text-amber-900 transition-colors hover:bg-amber-100" aria-label="Tắt thông báo Pokémon">×</button>
-<p class="mb-2 text-center text-[10px] font-black uppercase tracking-[0.22em] text-amber-700">Tặng Pokémon</p>
+<div class="min-h-screen bg-brand-cream pb-36 pl-[84px]">
+<div role="status" aria-live="polite" class="fixed left-1/2 top-6 z-[320] w-[min(92vw,460px)] -translate-x-1/2 animate-in fade-in slide-in-from-top-4 duration-200">
+<div class="relative rounded-brand-lg border border-brand-gold/60 bg-white p-4 pr-12 shadow-[0_18px_44px_-14px_rgba(0,38,25,0.45)]">
+<button type="button" class="absolute right-2.5 top-2.5 grid h-9 w-9 place-items-center rounded-full text-brand-ink/60 transition-colors hover:bg-brand-forest/[0.07] hover:text-brand-forest" aria-label="Tắt thông báo Pokémon">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-4 w-4" aria-hidden="true">
+<path d="M18 6 6 18">
+</path>
+<path d="m6 6 12 12">
+</path>
+</svg>
+</button>
+<p class="mb-2.5 text-[13px] font-extrabold text-brand-forest">Tặng Pokémon</p>
 <div class="space-y-1.5">
-<div class="flex items-center gap-2 rounded-2xl bg-amber-50 px-3 py-2">
-<span class="shrink-0 rounded-full bg-amber-500 px-2 py-0.5 text-[8px] font-black uppercase tracking-wide text-white">Evolution</span>
-<span class="min-w-0 flex-1 truncate text-xs font-black text-amber-950">An 6A: Mew đã nở</span>
+<div class="flex items-center gap-2.5 rounded-brand-md bg-[#f4f8f1] px-3 py-2">
+<span class="shrink-0 rounded-full px-2 py-0.5 text-xs font-bold bg-brand-gold text-brand-forest-deep">Evolution</span>
+<span class="min-w-0 flex-1 truncate text-[13px] font-bold text-brand-ink">An 6A: Mew đã nở</span>
 </div>
 </div>
 </div>
 </div>
+<div class="group/nav fixed inset-y-0 left-0 z-50 flex w-[84px] flex-col items-center rounded-r-[28px] bg-brand-shield py-4 text-brand-cream shadow-[4px_0_18px_-6px_rgba(1,72,47,0.45)]">
+<img alt="Classivy" class="mb-5 h-11 w-11 rounded-brand-md" src="/brand/classivy-app-icon-dark.png">
+<nav aria-label="Điều hướng chính" class="flex flex-1 flex-col items-center gap-1.5">
+<button type="button" title="Lớp Học" aria-current="page" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors bg-brand-cream text-brand-forest-deep">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open h-6 w-6" aria-hidden="true">
+<path d="M12 7v14">
+</path>
+<path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z">
+</path>
+</svg>
+<span>Lớp học</span>
+</button>
+<button type="button" title="Tặng Pokémon" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gift h-6 w-6" aria-hidden="true">
+<rect x="3" y="8" width="18" height="4" rx="1">
+</rect>
+<path d="M12 8v13">
+</path>
+<path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7">
+</path>
+<path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5">
+</path>
+</svg>
+<span>Tặng quà</span>
+</button>
+<button type="button" title="Cài Đặt" class="flex w-[68px] flex-col items-center gap-1 rounded-brand-md py-2 text-[12px] font-bold transition-colors text-brand-cream hover:bg-white/15">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings h-6 w-6" aria-hidden="true">
+<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+</path>
+<circle cx="12" cy="12" r="3">
+</circle>
+</svg>
+<span>Cài đặt</span>
+</button>
+<div class="flex-1">
 </div>
-<div class="fixed left-0 top-1/2 z-50 h-40 w-5 -translate-y-1/2 group/nav">
-<nav class="absolute left-0 top-1/2 flex -translate-y-1/2 -translate-x-[calc(100%-18px)] flex-col items-center gap-3 rounded-r-[28px] border-2 border-white/90 bg-red-950/80 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(120,20,20,0.3)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/nav:translate-x-0 focus-within:translate-x-0">
-<button type="button" title="Trainer Plaza" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">🏞️</button>
-<button type="button" title="Lớp Học" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-amber-200 bg-gradient-to-br from-amber-300 via-amber-400 to-amber-600 text-red-950 ring-4 ring-amber-200/35">📚</button>
-<button type="button" title="Tặng Pokémon" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/50 bg-gradient-to-br from-emerald-300 via-amber-300 to-fuchsia-400 text-white hover:scale-110 hover:shadow-[0_0_28px_rgba(251,191,36,0.45)]">🎁</button>
-<button type="button" title="Cài Đặt" class="grid h-14 w-14 place-items-center rounded-2xl border text-2xl shadow-lg transition-all active:scale-95 border-white/30 bg-white/12 text-amber-100 hover:scale-110 hover:bg-white/20">⚙️</button>
-<button type="button" title="Tài khoản giáo viên" class="grid h-14 w-14 place-items-center overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg transition-all hover:scale-110 active:scale-95">
-<img class="h-10 w-10 rounded-xl border border-white/80 object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
+<div class="group/status flex flex-col items-center gap-1 border-t border-white/10 pt-3">
+<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" aria-label="Sao lưu đám mây" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload h-5 w-5" aria-hidden="true">
+<path d="M12 13v8">
+</path>
+<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242">
+</path>
+<path d="m8 17 4-4 4 4">
+</path>
+</svg>
+</button>
+<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" aria-label="Khôi phục dữ liệu" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history h-5 w-5" aria-hidden="true">
+<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
+</path>
+<path d="M3 3v5h5">
+</path>
+<path d="M12 7v5l4 2">
+</path>
+</svg>
+</button>
+<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" aria-label="Trạng thái sync" class="relative grid h-10 w-10 place-items-center rounded-brand-md text-brand-cream/75 transition-colors hover:bg-white/10 hover:text-brand-cream text-brand-leaf">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check h-5 w-5" aria-hidden="true">
+<circle cx="12" cy="12" r="10">
+</circle>
+<path d="m9 12 2 2 4-4">
+</path>
+</svg>
+</button>
+</div>
+<button type="button" title="Tài khoản giáo viên" class="mt-3 grid h-12 w-12 place-items-center overflow-hidden rounded-full ring-2 ring-brand-gold/70 transition-shadow hover:ring-brand-gold">
+<img class="h-full w-full bg-brand-cream object-cover" alt="Avatar" referrerpolicy="no-referrer" src="https://api.dicebear.com/7.x/bottts/svg">
 </button>
 </nav>
 </div>
-<div class="fixed right-0 top-1/2 z-50 h-28 w-5 -translate-y-1/2 group/status">
-<div class="absolute right-0 top-1/2 flex -translate-y-1/2 translate-x-[calc(100%-18px)] flex-col items-center justify-center gap-3 rounded-l-[28px] border-2 border-white/90 bg-white/75 px-3 py-4 shadow-[0_25px_60px_-10px_rgba(20,50,120,0.22)] backdrop-blur-2xl transition-transform duration-300 ease-out group-hover/status:translate-x-0 focus-within:translate-x-0">
-<div class="relative group/item">
-<button type="button" title="Sao lưu đám mây: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-sky-300 via-blue-500 to-indigo-700 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">☁️</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Sao lưu đám mây</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Khôi phục dữ liệu: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-amber-200 via-orange-400 to-red-600 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">🔄</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Khôi phục dữ liệu</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-<div class="relative group/item">
-<button type="button" title="Trạng thái sync: 09:00:00 26/10/2026" class="grid h-14 w-14 place-items-center rounded-2xl border border-white/80 bg-gradient-to-br text-2xl shadow-lg transition-all active:scale-95 from-emerald-300 via-teal-500 to-emerald-800 hover:scale-110 hover:shadow-2xl">
-<span class="drop-shadow-md">✅</span>
-<span class="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-300 shadow-[0_0_8px_rgba(52,211,153,0.9)]">
-</span>
-</button>
-<div class="pointer-events-none absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-blue-200/60 bg-slate-950/90 px-3 py-2 text-[11px] font-black text-sky-100 shadow-xl backdrop-blur-md group-hover/item:block">
-<div class="uppercase tracking-wider">Trạng thái sync</div>
-<div class="mt-0.5 text-[9px] font-bold normal-case tracking-normal text-sky-100/70">09:00:00 26/10/2026</div>
-</div>
-</div>
-</div>
-</div>
 <main class="max-w-7xl mx-auto p-6">
-<div class="fixed inset-0 z-[280] flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-xl animate-in fade-in duration-200">
-<div class="relative my-auto w-full max-w-5xl overflow-hidden rounded-[42px] border border-white/70 bg-white/18 shadow-[0_35px_120px_rgba(15,23,42,0.48)] backdrop-blur-2xl">
-<div class="absolute inset-0 bg-[radial-gradient(circle_at_18%_15%,rgba(52,211,153,0.45),transparent_28%),radial-gradient(circle_at_88%_12%,rgba(217,70,239,0.35),transparent_25%),radial-gradient(circle_at_55%_100%,rgba(251,191,36,0.42),transparent_36%)] pointer-events-none">
-</div>
+<div class="fixed inset-0 z-[280] flex items-center justify-center overflow-y-auto bg-brand-forest-deep/70 p-4 backdrop-blur-xl animate-in fade-in duration-200">
+<div class="relative my-auto w-full max-w-5xl overflow-hidden rounded-brand-lg border border-[#e6e2d4] bg-white shadow-[0_24px_60px_-18px_rgba(0,38,25,0.42)]">
 <div class="relative z-10 grid min-h-[620px] grid-cols-1 lg:grid-cols-[0.9fr_1.1fr]">
-<aside class="border-b border-white/30 bg-white/55 p-6 backdrop-blur-2xl lg:border-b-0 lg:border-r">
+<aside class="border-b border-[#e6e2d4] bg-[#f4f8f1] p-6 lg:border-b-0 lg:border-r">
 <div class="flex items-start justify-between gap-4">
 <div>
-<p class="text-[10px] font-black uppercase tracking-[0.28em] text-emerald-700">Gift Pokémon</p>
-<h2 class="mt-2 font-royal text-3xl uppercase text-slate-950">Tặng Pokémon</h2>
-<p class="mt-2 text-xs font-bold leading-relaxed text-slate-600">Chọn học sinh trong lớp 6A. Quà sẽ nở trứng ngay và không trừ Hào Quang.</p>
+<p class="text-sm font-bold text-brand-forest">Quà cho lớp học</p>
+<h2 class="mt-1 text-3xl font-extrabold tracking-tight text-brand-ink">Tặng Pokémon</h2>
+<p class="mt-2 text-sm leading-relaxed text-brand-ink/70">Chọn học sinh trong lớp 6A. Quà sẽ nở trứng ngay và không trừ Hào Quang.</p>
 </div>
-<button type="button" class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-white/70 bg-white/60 text-2xl font-black text-slate-500 shadow-sm transition-colors hover:text-red-800" aria-label="Đóng tặng Pokémon">×</button>
+<button type="button" class="grid h-10 w-10 shrink-0 place-items-center rounded-brand-md border border-[#d9d6ca] bg-white text-2xl font-black text-brand-ink/60 shadow-sm transition-colors hover:text-brand-forest" aria-label="Đóng tặng Pokémon">×</button>
 </div>
-<div class="mt-5 rounded-[28px] border border-white/70 bg-white/60 p-3 shadow-inner">
-<p class="px-2 pb-2 text-[10px] font-black uppercase tracking-wider text-slate-500">Danh sách lớp hiện tại</p>
+<div class="mt-5 rounded-brand-lg border border-[#e6e2d4] bg-white p-3 shadow-sm">
+<p class="px-2 pb-2 text-sm font-bold text-brand-ink/70">Danh sách lớp hiện tại</p>
 <div class="max-h-[390px] space-y-2 overflow-y-auto pr-1 custom-scrollbar">
-<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-emerald-300 bg-emerald-50 shadow-[0_16px_40px_rgba(16,185,129,0.18)] ring-2 ring-emerald-200 disabled:cursor-not-allowed disabled:opacity-60">
+<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-brand-emerald bg-white shadow-[0_8px_24px_-12px_rgba(1,74,45,0.35)] ring-2 ring-brand-leaf-soft disabled:cursor-not-allowed disabled:opacity-60">
 <div class="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">A6</div>
 <div class="min-w-0 flex-1">
-<p class="truncate text-sm font-black text-slate-950">An 6A</p>
-<p class="mt-0.5 truncate text-[10px] font-bold text-slate-500">6A · 31đ Hào Quang</p>
+<p class="truncate text-sm font-bold text-brand-ink">An 6A</p>
+<p class="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">6A · 31đ Hào Quang</p>
 </div>
-<span class="rounded-full px-3 py-1 text-[10px] font-black bg-emerald-600 text-white">Quà mới</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold bg-brand-emerald text-white">Quà mới</span>
 </button>
-<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-white/70 bg-white/65 hover:border-amber-200 hover:bg-amber-50/80 disabled:cursor-not-allowed disabled:opacity-60">
+<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-[#e6e2d4] bg-white hover:border-brand-emerald hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-60">
 <div class="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">B6</div>
 <div class="min-w-0 flex-1">
-<p class="truncate text-sm font-black text-slate-950">Bình 6A</p>
-<p class="mt-0.5 truncate text-[10px] font-bold text-slate-500">6A · 43đ Hào Quang</p>
+<p class="truncate text-sm font-bold text-brand-ink">Bình 6A</p>
+<p class="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">6A · 43đ Hào Quang</p>
 </div>
-<span class="rounded-full px-3 py-1 text-[10px] font-black bg-white text-amber-700">Quà mới</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold bg-brand-gold-light text-brand-forest-deep">Quà mới</span>
 </button>
-<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-white/70 bg-white/65 hover:border-amber-200 hover:bg-amber-50/80 disabled:cursor-not-allowed disabled:opacity-60">
+<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-[#e6e2d4] bg-white hover:border-brand-emerald hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-60">
 <div class="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">C6</div>
 <div class="min-w-0 flex-1">
-<p class="truncate text-sm font-black text-slate-950">Chi 6A</p>
-<p class="mt-0.5 truncate text-[10px] font-bold text-slate-500">6A · 58đ Hào Quang</p>
+<p class="truncate text-sm font-bold text-brand-ink">Chi 6A</p>
+<p class="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">6A · 58đ Hào Quang</p>
 </div>
-<span class="rounded-full px-3 py-1 text-[10px] font-black bg-white text-amber-700">Quà mới</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold bg-brand-gold-light text-brand-forest-deep">Quà mới</span>
 </button>
-<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-white/70 bg-white/65 hover:border-amber-200 hover:bg-amber-50/80 disabled:cursor-not-allowed disabled:opacity-60">
+<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-[#e6e2d4] bg-white hover:border-brand-emerald hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-60">
 <div class="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">D6</div>
 <div class="min-w-0 flex-1">
-<p class="truncate text-sm font-black text-slate-950">Dũng 6A</p>
-<p class="mt-0.5 truncate text-[10px] font-bold text-slate-500">6A · 78đ Hào Quang</p>
+<p class="truncate text-sm font-bold text-brand-ink">Dũng 6A</p>
+<p class="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">6A · 78đ Hào Quang</p>
 </div>
-<span class="rounded-full px-3 py-1 text-[10px] font-black bg-white text-amber-700">Quà mới</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold bg-brand-gold-light text-brand-forest-deep">Quà mới</span>
 </button>
-<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-white/70 bg-white/65 hover:border-amber-200 hover:bg-amber-50/80 disabled:cursor-not-allowed disabled:opacity-60">
+<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-[#e6e2d4] bg-white hover:border-brand-emerald hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-60">
 <div class="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">G6</div>
 <div class="min-w-0 flex-1">
-<p class="truncate text-sm font-black text-slate-950">Giang 6A</p>
-<p class="mt-0.5 truncate text-[10px] font-bold text-slate-500">6A · 75đ Hào Quang</p>
+<p class="truncate text-sm font-bold text-brand-ink">Giang 6A</p>
+<p class="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">6A · 75đ Hào Quang</p>
 </div>
-<span class="rounded-full px-3 py-1 text-[10px] font-black bg-white text-amber-700">Quà mới</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold bg-brand-gold-light text-brand-forest-deep">Quà mới</span>
 </button>
-<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-white/70 bg-white/65 hover:border-amber-200 hover:bg-amber-50/80 disabled:cursor-not-allowed disabled:opacity-60">
+<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-[#e6e2d4] bg-white hover:border-brand-emerald hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-60">
 <div class="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">H6</div>
 <div class="min-w-0 flex-1">
-<p class="truncate text-sm font-black text-slate-950">Hà 6A</p>
-<p class="mt-0.5 truncate text-[10px] font-bold text-slate-500">6A · 103đ Hào Quang</p>
+<p class="truncate text-sm font-bold text-brand-ink">Hà 6A</p>
+<p class="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">6A · 103đ Hào Quang</p>
 </div>
-<span class="rounded-full px-3 py-1 text-[10px] font-black bg-white text-amber-700">Quà mới</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold bg-brand-gold-light text-brand-forest-deep">Quà mới</span>
 </button>
-<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-white/70 bg-white/65 hover:border-amber-200 hover:bg-amber-50/80 disabled:cursor-not-allowed disabled:opacity-60">
+<button type="button" class="flex w-full items-center gap-3 rounded-3xl border p-3 text-left transition-all border-[#e6e2d4] bg-white hover:border-brand-emerald hover:bg-brand-cream disabled:cursor-not-allowed disabled:opacity-60">
 <div class="h-12 w-12 shrink-0 rounded-2xl border-2 border-white shadow grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">K6</div>
 <div class="min-w-0 flex-1">
-<p class="truncate text-sm font-black text-slate-950">Khoa 6A</p>
-<p class="mt-0.5 truncate text-[10px] font-bold text-slate-500">6A · 111đ Hào Quang</p>
+<p class="truncate text-sm font-bold text-brand-ink">Khoa 6A</p>
+<p class="mt-0.5 truncate text-xs font-semibold text-brand-ink/65">6A · 111đ Hào Quang</p>
 </div>
-<span class="rounded-full px-3 py-1 text-[10px] font-black bg-white text-amber-700">0/10</span>
+<span class="rounded-full px-3 py-1 text-xs font-bold bg-brand-gold-light text-brand-forest-deep">0/10</span>
 </button>
 </div>
 </div>
 </aside>
-<section class="relative flex min-h-[620px] items-center justify-center overflow-hidden p-6 sm:p-8">
-<div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.25),rgba(255,255,255,0.05))]">
-</div>
+<section class="relative flex min-h-[620px] items-center justify-center overflow-hidden bg-brand-cream p-6 sm:p-8">
 <span class="absolute h-2.5 w-2.5 rounded-full">
 </span>
 <span class="absolute h-2.5 w-2.5 rounded-full">
@@ -205,22 +233,22 @@
 </span>
 <span class="absolute h-2.5 w-2.5 rounded-full">
 </span>
-<div class="relative z-10 w-full max-w-xl rounded-[38px] border border-white/70 bg-white/58 p-6 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_28px_80px_rgba(15,23,42,0.22)] backdrop-blur-2xl">
+<div class="relative z-10 w-full max-w-xl rounded-brand-lg border border-[#e6e2d4] bg-white p-6 text-center shadow-[0_12px_36px_-20px_rgba(0,38,25,0.3)]">
 <div class="space-y-5">
 <div class="relative mx-auto grid h-64 w-64 place-items-center">
 <div class="absolute inset-2 rounded-full bg-[radial-gradient(circle,rgba(251,191,36,0.55),rgba(52,211,153,0.18),transparent_70%)] blur-xl">
 </div>
-<img referrerpolicy="no-referrer" class="relative z-10 h-56 w-56 object-contain drop-shadow-2xl" alt="Mew" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EMew%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EPsychic%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
+<img referrerpolicy="no-referrer" class="relative z-10 h-56 w-56 object-contain drop-shadow-2xl" alt="Mew" src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22240%22%20viewBox%3D%220%200%20240%20240%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23fff7ed%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23fef3c7%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23fee2e2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%22240%22%20height%3D%22240%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2258%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23f59e0b%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M62%20100h116%22%20stroke%3D%22%23111827%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22120%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%23111827%22%20stroke-width%3D%228%22%2F%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22183%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22800%22%20fill%3D%22%2392400e%22%3EMew%3C%2Ftext%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22120%22%20y%3D%22207%22%20text-anchor%3D%22middle%22%20font-family%3D%22Plus%20Jakarta%20Sans%2C%20Be%20Vietnam%20Pro%2C%20Arial%2C%20sans-serif%22%20font-size%3D%2213%22%20font-weight%3D%22700%22%20fill%3D%22%23b45309%22%3EPsychic%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fsvg%3E%0A%20%20" data-pokemon-artwork-fallback-index="8">
 </div>
 <div>
-<p class="text-[10px] font-black uppercase tracking-[0.28em] text-emerald-700">Chúc mừng</p>
-<h3 class="mt-2 font-royal text-4xl uppercase text-slate-950">An 6A</h3>
-<p class="mt-2 text-2xl font-black text-fuchsia-900">nhận được Mew</p>
-<p class="mt-2 text-xs font-bold text-slate-500">Một trứng quà tặng đặc biệt đã nở ngay.</p>
+<p class="text-xs font-black text-brand-forest">Chúc mừng</p>
+<h3 class="mt-2 text-4xl font-extrabold tracking-tight text-brand-ink">An 6A</h3>
+<p class="mt-2 text-2xl font-extrabold tracking-tight text-brand-forest-deep">nhận được Mew</p>
+<p class="mt-2 text-xs font-semibold text-brand-ink/65">Một trứng quà tặng đặc biệt đã nở ngay.</p>
 </div>
 <div class="flex flex-col gap-2 sm:flex-row">
-<button type="button" class="flex-1 rounded-2xl border border-white/70 bg-white/65 py-3 text-xs font-black uppercase tracking-wider text-slate-700 shadow-sm transition-colors hover:bg-white">Tặng tiếp</button>
-<button type="button" class="flex-1 rounded-2xl bg-slate-950 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg transition-colors hover:bg-slate-800">Hoàn tất</button>
+<button type="button" class="flex-1 rounded-brand-md border border-[#d9d6ca] bg-white py-3 text-xs font-bold text-brand-forest shadow-sm transition-colors hover:bg-brand-cream">Tặng tiếp</button>
+<button type="button" class="flex-1 rounded-brand-md bg-brand-forest py-3 text-xs font-bold text-brand-cream shadow-lg transition-colors hover:bg-brand-forest-deep">Hoàn tất</button>
 </div>
 </div>
 </div>

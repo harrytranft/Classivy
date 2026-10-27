@@ -3,13 +3,14 @@ import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression'
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
 import { fetchUserSettings, upsertUserSettings } from '../../../lib/supabaseData';
+import { pickBackupFields } from '../../../domain/backup';
 import { GameDataState } from './useGameDataState';
 import type { AuthUser } from '../../../features/auth/AuthContext';
 
 // Xuất/nhập file JSON và sao lưu/khôi phục thủ công trên đám mây.
 export const createBackupActions = (data: GameDataState, user: AuthUser | null) => {
   const {
-    students, setStudents, ranksMale, setRanksMale, ranksFemale, setRanksFemale, skills,
+    students, setStudents, skills,
     setSkills, petSkills, setPetSkills, bossEncounterFrequency, setBossEncounterFrequency,
     bossStatesByClass, setBossStatesByClass, luckyWheelRewards, setLuckyWheelRewards,
     setLuckyWheelDisplayRewards, customLudoTiles, setCustomLudoTiles, posSoundUrl,
@@ -23,8 +24,6 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
       students,
       skills,
       petSkills,
-      ranksMale,
-      ranksFemale,
       posSoundUrl,
       negSoundUrl,
       timerSoundUrl,
@@ -52,7 +51,7 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     reader.onload = (event) => {
       try {
         const text = event.target?.result as string;
-        const data = JSON.parse(text);
+        const data = pickBackupFields(JSON.parse(text));
 
         const importedStudents = data.students && Array.isArray(data.students)
           ? data.students.map(normalizeStudentPokemonData)
@@ -66,12 +65,6 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
         if (data.petSkills && Array.isArray(data.petSkills)) {
           setPetSkills(data.petSkills);
           localStorage.setItem(PET_SKILLS_KEY, JSON.stringify(data.petSkills));
-        }
-        if (data.ranksMale && Array.isArray(data.ranksMale)) {
-          setRanksMale(data.ranksMale);
-        }
-        if (data.ranksFemale && Array.isArray(data.ranksFemale)) {
-          setRanksFemale(data.ranksFemale);
         }
         if (data.posSoundUrl) {
           setPosSoundUrl(data.posSoundUrl);
@@ -113,8 +106,6 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
           setIsSyncing(true);
           upsertUserSettings(user.uid, {
               students: importedStudents,
-              ranksMale: data.ranksMale || [],
-              ranksFemale: data.ranksFemale || [],
               skills: data.skills || [],
               petSkills: data.petSkills || petSkills,
               posSoundUrl: data.posSoundUrl || "",
@@ -154,8 +145,6 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     try {
       const updatedAt = await upsertUserSettings(user.uid, {
         students,
-        ranksMale,
-        ranksFemale,
         skills,
         petSkills,
         posSoundUrl,
@@ -197,12 +186,6 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
       if (cloudData) {
         if (cloudData.students && Array.isArray(cloudData.students)) {
           setStudents(cloudData.students);
-        }
-        if (cloudData.ranksMale && Array.isArray(cloudData.ranksMale)) {
-          setRanksMale(cloudData.ranksMale);
-        }
-        if (cloudData.ranksFemale && Array.isArray(cloudData.ranksFemale)) {
-          setRanksFemale(cloudData.ranksFemale);
         }
         if (cloudData.skills && Array.isArray(cloudData.skills)) {
           setSkills(cloudData.skills);

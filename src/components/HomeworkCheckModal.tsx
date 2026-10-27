@@ -1,6 +1,7 @@
 import React from 'react';
-import { Gender, HomeworkStatus, RankInfo, Student } from '../types';
+import { HomeworkStatus, Student } from '../types';
 import { StudentAvatar } from './StudentAvatar';
+import { Button, Chip, Modal } from './ui';
 
 export type { HomeworkStatus };
 
@@ -8,7 +9,6 @@ interface HomeworkCheckModalProps {
   students: Student[];
   statuses: Record<string, HomeworkStatus>;
   lessonDateKey: string;
-  getRank: (pts: number, gender: Gender) => RankInfo;
   onToggle: (studentId: string) => void;
   onSetStatus: (studentId: string, status: HomeworkStatus) => void;
   onConfirm: () => void;
@@ -19,7 +19,6 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
   students,
   statuses,
   lessonDateKey,
-  getRank,
   onToggle,
   onSetStatus,
   onConfirm,
@@ -41,23 +40,8 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
   }).length;
 
   return (
-    <div className="fixed inset-0 z-[180] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="w-full max-w-3xl overflow-hidden rounded-[32px] border-4 border-emerald-700 bg-white shadow-2xl">
-        <div className="flex flex-col gap-3 border-b border-emerald-100 bg-emerald-700 p-5 text-white sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-emerald-100">Homework Check</p>
-            <h2 className="text-2xl font-black uppercase tracking-wide">Check BTVN</h2>
-            <p className="text-xs font-bold text-emerald-100">Ngày {lessonDateKey} · {students.length} trainer đang có mặt</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="self-end rounded-2xl bg-white/15 px-4 py-2 text-xs font-black uppercase tracking-wider hover:bg-white/25 sm:self-auto"
-          >
-            Đóng
-          </button>
-        </div>
-
-        <div className="max-h-[62vh] overflow-y-auto p-4 custom-scrollbar">
+    <Modal onClose={onClose} title="Kiểm tra bài tập" subtitle={`Ngày ${lessonDateKey} · ${students.length} Trainer đang có mặt`} icon="✎" size="lg" zIndex="z-[180]" footer={<><div className="mr-auto text-sm font-semibold text-brand-ink/70"><span className="font-bold text-brand-emerald">{doneCount}</span> hoàn thành · <span className="font-bold text-[#8f5500]">{notYetCount}</span> chưa xong · <span className="font-bold text-brand-danger">{missingCount}</span> thiếu · {actionableCount} chưa chốt</div><Button disabled={actionableCount <= 0} onClick={onConfirm}>Chốt bài tập</Button></>}>
+        <div className="custom-scrollbar">
           {students.length === 0 ? (
             <p className="py-16 text-center text-sm font-bold text-gray-400">Không có trainer đang hiện diện để check BTVN.</p>
           ) : (
@@ -66,7 +50,6 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                 const lessonKey = `${student.className}:${lessonDateKey}`;
                 const alreadyChecked = student.pokemonProgress?.lastHomeworkLessonKey === lessonKey;
                 const status = alreadyChecked ? 'locked' : (statuses[student.id] || 'done');
-                getRank(student.points, student.gender);
 
                 return (
                   <div
@@ -74,7 +57,7 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                     onClick={() => {
                       if (!alreadyChecked) onToggle(student.id);
                     }}
-                    className={`flex min-w-0 items-center gap-3 rounded-2xl border-2 p-3 text-left transition-all ${
+                    className={`flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors ${
                       status === 'locked'
                         ? 'border-gray-200 bg-gray-50 opacity-70'
                         : status === 'missing'
@@ -87,18 +70,16 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                     <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-black text-gray-900">{student.name}</p>
-                      <p className="truncate text-[10px] font-bold text-gray-500">{student.className}</p>
+                      <p className="truncate text-xs font-bold text-gray-500">{student.className}</p>
                     </div>
                     {status === 'locked' ? (
-                      <span className="shrink-0 rounded-full bg-gray-200 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-gray-600">
-                        Đã chốt
-                      </span>
+                      <Chip tone="neutral">Đã chốt</Chip>
                     ) : (
                       <div className="grid shrink-0 grid-cols-1 gap-1">
                         {([
-                          ['done', 'Done', 'bg-emerald-600 text-white border-emerald-600'],
-                          ['not-yet', 'Not Yet', 'bg-amber-500 text-white border-amber-500'],
-                          ['missing', 'Missing', 'bg-rose-600 text-white border-rose-600']
+                          ['done', 'Hoàn thành', 'bg-brand-emerald text-white border-brand-emerald'],
+                          ['not-yet', 'Chưa xong', 'bg-brand-gold text-brand-forest-deep border-brand-gold'],
+                          ['missing', 'Thiếu', 'bg-brand-danger text-white border-brand-danger']
                         ] as const).map(([value, label, activeClass]) => (
                           <button
                             key={value}
@@ -107,8 +88,8 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                               event.stopPropagation();
                               onSetStatus(student.id, value);
                             }}
-                            className={`rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-wider transition-all ${
-                              status === value ? activeClass : 'border-gray-200 bg-white text-gray-400 hover:text-gray-700'
+                            className={`rounded-full border px-3 py-1 text-xs font-bold transition-colors ${
+                              status === value ? activeClass : 'border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink'
                             }`}
                           >
                             {label}
@@ -122,20 +103,6 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
             </div>
           )}
         </div>
-
-        <div className="flex flex-col gap-3 border-t border-gray-100 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-xs font-bold text-gray-600">
-            <span className="font-black text-emerald-700">{doneCount}</span> Done · <span className="font-black text-amber-600">{notYetCount}</span> Not Yet · <span className="font-black text-rose-600">{missingCount}</span> Missing · <span className="font-black text-gray-700">{actionableCount}</span> chưa chốt
-          </div>
-          <button
-            disabled={actionableCount <= 0}
-            onClick={onConfirm}
-            className="rounded-2xl bg-emerald-700 px-6 py-3 text-xs font-black uppercase tracking-wider text-white shadow-lg hover:bg-emerald-800 disabled:bg-gray-300 disabled:text-gray-500"
-          >
-            Confirm Homework
-          </button>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 };

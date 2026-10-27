@@ -5,7 +5,7 @@ import { useApp } from '../../app/AppContext';
 
 export const AttendanceModal: React.FC = () => {
   const {
-    attendanceStatuses, currentClassStudents, getRank, handleConfirmAttendanceCheck,
+    attendanceStatuses, currentClassStudents, handleConfirmAttendanceCheck,
     setAttendanceStatus, setShowAttendanceModal, showAttendanceModal
   } = useApp();
   return (
@@ -15,7 +15,6 @@ export const AttendanceModal: React.FC = () => {
           students={currentClassStudents}
           statuses={attendanceStatuses}
           lessonDateKey={getLocalDateKey()}
-          getRank={getRank}
           onSetStatus={setAttendanceStatus}
           onConfirm={handleConfirmAttendanceCheck}
           onClose={() => setShowAttendanceModal(false)}

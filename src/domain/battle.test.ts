@@ -8,7 +8,8 @@ import { createPokemonPetFromDexId } from './pokemonProgression';
 const NOW = new Date('2026-10-26T09:00:00+07:00').getTime();
 
 const fighter = (id: string, hp = 50): Student => {
-  const pet = { ...createPokemonPetFromDexId(25, undefined, { isShiny: false }), hp };
+  // Mã Pokémon và Nature cố định: rơi đồ hiếm và Nature đều suy ra từ mã này; để ngẫu nhiên thì test thỉnh thoảng đỏ.
+  const pet = { ...createPokemonPetFromDexId(25, undefined, { isShiny: false }), hp, instanceId: `pet-${id}`, natureId: 'curious' as const };
   return {
     id, name: id.toUpperCase(), gender: Gender.MALE, className: '6A', points: 10, history: [],
     egg: { progress: 10, status: 'hatched', assignedDexId: 25, kind: 'normal', requiredProgress: 10 },
