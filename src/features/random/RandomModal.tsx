@@ -24,7 +24,7 @@ export const RandomModal: React.FC = () => {
           <div className="bg-white p-6 sm:p-8 rounded-brand-lg w-full max-w-5xl text-center shadow-2xl animate-in zoom-in duration-300 relative border border-[#e6e2d4] my-auto">
             <button 
               onClick={() => setShowRandomModal(false)} 
-              className="absolute top-5 right-5 text-3xl text-gray-400 hover:text-red-800 transition-colors z-20"
+              className="absolute top-5 right-5 text-3xl text-brand-ink/45 hover:text-brand-forest transition-colors z-20"
             >
               &times;
             </button>
@@ -33,19 +33,19 @@ export const RandomModal: React.FC = () => {
             <div className="flex items-center justify-center gap-2 mb-6 bg-[#f4f8f1] p-1.5 rounded-full border border-brand-emerald/20 w-fit mx-auto">
               <button 
                 onClick={() => handleRandom('solo')} 
-                className={`px-5 py-2 rounded-full font-bold text-xs transition-all uppercase tracking-wider ${randomMode === 'solo' ? 'bg-red-800 text-white shadow-md' : 'text-red-900 hover:bg-red-100'}`}
+                className={`px-5 py-2 rounded-full font-bold text-sm transition-colors ${randomMode === 'solo' ? 'bg-brand-forest text-brand-cream shadow-md' : 'text-brand-ink/70 hover:bg-white'}`}
               >
                 👤 Chế độ Solo
               </button>
               <button 
                 onClick={() => handleRandom('battle')} 
-                className={`px-5 py-2 rounded-full font-bold text-xs transition-all uppercase tracking-wider ${randomMode === 'battle' ? 'bg-red-800 text-white shadow-md' : 'text-red-900 hover:bg-red-100'}`}
+                className={`px-5 py-2 rounded-full font-bold text-sm transition-colors ${randomMode === 'battle' ? 'bg-brand-forest text-brand-cream shadow-md' : 'text-brand-ink/70 hover:bg-white'}`}
               >
                 ⚔️ Chế độ Battle
               </button>
               <button
                 onClick={() => handleRandom('boss')}
-                className={`px-5 py-2 rounded-full font-bold text-xs transition-all uppercase tracking-wider ${randomMode === 'boss' ? 'bg-red-800 text-white shadow-md' : 'text-red-900 hover:bg-red-100'}`}
+                className={`px-5 py-2 rounded-full font-bold text-sm transition-colors ${randomMode === 'boss' ? 'bg-brand-forest text-brand-cream shadow-md' : 'text-brand-ink/70 hover:bg-white'}`}
               >
                 👹 Boss
               </button>
@@ -68,13 +68,13 @@ export const RandomModal: React.FC = () => {
                     onFailure={() => handleResolveBossRound('failure')}
                   />
                 ) : (
-                  <div className="mx-auto max-w-2xl rounded-[32px] border-2 border-red-100 bg-red-50 p-8 text-center">
+                  <div className="mx-auto max-w-2xl rounded-brand-lg border border-brand-emerald/20 bg-[#f4f8f1] p-8 text-center">
                     <div className="text-6xl">👹</div>
-                    <h2 className="mt-4 text-3xl font-royal text-red-900">Boss đang ẩn nấp</h2>
-                    <p className="mt-3 text-sm font-bold text-red-800">
+                    <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-brand-ink">Boss đang ẩn nấp</h2>
+                    <p className="mt-3 text-sm font-semibold text-brand-ink/70">
                       Boss vẫn đang ở đâu đó. Tiếp tục Random Solo/Battle để tìm Boss.
                     </p>
-                    <p className="mt-4 rounded-2xl bg-white px-4 py-3 text-xs font-black uppercase tracking-wider text-red-700">
+                    <p className="mt-4 rounded-brand-md bg-white px-4 py-3 text-xs font-bold text-brand-forest">
                       {currentBossState
                         ? `Boss Frequency: ${currentBossFrequencyOption.label} · ${currentBossState.randomsSinceLastEncounter}/${currentBossState.nextEncounterAt} Random`
                         : 'Chọn một lớp cụ thể để kích hoạt Boss Raid per-class.'}
@@ -109,12 +109,12 @@ export const RandomModal: React.FC = () => {
             {/* SOLO MODE */}
             {randomMode === 'solo' && randomStudent && (
               <>
-                <h2 className="text-2xl font-royal text-red-800 mb-6 uppercase tracking-wider">Kén Chọn Ngẫu Nhiên (Solo)</h2>
+                <h2 className="mb-6 text-2xl font-extrabold tracking-tight text-brand-ink">Chọn ngẫu nhiên</h2>
 
                 <div className="flex items-center justify-center gap-6 mb-6">
                   <div className="relative">
-                    <StudentAvatar student={randomStudent} className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-red-800 shadow-xl" />
-                    <div className="absolute top-0 right-0 bg-red-800 text-white w-9 h-9 rounded-full flex items-center justify-center font-bold border-2 border-white shadow text-sm">
+                    <StudentAvatar student={randomStudent} className="w-28 h-28 sm:w-32 sm:h-32 rounded-full border-4 border-brand-forest shadow-xl" />
+                    <div className="absolute top-0 right-0 bg-brand-forest text-brand-cream w-9 h-9 rounded-full flex items-center justify-center font-bold border-2 border-white shadow text-sm">
                       {randomStudent.points}
                     </div>
                   </div>
