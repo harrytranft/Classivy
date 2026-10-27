@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (chưa bắt đầu; Phase 2 đã nghiệm thu)
+**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (đang làm trên nhánh `claude/phase3-data-model`; ADR chờ Harry duyệt)
 
 ## Mục tiêu
 
@@ -36,7 +36,7 @@
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
-| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Chưa bắt đầu | **Có (migration)** |
+| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Đang làm (3.1 chờ duyệt) | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
@@ -151,15 +151,18 @@ src/
 
 ---
 
-## Phase 3 - Mô hình dữ liệu mới + RLS (roadmap, sẽ phân tích sâu khi tới)
+## Phase 3 - Mô hình dữ liệu mới + RLS (ĐANG LÀM, bắt đầu 2026-10-27)
 
 **Mục tiêu:** học sinh, lớp, điểm là dữ liệu bảng thật, có RLS chặt, dữ liệu cũ được chuyển sang mà không mất.
 
-- [ ] 3.1 ADR về data model (`engineering:architecture`): bảng lớp, học sinh, thành viên lớp, sổ cái điểm, trạng thái tài khoản; cách giữ dữ liệu game (Pokémon, Boss, Ludo) dạng JSON hay bảng
-- [ ] 3.2 Viết migration trong `supabase/migrations/` (có phần hoàn tác), kèm RLS và test RLS; gồm xoá cột `ranks_male`, `ranks_female` khỏi `user_settings` (D7)
-- [ ] 3.3 Script chuyển dữ liệu từ `user_settings.students` sang bảng mới, có chế độ chạy thử (dry-run) và đối chiếu số lượng
-- [ ] 3.4 Lớp truy cập dữ liệu mới trong app; giữ chế độ khách (guest) nếu còn dùng
-- [ ] 3.5 Kiểm tra trên **dự án Supabase dev/branch** trước; kiểm tra giới hạn gói miễn phí
+**Nhánh:** `claude/phase3-data-model`. **Thiết kế:** `docs/adr/0001-phase-3-data-model.md` (mô hình lai: bảng `classes`, `students`, `point_ledger`; dữ liệu game giữ JSON trong `students.game_state`).
+
+- [~] 3.1 ADR về data model (`engineering:architecture`) - **đã viết 2026-10-27, chờ Harry chốt Q1-Q7 trong ADR mục 7**. Chưa viết migration trước khi chốt (đổi schema/RLS phải hỏi Harry).
+- [ ] 3.2 Migration `supabase/migrations/` (có file hoàn tác): bảng `classes`, `students`, `point_ledger`, view `student_recent_history`, hàm `save_teacher_changes`, `profiles.role`; RLS + trigger chặn sửa/xoá sổ điểm; gộp `docs/phase-3-pending-sql.md` (xoá `ranks_male`/`ranks_female`, mặc định "Trainer")
+- [ ] 3.2b Test RLS lặp lại được trên PostgreSQL 16 cục bộ với schema `auth` giả (`supabase/tests/`): giáo viên A không đọc/ghi được dữ liệu giáo viên B; không sửa/xoá được sổ điểm; không gán học sinh vào lớp người khác
+- [ ] 3.3 Chuyển dữ liệu trong app (ADR mục 6): hàm thuần `legacy -> rows` có test; hộp thoại chạy thử (dry-run) hiện số lớp/học sinh/lịch sử/tổng điểm; sao lưu JSON trước; đối chiếu sau khi ghi; cột cũ giữ nguyên để hoàn tác
+- [ ] 3.4 Lớp truy cập dữ liệu mới trong `src/app/providers/gameData/`: tải từ bảng, lưu theo phần thay đổi (diff) qua một hàm DB atomic; logic diff là hàm thuần có test; smoke test cập nhật Supabase giả. App không có chế độ khách (bắt buộc đăng nhập) nên không cần giữ
+- [ ] 3.5 Chạy trên **dự án Supabase dev** trước (Harry tạo); kiểm tra giới hạn gói miễn phí
 - [ ] 3.6 `deploy-checklist`, sao lưu trước khi chạy trên production
 
 **Bàn giao cho Harry:** sao lưu dữ liệu, chạy migration trên dev rồi production theo hướng dẫn; xác nhận từng bước trước khi coi là đã áp dụng.

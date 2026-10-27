@@ -34,6 +34,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
 - Phase 2 (hệ thiết kế, reskin, thuật ngữ): hoàn thành, Harry nghiệm thu preview (2026-10-27), gộp vào `main` qua PR từ nhánh `claude/phase2-rebranding`. Nội dung: bỏ cấp bậc/Gemini, hệ thiết kế + Tailwind local, thuật ngữ Trainer, localStorage `classivy_*`, Modal/Toast và reskin shell, lớp, hồ sơ, cài đặt, đăng nhập, công cụ, điểm danh/bài tập cùng các modal game. Vòng cuối đã làm lại Random và Tặng Pokémon theo nền kem/trắng, CTA xanh rừng/vàng, tăng tương phản và dọn CTA đỏ không có nghĩa cảnh báo. Phông chữ: một nguồn duy nhất `fontFamily.sans` = Plus Jakarta Sans/Be Vietnam Pro; `font-royal` và kiểu VIẾT HOA giãn chữ đã bỏ. Rà soát sau Codex đã sửa: smoke đỏ, CSS ép màu làm nút trừ điểm Battle thành xanh, bảng Cá Ngựa mất nền (xem Nhật ký kiểm chứng trong PLAN).
+- Phase 3 (dữ liệu mới + RLS): bắt đầu 2026-10-27 trên nhánh `claude/phase3-data-model`. Đã viết ADR `docs/adr/0001-phase-3-data-model.md` (mô hình lai: bảng `classes`, `students`, `point_ledger`; dữ liệu game giữ JSON), **chờ Harry chốt Q1-Q7** trước khi viết migration.
 - Chưa đổi schema, chưa có migration nào mới. App đã thôi đọc/ghi cột `ranks_male`/`ranks_female` (xoá cột ở Phase 3). Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
 
 ## 5. Bản đồ repo (hiện tại)
@@ -61,4 +62,4 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-Tiếp theo là Phase 3: ADR data model, migration + RLS trên Supabase dev, script chuyển dữ liệu và đối chiếu. Không chạy migration riêng từ Phase 2: SQL trong `docs/phase-3-pending-sql.md` phải gộp vào migration Phase 3. Phase 2 đã nghiệm thu.
+Phase 3 đang chờ Harry duyệt ADR (mục 7). Sau đó: migration + RLS trên Supabase dev, script chuyển dữ liệu và đối chiếu. Không chạy migration riêng từ Phase 2: SQL trong `docs/phase-3-pending-sql.md` phải gộp vào migration Phase 3. Phase 2 đã nghiệm thu.
