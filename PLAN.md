@@ -129,10 +129,12 @@ src/
   - Dữ liệu: app thôi đọc/ghi `ranks_male`/`ranks_female`; KHÔNG đổi Supabase ở Phase 2 (xoá cột gộp vào migration Phase 3). File sao lưu cũ có phần cấp bậc vẫn nhập được (bỏ qua phần đó) - viết test cho việc này
   - Lỗi "danh sách cấp bậc rỗng làm trắng trang" tự hết theo
   - Kiểm chứng: `npm test`, `npm run typecheck`, `npm run build`, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff
-- [ ] 2.1 Chạy lại `impeccable document` (chế độ scan) và chốt `DESIGN.md` chính thức (North Star đã chốt: "Lá non trong tấm khiên")
+- [x] 2.1 Chốt `DESIGN.md` chính thức (2026-10-27): theo skill `impeccable`, viết `PRODUCT.md` (Harry xác nhận người dùng: giáo viên trên laptop/màn chiếu; học sinh chưa đăng nhập tới Phase 5), Harry chọn "gộp" bản nháp với những gì đã dựng; hướng thiết kế do Harry ghim nên không bốc thăm hướng mới. Hợp đồng hướng thiết kế trang lớp: `.impeccable/surfaces/`
 - [x] 2.2 Chuyển Tailwind từ CDN sang build local, đưa token màu/chữ/bo góc vào cấu hình - xong 2026-10-27: Tailwind 3.4 (cùng dòng v3 với CDN cũ) + PostCSS, `tailwind.config.js` có token `brand-*` từ DESIGN.md (chưa dùng ở màn nào, dành cho 2.3-2.4)
-- [ ] 2.3 Dựng thư viện `components/ui/` (Button, Card, Chip, Avatar, Modal, Toast, ProgressBar, Badge, EmptyState)
+- [~] 2.3 Dựng thư viện `components/ui/` - đã có Button, Card, Chip, ProgressBar (có "chồi lá"), ShieldScore (khiên Hào Quang), EmptyState (2026-10-27). Còn Modal/Sheet, Toast, Avatar: làm cùng lúc reskin các hộp thoại (2.4)
 - [ ] 2.4 Reskin lần lượt các màn hình đã tách; kiểm tra tương phản và cảm ứng (`accessibility-review`)
+  - [x] Bản mẫu (Harry chọn "làm mẫu trước", 2026-10-27): khung app (thanh điều hướng trái luôn hiện, gộp nút đồng bộ), trang chọn lớp, trang lớp (thanh công cụ, thẻ học sinh, dock công cụ có chữ), màn chờ đăng nhập. **Chờ Harry duyệt hướng trên bản preview rồi mới làm tiếp**
+  - [ ] Các màn còn lại: Plaza, Hồ sơ (3 tab), Cài đặt, Random/Battle/Boss, Cá Ngựa, Vòng quay, Shop, Tặng Pokémon, Ban thưởng/Phạt, Điểm danh, Bài tập, Chia nhóm, Hẹn giờ, Tài khoản, các thông báo (Pokémon, level-up, nở trứng, rời đi), đăng nhập/đăng ký; bỏ `font-royal` (Playfair)
 - [x] 2.5 **Quyết định với Harry:** bộ thuật ngữ (D9, 2026-10-27): giữ "Hào Quang", "Học sĩ" -> "Trainer". Đã đổi 3 mô tả vật phẩm/kỹ năng trong `pokemonData.ts`. Lưu ý: danh sách kỹ năng Pokémon được lưu riêng theo giáo viên (sửa được ở Cài đặt), nên tài khoản đã có dữ liệu vẫn thấy chữ cũ ở 2 kỹ năng "Ý Chỉ Đồng Hành", "Truyền Cảm Hứng" cho tới khi tự sửa. Còn mở: tên kỹ năng "Ý Chỉ Đồng Hành" và vài chữ "hoàng" trong dữ liệu Pokémon/Boss
 - [x] ~~2.6 Đổi prompt Gemini~~ - không cần nữa: Gemini bị bỏ ở 2.0 (D7)
 - [x] 2.7 Đổi khoá localStorage `imperial_*` thành `classivy_*` **kèm đoạn chuyển dữ liệu một lần** (đọc khoá cũ, ghi khoá mới, giữ bản cũ để hoàn tác) và test - xong 2026-10-27. Cách hoàn tác: xoá các khoá `classivy_*` và `classivy_storage_migrated_v1` trong trình duyệt rồi tải lại trang
@@ -206,7 +208,8 @@ src/
 - ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
 - ~~**[Lỗi có sẵn, dữ liệu]** Trước khi đăng nhập xong, app ghi `[]` đè bản lưu học sinh trên máy~~ → Harry duyệt, **đã sửa 2026-10-27** (`useLocalPersistence.ts` chỉ ghi khi `!authLoading`; smoke test nhóm 6 kiểm tra học sinh trên máy được đẩy lên đám mây ở lần đăng nhập đầu; bỏ bản sửa thì test đỏ).
 - **[Giao diện, gộp vào 2.4]** Thông báo "Pokémon phản ứng" phủ một lớp trong suốt lên toàn màn hình: bấm vào bất kỳ đâu (kể cả nút "Lắc xí ngầu" ở Cá Ngựa) chỉ để tắt thông báo, phải bấm lần nữa. Phát hiện khi smoke test chạy với CSS thật. Đề xuất khi reskin: thông báo không chặn thao tác bên dưới.
-- **[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt" khi danh sách đổi thứ tự sau khi chấm điểm. Xử lý cùng Phase 2.
+- ~~**[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt"~~ → **đã bỏ hiệu ứng làm mờ** khi reskin thẻ học sinh (2026-10-27).
+- **[Truy cập, gộp vào 2.4]** Thẻ học sinh bấm được bằng chuột nhưng chưa vào được bằng phím Tab (là `div` có `onClick`). Đề xuất đổi sang nút/đường dẫn thật khi rà `accessibility-review`.
 
 ## Quy trình sau mỗi Phase
 
@@ -269,4 +272,10 @@ src/
 - Thêm `SMOKE_SCREENSHOTS=1 npm run smoke` để lưu ảnh chụp từng màn vào `test-results/screens/` (không so sánh, không commit). Đã xem ảnh trang lớp, Ban thưởng/Phạt, Cá Ngựa: đủ màu, bố cục đúng.
 - `npm run typecheck` 0 lỗi; `npm test` 109 đạt; `npm run build` thành công; `npm run smoke` 6/6 đạt hai lần liên tiếp.
 - Cần Harry: mở bản preview Vercel của nhánh, so nhanh với bản đang chạy (màu, bố cục, hộp thoại) vì máy ảo không so được với CDN.
+
+**Phase 2 / task 2.1, 2.3, bản mẫu 2.4 - 2026-10-27** (kiểm thử tự động + xem ảnh chụp trên máy ảo; chưa thử tay; chưa chạy trên Vercel thật):
+- Thêm `PRODUCT.md`, cập nhật `DESIGN.md` (chính thức), `src/components/ui/`, `src/components/ClassDock.tsx` (thay `LiquidDock`), gói `lucide-react` (icon, MIT, miễn phí). Bỏ CSS "liquid glass".
+- Tương phản đo bằng công thức WCAG cho 20 cặp chữ/nền đã dùng: tất cả đạt AA sau khi sửa 3 cặp (chữ trứng, nhãn "Hào Quang", chữ gợi ý ô tìm kiếm).
+- `npm run typecheck` 0 lỗi; `npm test` 109 đạt; `npm run build` thành công; `npm run smoke` 6/6 đạt hai lần. Ảnh gốc DOM cập nhật có chủ đích (32 file .html: thay đổi giao diện); **12 file dữ liệu đám mây không đổi** = mọi luồng thao tác giữ nguyên kết quả. Test đổi 2 bộ chọn: dock theo `role="toolbar"`, nút cộng điểm theo tên "Cộng điểm ...".
+- Đã xem ảnh chụp: trang chọn lớp, trang lớp, trạng thái rê chuột (nút vắng/cộng/trừ), chế độ chọn nhiều (dock đủ nút Phản hồi/Xóa sau khi sửa lỗi bị cắt). Trong máy ảo không tải được Google Fonts và ảnh đại diện (bị chặn mạng) nên chữ trong ảnh chụp là phông dự phòng.
 

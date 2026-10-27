@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-27 (Phase 2 đang làm: xong task 2.0 và 2.7)
+**Cập nhật lần cuối:** 2026-10-27 (Phase 2 đang làm: xong 2.0, 2.1, 2.2, 2.5, 2.7, 2.8; 2.3 phần lớn; bản mẫu 2.4 chờ duyệt)
 
 ## 1. Sản phẩm
 
@@ -32,7 +32,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 0 (nền móng và thương hiệu): hoàn thành.
 - Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
-- Phase 2 (nhánh `claude/charming-wright-inxhg1`): xong 2.0 (bỏ cấp bậc + Gemini) và 2.7 (khoá localStorage `classivy_*`, chép từ khoá cũ một lần). Còn 2.1-2.5, 2.8, 2.9.
+- Phase 2 (nhánh `claude/charming-wright-inxhg1`): xong 2.0 (bỏ cấp bậc + Gemini), 2.1 (`DESIGN.md` chính thức + `PRODUCT.md`), 2.2 (Tailwind 3.4 local), 2.5/2.8 ("Học sĩ" -> "Trainer", D9), 2.7 (khoá `classivy_*`), sửa lỗi ghi đè bản lưu máy. 2.3: có Button/Card/Chip/ProgressBar/ShieldScore/EmptyState. 2.4: bản mẫu (khung app, trang chọn lớp, trang lớp) **chờ Harry duyệt** rồi mới reskin các màn còn lại.
 - Chưa đổi schema, chưa có migration nào mới. App đã thôi đọc/ghi cột `ranks_male`/`ranks_female` (xoá cột ở Phase 3). Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
 
 ## 5. Bản đồ repo (hiện tại)
@@ -47,8 +47,8 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 ## 6. Rủi ro đã biết
 
 - Dữ liệu học sinh nằm trong một cột JSON của giáo viên, chưa phải bảng riêng; đây là nút thắt cho mọi tính năng học sinh. Phần cần thay ở Phase 3 đã gom vào `src/app/providers/gameData/`.
-- Lỗi có sẵn: trước khi đăng nhập xong, app ghi đè bản lưu học sinh trên máy bằng `[]` (xem "Đề xuất phát sinh" trong PLAN, chờ duyệt).
-- Nội dung game còn từ ngữ cung đình ("Hào Quang" ~77 chỗ, "Học sĩ", kỹ năng "Ý Chỉ Đồng Hành"...); chờ Harry chốt bộ thuật ngữ (task 2.5).
+- Thuật ngữ: giữ "Hào Quang"; "Học sĩ" -> "Trainer" (D9). Còn mở: tên kỹ năng "Ý Chỉ Đồng Hành"; kỹ năng Pokémon lưu theo giáo viên nên tài khoản cũ vẫn thấy mô tả cũ cho tới khi tự sửa trong Cài đặt.
+- SQL chờ gộp vào migration Phase 3: `docs/phase-3-pending-sql.md` (xoá cột cấp bậc, đổi tên mặc định).
 - Giới hạn gói miễn phí Supabase/Vercel (kể cả Edge Functions) cần xác minh lại trước Phase 3-4.
 
 ## 7. Quyết định còn mở
@@ -58,4 +58,4 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-Tiếp Phase 2: chờ Harry chốt thuật ngữ (2.5) và duyệt sửa lỗi ghi đè bản lưu máy; song song có thể làm 2.2 (Tailwind build local) -> 2.1 (chốt DESIGN.md) -> 2.3 (thư viện `components/ui/`) -> 2.4 (reskin). Khi đổi giao diện, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff.
+Tiếp Phase 2: Harry duyệt bản mẫu giao diện trên preview; sau đó reskin các màn còn lại (2.4) theo `DESIGN.md`, làm Modal/Toast (2.3), rà truy cập (`accessibility-review`), rồi 2.9 tổng kết. Khi đổi giao diện, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff.

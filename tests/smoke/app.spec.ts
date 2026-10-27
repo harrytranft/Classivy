@@ -214,7 +214,7 @@ async function clickNav(page: Page, title: string) {
   await page.waitForTimeout(350);
   await navButton(page, title).click();
 }
-const dockButton = (page: Page, index: number) => page.locator('.liquid-glass-dock button').nth(index);
+const dockButton = (page: Page, index: number) => page.locator('[role="toolbar"][aria-label="Công cụ lớp"] button').nth(index);
 const DOCK = { random: 0, ludo: 1, wheel: 2, shop: 3, group: 4, timer: 5, selectAll: 6, multiSelect: 7, resetAura: 8 };
 
 async function chooseClass(page: Page, className: string) {
@@ -314,7 +314,7 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   await chooseClass(page, '6A');
 
   // 1. Cộng điểm bằng bảng kỹ năng
-  await page.getByRole('button', { name: '+', exact: true }).first().click({ force: true });
+  await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
   await snap(page, '30-skill-modal', state);
   await page.locator('button.aspect-square').first().click();
   await snap(page, '31-after-skill-points', state);
