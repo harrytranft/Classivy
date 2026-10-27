@@ -288,3 +288,8 @@ src/
 - `npm run typecheck`: đạt. `npm test`: 106/106 đạt ở lần chạy lại; lần đầu có 1 test nở trứng flaky do Pokémon shiny ngẫu nhiên, không liên quan thay đổi này. `npm run build`: đạt.
 - Snapshot smoke đã cập nhật có chủ đích cho đăng nhập/đăng ký, Cài đặt, ba tab Hồ sơ, Chia nhóm, Hẹn giờ, Tài khoản và các snapshot dữ liệu cloud có thay đổi `sk_decree`. Nhóm "các màn hình chính" đã chạy xanh riêng sau khi đổi bộ chọn từ `Trainer Settings` sang `Cài đặt lớp học`; nhóm modal kết thúc không có `error-context`. Nên chạy lại đủ 6/6 smoke trên preview/CI trước khi gộp. Không migration, không deploy.
 
+**Phase 2 / làm sạch Imperial ở đăng nhập, Cài đặt, Hồ sơ - 2026-10-27:**
+- Theo Harry duyệt: form đăng nhập chỉ còn email + mật khẩu. Bỏ UI tạo tài khoản và nút Google; code đăng ký/Google trong `AuthContext` giữ lại cho Phase 4, chỉ không còn lối vào trên giao diện giáo viên hiện tại.
+- Đổi primary đỏ còn lồng sâu trong Cài đặt/Hồ sơ thành `brand-forest`; phần xoá/cảnh báo vẫn đỏ vì là trạng thái nguy hiểm có nghĩa. Các heading `font-royal` trong bề mặt Hồ sơ được thay bằng Plus Jakarta Sans/Be Vietnam Pro theo `DESIGN.md`.
+- Cập nhật smoke test: bỏ snapshot `02-register.html` và không còn thao tác tạo tài khoản; cập nhật snapshot đăng nhập, Cài đặt và ba tab Hồ sơ. `npm run typecheck`, `npm test` (106/106) và `npm run build` đạt.
+

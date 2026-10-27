@@ -33,3 +33,15 @@ input, textarea, select {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Những control cũ còn lồng sâu trong Hồ sơ/Cài đặt: chuyển màu primary Imperial sang Classivy
+   trong khi giữ đỏ cho hành động xoá/cảnh báo có ý nghĩa nguy hiểm. */
+.classivy-reskin button[class*="bg-red-"] {
+  background-color: #014a2d !important;
+}
+.classivy-reskin button[class*="hover:bg-red-"]:hover {
+  background-color: #002619 !important;
+}
+.classivy-reskin .font-royal {
+  font-family: "Plus Jakarta Sans", "Be Vietnam Pro", system-ui, sans-serif !important;
+}

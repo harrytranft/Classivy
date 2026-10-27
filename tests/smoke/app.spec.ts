@@ -228,8 +228,6 @@ async function chooseClass(page: Page, className: string) {
 test('màn đăng nhập', async ({ page }) => {
   const state = await setupPage(page, { loggedIn: false });
   await snap(page, '01-login', state);
-  await page.getByRole('button', { name: /Tạo Tài Khoản/ }).first().click();
-  await snap(page, '02-register', state);
 });
 
 test('các màn hình chính', async ({ page }) => {

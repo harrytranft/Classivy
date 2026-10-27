@@ -11,7 +11,7 @@ export const ProfileScreen: React.FC = () => {
     editingStudent, profileTab, setCurrentScreen, setProfileTab, setSelectedFusionPetDexIds
   } = useApp();
   return (
-    <div className="mx-auto max-w-4xl space-y-6 rounded-brand-lg border border-[#e6e2d4] bg-white p-6 shadow-[0_6px_18px_-8px_rgba(12,37,39,0.14)] animate-in slide-in-from-right-4 duration-500 sm:p-8">
+    <div className="classivy-reskin mx-auto max-w-4xl space-y-6 rounded-brand-lg border border-[#e6e2d4] bg-white p-6 shadow-[0_6px_18px_-8px_rgba(12,37,39,0.14)] animate-in slide-in-from-right-4 duration-500 sm:p-8">
       <div className="flex items-center justify-between border-b border-[#e6e2d4] pb-4">
         <div><p className="text-sm font-semibold text-brand-forest">Hành trình của Trainer</p><h2 className="mt-1 text-2xl font-extrabold tracking-tight text-brand-ink sm:text-3xl">Hồ sơ Trainer</h2></div>
         <button 

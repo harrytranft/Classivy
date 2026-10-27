@@ -19,22 +19,22 @@ export const ProfileInfoTab: React.FC = () => {
           .map(badge => ({ badge, definition: getBadgeDefinition(badge.badgeId) }))
           .filter(item => item.definition);
         return (
-          <div className="rounded-[32px] border border-red-100 bg-gradient-to-br from-red-50 to-amber-50 p-5 shadow-sm">
+          <div className="rounded-brand-lg border border-brand-emerald/20 bg-[#f4f8f1] p-5 shadow-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-700">Trainer Journey</p>
-                <h3 className="mt-1 text-2xl font-royal text-red-950">
+                <p className="text-sm font-bold text-brand-forest">Hành trình Trainer</p>
+                <h3 className="mt-1 text-2xl font-extrabold tracking-tight text-brand-ink">
                   Lv.{trainerProgress.level} · {trainerTitle.icon} {trainerTitle.name}
                 </h3>
                 <p className="mt-1 text-xs font-bold text-stone-500">{trainerTitle.description}</p>
               </div>
               <div className="min-w-[180px] rounded-2xl bg-white p-3">
-                <div className="mb-1 flex justify-between text-[10px] font-black text-red-900">
+                <div className="mb-1 flex justify-between text-xs font-bold text-brand-forest">
                   <span>Trainer XP</span>
                   <span>{trainerProgress.xp}/{trainerXpNeededForNextLevel(trainerProgress.level)}</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-stone-100">
-                  <div className="h-full rounded-full bg-red-700" style={{ width: `${trainerXpPct}%` }} />
+                  <div className="h-full rounded-full bg-brand-emerald" style={{ width: `${trainerXpPct}%` }} />
                 </div>
               </div>
             </div>
@@ -59,7 +59,7 @@ export const ProfileInfoTab: React.FC = () => {
                           setEditingStudent(updatedStudent);
                           setStudents(prev => prev.map(student => student.id === editingStudent.id ? updatedStudent : student));
                         }}
-                        className={`rounded-full border px-3 py-1 text-[10px] font-black ${trainerProgress.titleId === title.id ? 'border-red-700 bg-red-700 text-white' : 'border-amber-200 bg-amber-50 text-amber-900'}`}
+                        className={`rounded-full border px-3 py-1 text-[10px] font-black ${trainerProgress.titleId === title.id ? 'border-brand-forest bg-brand-forest text-brand-cream' : 'border-amber-200 bg-amber-50 text-amber-900'}`}
                       >
                         {title.icon} {title.name}
                       </button>
@@ -126,15 +126,15 @@ export const ProfileInfoTab: React.FC = () => {
         <div className="flex-1 w-full space-y-4">
           <div>
             <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Họ Tên</label>
-            <input className="w-full border p-3 rounded-xl bg-gray-50 focus:ring-2 ring-red-800/10 outline-none text-sm font-bold" value={editingStudent.name} onChange={e => setEditingStudent({...editingStudent, name: e.target.value})} />
+            <input className="w-full border border-[#d9d6ca] p-3 rounded-brand-md bg-white focus:ring-2 ring-brand-emerald/20 outline-none text-sm font-bold" value={editingStudent.name} onChange={e => setEditingStudent({...editingStudent, name: e.target.value})} />
           </div>
           <div>
             <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Lớp / Team</label>
-            <input className="w-full border p-3 rounded-xl bg-gray-50 focus:ring-2 ring-red-800/10 outline-none text-sm font-bold" value={editingStudent.className} onChange={e => setEditingStudent({...editingStudent, className: e.target.value})} />
+            <input className="w-full border border-[#d9d6ca] p-3 rounded-brand-md bg-white focus:ring-2 ring-brand-emerald/20 outline-none text-sm font-bold" value={editingStudent.className} onChange={e => setEditingStudent({...editingStudent, className: e.target.value})} />
           </div>
           <div>
             <label className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Điểm Hiện Tại</label>
-            <input type="number" className="w-full border p-3 rounded-xl bg-gray-50 font-black text-2xl text-red-800 outline-none" value={editingStudent.points} onChange={e => setEditingStudent({...editingStudent, points: parseInt(e.target.value) || 0})} />
+            <input type="number" className="w-full border border-[#d9d6ca] p-3 rounded-brand-md bg-white font-black text-2xl text-brand-forest outline-none" value={editingStudent.points} onChange={e => setEditingStudent({...editingStudent, points: parseInt(e.target.value) || 0})} />
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@ export const ProfileInfoTab: React.FC = () => {
           setSelectedStudentIds([editingStudent.id]); 
           setFeedbackSource('manual');
           setShowSkillModal(true); 
-        }} className="flex-1 bg-red-800 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-red-900 hover:scale-[1.01] transition-all">Ban Thưởng / Phạt</button>
+        }} className="flex-1 bg-brand-forest text-brand-cream py-4 rounded-brand-md font-bold shadow-lg hover:bg-brand-forest-deep hover:scale-[1.01] transition-all">Ban Thưởng / Phạt</button>
         <button onClick={() => {
           if (window.confirm("Xóa trainer này?")) {
             setStudents(prev => prev.filter(s => s.id !== editingStudent.id));

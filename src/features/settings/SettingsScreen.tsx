@@ -21,7 +21,7 @@ export const SettingsScreen: React.FC = () => {
     tileFormType, tileFormValue, timerSoundUrl, toggleSettingsSection, updateLuckyWheelReward, updatePetSkill, updateSkill, wheelFinishSoundUrl, wheelSpinSoundUrl
   } = useApp();
   return (
-    <div className="animate-in slide-in-from-bottom-4 space-y-6 pb-12 duration-500">
+    <div className="classivy-reskin animate-in slide-in-from-bottom-4 space-y-6 pb-12 duration-500">
       <header className="rounded-brand-lg border border-[#e6e2d4] bg-[#f4f8f1] px-6 py-7 sm:px-8">
         <p className="text-sm font-semibold text-brand-forest">Không gian giáo viên</p>
         <h2 className="mt-1 text-3xl font-extrabold tracking-tight text-brand-ink">Cài đặt lớp học</h2>
@@ -29,7 +29,7 @@ export const SettingsScreen: React.FC = () => {
       </header>
 
       <SettingsSection id="bossRaid" icon="👹" title="Boss Raid" subtitle="Cài tần suất Boss xuất hiện sau các lượt Random Solo/Battle." collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
-        <div className="rounded-[32px] border border-red-100 bg-gradient-to-br from-red-50 via-white to-amber-50 p-5 text-left shadow-sm">
+        <div className="rounded-brand-lg border border-brand-emerald/20 bg-[#f4f8f1] p-5 text-left shadow-sm">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {BOSS_ENCOUNTER_FREQUENCY_OPTIONS.map(option => {
               const active = bossEncounterFrequency === option.id;
@@ -39,30 +39,30 @@ export const SettingsScreen: React.FC = () => {
                   onClick={() => handleBossEncounterFrequencyChange(option.id)}
                   className={`rounded-3xl border-2 p-4 text-left transition-all ${
                     active
-                      ? 'border-red-700 bg-red-800 text-white shadow-xl shadow-red-900/20'
-                      : 'border-red-100 bg-white text-red-950 hover:border-red-300 hover:bg-red-50'
+                      ? 'border-brand-forest bg-brand-forest text-brand-cream shadow-xl shadow-brand-forest/20'
+                      : 'border-[#e6e2d4] bg-white text-brand-ink hover:border-brand-emerald hover:bg-brand-cream'
                   }`}
                 >
                   <p className="text-sm font-black uppercase tracking-wider">{option.label}</p>
-                  <p className={`mt-2 text-xs font-bold leading-relaxed ${active ? 'text-red-50' : 'text-red-700'}`}>
+                  <p className={`mt-2 text-xs font-bold leading-relaxed ${active ? 'text-brand-cream/85' : 'text-brand-ink/70'}`}>
                     {option.description}
                   </p>
                 </button>
               );
             })}
           </div>
-          <div className="mt-4 grid grid-cols-1 gap-3 rounded-3xl border border-amber-200 bg-white/80 p-4 text-xs font-black text-amber-950 md:grid-cols-3">
+          <div className="mt-4 grid grid-cols-1 gap-3 rounded-brand-md border border-[#e6e2d4] bg-white p-4 text-xs font-bold text-brand-ink md:grid-cols-3">
             <div>
-              <p className="uppercase tracking-[0.18em] text-amber-500">Đang chọn</p>
-              <p className="mt-1 text-base text-red-900">{currentBossFrequencyOption.label}</p>
+              <p className="text-brand-ink/60">Đang chọn</p>
+              <p className="mt-1 text-base text-brand-ink">{currentBossFrequencyOption.label}</p>
             </div>
             <div>
-              <p className="uppercase tracking-[0.18em] text-amber-500">Khoảng xuất hiện</p>
-              <p className="mt-1 text-base text-red-900">{currentBossFrequencyOption.minGap}-{currentBossFrequencyOption.maxGap} Random</p>
+              <p className="text-brand-ink/60">Khoảng xuất hiện</p>
+              <p className="mt-1 text-base text-brand-ink">{currentBossFrequencyOption.minGap}-{currentBossFrequencyOption.maxGap} Random</p>
             </div>
             <div>
-              <p className="uppercase tracking-[0.18em] text-amber-500">Lớp hiện tại</p>
-              <p className="mt-1 text-base text-red-900">
+              <p className="text-brand-ink/60">Lớp hiện tại</p>
+              <p className="mt-1 text-base text-brand-ink">
                 {currentBossState
                   ? `${currentBossState.randomsSinceLastEncounter}/${currentBossState.nextEncounterAt} lượt`
                   : 'Chọn một lớp'}
@@ -101,7 +101,7 @@ export const SettingsScreen: React.FC = () => {
             localStorage.setItem(WHEEL_FINISH_SOUND_KEY, wheelFinishSoundUrl);
             alert("Đã lưu cài đặt âm thanh!");
           }}
-          className="bg-red-800 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-red-900 transition-all uppercase text-xs"
+          className="bg-brand-forest text-brand-cream px-8 py-3 rounded-brand-md font-bold shadow-lg hover:bg-brand-forest-deep transition-all text-sm"
         >
           Lưu Âm Thanh
         </button>
@@ -265,7 +265,7 @@ export const SettingsScreen: React.FC = () => {
         </div>
       </SettingsSection>
 
-      <SettingsSection id="data" icon="☁️" title="Dữ liệu" subtitle="Import/export danh sách trainer và JSON backup toàn bộ hệ thống." className="bg-red-50 p-6 sm:p-12 rounded-[50px] border-4 border-red-100 text-center space-y-8" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
+      <SettingsSection id="data" icon="☁️" title="Dữ liệu" subtitle="Import/export danh sách trainer và JSON backup toàn bộ hệ thống." className="bg-[#f4f8f1] p-6 sm:p-8 rounded-brand-lg border border-brand-emerald/20 text-center space-y-6" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="bg-white p-6 rounded-3xl border border-red-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left space-y-1">
             <h4 className="font-bold text-red-950 text-sm">Danh Sách Trainer (CSV / Excel)</h4>
