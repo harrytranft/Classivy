@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 2 (đang làm)
+**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (chưa bắt đầu; Phase 2 đã nghiệm thu)
 
 ## Mục tiêu
 
@@ -35,7 +35,7 @@
 |---|---|---|---|
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
-| 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Đang làm | Không |
+| 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Chưa bắt đầu | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
@@ -120,7 +120,7 @@ src/
 
 ---
 
-## Phase 2 - Hệ thiết kế Classivy, reskin, thuật ngữ
+## Phase 2 - Hệ thiết kế Classivy, reskin, thuật ngữ (HOÀN THÀNH 2026-10-27)
 
 **Mục tiêu:** giao diện đúng nhận diện Classivy; bỏ thuật ngữ cung đình; không mất dữ liệu người dùng cũ.
 
@@ -313,4 +313,4 @@ src/
 - Đã sửa: `fontFamily.sans` = Plus Jakarta Sans/Be Vietnam Pro (một nguồn duy nhất), bỏ CSS inline trong `index.html` (đưa vào `@layer base`), `lang="vi"`; bỏ hết `font-royal`, `font-sans` thừa, kiểu VIẾT HOA + giãn chữ (trừ chữ viết hoa sẵn trong nội dung), nâng cỡ chữ 7-11px lên 10-12px theo DESIGN.md; tiêu đề cũ thêm `font-extrabold`; gỡ lớp CSS ép màu; `bg-white/90`; tab Hồ sơ viết thường. Thêm: thẻ học sinh dùng được bằng bàn phím; `Modal` đưa focus vào hộp thoại, trả focus khi đóng, Esc chỉ đóng hộp trên cùng.
 - `npm run typecheck` 0 lỗi; `npm test` 106/106; `npm run build` thành công; `npm run smoke` 6/6 đạt. Ảnh gốc DOM cập nhật có chủ đích; 8 file dữ liệu đám mây chỉ đổi đúng tên/mô tả kỹ năng `sk_decree` (Đồng Đội Hỗ Trợ, đã duyệt ở 2.5), ngoài ra giống hệt = hành vi giữ nguyên. Đã so ảnh chụp trước/sau ở đăng nhập, Hồ sơ, Cài đặt, Cá Ngựa, Random.
 - Nợ kỹ thuật ghi nhận (không chặn Phase 2): vài file Codex viết JSX dồn một dòng rất dài (`GroupModal`, `TimerModal`, footer của `AttendanceCheckModal`/`HomeworkCheckModal`) - khó đọc, nên định dạng lại khi có dịp; còn nhiều màu Tailwind mặc định (amber, purple...) trong nội dung game sâu, chưa chuyển hết sang token.
-
+- Nghiệm thu (2026-10-27): Harry thử thủ công bản preview Vercel của nhánh `claude/phase2-rebranding` và đồng ý; mở PR gộp vào `main`. Không có migration, không thay đổi Supabase.
