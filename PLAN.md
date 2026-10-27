@@ -24,6 +24,7 @@
 | D6 | North Star thiết kế "Lá non trong tấm khiên"; thư mục `.claude/` được commit | 2026-10-26 |
 | D7 | Bỏ hẳn hệ cấp bậc cung đình (Imperial School) và hộp "Thánh chỉ"/Gemini. Bảng Ban thưởng/Phạt hiển thị Trainer Level thay cho cấp bậc. Làm ở đầu Phase 2 | 2026-10-27 |
 | D8 | Mỗi lớp một trang `/class/<lớp>`; `/class` là trang chọn lớp; Cá Ngựa, Vòng quay, Tặng Pokémon là trang con của lớp; Vòng quay tick chọn học sinh trên trang; Random giữ dạng hộp thoại | 2026-10-27 |
+| D9 | Thuật ngữ: giữ "Hào Quang" (điểm); "Học sĩ" đổi thành "Trainer" | 2026-10-27 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -132,10 +133,10 @@ src/
 - [ ] 2.2 Chuyển Tailwind từ CDN sang build local, đưa token màu/chữ/bo góc vào cấu hình
 - [ ] 2.3 Dựng thư viện `components/ui/` (Button, Card, Chip, Avatar, Modal, Toast, ProgressBar, Badge, EmptyState)
 - [ ] 2.4 Reskin lần lượt các màn hình đã tách; kiểm tra tương phản và cảm ứng (`accessibility-review`)
-- [ ] 2.5 **Quyết định với Harry:** bộ thuật ngữ thay cho các từ cung đình còn lại ("Học sĩ", "Hào Quang", lời trong UI...). Hệ cấp bậc và "Thánh chỉ" đã bỏ theo D7
+- [x] 2.5 **Quyết định với Harry:** bộ thuật ngữ (D9, 2026-10-27): giữ "Hào Quang", "Học sĩ" -> "Trainer". Đã đổi 3 mô tả vật phẩm/kỹ năng trong `pokemonData.ts`. Lưu ý: danh sách kỹ năng Pokémon được lưu riêng theo giáo viên (sửa được ở Cài đặt), nên tài khoản đã có dữ liệu vẫn thấy chữ cũ ở 2 kỹ năng "Ý Chỉ Đồng Hành", "Truyền Cảm Hứng" cho tới khi tự sửa. Còn mở: tên kỹ năng "Ý Chỉ Đồng Hành" và vài chữ "hoàng" trong dữ liệu Pokémon/Boss
 - [x] ~~2.6 Đổi prompt Gemini~~ - không cần nữa: Gemini bị bỏ ở 2.0 (D7)
 - [x] 2.7 Đổi khoá localStorage `imperial_*` thành `classivy_*` **kèm đoạn chuyển dữ liệu một lần** (đọc khoá cũ, ghi khoá mới, giữ bản cũ để hoàn tác) và test - xong 2026-10-27. Cách hoàn tác: xoá các khoá `classivy_*` và `classivy_storage_migrated_v1` trong trình duyệt rồi tải lại trang
-- [ ] 2.8 Đổi giá trị mặc định "Học sĩ triều đình" trong `AuthContext.tsx`; chuẩn bị SQL đổi default trong schema (đưa vào migration ở Phase 3, không chạy riêng)
+- [x] 2.8 Đổi giá trị mặc định "Học sĩ triều đình" thành "Trainer" trong `AuthContext.tsx`; SQL đổi default (và xoá cột cấp bậc) soạn sẵn ở `docs/phase-3-pending-sql.md` để gộp vào migration Phase 3, không chạy riêng (2026-10-27)
 - [ ] 2.9 Cập nhật `DESIGN.md`, PLAN, BRIEF; báo cáo
 
 **Bàn giao cho Harry (dự kiến):** duyệt bộ thuật ngữ mới; thử bản preview; không migration (SQL đổi default gộp vào Phase 3).
@@ -255,4 +256,9 @@ src/
 - `domain/storageMigration.ts` chạy một lần trong `src/main.tsx` trước khi render: chỉ chép khi khoá mới trống, không xoá khoá cũ, ghi cờ `classivy_storage_migrated_v1`, không làm sập app nếu trình duyệt chặn localStorage. 6 unit test.
 - Smoke test mới (nhóm 6): máy có khoá cũ, đám mây trống -> lần đăng nhập đầu đẩy đúng tần suất Boss và phần thưởng Vòng quay đọc từ khoá cũ; khoá cũ còn nguyên. Đã thử tắt đoạn chuyển: test đỏ đúng chỗ (nhận `occasional` thay vì `rare`).
 - `npm run typecheck` 0 lỗi; `npm test` 15 file, 109 test đạt; `npm run build` thành công; `npm run smoke` 6/6 đạt, ảnh gốc 5 nhóm cũ không đổi.
+
+**Phase 2 / sửa lỗi bản lưu máy + task 2.5, 2.8 - 2026-10-27** (kiểm thử tự động; chưa thử tay; chưa chạy trên Vercel/Supabase thật):
+- `useLocalPersistence.ts`: chỉ ghi học sinh/kỹ năng/Boss vào máy khi đã biết trạng thái đăng nhập. Smoke nhóm 6 mở rộng: học sinh và kỹ năng ở khoá cũ được đẩy lên đám mây ở lần đăng nhập đầu; dùng lại code cũ thì test đỏ.
+- "Học sĩ" -> "Trainer" (D9). `npm run smoke -- --update-snapshots`: 14 file ảnh gốc đổi, đã đối chiếu: mọi dòng đổi chỉ là 2 mô tả kỹ năng chứa chữ "Học sĩ".
+- `npm run typecheck` 0 lỗi; `npm test` 109 test đạt; `npm run build` thành công; `npm run smoke` 6/6 đạt.
 

@@ -1441,7 +1441,7 @@
         "name": "Ý Chỉ Đồng Hành",
         "icon": "📜",
         "cost": 26,
-        "description": "Được phép chỉ định một học sĩ bất kỳ thảo luận nhóm hỗ trợ trả lời câu hỏi."
+        "description": "Được phép chỉ định một Trainer bất kỳ thảo luận nhóm hỗ trợ trả lời câu hỏi."
       },
       {
         "id": "sk_survival",
@@ -1525,7 +1525,7 @@
         "name": "Truyền Cảm Hứng",
         "icon": "🗣️",
         "cost": 18,
-        "description": "Học sĩ dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi."
+        "description": "Trainer dũng cảm mở màn nhận xét bài học sẽ nhận điểm gấp đôi."
       },
       {
         "id": "sk_healing",
