@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
+import { applyChanges, emptyTables, type TablesState, type TeacherChanges } from '../../src/domain/cloudModel';
 
 // Smoke test "giữ nguyên hành vi" cho Phase 1.
 // - Dữ liệu mẫu: fixtures/sample-class.json (nạp như dữ liệu đám mây của một giáo viên giả).
@@ -56,7 +57,59 @@ interface SmokeState {
   upserts: unknown[];
   dialogs: string[];
   errors: string[];
+  /** Phase 3: bảng classes/students/point_ledger giả và các lần gọi save_teacher_changes. */
+  tables: TablesState;
+  rpcCalls: TeacherChanges[];
+  dataModelVersion: 1 | 2;
 }
+
+// Payload JSON của save_teacher_changes -> TeacherChanges (ngược với toRpcPayload).
+type RpcPayload = {
+  classes?: { name: string; boss_state: unknown }[];
+  students?: { client_id: string; class_name: string; name: string; gender: string; points: number; avatar: string | null; game_state: object }[];
+  history?: { student_client_id: string; client_event_id: string; amount: number; reason: string; occurred_at_ms: number; source: string }[];
+  deleted_student_client_ids?: string[];
+};
+const fromRpcPayload = (payload: RpcPayload): TeacherChanges => ({
+  classes: (payload.classes ?? []).map(c => ({ name: c.name, bossState: c.boss_state as never })),
+  students: (payload.students ?? []).map(s => ({
+    clientId: s.client_id, className: s.class_name, name: s.name, gender: s.gender as never,
+    points: s.points, avatar: s.avatar, gameState: s.game_state as never
+  })),
+  history: (payload.history ?? []).map(h => ({
+    studentClientId: h.student_client_id, clientEventId: h.client_event_id, amount: h.amount,
+    reason: h.reason, occurredAtMs: h.occurred_at_ms, source: h.source as never
+  })),
+  deletedStudentClientIds: payload.deleted_student_client_ids ?? []
+});
+
+// Trả lời các bảng Phase 3 như PostgREST (một trang, đủ cho dữ liệu mẫu).
+const tableRows = (state: SmokeState, table: string): unknown[] => {
+  const { tables } = state;
+  if (table === 'classes') {
+    return Object.entries(tables.classes).map(([name, bossState]) => ({ id: name, name, boss_state: bossState }));
+  }
+  if (table === 'students') {
+    return Object.values(tables.students).map(row => ({
+      client_id: row.clientId, class_id: row.className, name: row.name, gender: row.gender,
+      points: row.points, avatar: row.avatar, game_state: row.gameState
+    }));
+  }
+  // student_recent_history: 50 dòng mới nhất mỗi học sinh, bỏ số dư đầu kỳ, theo thứ tự ghi.
+  const ranked = tables.ledger.map((entry, index) => ({ entry, id: index + 1 }))
+    .filter(({ entry }) => entry.source !== 'opening_balance');
+  const keep = new Set<number>();
+  Object.keys(tables.students).forEach(clientId => {
+    ranked.filter(({ entry }) => entry.studentClientId === clientId)
+      .sort((a, b) => b.entry.occurredAtMs - a.entry.occurredAtMs || b.id - a.id)
+      .slice(0, 50)
+      .forEach(({ id }) => keep.add(id));
+  });
+  return ranked.filter(({ id }) => keep.has(id)).map(({ entry, id }) => ({
+    student_client_id: entry.studentClientId, client_event_id: entry.clientEventId, amount: entry.amount,
+    reason: entry.reason, occurred_at: new Date(entry.occurredAtMs).toISOString(), id
+  }));
+};
 
 const IGNORED_CONSOLE_ERRORS = [/Failed to load resource/, /net::ERR/];
 
@@ -66,10 +119,15 @@ interface SetupOptions {
   emptyCloud?: boolean;
   /** localStorage values written before the app starts (e.g. old `imperial_*` keys). */
   localStorageSeed?: Record<string, string>;
+  /**
+   * Supabase đã chạy migration Phase 3 (có bảng mới, giáo viên chưa nâng cấp: data_model_version = 1).
+   * Không đặt = Supabase chưa chạy migration: bảng mới trả 404, app dùng cách lưu cũ.
+   */
+  phase3?: boolean;
 }
 
 async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState> {
-  const state: SmokeState = { upserts: [], dialogs: [], errors: [] };
+  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1 };
 
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ loggedIn, storageKey, session, seedValues }) => {
@@ -118,13 +176,40 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
       if (request.method() === 'GET') {
         // Behave like a real cloud: return the latest saved row so reloads keep progress.
         const latest = state.upserts[state.upserts.length - 1] as Record<string, unknown> | undefined;
-        const row = latest ? { ...cloudRow(), ...latest } : cloudRow();
+        const row: Record<string, unknown> = latest ? { ...cloudRow(), ...latest } : cloudRow();
+        if (options.phase3) row.data_model_version = state.dataModelVersion;
+        else delete row.data_model_version;
         const rows = options.emptyCloud && !latest ? [] : [row];
         await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rows) });
         return;
       }
-      state.upserts.push(request.postDataJSON());
+      const body = request.postDataJSON() as Record<string, unknown>;
+      if (body.data_model_version === 2) state.dataModelVersion = 2;
+      if (request.method() === 'PATCH') {
+        await route.fulfill({ status: 204, body: '' });
+        return;
+      }
+      state.upserts.push(body);
       await route.fulfill({ status: 201, contentType: 'application/json', body: '[]' });
+      return;
+    }
+    const phase3Path = url.pathname.match(/\/rest\/v1\/(classes|students|student_recent_history|rpc\/save_teacher_changes)$/);
+    if (phase3Path && !options.phase3) {
+      await route.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ code: '42P01', message: 'relation does not exist' }) });
+      return;
+    }
+    if (phase3Path) {
+      const target = phase3Path[1];
+      if (target === 'rpc/save_teacher_changes') {
+        const changes = fromRpcPayload((request.postDataJSON() as { p_changes: RpcPayload }).p_changes);
+        state.tables = applyChanges(state.tables, changes);
+        state.rpcCalls.push(changes);
+        await route.fulfill({ status: 200, contentType: 'application/json', body: String(Date.now()) });
+        return;
+      }
+      const offset = Number(url.searchParams.get('offset') || 0);
+      const rows = offset > 0 ? [] : tableRows(state, target);
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rows) });
       return;
     }
     if (url.pathname.endsWith('/profiles')) {
@@ -496,5 +581,81 @@ test('chuyển khoá localStorage cũ imperial_* sang classivy_* (task 2.7)', as
   expect(stored.oldFrequency).toBe('rare');
   expect(stored.oldRewards).toBe(JSON.stringify(oldWheelRewards));
   expect(stored.marker).not.toBeNull();
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 3: nâng cấp dữ liệu cũ sang bảng mới, rồi chỉ gửi phần thay đổi', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true, phase3: true });
+  const upgrade = page.getByTestId('data-upgrade');
+
+  // Chạy thử: hiện số lớp/học sinh/lịch sử/tổng điểm, chưa ghi gì.
+  await expect(upgrade.locator('dd').nth(1)).toHaveText(String(FIXTURE.students.length));
+  const totalPoints = FIXTURE.students.reduce((sum: number, s: { points: number }) => sum + s.points, 0);
+  await expect(upgrade.locator('dd').nth(3)).toHaveText(totalPoints.toLocaleString('vi-VN'));
+  expect(state.rpcCalls).toHaveLength(0);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/40-data-upgrade.png' });
+
+  // Nâng cấp: tải sao lưu, ghi, đối chiếu, bật bảng mới.
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Tải bản sao lưu và nâng cấp' }).click();
+  expect((await download).suggestedFilename()).toMatch(/^classivy_backup_.*\.json$/);
+  await expect(upgrade).toContainText('Xong!');
+  expect(state.dataModelVersion).toBe(2);
+  expect(Object.keys(state.tables.students).sort()).toEqual(FIXTURE.students.map((s: { id: string }) => s.id).sort());
+  FIXTURE.students.forEach((student: { id: string; points: number }) => {
+    const ledgerTotal = state.tables.ledger
+      .filter(entry => entry.studentClientId === student.id)
+      .reduce((sum, entry) => sum + entry.amount, 0);
+    expect(ledgerTotal, `ledger total of ${student.id}`).toBe(student.points);
+  });
+  await page.getByRole('button', { name: 'Tiếp tục' }).click();
+  await expect(upgrade).toHaveCount(0);
+  await page.waitForTimeout(2200);
+
+  // Cộng điểm một học sinh: chỉ gửi đúng em đó và một dòng sổ điểm; không ghi lại cột students cũ.
+  const rpcBefore = state.rpcCalls.length;
+  const upsertsBefore = state.upserts.length;
+  await chooseClass(page, '6A');
+  await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
+  await page.locator('button.aspect-square').first().click();
+  await page.waitForTimeout(2200);
+  const calls = state.rpcCalls.slice(rpcBefore);
+  expect(calls).toHaveLength(1);
+  expect(calls[0].students).toHaveLength(1);
+  expect(calls[0].history).toHaveLength(1);
+  expect(calls[0].deletedStudentClientIds).toEqual([]);
+  const changed = calls[0].students[0];
+  expect(changed.points).toBe(state.tables.students[changed.clientId].points);
+  state.upserts.slice(upsertsBefore).forEach(upsert => {
+    expect(upsert).not.toHaveProperty('students');
+    expect(upsert).not.toHaveProperty('boss_states_by_class');
+  });
+
+  // Mở lại app: đọc từ bảng mới, không hỏi nâng cấp nữa, dữ liệu đọc về khớp nên không gửi gì thêm.
+  const rpcAfterEdit = state.rpcCalls.length;
+  await page.goto('/');
+  await waitForApp(page, true);
+  await page.waitForTimeout(2200);
+  await expect(page.getByTestId('data-upgrade')).toHaveCount(0);
+  expect(state.rpcCalls.length).toBe(rpcAfterEdit);
+  await chooseClass(page, '6A');
+  await expect(page.locator('main')).toContainText(changed.name);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 3: giáo viên mới dùng bảng mới ngay khi Supabase đã chạy migration', async ({ page }) => {
+  const state = await setupPage(page, {
+    loggedIn: true,
+    emptyCloud: true,
+    phase3: true,
+    localStorageSeed: { classivy_school_data_v6: JSON.stringify(FIXTURE.students) }
+  });
+  await page.waitForTimeout(2200);
+  expect(state.upserts.length).toBeGreaterThan(0);
+  const firstUpsert = state.upserts[0] as Record<string, unknown>;
+  expect(firstUpsert.data_model_version).toBe(2);
+  expect(firstUpsert).not.toHaveProperty('students');
+  expect(Object.keys(state.tables.students)).toHaveLength(FIXTURE.students.length);
+  await expect(page.getByTestId('data-upgrade')).toHaveCount(0);
   expect(state.errors).toEqual([]);
 });

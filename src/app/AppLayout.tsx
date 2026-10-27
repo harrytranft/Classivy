@@ -17,6 +17,7 @@ import { SkillPointsModal } from '../features/feedback/SkillPointsModal';
 import { UserModal } from '../features/auth/UserModal';
 import { ShopModal } from '../features/shop/ShopModal';
 import { RandomModal } from '../features/random/RandomModal';
+import { DataUpgradeModal } from '../features/dataUpgrade/DataUpgradeModal';
 import { useApp } from './AppContext';
 
 export const AppLayout: React.FC = () => {
@@ -52,6 +53,9 @@ export const AppLayout: React.FC = () => {
           <Outlet />
         </Suspense>
       </main>
+
+      {/* MODAL: NÂNG CẤP CÁCH LƯU DỮ LIỆU (Phase 3) */}
+      <DataUpgradeModal />
 
       {/* MODAL: SKILL POINT BOARD */}
       <SkillPointsModal />
