@@ -137,12 +137,13 @@ Quy tắc: chữ trên nền `forest`/`forest-deep` dùng `cream`; chữ trên n
 
 ## Typography
 
-Giữ hai họ chữ đang dùng trong app (Plus Jakarta Sans, Be Vietnam Pro) vì hỗ trợ tiếng Việt tốt; tải từ Google Fonts trong `index.html`. Bỏ Playfair Display (`font-royal`, chữ "hoàng gia" của bản cũ) dần theo từng màn reskin; màn mới không dùng.
+Một họ chữ cho toàn app: **Plus Jakarta Sans** (chính), **Be Vietnam Pro** (dự phòng), đều có bộ dấu tiếng Việt; tải từ Google Fonts trong `index.html`. Trong `tailwind.config.js`, `fontFamily.sans` (và tên gọi khác `font-brand`) trỏ tới bộ này, nên `<body>` và mọi class `font-sans` dùng cùng một phông; không thêm `font-[...]`, serif hay phông khác. Playfair Display (`font-royal`) đã bỏ hẳn (2026-10-27).
 
 - Tiêu đề trang 30px/800, tên học sinh trên thẻ 20px/800, chữ thường 15px, nút 14px/700.
 - Số (điểm, HP, XP, giờ) dùng `tabular-nums` để không nhảy khi thay đổi.
 - Cỡ tối thiểu: màn giáo viên (laptop/màn chiếu) 12px cho nhãn gọn (chip, nhãn điều hướng, chữ phụ trên thẻ); cổng học sinh trên điện thoại (Phase 5) chữ nền 16px, nhãn 13px.
-- Không viết hoa toàn bộ và giãn chữ cho nhãn (thói quen của bản cũ); dùng độ đậm và cỡ chữ để phân cấp.
+- Không viết hoa toàn bộ và giãn chữ cho nhãn (thói quen của bản cũ); dùng độ đậm và cỡ chữ để phân cấp. Tiêu đề khối dùng `font-extrabold`.
+- Cỡ chữ nhỏ nhất trong code: `text-xs` (12px); riêng nhãn trong ô bàn cờ Cá Ngựa và huy hiệu nhỏ dùng 10px.
 
 ## Layout
 
