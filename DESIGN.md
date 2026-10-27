@@ -86,7 +86,7 @@ components:
     rounded: "{rounded.pill}"
     padding: "4px 12px"
   nav-rail:
-    backgroundColor: "{colors.forest-deep}"
+    backgroundColor: "{colors.forest}"
     textColor: "{colors.cream}"
     width: "84px"
   nav-item-active:
@@ -129,7 +129,7 @@ Bảng màu lấy trực tiếp từ logo (đã đo trên 4 file gốc trong `br
 - **Trung tính:** nền trang `cream` #fefdf9, chữ `ink` #0c2527. Thẻ và thanh công cụ dùng `surface` trắng với viền `line` #e6e2d4 để nổi trên nền kem. `tint-leaf` #f4f8f1 cho ô Pokémon/tiến bộ trong thẻ, `tint-muted` #f1efe7 cho chip trung tính, `track` #ebe8dc cho rãnh thanh tiến độ. Chữ phụ dùng `ink` ở độ đậm 65-70% (không dùng xám rời).
 - **Trạng thái:** `danger` #c0392b (trừ điểm, HP thấp, xoá), `success` = `emerald`, `warning` = `gold` (chữ cảnh báo trên nền sáng dùng #8f5500 để đủ tương phản).
 
-**Vai trò theo vùng (chiến lược "đủ bảng màu, khung đậm"):** thanh điều hướng trái là một khối `forest-deep` liền; nội dung trên nền `cream`; vàng chỉ xuất hiện ở điểm Hào Quang (tấm khiên), nút "Nhận quà" và danh hiệu; tím chỉ ở "Tặng quà"/xã hội.
+**Vai trò theo vùng (chiến lược "đủ bảng màu, khung đậm"):** thanh điều hướng trái là một khối xanh lấy đúng nền biểu tượng app (`bg-brand-shield`: sáng #0a9a69 quanh logo, đậm dần #04774f -> #015638 -> #043624), bo tròn hai góc phải 28px; nội dung trên nền `cream`; vàng chỉ xuất hiện ở điểm Hào Quang (tấm khiên), nút "Nhận quà" và danh hiệu; tím chỉ ở "Tặng quà"/xã hội.
 
 **Tương phản đã đo (2026-10-27):** chữ phụ ink 65% trên trắng 5,1:1; trên `tint-leaf` 4,9:1; nhãn điều hướng cream 80% trên `forest-deep` 10,6:1; "Tặng quà" `violet-soft` trên `forest-deep` 4,7:1; số điểm `gold-light` trên `forest` 9,1:1; chữ trên nút `danger` 5,4:1; chữ `forest-deep` trên nút vàng 9,4:1. Không dùng `ink` 50-60% cho chữ (dưới 4,5:1).
 
@@ -147,8 +147,8 @@ Giữ hai họ chữ đang dùng trong app (Plus Jakarta Sans, Be Vietnam Pro) v
 ## Layout
 
 - Hai bố cục tách bạch: **Giáo viên** (nhiều thông tin, thao tác nhanh) và **Học sinh** (một cột, ưu tiên điện thoại, nút lớn dễ bấm, tối thiểu 44px).
-- Khung giáo viên: thanh điều hướng trái cố định rộng 84px, luôn hiện (icon + chữ), cuối thanh là sao lưu / khôi phục / trạng thái đồng bộ và ảnh tài khoản. Không giấu điều hướng ngoài mép màn hình.
-- Trang lớp: thanh công cụ trên cùng (tìm kiếm, chọn lớp, Check đi học, Check Homework, Thêm Trainer), lưới thẻ học sinh 1-4 cột, dock công cụ cố định ở đáy (mỗi nút icon + chữ ngắn, cao 64px).
+- Khung giáo viên: thanh điều hướng trái cố định rộng 84px, luôn hiện (icon + chữ trắng; mục đang mở nền kem; "Tặng quà" cũng trắng như các mục khác, Harry duyệt 2026-10-27), cuối thanh là sao lưu / khôi phục / trạng thái đồng bộ và ảnh tài khoản. Không giấu điều hướng ngoài mép màn hình.
+- Trang lớp: thanh công cụ trên cùng (tìm kiếm, chọn lớp, Check đi học, Check Homework, Thêm Trainer), lưới thẻ học sinh 1-4 cột, dock công cụ cố định ở đáy: mỗi nút là ô icon 52px + chữ ngắn; **phóng to kiểu dock macOS** (ô gần con trỏ to dần tới 84px theo khoảng cách, tầm ảnh hưởng 140px, lò xo `motion`; rời chuột thì co về). Người dùng bật "giảm chuyển động" thì không phóng to.
 - Lưới 4/8px; khoảng cách giữa các nhóm nội dung dùng `lg` (24px).
 - Phản hồi đầy đủ ở ba điểm: điện thoại, máy tính bảng, máy chiếu lớp học.
 
@@ -175,7 +175,9 @@ Thành phần trong `src/components/ui/` (nhập qua `src/components/ui/index.ts
 - **ShieldScore**: điểm Hào Quang trong tấm khiên.
 - **Card**: bề mặt trắng viền `line`, bo 22px. Không lồng Card trong Card.
 - **EmptyState**: icon, tiêu đề, lời giải thích, hành động.
-- Chưa làm (làm khi reskin các hộp thoại): Modal/Sheet, Toast, Avatar chuẩn. Thông báo "Pokémon phản ứng" khi làm lại không được phủ chặn cả màn hình.
+- **Modal**: nền phủ `forest-deep` 60%, thẻ trắng bo 22px, tiêu đề + icon + nút X (`aria-label`), phím Esc để đóng, bấm nền để đóng (tắt được), giữ thứ tự chồng lớp qua `zIndex`; cỡ `sm/md/lg/xl/full`; vùng `footer` cho nút hành động.
+- **Thông báo Pokémon** (`PokemonReactionToast`): thẻ nổi trên cùng, không phủ chặn màn hình; bấm ra chỗ khác hoặc Esc thì tắt, và cú bấm đó vẫn tác dụng lên nút bên dưới.
+- Chưa làm: Sheet cho điện thoại, Avatar chuẩn (dùng `StudentAvatar`).
 
 Biểu tượng điều khiển (điều hướng, thanh công cụ, dock, nút trên thẻ) dùng bộ `lucide-react`, nét 2px, cỡ 18-24px. Emoji chỉ dùng cho **nội dung game** (kỹ năng, phần thưởng, Pokémon, danh hiệu) vì giáo viên tự đặt.
 

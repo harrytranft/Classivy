@@ -7,7 +7,7 @@ Tài liệu cho người và AI agent làm việc trên repo. Cập nhật lần
 ```
 src/main.tsx                React root (StrictMode + AuthProvider)
 src/app/App.tsx             BrowserRouter -> GameDataProvider -> UiEventsProvider -> AppProvider -> AppRoutes
-src/app/AppRoutes.tsx       /class (mặc định), /plaza, /settings, /student/:id; / và đường dẫn lạ -> /class
+src/app/AppRoutes.tsx       /class (mặc định), /settings, /student/:id; / và đường dẫn lạ -> /class
 src/app/AppLayout.tsx       Cổng đăng nhập, thanh điều hướng, dock trạng thái, <Outlet/> và mọi hộp thoại toàn cục
 src/app/AppContext.tsx      useApp(): state + hành động của toàn app (giống phạm vi của App.tsx cũ)
 src/app/controller/         appState.ts (gom state), appActions.ts (gom hành động), useDerivedState.ts (giá trị suy ra)
@@ -64,7 +64,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 | Shop | `features/shop` | `eggs.ts` |
 | Pokémon (trứng, skill, hợp nhất, tặng, rời đi) | `features/pokemon`, `features/profile` | `pokemonProgression.ts`, `pokemonCollection.ts`, `progression.ts`, `gameEvents.ts`, `expeditionSystem.ts` |
 | Cài đặt | `features/settings` | - |
-| Chia nhóm, hẹn giờ, thời tiết | `features/tools` | `weather.ts` |
+| Chia nhóm, hẹn giờ | `features/tools` | |
 | Đăng nhập, tài khoản giáo viên | `features/auth` | - |
 
 ## 4. Định tuyến
@@ -76,7 +76,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 | `/class/<lớp>/ca-ngua` | Cá Ngựa của lớp |
 | `/class/<lớp>/vong-quay` | Vòng quay may mắn (tick chọn học sinh ngay trên trang) |
 | `/class/<lớp>/tang-pokemon` | Tặng Pokémon |
-| `/plaza`, `/settings`, `/student/<id>` | Plaza, Cài đặt, Hồ sơ |
+| `/settings`, `/student/<id>` | Cài đặt, Hồ sơ (Plaza đã bỏ 2026-10-27; `/plaza` về `/class`) |
 
 - Lớp đang chọn (`filterClass`) lấy từ URL (`src/app/useClassRoute.ts`); ngoài trang lớp thì app nhớ lớp mở gần nhất. Cờ `showLudoModal`, `showLuckyWheelModal`, `showGiftPokemonModal` cũng lấy từ URL; mở/đóng bằng `goToClassPage` (đóng dùng `replace` để không tạo thêm bước Back).
 - Đóng Vòng quay sau khi về đích Cá Ngựa thì quay lại bàn cờ; đóng Tặng Pokémon thì về trang đã mở nó.
@@ -85,7 +85,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 - `/student/:id`: tải lại trang hoặc Back/Forward sẽ mở đúng học sinh (`useProfileRouteSync.ts`); id không tồn tại thì về `/class`.
 - Khi chuyển `/` -> `/class` giữ nguyên `?query` và `#hash` vì Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
 - `vercel.json` chuyển mọi đường dẫn về `index.html` để tải lại trang không bị 404.
-- Plaza, Hồ sơ, Cài đặt được tải khi mở lần đầu (`React.lazy`).
+- Hồ sơ, Cài đặt, Cá Ngựa, Vòng quay, Tặng Pokémon được tải khi mở lần đầu (`React.lazy`).
 
 ## 5. Kiểm thử
 

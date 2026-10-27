@@ -28,7 +28,7 @@ Do một giáo viên đang đứng lớp làm ra và dùng hằng ngày, gắn v
 
 ## Capabilities and Constraints
 
-- Tính năng hiện có: lớp và học sinh, điểm Hào Quang (Ban thưởng/Phạt), điểm danh, bài tập, Random (solo, battle, Boss raid), Pokémon (trứng, tiến hoá, hợp nhất, kỹ năng), Shop, Tặng Pokémon, Cá Ngựa, Vòng quay, chia nhóm, hẹn giờ, Plaza, hồ sơ học sinh, Trainer Level và huy hiệu.
+- Tính năng hiện có: lớp và học sinh, điểm Hào Quang (Ban thưởng/Phạt), điểm danh, bài tập, Random (solo, battle, Boss raid), Pokémon (trứng, tiến hoá, hợp nhất, kỹ năng), Shop, Tặng Pokémon, Cá Ngựa, Vòng quay, chia nhóm, hẹn giờ, hồ sơ học sinh, Trainer Level và huy hiệu.
 - Thuật ngữ đã chốt: "Hào Quang" là tên điểm (giữ nguyên); học sinh gọi là "Trainer" (D9). Hệ cấp bậc cung đình và "Thánh chỉ" đã bỏ (D7).
 - Đang làm (roadmap): tài khoản học sinh do giáo viên tạo (đăng nhập bằng tên + mật khẩu), cổng học sinh, bạn bè trong cùng lớp, quà tặng, ví "điểm tặng" có hạn mức tuần.
 - Ràng buộc: không chat tự do; không hiển thị thông tin cá nhân học sinh này cho học sinh khác; giáo viên luôn xem được log và tắt được tính năng xã hội; gói miễn phí Supabase/Vercel.

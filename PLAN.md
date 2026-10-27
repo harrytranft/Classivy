@@ -25,6 +25,7 @@
 | D7 | Bỏ hẳn hệ cấp bậc cung đình (Imperial School) và hộp "Thánh chỉ"/Gemini. Bảng Ban thưởng/Phạt hiển thị Trainer Level thay cho cấp bậc. Làm ở đầu Phase 2 | 2026-10-27 |
 | D8 | Mỗi lớp một trang `/class/<lớp>`; `/class` là trang chọn lớp; Cá Ngựa, Vòng quay, Tặng Pokémon là trang con của lớp; Vòng quay tick chọn học sinh trên trang; Random giữ dạng hộp thoại | 2026-10-27 |
 | D9 | Thuật ngữ: giữ "Hào Quang" (điểm); "Học sĩ" đổi thành "Trainer" | 2026-10-27 |
+| D10 | Bỏ hẳn trang Plaza và phần thời tiết (Weather Plaza trong Cài đặt). Thanh điều hướng màu xanh như nền logo, bo hai góc phải; nút Tặng quà màu trắng; dock phóng to kiểu macOS | 2026-10-27 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -133,7 +134,7 @@ src/
 - [x] 2.2 Chuyển Tailwind từ CDN sang build local, đưa token màu/chữ/bo góc vào cấu hình - xong 2026-10-27: Tailwind 3.4 (cùng dòng v3 với CDN cũ) + PostCSS, `tailwind.config.js` có token `brand-*` từ DESIGN.md (chưa dùng ở màn nào, dành cho 2.3-2.4)
 - [~] 2.3 Dựng thư viện `components/ui/` - đã có Button, Card, Chip, ProgressBar (có "chồi lá"), ShieldScore (khiên Hào Quang), EmptyState (2026-10-27). Còn Modal/Sheet, Toast, Avatar: làm cùng lúc reskin các hộp thoại (2.4)
 - [ ] 2.4 Reskin lần lượt các màn hình đã tách; kiểm tra tương phản và cảm ứng (`accessibility-review`)
-  - [x] Bản mẫu (Harry chọn "làm mẫu trước", 2026-10-27): khung app (thanh điều hướng trái luôn hiện, gộp nút đồng bộ), trang chọn lớp, trang lớp (thanh công cụ, thẻ học sinh, dock công cụ có chữ), màn chờ đăng nhập. **Chờ Harry duyệt hướng trên bản preview rồi mới làm tiếp**
+  - [x] Bản mẫu (Harry chọn "làm mẫu trước", 2026-10-27): khung app (thanh điều hướng trái luôn hiện, gộp nút đồng bộ), trang chọn lớp, trang lớp (thanh công cụ, thẻ học sinh, dock công cụ có chữ), màn chờ đăng nhập. **Harry duyệt hướng 2026-10-27**, kèm chỉnh sửa D10 (đã làm: màu thanh điều hướng, bo góc, nút Tặng quà, dock macOS, bỏ Plaza/thời tiết)
   - [ ] Các màn còn lại: Plaza, Hồ sơ (3 tab), Cài đặt, Random/Battle/Boss, Cá Ngựa, Vòng quay, Shop, Tặng Pokémon, Ban thưởng/Phạt, Điểm danh, Bài tập, Chia nhóm, Hẹn giờ, Tài khoản, các thông báo (Pokémon, level-up, nở trứng, rời đi), đăng nhập/đăng ký; bỏ `font-royal` (Playfair)
 - [x] 2.5 **Quyết định với Harry:** bộ thuật ngữ (D9, 2026-10-27): giữ "Hào Quang", "Học sĩ" -> "Trainer". Đã đổi 3 mô tả vật phẩm/kỹ năng trong `pokemonData.ts`. Lưu ý: danh sách kỹ năng Pokémon được lưu riêng theo giáo viên (sửa được ở Cài đặt), nên tài khoản đã có dữ liệu vẫn thấy chữ cũ ở 2 kỹ năng "Ý Chỉ Đồng Hành", "Truyền Cảm Hứng" cho tới khi tự sửa. Còn mở: tên kỹ năng "Ý Chỉ Đồng Hành" và vài chữ "hoàng" trong dữ liệu Pokémon/Boss
 - [x] ~~2.6 Đổi prompt Gemini~~ - không cần nữa: Gemini bị bỏ ở 2.0 (D7)
