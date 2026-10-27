@@ -191,6 +191,8 @@ async function snap(page: Page, name: string, state: SmokeState) {
   await page.waitForTimeout(700);
   await waitForSyncIdle(page);
   const html = await page.locator('#root').evaluate(node => node.innerHTML);
+  // SMOKE_SCREENSHOTS=1 npm run smoke: lưu thêm ảnh chụp để xem giao diện bằng mắt (không so sánh, không commit).
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: `test-results/screens/${name}.png`, fullPage: true });
   expect(normalizeHtml(html), `DOM ${name}`).toMatchSnapshot(`${name}.html`);
   expect(state.errors, `console errors at ${name}`).toEqual([]);
 }
@@ -206,6 +208,12 @@ async function snapCloud(page: Page, name: string, state: SmokeState) {
 }
 
 const navButton = (page: Page, title: string) => page.locator(`nav button[title="${title}"]`);
+// The side nav hides off-screen and slides in on hover (real CSS since Tailwind is built locally): hover it like a user.
+async function clickNav(page: Page, title: string) {
+  await page.locator('.group\\/nav').hover();
+  await page.waitForTimeout(350);
+  await navButton(page, title).click();
+}
 const dockButton = (page: Page, index: number) => page.locator('.liquid-glass-dock button').nth(index);
 const DOCK = { random: 0, ludo: 1, wheel: 2, shop: 3, group: 4, timer: 5, selectAll: 6, multiSelect: 7, resetAura: 8 };
 
@@ -230,10 +238,10 @@ test('các màn hình chính', async ({ page }) => {
   await chooseClass(page, '6A');
   await snap(page, '11-class-6A', state);
 
-  await navButton(page, 'Trainer Plaza').click({ force: true });
+  await clickNav(page, 'Trainer Plaza');
   await snap(page, '12-plaza', state);
 
-  await navButton(page, 'Cài Đặt').click({ force: true });
+  await clickNav(page, 'Cài Đặt');
   await page.getByText('Trainer Settings').waitFor();
   const expanders = page.locator('main button[aria-label^="Hiện "]');
   while (await expanders.count() > 0) {
@@ -241,7 +249,7 @@ test('các màn hình chính', async ({ page }) => {
   }
   await snap(page, '13-settings-expanded', state);
 
-  await navButton(page, 'Lớp Học').click({ force: true });
+  await clickNav(page, 'Lớp Học');
   await page.getByText('An 6A', { exact: true }).first().click();
   await page.getByText('Hồ Sơ Trainer').waitFor();
   await snap(page, '14-profile-info', state);
@@ -289,7 +297,7 @@ test('các hộp thoại chính', async ({ page }) => {
   await page.getByRole('button', { name: /Check Homework/ }).click();
   await snap(page, '27-homework', state);
   await reopen();
-  await navButton(page, 'Tặng Pokémon').click({ force: true });
+  await clickNav(page, 'Tặng Pokémon');
   await snap(page, '28-gift-pokemon', state);
   await reopen();
   await page.locator('nav button').last().click({ force: true });
@@ -334,7 +342,9 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   await page.getByRole('button', { name: /Ban Thưởng \/ Phạt/ }).first().click();
   await page.locator('button.aspect-square').first().click();
   await snap(page, '35-solo-reward-opens-ludo', state);
-  await page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ }).click();
+  // The Pokémon toast covers the screen with a click-to-close layer; this flow checks the roll itself,
+  // so press the button directly (as the test did before real CSS was applied) and keep the toast in the snapshots.
+  await page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ }).dispatchEvent('click');
   await page.waitForTimeout(1500);
   await snap(page, '36-after-ludo-roll', state);
   await snapCloud(page, '36-after-ludo-roll', state);
@@ -362,7 +372,7 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
 
   // 7. Tặng Pokémon
   await reopen();
-  await navButton(page, 'Tặng Pokémon').click({ force: true });
+  await clickNav(page, 'Tặng Pokémon');
   await page.getByRole('button', { name: /Tặng và cho trứng nở ngay/ }).click();
   await page.waitForTimeout(2600);
   await snap(page, '41-gift-revealed', state);
@@ -379,7 +389,7 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
 
   // 9. Cài đặt: đổi tần suất Boss
   await reopen();
-  await navButton(page, 'Cài Đặt').click({ force: true });
+  await clickNav(page, 'Cài Đặt');
   await page.getByRole('button', { name: /Thường xuyên/ }).click();
   await snap(page, '43-boss-frequency', state);
   await snapCloud(page, '43-boss-frequency', state);
@@ -390,9 +400,9 @@ test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Ba
   await expect(page).toHaveURL(/\/class$/);
   await expect(page.getByRole('button', { name: 'Vào lớp 7B', exact: true })).toBeVisible();
 
-  await navButton(page, 'Trainer Plaza').click({ force: true });
+  await clickNav(page, 'Trainer Plaza');
   await expect(page).toHaveURL(/\/plaza$/);
-  await navButton(page, 'Cài Đặt').click({ force: true });
+  await clickNav(page, 'Cài Đặt');
   await expect(page).toHaveURL(/\/settings$/);
   await page.goBack();
   await expect(page).toHaveURL(/\/plaza$/);
@@ -400,7 +410,7 @@ test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Ba
   await expect(page).toHaveURL(/\/settings$/);
 
   // No class chosen yet: "Lớp học" opens the class picker; choosing a class opens its own page.
-  await navButton(page, 'Lớp Học').click({ force: true });
+  await clickNav(page, 'Lớp Học');
   await expect(page).toHaveURL(/\/class$/);
   await chooseClass(page, '6A');
   await expect(page).toHaveURL(/\/class\/6A$/);
@@ -438,9 +448,9 @@ test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Ba
   await page.locator('button:has-text("×")').first().click();
   await expect(page).toHaveURL(/\/class\/6A$/);
 
-  await navButton(page, 'Trainer Plaza').click({ force: true });
+  await clickNav(page, 'Trainer Plaza');
   await expect(page).toHaveURL(/\/plaza$/);
-  await navButton(page, 'Tặng Pokémon').click({ force: true });
+  await clickNav(page, 'Tặng Pokémon');
   await expect(page).toHaveURL(/\/class\/6A\/tang-pokemon$/);
   await page.getByRole('button', { name: 'Đóng tặng Pokémon' }).click();
   await expect(page).toHaveURL(/\/plaza$/);

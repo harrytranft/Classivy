@@ -52,3 +52,9 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(180, 40, 40, 0.7);
 }
+
+/* Tailwind đặt SAU các lớp tự viết ở trên: giống thứ tự cũ khi Tailwind CDN chèn style vào cuối <head>,
+   nên khi trùng thuộc tính thì class Tailwind vẫn thắng như trước. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

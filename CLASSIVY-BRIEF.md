@@ -12,7 +12,7 @@ Mục tiêu đợt cải tổ: (1) đổi thương hiệu sang Classivy; (2) tá
 
 ## 2. Stack
 
-React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi ở Phase 2), Supabase (Auth + Postgres), Vercel. Vitest (unit) + Playwright (smoke test).
+React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, token `brand-*` trong `tailwind.config.js`), Supabase (Auth + Postgres), Vercel. Vitest (unit) + Playwright (smoke test).
 
 ## 3. Quyết định đã chốt
 

@@ -130,7 +130,7 @@ src/
   - Lỗi "danh sách cấp bậc rỗng làm trắng trang" tự hết theo
   - Kiểm chứng: `npm test`, `npm run typecheck`, `npm run build`, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff
 - [ ] 2.1 Chạy lại `impeccable document` (chế độ scan) và chốt `DESIGN.md` chính thức (North Star đã chốt: "Lá non trong tấm khiên")
-- [ ] 2.2 Chuyển Tailwind từ CDN sang build local, đưa token màu/chữ/bo góc vào cấu hình
+- [x] 2.2 Chuyển Tailwind từ CDN sang build local, đưa token màu/chữ/bo góc vào cấu hình - xong 2026-10-27: Tailwind 3.4 (cùng dòng v3 với CDN cũ) + PostCSS, `tailwind.config.js` có token `brand-*` từ DESIGN.md (chưa dùng ở màn nào, dành cho 2.3-2.4)
 - [ ] 2.3 Dựng thư viện `components/ui/` (Button, Card, Chip, Avatar, Modal, Toast, ProgressBar, Badge, EmptyState)
 - [ ] 2.4 Reskin lần lượt các màn hình đã tách; kiểm tra tương phản và cảm ứng (`accessibility-review`)
 - [x] 2.5 **Quyết định với Harry:** bộ thuật ngữ (D9, 2026-10-27): giữ "Hào Quang", "Học sĩ" -> "Trainer". Đã đổi 3 mô tả vật phẩm/kỹ năng trong `pokemonData.ts`. Lưu ý: danh sách kỹ năng Pokémon được lưu riêng theo giáo viên (sửa được ở Cài đặt), nên tài khoản đã có dữ liệu vẫn thấy chữ cũ ở 2 kỹ năng "Ý Chỉ Đồng Hành", "Truyền Cảm Hứng" cho tới khi tự sửa. Còn mở: tên kỹ năng "Ý Chỉ Đồng Hành" và vài chữ "hoàng" trong dữ liệu Pokémon/Boss
@@ -205,6 +205,7 @@ src/
 - ~~**[Lỗi có sẵn]** Danh sách cấp bậc rỗng làm trắng trang~~ → giải quyết bằng việc bỏ hệ cấp bậc (D7, task 2.0).
 - ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
 - ~~**[Lỗi có sẵn, dữ liệu]** Trước khi đăng nhập xong, app ghi `[]` đè bản lưu học sinh trên máy~~ → Harry duyệt, **đã sửa 2026-10-27** (`useLocalPersistence.ts` chỉ ghi khi `!authLoading`; smoke test nhóm 6 kiểm tra học sinh trên máy được đẩy lên đám mây ở lần đăng nhập đầu; bỏ bản sửa thì test đỏ).
+- **[Giao diện, gộp vào 2.4]** Thông báo "Pokémon phản ứng" phủ một lớp trong suốt lên toàn màn hình: bấm vào bất kỳ đâu (kể cả nút "Lắc xí ngầu" ở Cá Ngựa) chỉ để tắt thông báo, phải bấm lần nữa. Phát hiện khi smoke test chạy với CSS thật. Đề xuất khi reskin: thông báo không chặn thao tác bên dưới.
 - **[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt" khi danh sách đổi thứ tự sau khi chấm điểm. Xử lý cùng Phase 2.
 
 ## Quy trình sau mỗi Phase
@@ -261,4 +262,11 @@ src/
 - `useLocalPersistence.ts`: chỉ ghi học sinh/kỹ năng/Boss vào máy khi đã biết trạng thái đăng nhập. Smoke nhóm 6 mở rộng: học sinh và kỹ năng ở khoá cũ được đẩy lên đám mây ở lần đăng nhập đầu; dùng lại code cũ thì test đỏ.
 - "Học sĩ" -> "Trainer" (D9). `npm run smoke -- --update-snapshots`: 14 file ảnh gốc đổi, đã đối chiếu: mọi dòng đổi chỉ là 2 mô tả kỹ năng chứa chữ "Học sĩ".
 - `npm run typecheck` 0 lỗi; `npm test` 109 test đạt; `npm run build` thành công; `npm run smoke` 6/6 đạt.
+
+**Phase 2 / task 2.2 - 2026-10-27** (kiểm thử tự động; chưa thử tay; chưa chạy trên Vercel thật):
+- Bỏ `<script src="https://cdn.tailwindcss.com">`; Tailwind 3.4.19 build cùng Vite (`tailwind.config.js`, `postcss.config.js`, `@tailwind` ở cuối `src/index.css` để giữ thứ tự ưu tiên như khi CDN chèn style vào cuối `<head>`). File CSS ~119 kB (gzip ~17 kB).
+- Không so được pixel với bản CDN vì CDN bị chặn trong máy ảo; trước đây smoke test cũng chạy không có CSS. Nay smoke test chạy với CSS thật: DOM và dữ liệu đồng bộ của cả 6 nhóm khớp ảnh gốc, KHÔNG phải cập nhật ảnh gốc. Hai chỗ test phải thao tác giống người dùng hơn: rê chuột vào thanh điều hướng bên trái trước khi bấm (thanh này ẩn ngoài mép màn hình), và nút "Lắc xí ngầu" bị thông báo Pokémon che (ghi ở "Đề xuất phát sinh").
+- Thêm `SMOKE_SCREENSHOTS=1 npm run smoke` để lưu ảnh chụp từng màn vào `test-results/screens/` (không so sánh, không commit). Đã xem ảnh trang lớp, Ban thưởng/Phạt, Cá Ngựa: đủ màu, bố cục đúng.
+- `npm run typecheck` 0 lỗi; `npm test` 109 đạt; `npm run build` thành công; `npm run smoke` 6/6 đạt hai lần liên tiếp.
+- Cần Harry: mở bản preview Vercel của nhánh, so nhanh với bản đang chạy (màu, bố cục, hộp thoại) vì máy ảo không so được với CDN.
 
