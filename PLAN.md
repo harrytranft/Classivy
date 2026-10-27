@@ -26,7 +26,7 @@
 | D8 | Mỗi lớp một trang `/class/<lớp>`; `/class` là trang chọn lớp; Cá Ngựa, Vòng quay, Tặng Pokémon là trang con của lớp; Vòng quay tick chọn học sinh trên trang; Random giữ dạng hộp thoại | 2026-10-27 |
 | D9 | Thuật ngữ: giữ "Hào Quang" (điểm); "Học sĩ" đổi thành "Trainer" | 2026-10-27 |
 | D10 | Bỏ hẳn trang Plaza và phần thời tiết (Weather Plaza trong Cài đặt). Thanh điều hướng màu xanh như nền logo, bo hai góc phải; nút Tặng quà màu trắng; dock phóng to kiểu macOS | 2026-10-27 |
-| D11 | Màn đăng nhập chỉ còn email + mật khẩu cho tài khoản đã có; bỏ nút "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (code nền giữ lại cho Phase 4). Ghi nhận từ phiên làm với Codex, **Harry cần xác nhận lại** vì đây là thay đổi cách đăng nhập | 2026-10-27 |
+| D11 | Màn đăng nhập chỉ còn email + mật khẩu cho tài khoản đã có; bỏ nút "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (code nền giữ lại cho Phase 4). Harry xác nhận 2026-10-27 | 2026-10-27 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
