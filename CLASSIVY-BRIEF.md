@@ -23,6 +23,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 - Bạn bè chỉ trong cùng lớp; không chat tự do.
 - North Star thiết kế: **"Lá non trong tấm khiên"** (Harry xác nhận 2026-10-26).
 - Thư mục `.claude/` (skills) được commit vào git.
+- Mỗi lớp một trang `/class/<lớp>`, `/class` là trang chọn lớp; Cá Ngựa, Vòng quay, Tặng Pokémon là trang con của lớp; Random vẫn là hộp thoại (D8, 2026-10-27, đã làm trên nhánh Phase 1).
 - Bỏ hệ cấp bậc cung đình và "Thánh chỉ"/Gemini; bảng Ban thưởng/Phạt dùng Trainer Level (D7, 2026-10-27) - làm ở task 2.0 đầu Phase 2.
 - Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
 

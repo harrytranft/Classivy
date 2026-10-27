@@ -1,16 +1,21 @@
 import React, { lazy } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppLayout } from './AppLayout';
-import { SCREEN_PATHS } from './screenRoutes';
+import { CLASS_SUB_PAGES, SCREEN_PATHS } from './screenRoutes';
 import { useApp } from './AppContext';
 import { ClassScreen } from '../features/class/ClassScreen';
+import { ClassPickerScreen } from '../features/class/ClassPickerScreen';
+import { ClassPageGuard } from '../features/class/ClassPageGuard';
 
 // Màn Lớp học (mở mặc định) tải ngay; các màn khác tải khi mở lần đầu.
 const PlazaScreen = lazy(() => import('../features/plaza/PlazaScreen').then(m => ({ default: m.PlazaScreen })));
 const ProfileScreen = lazy(() => import('../features/profile/ProfileScreen').then(m => ({ default: m.ProfileScreen })));
+const LudoModal = lazy(() => import('../features/ludo/LudoModal').then(m => ({ default: m.LudoModal })));
+const LuckyWheelModal = lazy(() => import('../features/wheel/LuckyWheelModal').then(m => ({ default: m.LuckyWheelModal })));
+const GiftPokemonModal = lazy(() => import('../features/pokemon/GiftPokemonModal').then(m => ({ default: m.GiftPokemonModal })));
 const SettingsScreen = lazy(() => import('../features/settings/SettingsScreen').then(m => ({ default: m.SettingsScreen })));
 
-// Giữ nguyên ?query và #hash khi chuyển hướng: Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
+// '/' và đường dẫn lạ về trang chọn lớp. Giữ nguyên ?query và #hash khi chuyển hướng: Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
 const RedirectToClass: React.FC = () => {
   const location = useLocation();
   return <Navigate to={{ pathname: SCREEN_PATHS.class, search: location.search, hash: location.hash }} replace />;
@@ -27,7 +32,11 @@ export const AppRoutes: React.FC = () => (
     <Route element={<AppLayout />}>
       <Route index element={<RedirectToClass />} />
       <Route path="plaza" element={<PlazaScreen />} />
-      <Route path="class" element={<ClassScreen />} />
+      <Route path="class" element={<ClassPickerScreen />} />
+      <Route path="class/:className" element={<ClassPageGuard><ClassScreen /></ClassPageGuard>} />
+      <Route path={`class/:className/${CLASS_SUB_PAGES.ludo}`} element={<ClassPageGuard><LudoModal /></ClassPageGuard>} />
+      <Route path={`class/:className/${CLASS_SUB_PAGES.wheel}`} element={<ClassPageGuard><LuckyWheelModal /></ClassPageGuard>} />
+      <Route path={`class/:className/${CLASS_SUB_PAGES.gift}`} element={<ClassPageGuard><GiftPokemonModal /></ClassPageGuard>} />
       <Route path="student/:studentId" element={<ProfileRoute />} />
       <Route path="settings" element={<SettingsScreen />} />
       <Route path="*" element={<RedirectToClass />} />

@@ -3,7 +3,6 @@ import { LuckyWheelResult } from '../../types/app';
 
 // State Vòng quay may mắn.
 export const useLuckyWheelState = () => {
-  const [showLuckyWheelModal, setShowLuckyWheelModal] = useState(false);
   const [isLuckyWheelSpinning, setIsLuckyWheelSpinning] = useState(false);
   const [luckyWheelRotation, setLuckyWheelRotation] = useState(0);
   const [luckyWheelResult, setLuckyWheelResult] = useState<LuckyWheelResult | null>(null);
@@ -15,7 +14,7 @@ export const useLuckyWheelState = () => {
   const luckyWheelSpinSynthRef = useRef<{ context: AudioContext; intervalId: number } | null>(null);
 
   return {
-    showLuckyWheelModal, setShowLuckyWheelModal, isLuckyWheelSpinning, setIsLuckyWheelSpinning,
+    isLuckyWheelSpinning, setIsLuckyWheelSpinning,
     luckyWheelRotation, setLuckyWheelRotation, luckyWheelResult, setLuckyWheelResult,
     luckyWheelPendingResult, setLuckyWheelPendingResult, luckyWheelCandidateIds,
     setLuckyWheelCandidateIds, luckyWheelMode, setLuckyWheelMode, luckyWheelRef,

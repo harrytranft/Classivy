@@ -146,7 +146,8 @@ async function setupPage(page: Page, options: { loggedIn: boolean }): Promise<Sm
 
 async function waitForApp(page: Page, loggedIn: boolean) {
   if (loggedIn) {
-    await page.locator('main select option[value="6A"]').waitFor({ state: 'attached' });
+    // Data is loaded once either the class picker or a class page shows class 6A.
+    await page.locator('main select option[value="6A"], main button[aria-label="Vào lớp 6A"]').first().waitFor({ state: 'attached' });
     await page.locator('button[title^="Trạng thái sync"]').waitFor({ state: 'attached' });
   }
   await page.waitForTimeout(800);
@@ -194,7 +195,11 @@ const dockButton = (page: Page, index: number) => page.locator('.liquid-glass-do
 const DOCK = { random: 0, ludo: 1, wheel: 2, shop: 3, group: 4, timer: 5, selectAll: 6, multiSelect: 7, resetAura: 8 };
 
 async function chooseClass(page: Page, className: string) {
-  await page.locator('main select').first().selectOption(className);
+  await page.locator('main select, main button[aria-label^="Vào lớp"]').first().waitFor();
+  const pickerCard = page.getByRole('button', { name: `Vào lớp ${className}`, exact: true });
+  if (await pickerCard.count() > 0) await pickerCard.click();
+  else await page.locator('main select').first().selectOption(className);
+  await page.locator(`main select option[value="${className}"]`).waitFor({ state: 'attached' });
 }
 
 test('màn đăng nhập', async ({ page }) => {
@@ -365,9 +370,10 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   await snapCloud(page, '43-boss-frequency', state);
 });
 
-test('định tuyến URL: tải lại ở từng đường dẫn, Back/Forward, đường dẫn lạ', async ({ page }) => {
+test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Back/Forward, đường dẫn lạ', async ({ page }) => {
   const state = await setupPage(page, { loggedIn: true });
   await expect(page).toHaveURL(/\/class$/);
+  await expect(page.getByRole('button', { name: 'Vào lớp 7B', exact: true })).toBeVisible();
 
   await navButton(page, 'Trainer Plaza').click({ force: true });
   await expect(page).toHaveURL(/\/plaza$/);
@@ -378,29 +384,58 @@ test('định tuyến URL: tải lại ở từng đường dẫn, Back/Forward,
   await page.goForward();
   await expect(page).toHaveURL(/\/settings$/);
 
+  // No class chosen yet: "Lớp học" opens the class picker; choosing a class opens its own page.
   await navButton(page, 'Lớp Học').click({ force: true });
+  await expect(page).toHaveURL(/\/class$/);
+  await chooseClass(page, '6A');
+  await expect(page).toHaveURL(/\/class\/6A$/);
+  await expect(page.getByText('Bình 6A', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Lan 7B', { exact: true })).toHaveCount(0);
+  await page.locator('main select').first().selectOption('7B');
+  await expect(page).toHaveURL(/\/class\/7B$/);
+  await page.locator('main select').first().selectOption('Tất cả');
+  await expect(page).toHaveURL(/\/class$/);
+  await chooseClass(page, '6A');
+
   await page.getByText('An 6A', { exact: true }).first().click();
   await expect(page).toHaveURL(/\/student\/stu-01$/);
   await expect(page.getByText('Hồ Sơ Trainer')).toBeVisible();
-
-  // Reload directly on the profile URL loads the same student.
   await page.reload();
   await expect(page.getByText('Hồ Sơ Trainer')).toBeVisible();
   await expect(page.locator('main input:not([type])').first()).toHaveValue('An 6A');
+  await page.getByRole('button', { name: /Quay lại lớp/ }).click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
 
-  await page.goBack();
-  await expect(page).toHaveURL(/\/class$/);
-  await page.goForward();
-  await expect(page.getByText('Hồ Sơ Trainer')).toBeVisible();
+  // Ludo, Lucky Wheel and Gift Pokémon are pages of the class.
+  await dockButton(page, DOCK.ludo).click();
+  await expect(page).toHaveURL(/\/class\/6A\/ca-ngua$/);
+  await page.reload();
+  await expect(page.getByRole('button', { name: /Quay Lại Lớp/ })).toBeVisible();
+  await page.getByRole('button', { name: /Quay Lại Lớp/ }).click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
 
-  // Unknown student or path falls back to the class screen.
+  await page.goto('/class/6A/vong-quay');
+  await expect(page.getByRole('button', { name: 'Bình 6A', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Hà 6A/ })).toHaveCount(1);
+  await expect(page.getByText('HS Giang 6A')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Bình 6A', exact: true }).click();
+  await expect(page.getByRole('button', { name: '✓ Bình 6A', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('button:has-text("×")').first().click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
+
+  await navButton(page, 'Trainer Plaza').click({ force: true });
+  await expect(page).toHaveURL(/\/plaza$/);
+  await navButton(page, 'Tặng Pokémon').click({ force: true });
+  await expect(page).toHaveURL(/\/class\/6A\/tang-pokemon$/);
+  await page.getByRole('button', { name: 'Đóng tặng Pokémon' }).click();
+  await expect(page).toHaveURL(/\/plaza$/);
+
+  // Unknown class / student / path.
+  await page.goto('/class/khong-co-lop');
+  await expect(page.getByText('Không tìm thấy lớp "khong-co-lop".')).toBeVisible();
   await page.goto('/student/khong-ton-tai');
-  await waitForApp(page, true);
   await expect(page).toHaveURL(/\/class$/);
   await page.goto('/duong-dan-la');
   await expect(page).toHaveURL(/\/class$/);
-  await page.goto('/plaza');
-  await expect(navButton(page, 'Trainer Plaza')).toBeAttached();
-  await expect(page).toHaveURL(/\/plaza$/);
   expect(state.errors).toEqual([]);
 });

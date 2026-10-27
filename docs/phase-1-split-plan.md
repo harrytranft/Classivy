@@ -148,6 +148,7 @@ Mỗi bước (S) có: việc làm, tiêu chí xong, độ lớn (S nhỏ, M v�
 12. Đăng ký, đăng nhập, đăng xuất, đồng bộ giữa hai trình duyệt.
 13. Group maker, Timer, thời tiết.
 14. Tải lại trang ở từng URL con; nút Back/Forward của trình duyệt.
+15. (Bổ sung 2026-10-27) Trang chọn lớp `/class`; mỗi lớp một trang `/class/<lớp>`; Cá Ngựa, Vòng quay (tick chọn học sinh trên trang), Tặng Pokémon là trang riêng của lớp; luồng Random đúng → Cá Ngựa → về đích → Vòng quay → Hoàn tất (quay lại bàn cờ) → Random Tiếp (về trang lớp, mở Random).
 
 ## 8. Việc phía Harry trong Phase 1
 

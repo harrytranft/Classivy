@@ -2,6 +2,7 @@ import { PokemonReleaseEvent, Student } from '../../types';
 import { BattleLudoTurn, LudoReturnHint } from '../../types/app';
 import { awardLudoAura, checkMonsterEscape, resolveLudoMove } from '../../domain/ludo';
 import { playDiceSound } from '../../lib/sounds';
+import { CLASS_SUB_PAGES } from '../../app/screenRoutes';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
 
@@ -10,16 +11,17 @@ export interface LudoActions {
   openLudoForClass: (className?: string, activeStudent?: Student | null, returnHint?: LudoReturnHint) => void;
   openBattleLudoTurns: (turns: BattleLudoTurn[], returnHint?: LudoReturnHint) => void;
   handleRandomFromLudo: () => void;
+  closeLudoPage: () => void;
   handleLudoRollDice: (student: Student, options?: { isBonusRoll?: boolean; }) => void;
 }
 
 export const createLudoActions = (appState: AppState, app: AppActions): LudoActions => {
   const {
-    classOptions, effectiveLudoTiles, filterClass, ludoMonsterStuck, ludoPositions,
+    activeLudoClassName, classOptions, effectiveLudoTiles, filterClass, goToClassPage, ludoMonsterStuck, ludoPositions,
     ludoRolling, ludoSteps, setBattleLudoQueue, setLudoActiveStudent, setLudoBonusRolls,
     setLudoClassName, setLudoDice, setLudoEventPopup, setLudoLogs, setLudoMonsterStuck,
     setLudoPositions, setLudoReturnHint, setLudoRolling, setLudoSteps, setPokemonReleaseEvent,
-    setShowLudoModal, setStudents, students
+    setStudents, students
   } = appState;
 
   const openLudoForClass = (className?: string, activeStudent?: Student | null, returnHint: LudoReturnHint = null) => {
@@ -32,7 +34,12 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
     setLudoActiveStudent(activeStudent && activeStudent.className === nextClass ? activeStudent : null);
     setLudoDice(null);
     setLudoReturnHint(returnHint);
-    setShowLudoModal(true);
+    goToClassPage(nextClass, CLASS_SUB_PAGES.ludo);
+  };
+
+  /** Đóng trang Cá Ngựa, quay về trang lớp. */
+  const closeLudoPage = () => {
+    if (activeLudoClassName) goToClassPage(activeLudoClassName, null, { replace: true });
   };
 
   const openBattleLudoTurns = (turns: BattleLudoTurn[], returnHint: LudoReturnHint = 'battle') => {
@@ -55,7 +62,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
   const handleRandomFromLudo = () => {
     setBattleLudoQueue([]);
     setLudoReturnHint(null);
-    setShowLudoModal(false);
+    closeLudoPage();
     window.setTimeout(() => app.handleRandom(), 0);
   };
 
@@ -162,6 +169,6 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
   };
 
   return {
-    openLudoForClass, openBattleLudoTurns, handleRandomFromLudo, handleLudoRollDice
+    openLudoForClass, openBattleLudoTurns, handleRandomFromLudo, closeLudoPage, handleLudoRollDice
   };
 };

@@ -8,17 +8,20 @@ export const LuckyWheelModal: React.FC = () => {
     isLuckyWheelSpinning, luckyWheelBackground, luckyWheelCandidateIds,
     luckyWheelDisplayRewards, luckyWheelMode, luckyWheelPendingResult, luckyWheelRef,
     luckyWheelResult, luckyWheelRewards, luckyWheelRotation, openLudoForClass,
-    setLuckyWheelMode, setShowLuckyWheelModal, showLuckyWheelModal, startLuckyWheelSpin,
-    students
+    closeLuckyWheel, showLuckyWheelModal, startLuckyWheelSpin,
+    students, filterClass, toggleLuckyWheelCandidate
   } = useApp();
+  // Trainer có mặt của lớp đang mở, để tick chọn người được quay.
+  const wheelRoster = students
+    .filter(student => student.className === filterClass && !student.isAbsent)
+    .sort((a, b) => a.name.localeCompare(b.name));
   return (
     <>
             {showLuckyWheelModal && (
               <div
                 onClick={(e) => {
                   if (e.target === e.currentTarget && !isLuckyWheelSpinning) {
-                    setLuckyWheelMode('normal');
-                    setShowLuckyWheelModal(false);
+                    closeLuckyWheel();
                   }
                 }}
                 className="fixed inset-0 z-[220] flex items-center justify-center bg-black/90 p-4 backdrop-blur-md overflow-y-auto"
@@ -27,8 +30,7 @@ export const LuckyWheelModal: React.FC = () => {
                   <button
                     onClick={() => {
                       if (!isLuckyWheelSpinning) {
-                        setLuckyWheelMode('normal');
-                        setShowLuckyWheelModal(false);
+                        closeLuckyWheel();
                       }
                     }}
                     disabled={isLuckyWheelSpinning}
@@ -107,17 +109,43 @@ export const LuckyWheelModal: React.FC = () => {
                     <div className="space-y-5">
                       <div className="bg-white/95 rounded-3xl border border-fuchsia-100 p-5 shadow-[0_0_24px_rgba(255,255,255,0.22)]">
                         <p className="text-[10px] font-black uppercase tracking-[0.25em] text-fuchsia-900 mb-3">Danh sách được quay</p>
-                        <div className="flex flex-wrap gap-2 max-h-28 overflow-y-auto custom-scrollbar pr-1">
-                          {luckyWheelCandidateIds.map(id => {
-                            const candidate = students.find(s => s.id === id);
-                            if (!candidate) return null;
-                            return (
-                              <span key={id} className="bg-fuchsia-50 border border-fuchsia-200 text-fuchsia-950 px-3 py-1.5 rounded-full text-xs font-black">
-                                {candidate.name}
-                              </span>
-                            );
-                          })}
-                        </div>
+                        {luckyWheelMode === 'ludo-finish' ? (
+                          <div className="flex flex-wrap gap-2 max-h-28 overflow-y-auto custom-scrollbar pr-1">
+                            {luckyWheelCandidateIds.map(id => {
+                              const candidate = students.find(s => s.id === id);
+                              if (!candidate) return null;
+                              return (
+                                <span key={id} className="bg-fuchsia-50 border border-fuchsia-200 text-fuchsia-950 px-3 py-1.5 rounded-full text-xs font-black">
+                                  {candidate.name}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <>
+                            <p className="text-[11px] font-bold text-gray-500 mb-2">Bấm vào tên để chọn hoặc bỏ chọn ({luckyWheelCandidateIds.filter(id => wheelRoster.some(s => s.id === id)).length}/{wheelRoster.length}).</p>
+                            <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                              {wheelRoster.map(candidate => {
+                                const checked = luckyWheelCandidateIds.includes(candidate.id);
+                                return (
+                                  <button
+                                    key={candidate.id}
+                                    type="button"
+                                    aria-pressed={checked}
+                                    disabled={isLuckyWheelSpinning}
+                                    onClick={() => toggleLuckyWheelCandidate(candidate.id)}
+                                    className={`px-3 py-1.5 rounded-full text-xs font-black border transition-all disabled:opacity-60 ${checked ? 'bg-fuchsia-700 border-fuchsia-800 text-white' : 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-950 hover:border-fuchsia-400'}`}
+                                  >
+                                    {checked ? '✓ ' : ''}{candidate.name}
+                                  </button>
+                                );
+                              })}
+                              {wheelRoster.length === 0 && (
+                                <span className="text-xs font-bold text-gray-500">Lớp này chưa có trainer đang có mặt.</span>
+                              )}
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       <div className="bg-white rounded-[32px] border-2 border-amber-200 p-6 min-h-[360px] flex flex-col items-center justify-center text-center shadow-[0_0_36px_rgba(250,204,21,0.35)]">
@@ -188,8 +216,7 @@ export const LuckyWheelModal: React.FC = () => {
                               {luckyWheelResult.reward.type === 'ludo_rolls' && (
                                 <button
                                   onClick={() => {
-                                    setLuckyWheelMode('normal');
-                                    setShowLuckyWheelModal(false);
+                                    closeLuckyWheel();
                                     openLudoForClass(luckyWheelResult.student.className, luckyWheelResult.student);
                                   }}
                                   className="mt-4 bg-blue-700 hover:bg-blue-800 text-white px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider shadow"
@@ -201,8 +228,7 @@ export const LuckyWheelModal: React.FC = () => {
 
                             <button
                               onClick={() => {
-                                setLuckyWheelMode('normal');
-                                setShowLuckyWheelModal(false);
+                                closeLuckyWheel();
                               }}
                               className="w-full bg-fuchsia-800 hover:bg-fuchsia-900 text-white py-3.5 rounded-2xl font-black uppercase tracking-wider shadow-lg transition-all"
                             >

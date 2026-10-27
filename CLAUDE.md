@@ -29,7 +29,7 @@ Chi tiết: `docs/architecture.md`. Tóm tắt:
 - Mỗi tính năng có thư mục `src/features/<tính năng>/`: `use*State.ts` (state), `*Actions.ts` (hành động, gọi tính năng khác qua `app.x`), component giao diện. Giao diện đọc mọi thứ qua `useApp()`.
 - Logic thuần + test ở `src/domain/` (điểm, điểm danh, bài tập, battle, Cá Ngựa, Boss, Pokémon, tiến trình...).
 - Dữ liệu cloud vẫn là một snapshot JSON mỗi giáo viên (`user_settings.students`), xử lý trong `src/app/providers/gameData/`. Sẽ đổi ở Phase 3.
-- Định tuyến: `/class` (mặc định), `/plaza`, `/settings`, `/student/:id`. Auth: Supabase (`src/features/auth/AuthContext.tsx`). Triển khai: Vercel (`vercel.json`). Nội dung cũ: `docs/archive/`.
+- Định tuyến: `/class` (chọn lớp, mặc định), `/class/<lớp>` (trang lớp) với trang con `ca-ngua`, `vong-quay`, `tang-pokemon`; `/plaza`, `/settings`, `/student/:id`. Auth: Supabase (`src/features/auth/AuthContext.tsx`). Triển khai: Vercel (`vercel.json`). Nội dung cũ: `docs/archive/`.
 
 ## Skills nên dùng
 

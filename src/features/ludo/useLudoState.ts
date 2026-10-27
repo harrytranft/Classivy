@@ -4,7 +4,6 @@ import { BattleLudoTurn, LudoEventPopupData, LudoReturnHint } from '../../types/
 
 // State Cá Ngựa.
 export const useLudoState = () => {
-  const [showLudoModal, setShowLudoModal] = useState(false);
   const [ludoPositions, setLudoPositions] = useState<Record<string, number>>({});
   const [ludoSteps, setLudoSteps] = useState<Record<string, number>>({});
   const [ludoMonsterStuck, setLudoMonsterStuck] = useState<Record<string, boolean>>({});
@@ -19,7 +18,7 @@ export const useLudoState = () => {
   const [ludoReturnHint, setLudoReturnHint] = useState<LudoReturnHint>(null);
 
   return {
-    showLudoModal, setShowLudoModal, ludoPositions, setLudoPositions, ludoSteps, setLudoSteps,
+    ludoPositions, setLudoPositions, ludoSteps, setLudoSteps,
     ludoMonsterStuck, setLudoMonsterStuck,
     ludoActiveStudent, setLudoActiveStudent, ludoClassName, setLudoClassName, ludoDice,
     setLudoDice, ludoRolling, setLudoRolling, ludoLogs, setLudoLogs,

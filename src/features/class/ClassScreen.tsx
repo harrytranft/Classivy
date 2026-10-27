@@ -1,20 +1,18 @@
 import React from 'react';
-import { Gender } from '../../types';
-import { createEgg } from '../../domain/eggs';
 import { StudentCard } from '../../components/StudentCard';
 import { LiquidDock } from '../../components/LiquidDock';
 import { useApp } from '../../app/AppContext';
 
 export const ClassScreen: React.FC = () => {
   const {
-    classes, currentClassStudents, filterClass, getRank, handleClaimAllRewards,
+    classes, currentClassStudents, filterClass, getRank, handleAddStudent, handleClaimAllRewards,
     handleDeleteStudents, handleOpenLuckyWheel, handleOpenShop, handleRandom,
     handleResetSelectedAura, handleToggleSelectAll, hoveredStudentCardId, isMultiSelectMode,
     isSyncing, lastSyncedTime, openAttendanceCheck, openHomeworkCheck, openLudoForClass,
     petSkills, searchQuery, selectedStudentIds, setActiveTab, setCurrentScreen,
     setEditingStudent, setFeedbackSource, setFilterClass, setHoveredStudentCardId,
     setIsMultiSelectMode, setSearchQuery, setSelectedStudentIds, setShowGroupModal,
-    setShowSkillModal, setShowTimerModal, setStudents, toggleAttendance
+    setShowSkillModal, setShowTimerModal, toggleAttendance
   } = useApp();
   return (
     <div className="animate-in fade-in duration-300">
@@ -27,7 +25,7 @@ export const ClassScreen: React.FC = () => {
             onChange={e => setFilterClass(e.target.value)}
             className="bg-white text-red-950 border-2 border-amber-200 px-4 py-3 pr-9 rounded-xl outline-none font-black text-xs appearance-none hover:border-amber-400 transition-all cursor-pointer shadow-sm"
           >
-            <option value="Tất cả">Tất cả trainer</option>
+            <option value="Tất cả">← Danh sách lớp</option>
             {classes.filter(c => c !== 'Tất cả').map(c => (
               <option key={c} value={c}>{c}</option>
             ))}
@@ -51,21 +49,7 @@ export const ClassScreen: React.FC = () => {
           📚 Check Homework
         </button>
 
-        <button onClick={() => {
-          const name = prompt("Họ tên trainer:");
-          if (!name) return;
-          const gender = confirm("Nhấn OK cho Nam, Cancel cho Nữ") ? Gender.MALE : Gender.FEMALE;
-          const cls = prompt("Lớp:", filterClass !== 'Tất cả' ? filterClass : 'Mới');
-          setStudents(prev => [...prev, { 
-            id: Date.now().toString(), 
-            name, 
-            gender, 
-            className: cls || 'Pokemon Class', 
-            points: 0, 
-            history: [],
-            egg: createEgg('normal')
-          }]);
-        }} className="bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-red-900 transition-all">+ Thêm Trainer</button>
+        <button onClick={handleAddStudent} className="bg-red-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-red-900 transition-all">+ Thêm Trainer</button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

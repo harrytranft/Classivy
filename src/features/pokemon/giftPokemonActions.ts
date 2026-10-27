@@ -2,6 +2,7 @@ import { createPokemonPetFromDexId, getPokemonDisplayName, normalizeStudentPokem
 import { createEgg, getEggLabel, getEggRequiredProgress } from '../../domain/eggs';
 import { Student } from '../../types';
 import { advanceEggForStudent, appendAdventureJournal } from '../../domain/progression';
+import { ALL_CLASSES, CLASS_SUB_PAGES } from '../../app/screenRoutes';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
 
@@ -16,9 +17,9 @@ export interface GiftPokemonActions {
 
 export const createGiftPokemonActions = (appState: AppState, app: AppActions): GiftPokemonActions => {
   const {
-    editingStudent, giftAnimationPhase, giftPokemonRoster, giftPokemonTimersRef, giftStudentId,
+    editingStudent, filterClass, giftAnimationPhase, goToClassPage, navigateTo, routeReturnTo, giftPokemonRoster, giftPokemonTimersRef, giftStudentId,
     posSoundUrl, randomStudent, setEditingStudent, setGiftAnimationPhase, setGiftPokemonResult,
-    setGiftStudentId, setRandomStudent, setShowGiftPokemonModal, setStudents,
+    setCurrentScreen, setGiftStudentId, setRandomStudent, setStudents,
     showPokemonReaction, students
   } = appState;
 
@@ -35,17 +36,24 @@ export const createGiftPokemonActions = (appState: AppState, app: AppActions): G
 
   const closeGiftPokemonModal = () => {
     resetGiftPokemonFlow();
-    setShowGiftPokemonModal(false);
+    // Quay về trang đã mở Tặng Pokémon (ví dụ Plaza); mở thẳng bằng đường dẫn thì về trang lớp.
+    if (routeReturnTo) navigateTo(routeReturnTo, { replace: true });
+    else goToClassPage(filterClass, null, { replace: true });
   };
 
   const openGiftPokemonModal = () => {
+    if (filterClass === ALL_CLASSES) {
+      alert('Hãy chọn một lớp trước khi tặng Pokémon.');
+      setCurrentScreen('class');
+      return;
+    }
     if (giftPokemonRoster.length === 0) {
       alert('Chưa có học sinh nào trong lớp hiện tại để tặng Pokémon.');
       return;
     }
     resetGiftPokemonFlow();
     setGiftStudentId(prev => giftPokemonRoster.some(student => student.id === prev) ? prev : giftPokemonRoster[0].id);
-    setShowGiftPokemonModal(true);
+    goToClassPage(filterClass, CLASS_SUB_PAGES.gift, { returnTo: window.location.pathname });
   };
 
   const handleGiftPokemon = () => {

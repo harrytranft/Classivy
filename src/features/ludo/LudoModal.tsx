@@ -10,7 +10,7 @@ export const LudoModal: React.FC = () => {
     handleRandomFromLudo, ludoActiveStudent, ludoBonusRolls, ludoDice, ludoLogs,
     ludoMonsterStuck, ludoPositions, ludoRaceStudents, ludoReturnHint, ludoRolling,
     ludoSpecialTileCount, setBattleLudoQueue, setLudoActiveStudent, setLudoClassName,
-    setLudoDice, setLudoReturnHint, setShowLudoModal, showLudoModal, students
+    setLudoDice, setLudoReturnHint, closeLudoPage, showLudoModal, students
   } = useApp();
   return (
     <>
@@ -33,7 +33,7 @@ export const LudoModal: React.FC = () => {
               >
                 🎲 Random Tiếp
               </button>
-              <button onClick={() => { setBattleLudoQueue([]); setLudoReturnHint(null); setShowLudoModal(false); }} className="rounded-xl border border-amber-300/70 bg-amber-400/20 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-amber-400/30">
+              <button onClick={() => { setBattleLudoQueue([]); setLudoReturnHint(null); closeLudoPage(); }} className="rounded-xl border border-amber-300/70 bg-amber-400/20 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-amber-400/30">
                 ← Quay Lại Lớp
               </button>
             </div>

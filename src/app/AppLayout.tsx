@@ -18,9 +18,6 @@ import { PokemonReleaseModal } from '../features/pokemon/PokemonReleaseModal';
 import { SkillPointsModal } from '../features/feedback/SkillPointsModal';
 import { UserModal } from '../features/auth/UserModal';
 import { ShopModal } from '../features/shop/ShopModal';
-import { GiftPokemonModal } from '../features/pokemon/GiftPokemonModal';
-import { LuckyWheelModal } from '../features/wheel/LuckyWheelModal';
-import { LudoModal } from '../features/ludo/LudoModal';
 import { RandomModal } from '../features/random/RandomModal';
 import { useApp } from './AppContext';
 
@@ -62,8 +59,6 @@ export const AppLayout: React.FC = () => {
         onRestore={handleRestoreFromCloud}
       />
 
-      <GiftPokemonModal />
-
       {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto p-6">
         <Suspense fallback={null}>
@@ -77,17 +72,11 @@ export const AppLayout: React.FC = () => {
       {/* MODAL: RANDOM */}
       <RandomModal />
 
-      {/* MODAL: LUCKY WHEEL */}
-      <LuckyWheelModal />
-
       {/* MODAL: GROUP MAKER */}
       <GroupModal />
 
       {/* MODAL: TIMER */}
       <TimerModal />
-
-      {/* MODAL: CÁ NGỰA BOARD GAME */}
-      <LudoModal />
 
       {/* MODAL: LUDO EVENT ACTION POPUP */}
       <LudoEventPopup />

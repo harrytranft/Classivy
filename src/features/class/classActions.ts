@@ -1,4 +1,6 @@
-import { HistoryItem } from '../../types';
+import { Gender, HistoryItem } from '../../types';
+import { createEgg } from '../../domain/eggs';
+import { ALL_CLASSES } from '../../app/screenRoutes';
 import { getLocalWeekKey } from '../../domain/dates';
 import { ClaimAllRewardSummary } from '../../types/app';
 import { claimReadyExpedition, markExpeditionReadyIfDue } from '../../domain/expeditionSystem';
@@ -13,11 +15,12 @@ export interface ClassActions {
   handleDeleteStudents: () => void;
   handleResetSelectedAura: () => void;
   handleClaimAllRewards: () => void;
+  handleAddStudent: () => void;
 }
 
 export const createClassActions = (appState: AppState, app: AppActions): ClassActions => {
   const {
-    currentClassStudents, editingStudent, filterClass, randomStudent, selectedStudentIds,
+    currentClassStudents, editingStudent, filterClass, goToClassPage, randomStudent, routeClassName, selectedStudentIds,
     setClaimAllRewardSummary, setEditingStudent, setIsMultiSelectMode, setRandomStudent,
     setSelectedStudentIds, setStudents, showPokemonReaction, students
   } = appState;
@@ -173,8 +176,27 @@ export const createClassActions = (appState: AppState, app: AppActions): ClassAc
     );
   };
 
+  const handleAddStudent = () => {
+    const name = prompt("Họ tên trainer:");
+    if (!name) return;
+    const gender = confirm("Nhấn OK cho Nam, Cancel cho Nữ") ? Gender.MALE : Gender.FEMALE;
+    const cls = prompt("Lớp:", filterClass !== ALL_CLASSES ? filterClass : 'Mới');
+    const className = cls || 'Pokemon Class';
+    setStudents(prev => [...prev, {
+      id: Date.now().toString(),
+      name,
+      gender,
+      className,
+      points: 0,
+      history: [],
+      egg: createEgg('normal')
+    }]);
+    // Thêm từ trang chọn lớp thì mở luôn trang của lớp vừa thêm.
+    if (!routeClassName) goToClassPage(className);
+  };
+
   return {
     toggleAttendance, handleToggleSelectAll, handleDeleteStudents, handleResetSelectedAura,
-    handleClaimAllRewards
+    handleClaimAllRewards, handleAddStudent
   };
 };

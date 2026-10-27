@@ -68,7 +68,19 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
 
 ## 4. Định tuyến
 
-- `currentScreen` / `setCurrentScreen` vẫn dùng như cũ nhưng đọc/ghi URL (`src/app/useScreenRoute.ts`).
+| Đường dẫn | Trang |
+|---|---|
+| `/class` | Chọn lớp (mặc định khi mở app) |
+| `/class/<lớp>` | Trang lớp: lưới học sinh, điểm danh, bài tập, Random (hộp thoại), Shop... |
+| `/class/<lớp>/ca-ngua` | Cá Ngựa của lớp |
+| `/class/<lớp>/vong-quay` | Vòng quay may mắn (tick chọn học sinh ngay trên trang) |
+| `/class/<lớp>/tang-pokemon` | Tặng Pokémon |
+| `/plaza`, `/settings`, `/student/<id>` | Plaza, Cài đặt, Hồ sơ |
+
+- Lớp đang chọn (`filterClass`) lấy từ URL (`src/app/useClassRoute.ts`); ngoài trang lớp thì app nhớ lớp mở gần nhất. Cờ `showLudoModal`, `showLuckyWheelModal`, `showGiftPokemonModal` cũng lấy từ URL; mở/đóng bằng `goToClassPage` (đóng dùng `replace` để không tạo thêm bước Back).
+- Đóng Vòng quay sau khi về đích Cá Ngựa thì quay lại bàn cờ; đóng Tặng Pokémon thì về trang đã mở nó.
+- Tên lớp sai trên đường dẫn: hiện "Không tìm thấy lớp" (`ClassPageGuard`).
+- `currentScreen` / `setCurrentScreen` vẫn dùng như cũ nhưng đọc/ghi URL (`src/app/useScreenRoute.ts`); "Lớp học" về trang lớp đang chọn.
 - `/student/:id`: tải lại trang hoặc Back/Forward sẽ mở đúng học sinh (`useProfileRouteSync.ts`); id không tồn tại thì về `/class`.
 - Khi chuyển `/` -> `/class` giữ nguyên `?query` và `#hash` vì Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
 - `vercel.json` chuyển mọi đường dẫn về `index.html` để tải lại trang không bị 404.

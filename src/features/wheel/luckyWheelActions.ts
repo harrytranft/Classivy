@@ -8,6 +8,7 @@ import { applyPetHpDeltaToStudent } from '../../domain/gameEvents';
 import { isGoodLuckyWheelReward, shuffleLuckyWheelRewards } from '../../domain/luckyWheel';
 import { isSamePokemon, updateActivePetInCollection } from '../../domain/pokemonCollection';
 import { appendAdventureJournal } from '../../domain/progression';
+import { CLASS_SUB_PAGES } from '../../app/screenRoutes';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
 
@@ -23,18 +24,20 @@ export interface LuckyWheelActions {
   stopLuckyWheelSpinSound: () => void;
   playLuckyWheelSpinSound: () => void;
   startLuckyWheelSpin: () => void;
+  toggleLuckyWheelCandidate: (studentId: string) => void;
+  closeLuckyWheel: () => void;
 }
 
 export const createLuckyWheelActions = (appState: AppState, app: AppActions): LuckyWheelActions => {
   const {
-    editingStudent, isLuckyWheelSpinning, luckyWheelCandidateIds, luckyWheelDisplayRewards,
+    editingStudent, filterClass, goToClassPage, isLuckyWheelSpinning, routeClassName, luckyWheelCandidateIds, luckyWheelDisplayRewards,
     luckyWheelMode, luckyWheelRef, luckyWheelRewards, luckyWheelRotation,
     luckyWheelSpinAudioRef, luckyWheelSpinSynthRef, negSoundUrl, petSkills, posSoundUrl,
     selectedStudentIds, setEditingStudent, setIsLuckyWheelSpinning, setIsMultiSelectMode,
     setLuckyWheelCandidateIds, setLuckyWheelDisplayRewards, setLuckyWheelMode,
     setLuckyWheelPendingResult, setLuckyWheelResult, setLuckyWheelRotation,
     setLudoActiveStudent, setLudoBonusRolls, setLudoClassName, setPokemonReleaseEvent,
-    setSelectedStudentIds, setShowLuckyWheelModal, setStudents, students, wheelFinishSoundUrl,
+    setSelectedStudentIds, setStudents, students, wheelFinishSoundUrl,
     wheelSpinSoundUrl
   } = appState;
 
@@ -69,7 +72,7 @@ export const createLuckyWheelActions = (appState: AppState, app: AppActions): Lu
     setLuckyWheelDisplayRewards(displayRewards);
     setLuckyWheelPendingResult(null);
     setLuckyWheelResult(null);
-    setShowLuckyWheelModal(true);
+    goToClassPage(student.className, CLASS_SUB_PAGES.wheel);
   };
 
   const getLuckyWheelValidRewards = (student: Student) => {
@@ -251,19 +254,28 @@ export const createLuckyWheelActions = (appState: AppState, app: AppActions): Lu
   const handleOpenLuckyWheel = () => {
     if (isLuckyWheelSpinning) return;
 
-    const candidates = students.filter(s => selectedStudentIds.includes(s.id) && !s.isAbsent);
-    if (candidates.length === 0) {
-      alert("Vui lòng chọn ít nhất 1 trainer đang hiện diện để quay Vòng quay may mắn.");
-      return;
-    }
-
+    // Học sinh đã chọn ở trang lớp được tick sẵn; có thể tick thêm/bớt ngay trên trang vòng quay.
+    const candidates = students.filter(s => selectedStudentIds.includes(s.id) && !s.isAbsent && s.className === filterClass);
     setLuckyWheelCandidateIds(candidates.map(s => s.id));
     const shuffledRewards = shuffleLuckyWheelRewards(luckyWheelRewards.length > 0 ? luckyWheelRewards : DEFAULT_LUCKY_WHEEL_REWARDS);
     setLuckyWheelMode('normal');
     setLuckyWheelDisplayRewards(shuffledRewards);
     setLuckyWheelPendingResult(null);
     setLuckyWheelResult(null);
-    setShowLuckyWheelModal(true);
+    goToClassPage(filterClass, CLASS_SUB_PAGES.wheel);
+  };
+
+  const toggleLuckyWheelCandidate = (studentId: string) => {
+    if (isLuckyWheelSpinning || luckyWheelMode === 'ludo-finish') return;
+    setLuckyWheelCandidateIds(prev => prev.includes(studentId) ? prev.filter(id => id !== studentId) : [...prev, studentId]);
+  };
+
+  /** Đóng trang vòng quay: lượt cán đích Cá Ngựa quay lại bàn cờ, còn lại về trang lớp. */
+  const closeLuckyWheel = () => {
+    if (isLuckyWheelSpinning) return;
+    const className = routeClassName || filterClass;
+    setLuckyWheelMode('normal');
+    goToClassPage(className, luckyWheelMode === 'ludo-finish' ? CLASS_SUB_PAGES.ludo : null, { replace: true });
   };
 
   const stopLuckyWheelSpinSound = () => {
@@ -314,7 +326,8 @@ export const createLuckyWheelActions = (appState: AppState, app: AppActions): Lu
   const startLuckyWheelSpin = () => {
     if (isLuckyWheelSpinning) return;
 
-    const candidates = students.filter(s => luckyWheelCandidateIds.includes(s.id) && !s.isAbsent);
+    const candidates = students.filter(s => luckyWheelCandidateIds.includes(s.id) && !s.isAbsent
+      && (luckyWheelMode === 'ludo-finish' || s.className === filterClass));
     if (candidates.length === 0) {
       alert("Không còn trainer hợp lệ trong lượt quay này.");
       return;
@@ -373,6 +386,6 @@ export const createLuckyWheelActions = (appState: AppState, app: AppActions): Lu
     getWeightedLudoFinishRewards, chooseLuckyWheelReward, openLuckyWheelForLudoFinish,
     getLuckyWheelValidRewards, prepareLuckyWheelResult, applyLuckyWheelReward,
     handleOpenLuckyWheel, stopLuckyWheelSpinSound, playLuckyWheelSpinSound,
-    startLuckyWheelSpin
+    startLuckyWheelSpin, toggleLuckyWheelCandidate, closeLuckyWheel
   };
 };

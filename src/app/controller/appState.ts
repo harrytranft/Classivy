@@ -17,12 +17,14 @@ import { useGiftPokemonState } from '../../features/pokemon/useGiftPokemonState'
 import { useUserModalState } from '../../features/auth/useUserModalState';
 import { useDerivedState } from './useDerivedState';
 import { useScreenRoute } from '../useScreenRoute';
+import { useClassRoute } from '../useClassRoute';
 
 // Toàn bộ state của ứng dụng giáo viên, gom từ các provider và state của từng tính năng.
 // Hành động (actions) đọc state qua object này; giao diện đọc qua useApp().
 export const useBaseState = () => {
   const profileState = useProfileState();
-  const screenRoute = useScreenRoute(profileState.editingStudent, profileState.setEditingStudent);
+  const classRoute = useClassRoute();
+  const screenRoute = useScreenRoute(profileState.editingStudent, profileState.setEditingStudent, classRoute.filterClass);
   const { user, profile, loginWithEmail, signUpWithEmail, signInWithGoogle, logout, updateUserProfile, loading: authLoading } = useAuth();
   return {
     user, profile, loginWithEmail, signUpWithEmail, signInWithGoogle, logout, updateUserProfile, authLoading,
@@ -32,6 +34,7 @@ export const useBaseState = () => {
     ...useFeedbackState(),
     ...profileState,
     ...screenRoute,
+    ...classRoute,
     ...useRandomState(),
     ...useAttendanceState(),
     ...useHomeworkState(),

@@ -23,6 +23,7 @@
 | D4 | Bỏ chủ đề cung đình, giữ Pokémon/Boss theo nhận diện Classivy | 2026-10-26 |
 | D6 | North Star thiết kế "Lá non trong tấm khiên"; thư mục `.claude/` được commit | 2026-10-26 |
 | D7 | Bỏ hẳn hệ cấp bậc cung đình (Imperial School) và hộp "Thánh chỉ"/Gemini. Bảng Ban thưởng/Phạt hiển thị Trainer Level thay cho cấp bậc. Làm ở đầu Phase 2 | 2026-10-27 |
+| D8 | Mỗi lớp một trang `/class/<lớp>`; `/class` là trang chọn lớp; Cá Ngựa, Vòng quay, Tặng Pokémon là trang con của lớp; Vòng quay tick chọn học sinh trên trang; Random giữ dạng hộp thoại | 2026-10-27 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -99,6 +100,7 @@ src/
 - [x] 1.11 (S11-S12) Điểm danh, bài tập (`domain/attendance.ts`, `domain/homework.ts`); Shop, Hatch, Gift, Release (2026-10-26)
 - [x] 1.12 (S13-S14) Random/Battle/Boss (`domain/battle.ts`); Lucky Wheel + Cá Ngựa (`domain/ludo.ts`) (2026-10-26)
 - [x] 1.13 (S15) Dọn dẹp: lazy-load Plaza/Hồ sơ/Cài đặt và Gemini, tách chunk thư viện (chunk chính 1,40 MB -> 0,50 MB, hết cảnh báo), xoá state/hàm chết, bỏ `importmap` cũ của AI Studio; nợ kỹ thuật ghi ở `docs/architecture.md` mục 7 (2026-10-26)
+- [x] 1.13b Theo góp ý nghiệm thu của Harry (D8, 2026-10-27): trang riêng cho từng lớp và cho Cá Ngựa / Vòng quay / Tặng Pokémon (`useClassRoute`, `ClassPickerScreen`, `ClassPageGuard`); dữ liệu đồng bộ sau mọi luồng thử giữ nguyên
 - [ ] 1.14 (S16) Nghiệm thu: Harry chạy checklist hồi quy (`docs/phase-1-split-plan.md` mục 7) trên bản preview Vercel của nhánh; xác nhận để gộp vào `main`
 
 **Khác so với kế hoạch ban đầu (đã cân nhắc, không đổi hành vi):**
@@ -237,3 +239,4 @@ src/
 - Sửa lỗi Cá Ngựa lắc 6 vẫn bị Quái vật giữ; cài `@types/react`/`@types/react-dom`, sửa lỗi kiểu (`npm run typecheck`: 0 lỗi, trước đó ~20 lỗi); xoá `.sync-out.tgz`.
 - `npm test`: 13 file, 97 test đạt. `npm run build`: thành công. `npm run smoke`: 5/5 đạt (ảnh gốc không đổi vì luồng thử không đi vào ô Quái vật).
 - Thử nhập file sao lưu cũ (2026-10-27, kiểm thử tự động, Supabase giả): xuất JSON từ code trước nhánh (`253253c`) rồi nhập vào code mới: thành công, 12/12 học sinh đúng điểm/Pokémon/trứng, không lỗi; dùng bảng điểm và hồ sơ sau khi nhập vẫn bình thường. Chưa thử với file sao lưu thật của Harry.
+- Trang riêng theo lớp (D8, 2026-10-27, kiểm thử tự động): `npm run typecheck` 0 lỗi; `npm test` 100 test đạt; `npm run build` thành công, không cảnh báo; `npm run smoke` 5/5 đạt hai lần liên tiếp, test định tuyến 6/6 lần lặp. Ảnh chụp dữ liệu đám mây sau mọi luồng không đổi. Ảnh giao diện cập nhật có chủ đích: trang chọn lớp mới, chữ "← Danh sách lớp" trong ô chọn lớp, trang con không còn vẽ lưới học sinh phía sau, danh sách tick ở Vòng quay (đã đối chiếu: ngoài các chỗ này không có dòng mới). Chưa thử tay.
