@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-27 (kết thúc Phase 1, đã gộp vào `main`)
+**Cập nhật lần cuối:** 2026-10-27 (Phase 2 đang làm: xong task 2.0 và 2.7)
 
 ## 1. Sản phẩm
 
@@ -12,7 +12,7 @@ Mục tiêu đợt cải tổ: (1) đổi thương hiệu sang Classivy; (2) tá
 
 ## 2. Stack
 
-React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi ở Phase 2), Supabase (Auth + Postgres), Vercel, Gemini API (lời thông báo). Vitest (unit) + Playwright (smoke test).
+React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi ở Phase 2), Supabase (Auth + Postgres), Vercel. Vitest (unit) + Playwright (smoke test).
 
 ## 3. Quyết định đã chốt
 
@@ -24,7 +24,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 - North Star thiết kế: **"Lá non trong tấm khiên"** (Harry xác nhận 2026-10-26).
 - Thư mục `.claude/` (skills) được commit vào git.
 - Mỗi lớp một trang `/class/<lớp>`, `/class` là trang chọn lớp; Cá Ngựa, Vòng quay, Tặng Pokémon là trang con của lớp; Random vẫn là hộp thoại (D8, 2026-10-27, đã làm trên nhánh Phase 1).
-- Bỏ hệ cấp bậc cung đình và "Thánh chỉ"/Gemini; bảng Ban thưởng/Phạt dùng Trainer Level (D7, 2026-10-27) - làm ở task 2.0 đầu Phase 2.
+- Bỏ hệ cấp bậc cung đình và "Thánh chỉ"/Gemini; bảng Ban thưởng/Phạt dùng Trainer Level (D7, 2026-10-27) - đã làm (task 2.0).
 - Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
 
 ## 4. Trạng thái hiện tại
@@ -32,23 +32,23 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 - Phase 0 (nền móng và thương hiệu): hoàn thành.
 - Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
-- Chưa đổi schema, chưa có migration nào mới. Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
+- Phase 2 (nhánh `claude/charming-wright-inxhg1`): xong 2.0 (bỏ cấp bậc + Gemini) và 2.7 (khoá localStorage `classivy_*`, chép từ khoá cũ một lần). Còn 2.1-2.5, 2.8, 2.9.
+- Chưa đổi schema, chưa có migration nào mới. App đã thôi đọc/ghi cột `ranks_male`/`ranks_female` (xoá cột ở Phase 3). Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`).
 
 ## 5. Bản đồ repo (hiện tại)
 
 - `src/app/`: khung app (`App.tsx` ~20 dòng, `AppRoutes`, `AppLayout`, `AppContext`), `controller/` (gom state/hành động), `providers/` (`GameDataProvider` + `gameData/` đồng bộ Supabase/localStorage, `UiEventsProvider`).
 - `src/features/<tính năng>/`: state, hành động, giao diện của class, students, attendance, homework, random, ludo, wheel, shop, pokemon, profile, plaza, settings, tools, feedback, auth.
 - `src/domain/`: logic thuần có test (điểm, điểm danh, bài tập, battle, Cá Ngựa, Boss, Pokémon, tiến trình, trứng, ngày/tuần, thời tiết).
-- `src/components/` (component dùng chung), `src/data/` (hằng số, `pokemonData`), `src/lib/` (Supabase, Gemini, âm thanh), `src/types/`.
+- `src/components/` (component dùng chung), `src/data/` (hằng số, `pokemonData`), `src/lib/` (Supabase, âm thanh), `src/types/`.
 - `tests/smoke/` + `fixtures/sample-class.json`: smoke test Playwright. `docs/architecture.md`: hướng dẫn kiến trúc.
 - `public/brand/` logo; `brand-source/` file gốc; `docs/archive/` tài liệu Imperial School cũ.
 
 ## 6. Rủi ro đã biết
 
 - Dữ liệu học sinh nằm trong một cột JSON của giáo viên, chưa phải bảng riêng; đây là nút thắt cho mọi tính năng học sinh. Phần cần thay ở Phase 3 đã gom vào `src/app/providers/gameData/`.
-- Lỗi cấp bậc rỗng làm trắng trang: sẽ hết khi bỏ hệ cấp bậc (task 2.0). Lỗi Cá Ngựa lắc 6 đã sửa.
-- Khoá localStorage còn tiền tố `imperial_*`; đổi tên phải có đoạn chuyển dữ liệu để không mất dữ liệu khách (Phase 2).
-- Nội dung game còn từ ngữ cung đình (rank, Thánh chỉ, prompt Gemini); sẽ đổi ở Phase 2.
+- Lỗi có sẵn: trước khi đăng nhập xong, app ghi đè bản lưu học sinh trên máy bằng `[]` (xem "Đề xuất phát sinh" trong PLAN, chờ duyệt).
+- Nội dung game còn từ ngữ cung đình ("Hào Quang" ~77 chỗ, "Học sĩ", kỹ năng "Ý Chỉ Đồng Hành"...); chờ Harry chốt bộ thuật ngữ (task 2.5).
 - Giới hạn gói miễn phí Supabase/Vercel (kể cả Edge Functions) cần xác minh lại trước Phase 3-4.
 
 ## 7. Quyết định còn mở
@@ -58,4 +58,4 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind (CDN, sẽ đổi �
 
 ## 8. Bước tiếp theo
 
-Phase 2 (hệ thiết kế Classivy, reskin, thuật ngữ, đổi khoá localStorage), bắt đầu bằng task 2.0: bỏ hệ cấp bậc + "Thánh chỉ"/Gemini, bảng Ban thưởng/Phạt dùng Trainer Level (D7). Làm trên nhánh mới từ `main`. Khi đổi giao diện, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff.
+Tiếp Phase 2: chờ Harry chốt thuật ngữ (2.5) và duyệt sửa lỗi ghi đè bản lưu máy; song song có thể làm 2.2 (Tailwind build local) -> 2.1 (chốt DESIGN.md) -> 2.3 (thư viện `components/ui/`) -> 2.4 (reskin). Khi đổi giao diện, cập nhật ảnh gốc smoke test có chủ đích (`npm run smoke -- --update-snapshots`) và xem lại diff.
