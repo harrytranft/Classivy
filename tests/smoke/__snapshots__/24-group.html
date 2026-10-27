@@ -980,27 +980,48 @@
 </div>
 </div>
 </main>
-<div class="fixed inset-0 z-[100] flex flex-col bg-white overflow-hidden animate-in fade-in duration-300">
-<div class="bg-red-800 text-white p-6 flex justify-between items-center shadow-lg shrink-0">
-<div class="flex items-center gap-3">
-<span class="text-3xl">👥</span>
-<h2 class="text-2xl font-royal uppercase tracking-wider">Chia Nhóm Tự Động</h2>
+<div class="fixed inset-0 flex items-center justify-center bg-brand-forest-deep/60 p-0 sm:p-4 animate-in fade-in duration-150 z-[100]">
+<div role="dialog" aria-modal="true" aria-labelledby="_r_0_" class="relative flex max-h-full w-full flex-col overflow-hidden bg-white shadow-[0_24px_60px_-18px_rgba(0,38,25,0.55)] sm:max-h-[92vh] sm:rounded-brand-lg max-w-[1400px]">
+<div class="flex shrink-0 items-start gap-3 px-6 pt-5 pb-4 border-b border-[#efece2]">
+<div class="grid h-11 w-11 shrink-0 place-items-center rounded-brand-md bg-[#f2f6ef] text-2xl text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round" aria-hidden="true">
+<path d="M18 21a8 8 0 0 0-16 0">
+</path>
+<circle cx="10" cy="8" r="5">
+</circle>
+<path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3">
+</path>
+</svg>
 </div>
-<button class="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-xl font-bold text-sm uppercase transition-all">← Quay Lại</button>
+<div class="min-w-0 flex-1">
+<h2 id="_r_0_" class="text-xl font-extrabold leading-tight text-brand-ink">Chia nhóm tự động</h2>
+<p class="mt-1 text-sm text-brand-ink/70">Tạo nhóm cân bằng chỉ trong một lần bấm</p>
 </div>
-<div class="flex-1 p-6 sm:p-10 overflow-y-auto max-w-7xl mx-auto w-full space-y-8">
-<div class="bg-red-50 p-6 rounded-3xl border border-red-200 text-center space-y-4">
-<h3 class="text-xl font-bold text-red-900">Chọn Số Lượng Trainer Tối Đa Trong 1 Nhóm:</h3>
-<div class="flex flex-wrap justify-center gap-3">
-<button class="w-14 h-14 rounded-2xl border-2 text-xl font-black transition-all border-red-800 text-white bg-red-800 shadow-md scale-110">2</button>
-<button class="w-14 h-14 rounded-2xl border-2 text-xl font-black transition-all border-gray-200 text-gray-700 bg-white hover:border-red-400">3</button>
-<button class="w-14 h-14 rounded-2xl border-2 text-xl font-black transition-all border-gray-200 text-gray-700 bg-white hover:border-red-400">4</button>
-<button class="w-14 h-14 rounded-2xl border-2 text-xl font-black transition-all border-gray-200 text-gray-700 bg-white hover:border-red-400">5</button>
-<button class="w-14 h-14 rounded-2xl border-2 text-xl font-black transition-all border-gray-200 text-gray-700 bg-white hover:border-red-400">6</button>
-<button class="w-14 h-14 rounded-2xl border-2 text-xl font-black transition-all border-gray-200 text-gray-700 bg-white hover:border-red-400">7</button>
-<button class="w-14 h-14 rounded-2xl border-2 text-xl font-black transition-all border-gray-200 text-gray-700 bg-white hover:border-red-400">8</button>
+<button type="button" aria-label="Đóng" class="-mr-2 grid h-10 w-10 shrink-0 place-items-center rounded-full text-brand-ink/60 transition-colors hover:bg-brand-forest/[0.07] hover:text-brand-forest">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-5 w-5" aria-hidden="true">
+<path d="M18 6 6 18">
+</path>
+<path d="m6 6 12 12">
+</path>
+</svg>
+</button>
 </div>
-<button class="bg-red-800 text-white p-4 px-10 rounded-2xl font-extrabold text-lg shadow-xl hover:bg-red-900 uppercase tracking-wider transition-all">Tạo Nhóm Ngay 🎲</button>
+<div class="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+<div class="mx-auto max-w-6xl space-y-6">
+<div class="rounded-brand-lg border border-[#e6e2d4] bg-white shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] p-5 bg-[#f4f8f1] text-center">
+<h3 class="text-lg font-extrabold text-brand-ink">Số Trainer tối đa trong mỗi nhóm</h3>
+<div class="mt-4 flex flex-wrap justify-center gap-2">
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-brand-forest text-brand-cream hover:bg-brand-forest-deep shadow-[0_2px_8px_-2px_rgba(0,38,25,0.45)] h-11 px-4 text-sm gap-2 w-12 px-0" aria-pressed="true">2</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2 w-12 px-0" aria-pressed="false">3</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2 w-12 px-0" aria-pressed="false">4</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2 w-12 px-0" aria-pressed="false">5</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2 w-12 px-0" aria-pressed="false">6</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2 w-12 px-0" aria-pressed="false">7</button>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2 w-12 px-0" aria-pressed="false">8</button>
+</div>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-brand-forest text-brand-cream hover:bg-brand-forest-deep shadow-[0_2px_8px_-2px_rgba(0,38,25,0.45)] h-12 px-5 text-base gap-2 mt-5">Tạo nhóm</button>
+</div>
+</div>
 </div>
 </div>
 </div>

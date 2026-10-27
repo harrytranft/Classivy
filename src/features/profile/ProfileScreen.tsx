@@ -11,28 +11,28 @@ export const ProfileScreen: React.FC = () => {
     editingStudent, profileTab, setCurrentScreen, setProfileTab, setSelectedFusionPetDexIds
   } = useApp();
   return (
-    <div className="bg-white p-6 sm:p-10 rounded-3xl border shadow-2xl max-w-4xl mx-auto space-y-8 animate-in slide-in-from-right-4 duration-500">
-      <div className="flex justify-between items-center border-b pb-4">
-        <h2 className="text-2xl sm:text-3xl font-royal text-red-800">Hồ Sơ Trainer</h2>
+    <div className="mx-auto max-w-4xl space-y-6 rounded-brand-lg border border-[#e6e2d4] bg-white p-6 shadow-[0_6px_18px_-8px_rgba(12,37,39,0.14)] animate-in slide-in-from-right-4 duration-500 sm:p-8">
+      <div className="flex items-center justify-between border-b border-[#e6e2d4] pb-4">
+        <div><p className="text-sm font-semibold text-brand-forest">Hành trình của Trainer</p><h2 className="mt-1 text-2xl font-extrabold tracking-tight text-brand-ink sm:text-3xl">Hồ sơ Trainer</h2></div>
         <button 
           onClick={() => setCurrentScreen('class')} 
-          className="text-sm font-black uppercase text-gray-400 hover:text-red-800 transition-colors"
+          className="text-sm font-bold text-brand-forest transition-colors hover:text-brand-forest-deep"
         >
           ← Quay lại lớp
         </button>
       </div>
 
       {/* Profile Tab Selector */}
-      <div className="flex border-b border-gray-100 shrink-0">
+      <div className="flex shrink-0 overflow-x-auto border-b border-[#e6e2d4]">
         <button 
           onClick={() => setProfileTab('info')} 
-          className={`flex-1 py-3 text-xs sm:text-sm font-black border-b-4 transition-all tracking-wider ${profileTab === 'info' ? 'text-red-800 border-red-800' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+          className={`min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors ${profileTab === 'info' ? 'border-brand-forest text-brand-forest' : 'border-transparent text-brand-ink/60 hover:text-brand-ink'}`}
         >
           📜 TIỂU SỬ & CÔNG TRẠNG
         </button>
         <button 
           onClick={() => setProfileTab('pet')} 
-          className={`flex-1 py-3 text-xs sm:text-sm font-black border-b-4 transition-all tracking-wider flex items-center justify-center gap-2 ${profileTab === 'pet' ? 'text-amber-600 border-amber-600' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+          className={`min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors flex items-center justify-center gap-2 ${profileTab === 'pet' ? 'border-brand-gold text-brand-forest' : 'border-transparent text-brand-ink/60 hover:text-brand-ink'}`}
         >
           <span>{editingStudent.pet ? '🔥' : '🥚'}</span>
           <span>{editingStudent.pet ? 'LINH THÚ HỘ MỆNH' : 'ẤP TRỨNG POKÉMON'}</span>
@@ -42,7 +42,7 @@ export const ProfileScreen: React.FC = () => {
             setProfileTab('fusion');
             setSelectedFusionPetDexIds([]);
           }} 
-          className={`flex-1 py-3 text-xs sm:text-sm font-black border-b-4 transition-all tracking-wider flex items-center justify-center gap-2 ${profileTab === 'fusion' ? 'text-purple-700 border-purple-700' : 'text-gray-400 border-transparent hover:text-gray-600'}`}
+          className={`min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors flex items-center justify-center gap-2 ${profileTab === 'fusion' ? 'border-brand-violet text-brand-violet-deep' : 'border-transparent text-brand-ink/60 hover:text-brand-ink'}`}
         >
           <span>🔮</span>
           <span>HỢP NHẤT LINH THÚ</span>

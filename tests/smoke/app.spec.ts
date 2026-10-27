@@ -239,7 +239,7 @@ test('các màn hình chính', async ({ page }) => {
   await snap(page, '11-class-6A', state);
 
   await clickNav(page, 'Cài Đặt');
-  await page.getByText('Trainer Settings').waitFor();
+  await page.getByRole('heading', { name: 'Cài đặt lớp học' }).waitFor();
   const expanders = page.locator('main button[aria-label^="Hiện "]');
   while (await expanders.count() > 0) {
     await expanders.first().click();

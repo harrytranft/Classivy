@@ -21,8 +21,12 @@ export const SettingsScreen: React.FC = () => {
     tileFormType, tileFormValue, timerSoundUrl, toggleSettingsSection, updateLuckyWheelReward, updatePetSkill, updateSkill, wheelFinishSoundUrl, wheelSpinSoundUrl
   } = useApp();
   return (
-    <div className="animate-in slide-in-from-bottom-4 duration-500 space-y-8 pb-12">
-      <h2 className="text-3xl font-royal text-teal-800 text-center uppercase">Trainer Settings</h2>
+    <div className="animate-in slide-in-from-bottom-4 space-y-6 pb-12 duration-500">
+      <header className="rounded-brand-lg border border-[#e6e2d4] bg-[#f4f8f1] px-6 py-7 sm:px-8">
+        <p className="text-sm font-semibold text-brand-forest">Không gian giáo viên</p>
+        <h2 className="mt-1 text-3xl font-extrabold tracking-tight text-brand-ink">Cài đặt lớp học</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-ink/70">Tuỳ chỉnh hoạt động, phần thưởng và công cụ. Các thay đổi được đồng bộ cùng dữ liệu lớp.</p>
+      </header>
 
       <SettingsSection id="bossRaid" icon="👹" title="Boss Raid" subtitle="Cài tần suất Boss xuất hiện sau các lượt Random Solo/Battle." collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="rounded-[32px] border border-red-100 bg-gradient-to-br from-red-50 via-white to-amber-50 p-5 text-left shadow-sm">

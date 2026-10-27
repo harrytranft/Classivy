@@ -16,7 +16,7 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
   title,
   icon,
   subtitle,
-  className = 'bg-white p-10 rounded-[40px] border shadow-sm space-y-8',
+  className = 'bg-white p-6 sm:p-8 rounded-brand-lg border border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] space-y-6',
   collapsedSections,
   onToggle,
   children
@@ -24,18 +24,18 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
   const isCollapsed = !!collapsedSections[id];
   return (
     <section className={className}>
-      <div className="flex items-center justify-between gap-4 border-b pb-4">
+      <div className="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-3xl shrink-0">{icon}</span>
           <div className="min-w-0">
-            <h3 className="text-2xl font-royal text-red-800">{title}</h3>
-            {subtitle && <p className="text-xs text-stone-500 font-bold mt-1">{subtitle}</p>}
+            <h3 className="text-xl font-extrabold tracking-tight text-brand-ink">{title}</h3>
+            {subtitle && <p className="mt-1 text-sm text-brand-ink/70">{subtitle}</p>}
           </div>
         </div>
         <button
           type="button"
           onClick={() => onToggle(id)}
-          className={`shrink-0 w-16 h-8 rounded-full border-2 p-1 transition-all ${isCollapsed ? 'bg-stone-200 border-stone-300' : 'bg-red-800 border-red-900'}`}
+          className={`shrink-0 h-8 w-14 rounded-full border p-1 transition-colors ${isCollapsed ? 'border-[#d9d6ca] bg-[#f1efe7]' : 'border-brand-forest bg-brand-forest'}`}
           aria-label={isCollapsed ? `Hiện ${title}` : `Ẩn ${title}`}
           title={isCollapsed ? `Hiện ${title}` : `Ẩn ${title}`}
         >
