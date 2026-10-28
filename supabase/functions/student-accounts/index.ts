@@ -24,7 +24,9 @@ const makeStore = (req: Request): AccountStore => {
       return error || !data.user ? null : data.user.id;
     },
     async isTeacher(userId) {
-      const { data } = await admin.from('profiles').select('role').eq('user_id', userId).maybeSingle();
+      const { data, error } = await admin.from('profiles').select('role').eq('user_id', userId).maybeSingle();
+      // Lỗi truy vấn (ví dụ thiếu quyền bảng) KHÔNG được báo thành "không phải giáo viên": để handler trả lỗi chung và ghi log.
+      if (error) throw new Error('role_check_failed');
       return data?.role === 'teacher';
     },
     async getOwnedStudents(teacherId, studentIds) {

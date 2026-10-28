@@ -36,6 +36,17 @@ update public.students set auth_user_id = '22222222-0000-4000-8000-000000000022'
   where client_id = 'p3' and teacher_id = '11111111-0000-4000-8000-000000000011';
 reset role;
 
+-- 0. service_role (Edge Function) đọc được vai trò trong profiles và ghi được students/nhật ký.
+do $$
+declare r text;
+begin
+  set local role service_role;
+  select role into r from public.profiles where user_id = '11111111-0000-4000-8000-000000000011';
+  reset role;
+  if r is distinct from 'teacher' then raise exception 'FAIL: service_role cannot read profiles.role (got %)', r; end if;
+  raise notice 'ok - service_role can read profiles.role';
+end $$;
+
 -- 1. Giáo viên đọc được tên đăng nhập của học sinh mình, không thấy của giáo viên khác.
 select test.login('11111111-0000-4000-8000-000000000011');
 select test.eq((select username from public.students where client_id = 'p1'), 'minhanh472', 'teacher reads own student username');

@@ -18,13 +18,13 @@ File liên quan:
 
 ## Bước 1 - Dự án dev (`classivy-dev`)
 
-- [ ] 1.1 SQL Editor của dự án dev: dán toàn bộ file migration, bấm **Run**. Kết quả mong đợi: "Success. No rows returned".
-- [ ] 1.2 Trên Mac, trong thư mục dự án (nhánh Phase 4), cài và đăng nhập Supabase CLI: `npx supabase login` (mở trình duyệt để xác nhận).
-- [ ] 1.3 Triển khai hàm (thay `<ref-dev>` bằng Project ID của `classivy-dev`, lấy ở Project Settings > General):
+- [x] 1.1 SQL Editor của dự án dev: dán toàn bộ file migration, bấm **Run**. Kết quả mong đợi: "Success. No rows returned".
+- [x] 1.2 Trên Mac, trong thư mục dự án (nhánh Phase 4), cài và đăng nhập Supabase CLI: `npx supabase login` (mở trình duyệt để xác nhận).
+- [x] 1.3 Triển khai hàm (thay `<ref-dev>` bằng Project ID của `classivy-dev`, lấy ở Project Settings > General):
   `npx supabase functions deploy student-accounts --project-ref <ref-dev>`
   Nếu CLI báo thiếu Docker, thêm cờ `--use-api`. Xem hàm ở Dashboard > Edge Functions: phải thấy `student-accounts` và JWT verification **đang bật**.
-- [ ] 1.4 Chạy app ở máy với dự án dev (`.env.local` của dự án dev, như Phase 3), đăng nhập tài khoản giáo viên thử có vài học sinh (đã nâng cấp dữ liệu, `data_model_version = 2`).
-- [ ] 1.5 Vào một lớp > nút **Tài khoản học sinh**. Thử lần lượt:
+- [x] 1.4 Chạy app ở máy với dự án dev (`.env.local` của dự án dev, như Phase 3), đăng nhập tài khoản giáo viên thử có vài học sinh (đã nâng cấp dữ liệu, `data_model_version = 2`).
+- [x] 1.5 Vào một lớp > nút **Tài khoản học sinh**. Thử lần lượt:
   - Đợi vài giây cho app lưu học sinh lên đám mây, bấm **Làm mới**: học sinh hiện ra, trạng thái "Chưa có tài khoản".
   - **Tạo tài khoản** cho một em: hiện thẻ đăng nhập (tên đăng nhập + mật khẩu 8 ký tự). Chép lại mật khẩu. Bấm **In thẻ** thử xem bản in.
   - Mở cửa sổ ẩn danh, vào app, đăng nhập bằng **tên đăng nhập** (không có @) + mật khẩu trên thẻ: phải thấy màn "Đặt mật khẩu mới". Đặt mật khẩu mới, thấy "Xin chào ...". Đăng xuất, đăng nhập lại bằng mật khẩu mới: vào thẳng.
@@ -34,8 +34,8 @@ File liên quan:
   - Tạo lại tài khoản cho một em khác, rồi **xoá học sinh đó ở trang lớp**: kiểm tra Authentication > Users **không còn** người dùng của em đó (đây là trigger mới; **ghi lại nếu còn sót**).
   - Tab **Nhật ký thao tác** ghi đủ các việc trên, **không có mật khẩu**.
   - Tạo cho **cả lớp** (nút "Tạo cho cả lớp").
-- [ ] 1.6 (Tuỳ chọn) Thử hoàn tác: chạy file rollback trong SQL Editor, tải lại app: trang tài khoản báo lỗi tải, phần còn lại bình thường. Chạy lại migration.
-- [ ] 1.7 Báo mình kết quả (đặc biệt 3 mục "Ghi lại") để mình cập nhật PLAN/BRIEF.
+- [x] 1.6 (Tuỳ chọn) Thử hoàn tác: chạy file rollback trong SQL Editor, tải lại app: trang tài khoản báo lỗi tải, phần còn lại bình thường. Chạy lại migration.
+- [x] 1.7 Báo mình kết quả (đặc biệt 3 mục "Ghi lại") để mình cập nhật PLAN/BRIEF.
 
 ## Bước 2 - Production (chỉ sau khi bước 1 ổn)
 

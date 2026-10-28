@@ -25,6 +25,8 @@ create unique index if not exists students_username_key on public.students (user
 
 -- Edge Function dùng vai trò service_role: cấp quyền rõ ràng (dự án Supabase mới không tự cấp).
 grant select, update on public.students to service_role;
+-- Hàm kiểm tra người gọi là giáo viên (profiles.role). Thiếu quyền này hàm sẽ báo nhầm "chỉ giáo viên được quản lý".
+grant select on public.profiles to service_role;
 
 -- ---------------------------------------------------------------------------
 -- 2. Nhật ký thao tác của giáo viên. Chỉ thêm; không ghi mật khẩu.
