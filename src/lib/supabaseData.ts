@@ -170,14 +170,20 @@ export const fetchTeacherTables = async (): Promise<TeacherTables> => {
     supabase.from('classes').select('id, name, boss_state').order('name').range(from, to));
   const classNameById = new Map(classRows.map(row => [row.id, row.name]));
 
-  const studentRows = await fetchAllPages<{
+  type StudentDbRow = {
     client_id: string; class_id: string; name: string; gender: string; points: number;
-    avatar: string | null; game_state: Record<string, unknown> | null;
-  }>((from, to) =>
-    supabase.from('students')
-      .select('client_id, class_id, name, gender, points, avatar, game_state')
-      .order('created_at').order('id')
-      .range(from, to));
+    avatar: string | null; game_state: Record<string, unknown> | null; revision?: number;
+  };
+  const loadStudents = (columns: string) => fetchAllPages<StudentDbRow>((from, to) =>
+    supabase.from('students').select(columns).order('created_at').order('id').range(from, to) as unknown as PromiseLike<{ data: StudentDbRow[] | null; error: unknown }>);
+  // Phase 7: có cột revision thì đọc kèm; DB chưa chạy migration Phase 7 (lỗi 42703) thì đọc như cũ.
+  let studentRows: StudentDbRow[];
+  try {
+    studentRows = await loadStudents('client_id, class_id, name, gender, points, avatar, game_state, revision');
+  } catch (error) {
+    if ((error as { code?: string })?.code !== '42703') throw error;
+    studentRows = await loadStudents('client_id, class_id, name, gender, points, avatar, game_state');
+  }
 
   const historyRows = await fetchAllPages<{
     student_client_id: string; client_event_id: string; amount: number; reason: string; occurred_at: string;
@@ -196,7 +202,8 @@ export const fetchTeacherTables = async (): Promise<TeacherTables> => {
       gender: row.gender as StudentRow['gender'],
       points: row.points,
       avatar: row.avatar,
-      gameState: (row.game_state ?? {}) as StudentRow['gameState']
+      gameState: (row.game_state ?? {}) as StudentRow['gameState'],
+      ...(typeof row.revision === 'number' ? { revision: row.revision } : {})
     })),
     history: historyRows.map(row => ({
       studentClientId: row.student_client_id,
@@ -214,4 +221,40 @@ export const saveTeacherChanges = async (changes: TeacherChanges): Promise<numbe
   const { data, error } = await supabase.rpc('save_teacher_changes', { p_changes: sanitizeForSupabase(toRpcPayload(changes)) });
   if (error) throw error;
   return Number(data) || Date.now();
+};
+
+/** Máy khác đã sửa (hoặc xoá) học sinh trong gói kể từ lần app đọc/lưu: DB từ chối cả gói (Phase 7, D31). */
+export class StaleDataError extends Error {
+  constructor(public readonly clientIds: string[]) {
+    super('stale_data');
+    this.name = 'StaleDataError';
+  }
+}
+
+export const isStaleDataError = (error: unknown): error is StaleDataError => error instanceof StaleDataError;
+
+// null = chưa biết; false = DB chưa có save_teacher_changes_v2 (chưa chạy migration Phase 7) => dùng hàm cũ.
+let hasSaveV2: boolean | null = null;
+
+/**
+ * Ghi một gói thay đổi kèm số phiên bản (save_teacher_changes_v2). Trả thời điểm lưu và phiên bản mới của các em
+ * trong gói. DB chưa có hàm v2 thì dùng hàm cũ (không có chống ghi đè, revisions rỗng).
+ */
+export const saveTeacherChangesChecked = async (changes: TeacherChanges): Promise<{ savedAt: number; revisions: Record<string, number> }> => {
+  if (hasSaveV2 !== false) {
+    const { data, error } = await supabase.rpc('save_teacher_changes_v2', { p_changes: sanitizeForSupabase(toRpcPayload(changes)) });
+    if (!error) {
+      hasSaveV2 = true;
+      const result = (data ?? {}) as { saved_at?: unknown; revisions?: unknown };
+      if (typeof result !== 'object' || result === null || !('saved_at' in result)) throw new Error('Unexpected save_teacher_changes_v2 response');
+      const revisions = result.revisions && typeof result.revisions === 'object' ? result.revisions as Record<string, number> : {};
+      return { savedAt: Number(result.saved_at) || Date.now(), revisions };
+    }
+    if (error.code === '40001' || error.message === 'stale_data') {
+      throw new StaleDataError(String((error as { details?: string }).details ?? '').split(',').filter(Boolean));
+    }
+    if (error.code !== 'PGRST202' && error.code !== '42883') throw error;
+    hasSaveV2 = false;
+  }
+  return { savedAt: await saveTeacherChanges(changes), revisions: {} };
 };

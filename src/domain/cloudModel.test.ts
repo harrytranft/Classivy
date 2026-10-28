@@ -7,6 +7,7 @@ import {
   CloudSnapshot,
   EMPTY_SNAPSHOT,
   applyChanges,
+  buildSnapshot,
   chunkChanges,
   diffSnapshots,
   emptyTables,
@@ -192,5 +193,33 @@ describe('toRpcPayload / chunkChanges', () => {
     chunks.forEach(chunk => expect(chunk.students.length).toBeLessThanOrEqual(5));
     const stepwise = chunks.reduce(applyChanges, emptyTables());
     expect(stableStringify(tablesToSnapshot(stepwise))).toBe(stableStringify(tablesToSnapshot(applyChanges(emptyTables(), changes))));
+  });
+});
+
+describe('số phiên bản chống ghi đè giữa hai máy (Phase 7, D31)', () => {
+  it('đọc revision từ dòng bảng vào snapshot', () => {
+    const row = { ...studentToRow(makeStudent()), revision: 4 };
+    expect(buildSnapshot([], [row], []).revisions).toEqual({ 'stu-1': 4 });
+    expect(buildSnapshot([], [studentToRow(makeStudent())], []).revisions).toBeUndefined();
+  });
+
+  it('gửi base_revision cho học sinh đã có, không gửi cho học sinh mới', () => {
+    const previous: CloudSnapshot = { students: [makeStudent()], bossStatesByClass: {}, revisions: { 'stu-1': 4 } };
+    const next: CloudSnapshot = { students: [makeStudent({ points: 25 }), makeStudent({ id: 'stu-2', name: 'Bình' })], bossStatesByClass: {} };
+    const changes = diffSnapshots(previous, next);
+    expect(changes.students.map(row => [row.clientId, row.baseRevision])).toEqual([['stu-1', 4], ['stu-2', undefined]]);
+    const payload = toRpcPayload(changes);
+    expect(payload.students[0]).toMatchObject({ client_id: 'stu-1', base_revision: 4 });
+    expect(payload.students[1]).not.toHaveProperty('base_revision');
+  });
+
+  it('không có revisions (DB chưa chạy migration Phase 7) thì gửi y như cũ', () => {
+    const changes = diffSnapshots({ students: [makeStudent()], bossStatesByClass: {} }, { students: [makeStudent({ points: 1 })], bossStatesByClass: {} });
+    expect(toRpcPayload(changes).students[0]).not.toHaveProperty('base_revision');
+  });
+
+  it('học sinh không đổi thì không gửi, dù có revision', () => {
+    const snap: CloudSnapshot = { students: [makeStudent()], bossStatesByClass: {}, revisions: { 'stu-1': 2 } };
+    expect(isEmptyChanges(diffSnapshots(snap, { students: [makeStudent()], bossStatesByClass: {} }))).toBe(true);
   });
 });

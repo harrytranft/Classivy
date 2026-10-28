@@ -7,6 +7,8 @@ import { ClassBossState, Gender, HistoryItem, Student } from '../types';
 export const RECENT_HISTORY_LIMIT = 50;
 /** Giới hạn ảnh base64 trong cột students.avatar (DB chặn ở 300.000 byte). */
 export const AVATAR_MAX_LENGTH = 280_000;
+/** Phase 7 (D30): ảnh mới tải lên được nén về ~100 KB (≈ 140.000 ký tự base64). Ảnh cũ dưới AVATAR_MAX_LENGTH giữ nguyên. */
+export const AVATAR_TARGET_LENGTH = 140_000;
 export const OPENING_BALANCE_EVENT_ID = 'opening-balance';
 
 export type LedgerSource = 'app' | 'migration' | 'opening_balance';
@@ -27,6 +29,10 @@ export interface StudentRow {
   points: number;
   avatar: string | null;
   gameState: StudentGameState;
+  /** Phase 7: số phiên bản dòng trong DB lúc đọc (students.revision). */
+  revision?: number;
+  /** Phase 7: phiên bản app đang có khi gửi thay đổi; DB từ chối nếu máy khác đã sửa trước (D31). */
+  baseRevision?: number;
 }
 
 export interface HistoryRow {
@@ -49,6 +55,8 @@ export interface TeacherChanges {
 export interface CloudSnapshot {
   students: Student[];
   bossStatesByClass: Record<string, ClassBossState>;
+  /** Phase 7: số phiên bản của từng học sinh (theo id) ở lần đọc/lưu thành công gần nhất. */
+  revisions?: Record<string, number>;
 }
 
 export const EMPTY_SNAPSHOT: CloudSnapshot = { students: [], bossStatesByClass: {} };
@@ -137,9 +145,12 @@ export const buildSnapshot = (
   classes.forEach(cls => {
     if (cls.bossState) bossStatesByClass[cls.name] = cls.bossState;
   });
+  const revisions: Record<string, number> = {};
+  rows.forEach(row => { if (typeof row.revision === 'number') revisions[row.clientId] = row.revision; });
   return {
     students: rows.map(row => rowToStudent(row, byStudent.get(row.clientId) ?? [])),
-    bossStatesByClass
+    bossStatesByClass,
+    ...(Object.keys(revisions).length > 0 ? { revisions } : {})
   };
 };
 
@@ -153,7 +164,10 @@ export const diffSnapshots = (previous: CloudSnapshot, next: CloudSnapshot): Tea
   next.students.forEach(student => {
     const before = prevById.get(student.id);
     const row = studentToRow(student);
-    if (!before || stableStringify(studentToRow(before)) !== stableStringify(row)) students.push(row);
+    if (!before || stableStringify(studentToRow(before)) !== stableStringify(row)) {
+      const baseRevision = before ? previous.revisions?.[student.id] : undefined;
+      students.push(baseRevision === undefined ? row : { ...row, baseRevision });
+    }
     const knownEventIds = new Set((before?.history ?? []).map(item => String(item.id)));
     // history của app: mới nhất trước -> gửi cũ trước để thứ tự ghi trong sổ đúng thời gian.
     [...(student.history ?? [])].reverse().forEach(item => {
@@ -194,7 +208,8 @@ export const toRpcPayload = (changes: TeacherChanges) => ({
     gender: row.gender,
     points: row.points,
     avatar: row.avatar,
-    game_state: row.gameState
+    game_state: row.gameState,
+    ...(row.baseRevision !== undefined ? { base_revision: row.baseRevision } : {})
   })),
   history: changes.history.map(entry => ({
     student_client_id: entry.studentClientId,

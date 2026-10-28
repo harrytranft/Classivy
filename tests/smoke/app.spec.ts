@@ -61,6 +61,9 @@ interface SmokeState {
   tables: TablesState;
   rpcCalls: TeacherChanges[];
   dataModelVersion: 1 | 2;
+  /** Phase 7: lần lưu tới bị DB từ chối như khi máy khác vừa sửa (stale_data); đếm số lần đọc user_settings. */
+  staleNextSave: boolean;
+  settingsReads: number;
 }
 
 // Payload JSON của save_teacher_changes -> TeacherChanges (ngược với toRpcPayload).
@@ -129,7 +132,7 @@ interface SetupOptions {
 }
 
 async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState> {
-  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1 };
+  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1, staleNextSave: false, settingsReads: 0 };
 
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ loggedIn, storageKey, session, seedValues }) => {
@@ -176,6 +179,7 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
     const url = new URL(request.url());
     if (url.pathname.endsWith('/user_settings')) {
       if (request.method() === 'GET') {
+        state.settingsReads += 1;
         // Behave like a real cloud: return the latest saved row so reloads keep progress.
         const latest = state.upserts[state.upserts.length - 1] as Record<string, unknown> | undefined;
         const row: Record<string, unknown> = latest ? { ...cloudRow(), ...latest } : cloudRow();
@@ -195,18 +199,24 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
       await route.fulfill({ status: 201, contentType: 'application/json', body: '[]' });
       return;
     }
-    const phase3Path = url.pathname.match(/\/rest\/v1\/(classes|students|student_recent_history|rpc\/save_teacher_changes)$/);
+    const phase3Path = url.pathname.match(/\/rest\/v1\/(classes|students|student_recent_history|rpc\/save_teacher_changes|rpc\/save_teacher_changes_v2)$/);
     if (phase3Path && !options.phase3) {
       await route.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ code: '42P01', message: 'relation does not exist' }) });
       return;
     }
     if (phase3Path) {
       const target = phase3Path[1];
-      if (target === 'rpc/save_teacher_changes') {
+      if (target === 'rpc/save_teacher_changes' || target === 'rpc/save_teacher_changes_v2') {
+        if (target === 'rpc/save_teacher_changes_v2' && state.staleNextSave) {
+          state.staleNextSave = false;
+          await route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ code: '40001', message: 'stale_data', details: 'x', hint: null }) });
+          return;
+        }
         const changes = fromRpcPayload((request.postDataJSON() as { p_changes: RpcPayload }).p_changes);
         state.tables = applyChanges(state.tables, changes);
         state.rpcCalls.push(changes);
-        await route.fulfill({ status: 200, contentType: 'application/json', body: String(Date.now()) });
+        const body = target === 'rpc/save_teacher_changes' ? String(Date.now()) : JSON.stringify({ saved_at: Date.now(), revisions: {} });
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
         return;
       }
       const offset = Number(url.searchParams.get('offset') || 0);
@@ -689,5 +699,38 @@ test('Phase 6: điểm tặng trong hàng chờ được cộng vào Hào Quang 
   await page.waitForTimeout(2200);
   expect(giftRows()).toHaveLength(1);
   expect(state.tables.students[target.id].points).toBe(target.points + 2);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 7: máy khác vừa sửa thì không ghi đè, báo giáo viên và tải lại', async ({ page }) => {
+  const state = await setupPage(page, {
+    loggedIn: true,
+    emptyCloud: true,
+    phase3: true,
+    localStorageSeed: { classivy_school_data_v6: JSON.stringify(FIXTURE.students) }
+  });
+  await page.waitForTimeout(2200);
+  const savedPoints = Object.fromEntries(Object.entries(state.tables.students).map(([id, row]) => [id, row.points]));
+  const readsBefore = state.settingsReads;
+  const callsBefore = state.rpcCalls.length;
+
+  state.staleNextSave = true;
+  await chooseClass(page, '6A');
+  await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
+  await page.locator('button.aspect-square').first().click();
+  const banner = page.getByRole('alert').filter({ hasText: 'Dữ liệu vừa được đổi ở máy khác' });
+  await expect(banner).toBeVisible({ timeout: 5000 });
+  // Không có gì bị ghi, app đọc lại từ đám mây.
+  expect(state.rpcCalls.length).toBe(callsBefore);
+  expect(Object.fromEntries(Object.entries(state.tables.students).map(([id, row]) => [id, row.points]))).toEqual(savedPoints);
+  await expect.poll(() => state.settingsReads).toBeGreaterThan(readsBefore);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/70-sync-conflict.png' });
+  await banner.getByRole('button', { name: 'Đã hiểu' }).click();
+  await expect(banner).toHaveCount(0);
+
+  // Sau khi tải lại, thao tác mới lưu bình thường.
+  await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
+  await page.locator('button.aspect-square').first().click();
+  await expect.poll(() => state.rpcCalls.length, { timeout: 5000 }).toBe(callsBefore + 1);
   expect(state.errors).toEqual([]);
 });

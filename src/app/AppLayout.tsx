@@ -18,6 +18,7 @@ import { UserModal } from '../features/auth/UserModal';
 import { ShopModal } from '../features/shop/ShopModal';
 import { RandomModal } from '../features/random/RandomModal';
 import { DataUpgradeModal } from '../features/dataUpgrade/DataUpgradeModal';
+import { SyncConflictBanner } from './SyncConflictBanner';
 import { useApp } from './AppContext';
 
 export const AppLayout: React.FC = () => {
@@ -53,6 +54,9 @@ export const AppLayout: React.FC = () => {
           <Outlet />
         </Suspense>
       </main>
+
+      {/* Phase 7: lần lưu bị từ chối vì máy khác vừa sửa */}
+      <SyncConflictBanner />
 
       {/* MODAL: NÂNG CẤP CÁCH LƯU DỮ LIỆU (Phase 3) */}
       <DataUpgradeModal />
