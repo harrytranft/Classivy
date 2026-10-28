@@ -48,7 +48,7 @@
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Hoàn thành (2026-10-28) | **Có (migration)** |
-| 4 | Giáo viên quản lý tài khoản học sinh | Đã gộp `main` (PR #5); chờ Harry xác nhận runbook bước 2.5 | **Có (migration + Edge Function)** |
+| 4 | Giáo viên quản lý tài khoản học sinh | Hoàn thành (2026-10-28, PR #5) | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Hoàn thành (2026-10-28, PR #6); bổ sung responsive desktop (5.7) | **Có (migration)** |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
 | 7 | Hardening, kiểm thử bảo mật, ra mắt | Chưa bắt đầu | Có |
@@ -180,7 +180,7 @@ src/
 
 ---
 
-## Phase 4 - Giáo viên quản lý tài khoản học sinh (ĐANG LÀM, bắt đầu 2026-10-28)
+## Phase 4 - Giáo viên quản lý tài khoản học sinh (HOÀN THÀNH 2026-10-28)
 
 **Nhánh:** `claude/phase4-student-accounts`. **Thiết kế:** `docs/adr/0002-phase-4-student-accounts.md` (quyết định D14-D17).
 
@@ -191,7 +191,7 @@ src/
 - [x] 4.4 (migration + test DB đạt; chưa chạy trên Supabase thật) Nhật ký thao tác (bảng `teacher_audit_log`) + hộp xác nhận trước thao tác phá huỷ
 - [x] 4.5 (test SQL 2 kiểu dự án + test hàm với kho giả có phân quyền) Kiểm thử phân quyền: giáo viên chỉ tác động học sinh lớp mình (test SQL + test Edge Function với Supabase giả)
 
-**Bàn giao cho Harry:** chạy migration `20261029100000_phase4_student_accounts.sql` trên dev rồi production, triển khai hàm `student-accounts` bằng Supabase CLI, thử theo `docs/phase-4-runbook.md` (có danh sách 3 điều cần "ghi lại" trên dev). **Chưa có gì được áp dụng trên Supabase thật.** Phase 4 chưa được coi là hoàn thành cho tới khi Harry chạy runbook bước 1 trên dev và xác nhận.
+**Bàn giao cho Harry:** đã chạy migration `20261029100000_phase4_student_accounts.sql` và triển khai hàm `student-accounts` trên dev và production theo `docs/phase-4-runbook.md`. **Harry xác nhận Phase 4 "ok hết" (2026-10-28)**, gồm thử trên production (bước 2.5) và 3 mục "ghi lại" ở bước 1.5. Gộp `main` qua PR #5.
 
 ---
 
@@ -206,7 +206,7 @@ src/
 - [x] 5.4 (test SQL 2 kiểu dự án) RLS: học sinh vẫn đọc 0 dòng ở `students`/`point_ledger`/`classes`/`student_recent_history`; hàm chỉ trả dữ liệu của người gọi, chỉ khoá danh sách cho phép, không có `teacher_id`/tên đăng nhập/dữ liệu bạn khác; khoá → chỉ trạng thái; ẩn danh bị chặn; tài khoản giáo viên gắn nhầm → `not_student`
 - [x] 5.4b (test SQL 2 kiểu dự án; chưa chạy trên Supabase thật) **Sửa lỗi Harry báo 2026-10-28:** tài khoản học sinh tạo từ app hiện `role = teacher` trong `profiles`. Nguyên nhân: Supabase tạo người dùng trước rồi mới gắn `app_metadata.role = 'student'`, trigger tạo hồ sơ chỉ chạy lúc tạo. Sửa: migration `20261030110000_sync_profile_role.sql` (trigger đồng bộ `profiles.role` theo `app_metadata.role` + sửa các tài khoản đã tạo). Quy tắc Harry chốt: tạo trong Supabase Authentication = giáo viên, giáo viên tạo trong app = học sinh. Hệ quả nếu không sửa: hồ sơ Phase 5 báo "không phải tài khoản học sinh"; học sinh lọt qua chốt "chỉ giáo viên" của Edge Function (RLS vẫn chặn tác động học sinh người khác)
 - [x] 5.5 Harry chạy `docs/phase-5-runbook.md` (migration Phase 5 + sửa vai trò) và thử: Harry xác nhận "tất cả Phase 5 đều đã ổn" (2026-10-28). Nhánh đã gộp `main` qua PR #6
-- [x] 5.6 Nghiệm thu Phase 5 (2026-10-28). Kết quả mục 1.6 của runbook (thông báo đăng nhập tài khoản khoá) chưa được ghi riêng
+- [x] 5.6 Nghiệm thu Phase 5 (2026-10-28). Mục 1.6 của runbook (thông báo đăng nhập tài khoản khoá, mật khẩu sai/đúng): Harry xác nhận đúng như mong đợi
 - [x] 5.7 (smoke 3 khổ với Supabase giả; chưa thử tay trên máy tính thật) **Bổ sung theo yêu cầu Harry (D22):** hồ sơ học sinh responsive: máy tính bảng hai cột, desktop cột trái cố định + cột phải rộng, bộ sưu tập 3-6 cột theo khổ; DESIGN.md ghi quy tắc bố cục học sinh cho các Phase sau
 
 **Bàn giao cho Harry:** đã chạy `20261030100000_phase5_student_portal.sql` và `20261030110000_sync_profile_role.sql`, Harry xác nhận ổn (2026-10-28). Bản responsive (5.7) chỉ đổi giao diện, không có migration: xem preview Vercel trên máy tính rồi gộp.
@@ -375,3 +375,4 @@ src/
 - **Chưa kiểm chứng (cần dev):** hàm trên Supabase thật; hiển thị trên điện thoại thật và ảnh Pokémon thật (smoke chặn mạng ngoài nên chỉ thấy hình thay thế); thông báo đăng nhập tài khoản khoá khi mật khẩu sai/đúng (runbook 1.6).
 - 2026-10-28: Harry báo tài khoản học sinh hiện `role = teacher` trên Supabase. Đã tái hiện trong `npm run test:db` (tạo người dùng rồi mới gắn role, như Supabase làm) và sửa bằng `20261030110000_sync_profile_role.sql`; test mới `supabase/tests/40_sync_profile_role.test.sql` (tài khoản cũ được sửa, học sinh mới thành `student`, tài khoản tạo trong Authentication vẫn `teacher`, người dùng không tự đổi được vai trò); migration chạy 2 lần, hoàn tác, chạy lại; cả 2 kiểu dự án đạt.
 - 2026-10-28: Harry xác nhận Phase 5 ổn -> **nghiệm thu Phase 5**; PR #6 đã gộp `main`. Harry yêu cầu giao diện học sinh responsive cả desktop (D22). Task 5.7: `npm run typecheck` 0 lỗi; smoke thêm 2 test (820px và 1440px: hai cột nằm cạnh nhau, cột phải rộng hơn trên desktop, không cuộn ngang) cùng test 390px sẵn có; đã xem ảnh chụp 3 khổ. Không migration.
+- 2026-10-28: Harry xác nhận **Phase 4 ok hết** (runbook bước 2.5 trên production và 3 mục "ghi lại" ở bước 1.5: email ảo được chấp nhận, khoá/phiên đang mở, trigger xoá tài khoản khi xoá học sinh) -> **nghiệm thu Phase 4** (kiểm chứng thủ công do Harry thực hiện). Harry xác nhận mục 1.6 runbook Phase 5 đúng như mong đợi.

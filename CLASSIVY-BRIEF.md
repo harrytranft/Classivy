@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 5 nghiệm thu, PR #6 đã gộp `main`; đang bổ sung giao diện học sinh responsive desktop theo D22)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 4 và Phase 5 nghiệm thu, PR #5/#6 đã gộp `main`; đang bổ sung giao diện học sinh responsive desktop theo D22)
 
 ## 1. Sản phẩm
 
@@ -43,7 +43,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Bài học Supabase: dự án mới không tự cấp quyền bảng (phải `grant` rõ ràng); dự án gốc có bảng cũ trùng tên. `npm run test:db` mô phỏng cả hai.
 - Migration khoá `app_state`/`users` đã chạy trên production (Harry xác nhận 2026-10-28).
 - Phase 3 follow-up: PR #4 (`claude/phase3-followup`) đã gộp vào `main`. Việc chạy `20261028130000_rename_legacy_display_names.sql` trên production: **xác nhận lại với Harry** (BRIEF trước ghi là chờ chạy).
-- **Phase 4 (đã gộp `main` qua PR #5):** Harry đã chạy runbook tới bước 2.4 (migration + Edge Function trên production). Chưa có xác nhận bước 2.5 (thử một học sinh thật trên production) và 3 mục "ghi lại" ở bước 1.5, nên chưa ghi nghiệm thu. Nội dung: đã viết migration `20261029100000_phase4_student_accounts.sql` (+ hoàn tác), Edge Function `student-accounts` (tạo/hàng loạt, đặt lại mật khẩu, khoá/mở, thu hồi), trang `/class/<lớp>/tai-khoan` (lọc, xác nhận, thẻ đăng nhập in được, nhật ký), ô đăng nhập nhận tên đăng nhập, cổng học sinh tối thiểu (đổi mật khẩu lần đầu; tài khoản học sinh không tải dữ liệu giáo viên). Kiểm chứng tự động đạt (typecheck, 172 test, test:db 2 kiểu dự án, smoke 11/11, build). 
+- **Phase 4 (hoàn thành 2026-10-28, PR #5 đã gộp `main`):** Harry chạy runbook trên dev và production, xác nhận "ok hết" (gồm thử học sinh trên production và 3 mục "ghi lại"). Nội dung: đã viết migration `20261029100000_phase4_student_accounts.sql` (+ hoàn tác), Edge Function `student-accounts` (tạo/hàng loạt, đặt lại mật khẩu, khoá/mở, thu hồi), trang `/class/<lớp>/tai-khoan` (lọc, xác nhận, thẻ đăng nhập in được, nhật ký), ô đăng nhập nhận tên đăng nhập, cổng học sinh tối thiểu (đổi mật khẩu lần đầu; tài khoản học sinh không tải dữ liệu giáo viên). Kiểm chứng tự động đạt (typecheck, 172 test, test:db 2 kiểu dự án, smoke 11/11, build). 
 - **Phase 5 (hoàn thành 2026-10-28, PR #6 đã gộp `main`; Harry xác nhận đã chạy migration và thử ổn):** migration `20261030100000_phase5_student_portal.sql` (+ hoàn tác) thêm hàm `get_my_student_profile()` (security definer: chỉ dữ liệu của người gọi, danh sách khoá cho phép, trứng không lộ Pokémon sắp nở, 30 dòng lịch sử, tài khoản khoá chỉ nhận `locked`). Giao diện hồ sơ học sinh điện thoại trước trong `src/features/studentPortal/` (Hào Quang, Trainer Level, Pokémon, trứng, bộ sưu tập, huy hiệu, lịch sử, nút Cập nhật; màn khoá/chưa gắn/lỗi). Kiểm chứng tự động đạt (typecheck, 182 test, test:db 2 kiểu dự án, smoke 13/13, build). Bổ sung sau nghiệm thu (task 5.7, nhánh `claude/focused-lamport-rk8qji` khởi động lại từ `main`): bố cục responsive máy tính bảng/desktop, chỉ giao diện, không migration.
 
 ## 5. Bản đồ repo (hiện tại)
@@ -67,8 +67,8 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 3: `students.points` vẫn do game đặt trực tiếp; sổ điểm là nhật ký (tổng sổ = điểm ngay sau khi chuyển, có thể lệch nếu điểm đổi mà không ghi lịch sử). Ví tặng điểm Phase 6 phải dùng hàm DB atomic riêng (D2).
 - Phase 4 tạo tài khoản học sinh phải đặt `app_metadata.role = 'student'` để hồ sơ nhận vai trò học sinh. Lỗi đã gặp (2026-10-28): Supabase gắn `app_metadata` SAU khi tạo người dùng nên hồ sơ bị ghi `teacher`; sửa bằng `20261030110000_sync_profile_role.sql` (`profiles.role` luôn theo `app_metadata.role`; tạo trong Authentication = giáo viên).
 - Giới hạn gói miễn phí Supabase (500 MB/dự án, 2 dự án, dự án nghỉ 7 ngày bị tạm dừng) ghi trong runbook Phase 3. Edge Functions gói Free: 256 MB, 2 giây CPU/yêu cầu, 150 giây tổng, 100 hàm (tài liệu Supabase); hạn mức số lần gọi/tháng chưa tìm thấy, xem Dashboard.
-- Phase 4 cần thử trên dev: email ảo `@students.classivy.invalid` có được Supabase chấp nhận; phiên đang mở của học sinh bị khoá còn sống bao lâu; trigger xoá `auth.users` khi xoá học sinh; chi tiết trong `docs/phase-4-runbook.md`. API đăng ký công khai của Supabase vẫn mở (UI đã bỏ): khuyến nghị tắt "Allow new users to sign up" (cần Harry quyết).
-- Phase 5: lý do trong lịch sử điểm là chữ tự do giáo viên/game ghi; học sinh thấy nguyên văn (nếu có tên bạn khác thì em thấy). Cần thử trên dev: thông báo đăng nhập tài khoản khoá có khác nhau giữa mật khẩu sai/đúng không (runbook Phase 5 bước 1.6).
+- Phase 4 đã thử trên dev/production và Harry xác nhận ổn (email ảo `@students.classivy.invalid`, khoá tài khoản, trigger xoá `auth.users` khi xoá học sinh). Phiên đang mở của học sinh bị khoá: hàm Phase 5 chặn dữ liệu ngay. API đăng ký công khai của Supabase vẫn mở (UI đã bỏ): khuyến nghị tắt "Allow new users to sign up" (cần Harry quyết).
+- Phase 5: lý do trong lịch sử điểm là chữ tự do giáo viên/game ghi; học sinh thấy nguyên văn (nếu có tên bạn khác thì em thấy). Thông báo đăng nhập tài khoản khoá (runbook 1.6): Harry xác nhận đúng như mong đợi.
 - Cờ "phải đổi mật khẩu" là cơ chế giao diện, không phải ranh giới bảo mật (DB không biết mật khẩu đã đổi chưa).
 
 ## 7. Quyết định còn mở
@@ -80,5 +80,4 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 ## 8. Bước tiếp theo
 
 1. Harry xem preview Vercel của nhánh `claude/focused-lamport-rk8qji` trên máy tính (hồ sơ học sinh hai cột) rồi gộp.
-2. Phase 4: vẫn chưa ghi nghiệm thu chính thức (runbook bước 2.5 và 3 mục "ghi lại"); Harry xác nhận để đóng.
-3. Phase 6 (bạn bè, quà tặng, ví điểm tặng) bắt đầu bằng ADR riêng + câu hỏi cho Harry (hạn mức tuần, loại quà, giáo viên bật/tắt theo lớp). Mọi màn học sinh mới theo D22 (responsive 3 khổ).
+2. Phase 6 (bạn bè, quà tặng, ví điểm tặng) bắt đầu bằng ADR riêng + câu hỏi cho Harry (hạn mức tuần, loại quà, giáo viên bật/tắt theo lớp). Mọi màn học sinh mới theo D22 (responsive 3 khổ).
