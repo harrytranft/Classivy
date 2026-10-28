@@ -72,3 +72,37 @@ input, textarea, select {
 @keyframes clCardPop{0%{box-shadow:0 0 0 0 rgba(10,154,105,.0)}30%{transform:scale(1.035);box-shadow:0 0 0 6px rgba(10,154,105,.35),0 0 34px 6px rgba(229,185,60,.45)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(10,154,105,0)}}
 @keyframes clCardShake{0%,100%{transform:translateX(0)}15%{transform:translateX(-9px);box-shadow:0 0 0 5px rgba(192,57,43,.35)}30%{transform:translateX(8px)}45%{transform:translateX(-6px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
 @media (prefers-reduced-motion:reduce){.cl-fx-pos,.cl-fx-neg{animation:none}.cl-points-burst__spark{display:none}.cl-points-burst__num{animation-duration:.01s}}
+
+/* Phase 9: Vòng quay may mắn toàn trang */
+@keyframes clBulb{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes clPointerTick{0%,100%{transform:translateX(-50%) rotate(0)}50%{transform:translateX(-50%) rotate(-9deg)}}
+@keyframes clConfetti{0%{opacity:0;transform:translate3d(0,-10vh,0) rotate(0)}10%{opacity:1}100%{opacity:0;transform:translate3d(var(--cx),105vh,0) rotate(var(--cr))}}
+@keyframes clResultIn{0%{opacity:0;transform:scale(.6) translateY(30px)}60%{transform:scale(1.06)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes clGlow{0%,100%{box-shadow:0 0 40px rgba(250,204,21,.45)}50%{box-shadow:0 0 90px rgba(250,204,21,.9)}}
+.cl-wheel-bulb{animation:clBulb 1.4s ease-in-out infinite;}
+.cl-wheel-live .cl-wheel-bulb{animation-duration:.28s;}
+.cl-wheel-live .cl-wheel-pointer{animation:clPointerTick .12s linear infinite;}
+.cl-confetti{position:absolute;top:0;width:10px;height:16px;border-radius:2px;animation:clConfetti var(--cd) linear var(--cdelay) both;}
+.cl-result-card{animation:clResultIn .7s cubic-bezier(.22,1,.36,1) both,clGlow 2.4s ease-in-out .7s infinite;}
+@media (prefers-reduced-motion:reduce){.cl-wheel-bulb,.cl-wheel-live .cl-wheel-bulb,.cl-wheel-live .cl-wheel-pointer{animation:none}.cl-confetti{display:none}.cl-result-card{animation:none}}
+
+/* Phase 9: trang Tặng Pokémon */
+@keyframes clEggBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+@keyframes clEggShake{0%,100%{transform:rotate(0)}15%{transform:rotate(-9deg) scale(1.03)}30%{transform:rotate(8deg)}45%{transform:rotate(-7deg) scale(1.05)}60%{transform:rotate(6deg)}75%{transform:rotate(-4deg)}}
+@keyframes clBreathe{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-10px) scale(1.02,.98)}}
+@keyframes clHop{0%{transform:translateY(0)}35%{transform:translateY(-70px) rotate(-6deg)}70%{transform:translateY(0) rotate(4deg) scale(1.05,.94)}100%{transform:translateY(0)}}
+@keyframes clFloatUp{0%{opacity:0;transform:translate(-50%,0) scale(.5)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--hx)),-150px) scale(1.2)}}
+@keyframes clSpin{to{transform:rotate(360deg)}}
+@keyframes clFirefly{0%,100%{opacity:.15;transform:translate(0,0)}50%{opacity:.95;transform:translate(var(--fx),var(--fy))}}
+@keyframes clFlash{0%{opacity:0}30%{opacity:.95}100%{opacity:0}}
+@keyframes clShadowPulse{0%,100%{transform:scaleX(1);opacity:.35}50%{transform:scaleX(.82);opacity:.2}}
+.cl-egg-bob{animation:clEggBob 3s ease-in-out infinite;}
+.cl-egg-shake{animation:clEggShake .5s linear infinite;}
+.cl-breathe{animation:clBreathe 2.8s ease-in-out infinite;}
+.cl-hop{animation:clHop .7s cubic-bezier(.3,.7,.4,1);}
+.cl-heart{position:absolute;left:50%;top:30%;font-size:2rem;animation:clFloatUp 1.6s ease-out both;pointer-events:none;}
+.cl-rays{animation:clSpin 6s linear infinite;}
+.cl-firefly{position:absolute;width:6px;height:6px;border-radius:50%;background:#fef08a;box-shadow:0 0 12px 4px rgba(254,240,138,.8);animation:clFirefly var(--fd) ease-in-out infinite;}
+.cl-flash{animation:clFlash .9s ease-out both;}
+.cl-shadow-pulse{animation:clShadowPulse 2.8s ease-in-out infinite;}
+@media (prefers-reduced-motion:reduce){.cl-egg-bob,.cl-egg-shake,.cl-breathe,.cl-hop,.cl-rays,.cl-firefly,.cl-shadow-pulse{animation:none}.cl-heart,.cl-flash{animation-duration:.01s}}

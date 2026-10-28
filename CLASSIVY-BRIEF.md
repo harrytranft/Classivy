@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 0-7 hoàn thành và gộp `main`; Phase 8 xong trên nhánh `claude/phase8-teacher-ui`, chờ Harry xem thử và gộp; kế tiếp Phase 9)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 0-7 hoàn thành và gộp `main`; Phase 8 và Phase 9 (Cá Ngựa/Vòng quay/Tặng Pokémon toàn màn hình, không đổi luật) xong trên nhánh `claude/phase8-teacher-ui`, chưa commit, chờ Harry xem thử; kế tiếp Phase 10, có migration cần Harry duyệt)
 
 ## 1. Sản phẩm
 
@@ -87,5 +87,5 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 ## 8. Bước tiếp theo
 
 1. Harry xem thử Phase 8 (đặc biệt: đổi tab qua lại có còn chớp loading không), rồi cho commit/gộp nhánh `claude/phase8-teacher-ui`.
-2. Bắt đầu Phase 9 (trang Tặng quà, Vòng quay, Cá Ngựa) khi Harry yêu cầu.
+2. Bắt đầu Phase 10 (cổng học sinh v2) khi Harry yêu cầu; cần duyệt migration trước.
 3. Phase 10 cần Harry duyệt migration trước khi chạy trên Supabase thật.

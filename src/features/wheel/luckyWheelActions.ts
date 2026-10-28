@@ -1,4 +1,5 @@
 import { DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_WHEEL_SPIN_SOUND_URL } from '../../data/constants';
+import { playWheelFanfare } from './wheelSounds';
 import { HistoryItem, LuckyWheelReward, PokemonPet, PokemonReleaseEvent, Student } from '../../types';
 import { getRandomIndex } from '../../domain/random';
 import { LuckyWheelResult } from '../../types/app';
@@ -376,6 +377,8 @@ export const createLuckyWheelActions = (appState: AppState, app: AppActions): Lu
       stopLuckyWheelSpinSound();
       if (wheelFinishSoundUrl.trim()) {
         new Audio(wheelFinishSoundUrl).play().catch(() => {});
+      } else {
+        playWheelFanfare(chosenReward.type !== 'hp' || (chosenReward.amount || 0) >= 0);
       }
       setLuckyWheelRotation(finalRotation);
       applyLuckyWheelReward(preparedResult);

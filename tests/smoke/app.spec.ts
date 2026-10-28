@@ -479,8 +479,13 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   // 7. Tặng Pokémon
   await reopen();
   await clickNav(page, 'Tặng Pokémon');
+  await page.waitForTimeout(700);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/28b-gift-ready.png' });
   await page.getByRole('button', { name: /Tặng và cho trứng nở ngay/ }).click();
-  await page.waitForTimeout(2600);
+  await page.waitForTimeout(1200);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/28c-gift-hatching.png' });
+  await page.waitForTimeout(1400);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/28d-gift-revealed.png' });
   await snap(page, '41-gift-revealed', state);
   await snapCloud(page, '41-gift-revealed', state);
 
@@ -488,8 +493,12 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   await reopen();
   await dockButton(page, DOCK.selectAll).click();
   await dockButton(page, DOCK.wheel).click();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/22b-wheel-ready.png' });
   await page.getByRole('button', { name: 'Bắt Đầu Quay' }).click();
-  await page.waitForTimeout(10_800);
+  await page.waitForTimeout(5_000);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/22c-wheel-spinning.png' });
+  await page.waitForTimeout(6_000);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/22d-wheel-result.png' });
   await snap(page, '42-wheel-result', state);
   await snapCloud(page, '42-wheel-result', state);
 
@@ -552,7 +561,7 @@ test('định tuyến URL: trang chọn lớp, trang từng lớp, trang con, Ba
   await expect(page.getByText('HS Giang 6A')).toHaveCount(0);
   await page.getByRole('button', { name: 'Bình 6A', exact: true }).click();
   await expect(page.getByRole('button', { name: '✓ Bình 6A', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await page.locator('button:has-text("×")').first().click();
+  await page.getByRole('button', { name: 'Đóng vòng quay' }).click();
   await expect(page).toHaveURL(/\/class\/6A$/);
 
   await clickNav(page, 'Cài Đặt');
@@ -790,3 +799,38 @@ test('Phase 8: hiệu ứng điểm, phím tắt, hồi sinh, nút Lớp Học v
   await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
   await expect(page.locator('nav[aria-label="Điều hướng chính"]')).toHaveCount(0);
 });
+
+// Phase 9 (9.4): ba trang toàn màn hình không tràn ngang ở 390 / 820 / 1440px; bàn cờ Cá Ngựa chiếm đủ màn hình lớp.
+for (const viewport of [{ name: 'mobile', width: 390, height: 844 }, { name: 'tablet', width: 820, height: 1180 }, { name: 'desktop', width: 1440, height: 900 }]) {
+  test(`Phase 9: Cá Ngựa, Vòng quay, Tặng Pokémon (${viewport.name})`, async ({ page }) => {
+    const state = await setupPage(page, { loggedIn: true });
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await chooseClass(page, '6A');
+    const noOverflow = () => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+
+    await page.goto('/class/6A/ca-ngua');
+    await expect(page.locator('.cl-splash')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ })).toBeVisible();
+    expect(await noOverflow()).toBe(true);
+    if (viewport.name !== 'mobile') {
+      const tile = await page.getByText('Xuất phát').boundingBox();
+      expect(tile).not.toBeNull();
+      const board = await page.locator('.grid-cols-5').first().boundingBox();
+      expect(board!.height).toBeGreaterThan(viewport.height * 0.45);
+    }
+    if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: `test-results/screens/70-ludo-${viewport.name}.png` });
+
+    await page.goto('/class/6A/vong-quay');
+    await expect(page.locator('.cl-splash')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Bắt Đầu Quay' })).toBeVisible();
+    expect(await noOverflow()).toBe(true);
+    if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: `test-results/screens/71-wheel-${viewport.name}.png` });
+
+    await page.goto('/class/6A/tang-pokemon');
+    await expect(page.locator('.cl-splash')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Tặng và cho trứng nở ngay/ })).toBeVisible();
+    expect(await noOverflow()).toBe(true);
+    if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: `test-results/screens/72-gift-${viewport.name}.png` });
+    expect(state.errors).toEqual([]);
+  });
+}

@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 9 (chờ Harry bảo bắt đầu; Phase 8 đã làm xong trên nhánh `claude/phase8-teacher-ui`, chờ Harry xem thử rồi gộp)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 10 (Phase 9 đã làm xong trên nhánh `claude/phase8-teacher-ui`, chờ Harry xem thử rồi gộp; Phase 10 có migration, cần Harry duyệt)
 
 ## Mục tiêu
 
@@ -300,10 +300,12 @@ src/
 
 Dùng skill `impeccable`, `ui-ux-pro-max`; mỗi trang là một trang đầy đủ, không giống modal.
 
-- [ ] 9.1 Trang Tặng quà/Tặng Pokémon: cảm giác Pokémon sống cùng học sinh (nở, xuất hiện, phản ứng, hiệu ứng ánh sáng và hạt), muốn nuôi và chăm sóc
-- [ ] 9.2 Vòng quay may mặc: dựng lại như một màn hình cuối giờ (vòng quay mượt, hồi hộp, hiệu ứng trúng thưởng, âm thanh)
-- [ ] 9.3 Cá Ngựa: phóng to bàn cờ, quân và chữ; bố cục chiếm đủ màn hình lớp
-- [ ] 9.4 Tôn trọng `prefers-reduced-motion`; smoke test ở nhiều kích thước
+- [x] 9.1 Trang Tặng quà/Tặng Pokémon: cảm giác Pokémon sống cùng học sinh (nở, xuất hiện, phản ứng, hiệu ứng ánh sáng và hạt), muốn nuôi và chăm sóc
+- [x] 9.2 Vòng quay may mặc: dựng lại như một màn hình cuối giờ (vòng quay mượt, hồi hộp, hiệu ứng trúng thưởng, âm thanh)
+- [x] 9.3 Cá Ngựa: phóng to bàn cờ, quân và chữ; bố cục chiếm đủ màn hình lớp
+- [x] 9.4 Tôn trọng `prefers-reduced-motion`; smoke test ở nhiều kích thước
+
+**Kết quả Phase 9 (2026-10-28, chưa commit):** Cá Ngựa là trang toàn màn hình (bàn cờ 10x5 chiếm gần hết chiều cao, ô/quân/chữ to hơn, nhật ký rút gọn bên phải); Vòng quay là trang tối toàn màn hình (vòng quay lớn, viền đèn nhấp nháy, kim rung khi quay, nhãn xếp theo bán kính khi có nhiều ô, màn hình trúng thưởng có pháo giấy và âm "ting" sinh bằng mã khi không có file âm thanh); Tặng Pokémon là cảnh đêm có đom đóm + đồi cỏ (trứng bập bềnh, rung và nứt khi nở, Pokémon "thở", bấm vào để vuốt ve có trái tim bay). Không đổi luật game hay dữ liệu. `prefers-reduced-motion` tắt các chuyển động lặp. Kiểm chứng tự động: typecheck 0 lỗi, vitest 209/209, build OK, smoke 26/26 (thêm test Phase 9 ở 390/820/1440px, kiểm tra không tràn ngang). Chưa kiểm chứng: cảm giác chuyển động và âm thanh trên trình duyệt thật; ảnh Pokémon thật (sandbox không tải được ảnh từ mạng).
 
 ## Phase 10 - Cổng học sinh v2 (CÓ migration, cần Harry duyệt trước khi chạy)
 
