@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 4 đã gộp `main`, chờ xác nhận runbook 2.5; Phase 5 cổng học sinh đã viết xong trên nhánh `claude/focused-lamport-rk8qji`, chờ Harry chạy migration trên dev)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 5 nghiệm thu, PR #6 đã gộp `main`; đang bổ sung giao diện học sinh responsive desktop theo D22)
 
 ## 1. Sản phẩm
 
@@ -29,6 +29,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - D13 (2026-10-28): không thêm vai trò phụ huynh; đổi tên hồ sơ mặc định cũ thành "Trainer".
 - Phase 4 (D14-D17, 2026-10-28): tên đăng nhập = tên + số ngẫu nhiên (sửa tay được); mật khẩu ngẫu nhiên 8 ký tự in trên thẻ, học sinh bắt buộc đổi ở lần đăng nhập đầu; tách "Thu hồi tài khoản" (giữ học sinh + điểm) với "Xoá học sinh" (xoá hẳn kèm tài khoản, đúng D12; không có xoá mềm); có bảng nhật ký thao tác `teacher_audit_log`. Thiết kế: `docs/adr/0002-phase-4-student-accounts.md`.
 - Phase 5 (D18-D21, 2026-10-28): học sinh đọc hồ sơ qua hàm DB chọn lọc `get_my_student_profile()` (không mở RLS đọc bảng); "hạng" = Trainer Level + danh hiệu + huy hiệu, không có vị trí trong lớp; học sinh chỉ xem; ảnh đại diện giữ trong DB, dời Storage tới Phase 7. Thiết kế: `docs/adr/0003-phase-5-student-portal.md`.
+- D22 (2026-10-28): giao diện học sinh responsive điện thoại + máy tính bảng + desktop, áp dụng cho mọi màn học sinh từ nay (Phase 6 trở đi); smoke test 3 khổ 390/820/1440px. Chi tiết bố cục ở DESIGN.md mục Layout.
 - Phase 3 (D12): mô hình lai theo `docs/adr/0001-phase-3-data-model.md`; một học sinh một lớp; **xoá học sinh là xoá hẳn** (kể cả sổ điểm); sổ điểm giữ toàn bộ lịch sử; ảnh đại diện tạm lưu DB (nén); chuyển dữ liệu trong app do giáo viên bấm; có dự án Supabase dev riêng (Harry duyệt 2026-10-27).
 - Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
 
@@ -43,7 +44,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Migration khoá `app_state`/`users` đã chạy trên production (Harry xác nhận 2026-10-28).
 - Phase 3 follow-up: PR #4 (`claude/phase3-followup`) đã gộp vào `main`. Việc chạy `20261028130000_rename_legacy_display_names.sql` trên production: **xác nhận lại với Harry** (BRIEF trước ghi là chờ chạy).
 - **Phase 4 (đã gộp `main` qua PR #5):** Harry đã chạy runbook tới bước 2.4 (migration + Edge Function trên production). Chưa có xác nhận bước 2.5 (thử một học sinh thật trên production) và 3 mục "ghi lại" ở bước 1.5, nên chưa ghi nghiệm thu. Nội dung: đã viết migration `20261029100000_phase4_student_accounts.sql` (+ hoàn tác), Edge Function `student-accounts` (tạo/hàng loạt, đặt lại mật khẩu, khoá/mở, thu hồi), trang `/class/<lớp>/tai-khoan` (lọc, xác nhận, thẻ đăng nhập in được, nhật ký), ô đăng nhập nhận tên đăng nhập, cổng học sinh tối thiểu (đổi mật khẩu lần đầu; tài khoản học sinh không tải dữ liệu giáo viên). Kiểm chứng tự động đạt (typecheck, 172 test, test:db 2 kiểu dự án, smoke 11/11, build). 
-- **Phase 5 (đang làm, nhánh `claude/focused-lamport-rk8qji`):** migration `20261030100000_phase5_student_portal.sql` (+ hoàn tác) thêm hàm `get_my_student_profile()` (security definer: chỉ dữ liệu của người gọi, danh sách khoá cho phép, trứng không lộ Pokémon sắp nở, 30 dòng lịch sử, tài khoản khoá chỉ nhận `locked`). Giao diện hồ sơ học sinh điện thoại trước trong `src/features/studentPortal/` (Hào Quang, Trainer Level, Pokémon, trứng, bộ sưu tập, huy hiệu, lịch sử, nút Cập nhật; màn khoá/chưa gắn/lỗi). Kiểm chứng tự động đạt (typecheck, 182 test, test:db 2 kiểu dự án, smoke 13/13, build). **Chưa chạy trên Supabase thật, chưa thử trên điện thoại thật.**
+- **Phase 5 (hoàn thành 2026-10-28, PR #6 đã gộp `main`; Harry xác nhận đã chạy migration và thử ổn):** migration `20261030100000_phase5_student_portal.sql` (+ hoàn tác) thêm hàm `get_my_student_profile()` (security definer: chỉ dữ liệu của người gọi, danh sách khoá cho phép, trứng không lộ Pokémon sắp nở, 30 dòng lịch sử, tài khoản khoá chỉ nhận `locked`). Giao diện hồ sơ học sinh điện thoại trước trong `src/features/studentPortal/` (Hào Quang, Trainer Level, Pokémon, trứng, bộ sưu tập, huy hiệu, lịch sử, nút Cập nhật; màn khoá/chưa gắn/lỗi). Kiểm chứng tự động đạt (typecheck, 182 test, test:db 2 kiểu dự án, smoke 13/13, build). Bổ sung sau nghiệm thu (task 5.7, nhánh `claude/focused-lamport-rk8qji` khởi động lại từ `main`): bố cục responsive máy tính bảng/desktop, chỉ giao diện, không migration.
 
 ## 5. Bản đồ repo (hiện tại)
 
@@ -78,6 +79,6 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-1. Phase 4: Harry làm runbook Phase 4 bước 2.5 (thử một học sinh trên production) và báo 3 mục "ghi lại" ở bước 1.5 -> đóng Phase 4 trong PLAN.
-2. Phase 5: Harry chạy `docs/phase-5-runbook.md` bước 1 trên `classivy-dev` (migration `20261030100000_phase5_student_portal.sql` rồi `20261030110000_sync_profile_role.sql`, thử trên điện thoại, báo mục 1.6), rồi bước 2 trên production và gộp nhánh.
-3. Sau nghiệm thu Phase 5: Phase 6 (bạn bè, quà tặng, ví điểm tặng) bắt đầu bằng ADR riêng + câu hỏi cho Harry (hạn mức tuần, loại quà, giáo viên bật/tắt theo lớp).
+1. Harry xem preview Vercel của nhánh `claude/focused-lamport-rk8qji` trên máy tính (hồ sơ học sinh hai cột) rồi gộp.
+2. Phase 4: vẫn chưa ghi nghiệm thu chính thức (runbook bước 2.5 và 3 mục "ghi lại"); Harry xác nhận để đóng.
+3. Phase 6 (bạn bè, quà tặng, ví điểm tặng) bắt đầu bằng ADR riêng + câu hỏi cho Harry (hạn mức tuần, loại quà, giáo viên bật/tắt theo lớp). Mọi màn học sinh mới theo D22 (responsive 3 khổ).

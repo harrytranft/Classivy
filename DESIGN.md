@@ -148,6 +148,7 @@ Một họ chữ cho toàn app: **Plus Jakarta Sans** (chính), **Be Vietnam Pro
 ## Layout
 
 - Hai bố cục tách bạch: **Giáo viên** (nhiều thông tin, thao tác nhanh) và **Học sinh** (một cột, ưu tiên điện thoại, nút lớn dễ bấm, tối thiểu 44px).
+- **Học sinh responsive cả điện thoại và máy tính (D22, Harry 2026-10-28):** thiết kế điện thoại trước rồi mở rộng. Điện thoại (< 768px): một cột, rộng tối đa 448px. Máy tính bảng (`md`, 768px): hai cột đều, rộng tối đa 768px. Desktop (`lg`, 1024px): cột trái 380px cố định khi cuộn (danh tính, Trainer Level, Pokémon) + cột phải rộng (bộ sưu tập, huy hiệu, lịch sử, sau này là bạn bè/quà), rộng tối đa 1152px. Không cuộn ngang ở mọi khổ. Mỗi màn học sinh mới phải có smoke test ở ba khổ 390 / 820 / 1440px.
 - Khung giáo viên: thanh điều hướng trái cố định rộng 84px, luôn hiện (icon + chữ trắng; mục đang mở nền kem; "Tặng quà" cũng trắng như các mục khác, Harry duyệt 2026-10-27), cuối thanh là sao lưu / khôi phục / trạng thái đồng bộ và ảnh tài khoản. Không giấu điều hướng ngoài mép màn hình.
 - Trang lớp: thanh công cụ trên cùng (tìm kiếm, chọn lớp, Check đi học, Check Homework, Thêm Trainer), lưới thẻ học sinh 1-4 cột, dock công cụ cố định ở đáy: mỗi nút là ô icon 52px + chữ ngắn; **phóng to kiểu dock macOS** (ô gần con trỏ to dần tới 84px theo khoảng cách, tầm ảnh hưởng 140px, lò xo `motion`; rời chuột thì co về). Người dùng bật "giảm chuyển động" thì không phóng to.
 - Lưới 4/8px; khoảng cách giữa các nhóm nội dung dùng `lg` (24px).
