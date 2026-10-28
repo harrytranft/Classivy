@@ -249,8 +249,8 @@ src/
 - [x] 7.3 Hướng dẫn: `docs/huong-dan/giao-vien.md`, `docs/huong-dan/hoc-sinh.md`, thư mẫu `docs/huong-dan/thu-gui-phu-huynh.md` (Harry chỉnh trước khi gửi)
 - [x] 7.4 Kế hoạch triển khai từng lớp (pilot 1 lớp, bật xã hội sau 1 tuần, mở rộng 2-3 lớp/tuần), theo dõi hằng tuần, dừng khẩn cấp: `docs/phase-7-rollout.md`
 - [x] 7.5 Dọn dữ liệu cũ (D29): migration riêng `20261101110000_drop_legacy_data.sql`, có chốt dừng khi còn giáo viên chưa nâng cấp; ảnh mới nén ~100 KB (D30)
-- [ ] 7.6 Harry chạy `docs/phase-7-runbook.md` bước 1 trên dev (đặc biệt 1.3 thử hai máy, 1.5, 1.8 Advisors)
-- [ ] 7.7 Harry chạy bước 2 trên production, bắt đầu pilot theo `docs/phase-7-rollout.md`
+- [x] 7.6 Harry chạy `docs/phase-7-runbook.md` bước 1 trên dev (2026-10-28): tất cả mục pass, không lỗi (gồm 1.3 thử hai máy, 1.5, 1.7 dọn dữ liệu cũ, 1.8 Advisors)
+- [ ] 7.7 Harry chạy bước 2 trên production (sao lưu, migration hardening, gộp nhánh - Harry yêu cầu gộp 2026-10-28, rồi migration dọn dữ liệu cũ), bắt đầu pilot theo `docs/phase-7-rollout.md`
 
 **Bàn giao cho Harry:** migration `20261101100000_phase7_hardening.sql` (dev rồi production), gộp nhánh, rồi `20261101110000_drop_legacy_data.sql` **sau khi sao lưu**. **Chưa có gì được áp dụng trên Supabase thật.**
 
@@ -415,3 +415,4 @@ src/
 - `npm run test:load`: đạt (số liệu ở 7.2).
 - `npm run typecheck` 0 lỗi; `npm test` 22 file, 197 test (thêm 4 test số phiên bản trong `cloudModel.test.ts`); `npm run build` đạt; `npm run smoke` 22/22 (mới: máy khác vừa sửa -> không ghi gì, hiện banner, tải lại, thao tác sau lưu được), không ảnh gốc DOM nào đổi.
 - **Chưa kiểm chứng:** Supabase thật (migration, Advisors), thử hai máy thật, ảnh nén ~100 KB trên ảnh thật.
+- 2026-10-28: Harry chạy runbook Phase 7 bước 1 trên `classivy-dev`: tất cả mục pass, không lỗi (kiểm chứng thủ công trên dev). Harry yêu cầu gộp vào `main`. Production chưa xác nhận.
