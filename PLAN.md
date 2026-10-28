@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 10 (Phase 9 đã làm xong trên nhánh `claude/phase8-teacher-ui`, chờ Harry xem thử rồi gộp; Phase 10 có migration, cần Harry duyệt)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 10 (10A giao diện học sinh xong, chờ Harry xem thử; 10B Shop + migration chưa làm)
 
 ## Mục tiêu
 
@@ -309,12 +309,16 @@ Dùng skill `impeccable`, `ui-ux-pro-max`; mỗi trang là một trang đầy đ
 
 ## Phase 10 - Cổng học sinh v2 (CÓ migration, cần Harry duyệt trước khi chạy)
 
-- [ ] 10.1 Nav bar học sinh: Profile, Shop, Friends; avatar ở dưới cùng, bấm để đăng xuất; học sinh không đổi được avatar
-- [ ] 10.2 Thiết kế lại Profile (bớt phân mảnh) kèm phần skills đang có (bấm để đọc công dụng)
+- [x] 10.1 Nav bar học sinh: Profile, Shop, Friends; avatar ở dưới cùng, bấm để đăng xuất; học sinh không đổi được avatar
+- [x] 10.2 Thiết kế lại Profile (bớt phân mảnh) kèm phần skills đang có (bấm để đọc công dụng)
 - [ ] 10.3 Shop học sinh: mua trứng, nở trứng, đổi Pokémon đồng hành/support, mua skill (D32, D33)
 - [ ] 10.4 Migration: hàm DB cho từng thao tác mua (kiểm số dư, ghi `point_ledger`, tăng số phiên bản), cờ bật/tắt Shop theo lớp, test RLS/migration (`npm run test:db`)
 - [ ] 10.5 App giáo viên: gom thay đổi của học sinh khi mở/quay lại tab, tải lại khi gặp phiên bản lỗi thời; test tình huống dữ liệu cũ
-- [ ] 10.6 Responsive 390 / 820 / 1440px (D22)
+- [x] 10.6 Responsive 390 / 820 / 1440px (D22)
+
+**Phase 10A (2026-10-29, chưa commit, không đụng Supabase):** cổng học sinh có thanh điều hướng Hồ sơ / Cửa hàng / Bạn bè (thanh dọc ở máy tính bảng và desktop, thanh tab dưới đáy ở điện thoại), avatar ở dưới cùng bấm để đăng xuất, học sinh không đổi được avatar. Hồ sơ gộp bớt khối: danh tính + Trainer Level một thẻ, Pokémon đồng hành kèm skills (bấm để đọc công dụng, số lượt còn lại trên 2), bộ sưu tập, và một thẻ hai tab Lịch sử/Huy hiệu. Bạn bè và quà chuyển sang trang Bạn bè. Trang Cửa hàng hiện "sắp mở" (chờ 10B). Skills lấy mô tả từ danh sách skill mặc định (skill giáo viên tự sửa chưa hiện ở học sinh). Kiểm chứng tự động: typecheck 0 lỗi, vitest 209/209, build OK, smoke tài khoản 12/12 (390/820/1440px). Chưa kiểm chứng trên trình duyệt thật.
+
+**Chốt cho 10B (Harry, 2026-10-29):** hàm DB sửa thẳng dữ liệu học sinh (mua là có ngay, atomic, ghi sổ điểm, tăng số phiên bản); Shop chỉ có công tắc bật/tắt theo lớp do giáo viên đặt, mặc định TẮT (không khai báo giờ học). Cần viết migration, test trên Postgres cục bộ, chờ Harry duyệt rồi mới chạy.
 
 ## Phase 11 - Skills tự động (không đổi schema)
 

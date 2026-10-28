@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 0-7 hoàn thành và gộp `main`; Phase 8 và Phase 9 (Cá Ngựa/Vòng quay/Tặng Pokémon toàn màn hình, không đổi luật) xong trên nhánh `claude/phase8-teacher-ui`, chưa commit, chờ Harry xem thử; kế tiếp Phase 10, có migration cần Harry duyệt)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 0-7 hoàn thành và gộp `main`; Phase 8 và Phase 9 (Cá Ngựa/Vòng quay/Tặng Pokémon toàn màn hình, không đổi luật) xong trên nhánh `claude/phase8-teacher-ui`, chưa commit, chờ Harry xem thử; Phase 10A (thanh điều hướng + Hồ sơ học sinh mới, không đụng Supabase) xong, chờ Harry xem thử; 10B Shop + migration chưa làm: hàm DB sửa thẳng game_state, công tắc Shop theo lớp mặc định tắt, cần Harry duyệt migration trước khi chạy)
 
 ## 1. Sản phẩm
 

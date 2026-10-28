@@ -41,7 +41,7 @@ interface Mock {
 const PROFILE_PAYLOAD = {
   status: 'active', name: 'Nguyễn Minh Anh', gender: 'Nữ', class_name: '6A', points: 42, avatar: null,
   game: {
-    pet: { instanceId: 'pet-1', dexId: 25, name: 'Pikachu', types: ['electric'], accessories: [], skills: [], level: 3, hp: 80 },
+    pet: { instanceId: 'pet-1', dexId: 25, name: 'Pikachu', types: ['electric'], accessories: [], skills: ['sk_guard', 'sk_double'], skillUses: { sk_guard: 1 }, level: 3, hp: 80 },
     pets: [
       { instanceId: 'pet-1', dexId: 25, name: 'Pikachu', types: ['electric'], accessories: [], skills: [] },
       { instanceId: 'pet-2', dexId: 1, name: 'Bulbasaur', types: ['grass'], accessories: [], skills: [] }
@@ -299,7 +299,10 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   await expect(page.getByRole('heading', { name: /Bộ sưu tập/ })).toContainText('(1)');
   await expect(page.getByText('Bulbasaur')).toBeVisible();
   await expect(page.getByText('Trứng thường đang ấp')).toBeVisible();
-  await expect(page.getByText('Blaze Badge')).toBeVisible();
+  // Skills: bấm để đọc công dụng và số lượt còn lại.
+  await page.getByRole('button', { name: /Lá Chắn Hộ Vệ/ }).click();
+  await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('Còn 1/2 lượt dùng');
+  await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('Giảm 50%');
   // Lịch sử mới nhất trước, điểm trừ có dấu (không chỉ dựa vào màu).
   const history = page.getByRole('listitem').filter({ hasText: /Quên vở|Trả lời hay/ });
   await expect(history.first()).toContainText('Quên vở');
@@ -307,7 +310,13 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   await expect(history.nth(1)).toContainText('+5');
   // Không có vị trí xếp hạng trong lớp, không có nút thao tác game.
   await expect(page.getByText(/Hạng \d/)).toHaveCount(0);
-  await expect(page.getByRole('button')).toHaveText(['Cập nhật', 'Đăng xuất']);
+  // Thanh điều hướng có Hồ sơ, Cửa hàng, Bạn bè và avatar để đăng xuất; không có nút thao tác game.
+  await expect(page.getByRole('button', { name: 'Đăng xuất' })).toBeVisible();
+  await page.getByRole('tab', { name: /Huy hiệu/ }).click();
+  await expect(page.getByText('Blaze Badge')).toBeVisible();
+  await page.getByRole('button', { name: 'Cửa hàng' }).click();
+  await expect(page.getByRole('heading', { name: 'Cửa hàng sắp mở' })).toBeVisible();
+  await page.getByRole('button', { name: 'Hồ sơ', exact: true }).click();
   if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/50-student-profile.png', fullPage: true });
   // Vừa khung điện thoại, không cuộn ngang.
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -356,16 +365,12 @@ for (const viewport of [{ name: 'mobile', width: 390, height: 844 }, { name: 'ta
     await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto('/');
+    await expect(page.locator('.cl-splash')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Bạn bè' }).click();
 
     await expect(page.getByRole('heading', { name: 'Ví điểm tặng' })).toBeVisible();
     await expect(page.getByText('4/5')).toBeVisible();
     await expect(page.getByText('Em có +2 Hào Quang được tặng đang chờ cộng')).toBeVisible();
-    // Khu xã hội nằm ở cột phải trên máy tính bảng/desktop.
-    if (viewport.name !== 'mobile') {
-      const wallet = await page.getByRole('heading', { name: 'Ví điểm tặng' }).boundingBox();
-      const identity = await page.locator('[data-portal-column="identity"]').boundingBox();
-      expect(wallet!.x).toBeGreaterThan(identity!.x + identity!.width - 1);
-    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: `test-results/screens/60-student-social-${viewport.name}.png`, fullPage: true });
     if (viewport.name !== 'mobile') { expect(mock.errors).toEqual([]); return; }
@@ -419,6 +424,8 @@ test('học sinh: lớp chưa bật bạn bè thì chỉ hiện một dòng nh�
   const mock = await setup(page, 'student');
   await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
   await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Bạn bè' }).click();
   await expect(page.getByText('Bạn bè và quà tặng sẽ mở khi thầy cô bật cho lớp em.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Ví điểm tặng' })).toHaveCount(0);
   expect(mock.errors).toEqual([]);
