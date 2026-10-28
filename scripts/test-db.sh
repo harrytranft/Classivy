@@ -12,6 +12,8 @@ MIGRATION=supabase/migrations/20261027120000_phase3_data_model.sql
 ROLLBACK=supabase/rollback/20261027120000_phase3_data_model_down.sql
 MIGRATION4=supabase/migrations/20261029100000_phase4_student_accounts.sql
 ROLLBACK4=supabase/rollback/20261029100000_phase4_student_accounts_down.sql
+MIGRATION5=supabase/migrations/20261030100000_phase5_student_portal.sql
+ROLLBACK5=supabase/rollback/20261030100000_phase5_student_portal_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
 
@@ -77,6 +79,18 @@ echo "== Migration Phase 4 (chạy 2 lần) + test tài khoản học sinh"
 run -f "$MIGRATION4"
 run -f "$MIGRATION4"
 run -o /dev/null -f supabase/tests/20_phase4_accounts.test.sql
+
+echo "== Migration Phase 5 (chạy 2 lần) + test cổng học sinh"
+run -f "$MIGRATION5"
+run -f "$MIGRATION5"
+run -o /dev/null -f supabase/tests/30_phase5_portal.test.sql
+
+echo "== Hoàn tác Phase 5, chạy lại, hoàn tác"
+run -f "$ROLLBACK5"
+run -c "do \$\$ begin
+  if to_regprocedure('public.get_my_student_profile()') is not null then raise exception 'FAIL: phase 5 rollback left function'; end if; end \$\$"
+run -f "$MIGRATION5"
+run -f "$ROLLBACK5"
 
 echo "== Hoàn tác Phase 4, chạy lại, rồi hoàn tác để thử hoàn tác Phase 3"
 run -f "$ROLLBACK4"
