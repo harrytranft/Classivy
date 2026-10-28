@@ -9,6 +9,8 @@ export interface ClassSocialSettings {
   enabled: boolean;
   weeklyLimit: number;
   perFriendLimit: number;
+  /** Công tắc Cửa hàng học sinh (Phase 10B). null = chưa chạy migration Phase 10B nên chưa có cột. */
+  shopEnabled: boolean | null;
 }
 
 export interface FriendshipRow {
@@ -62,7 +64,11 @@ export const useClassSocial = (className: string | null) => {
         if (cancelled) return;
 
         const names: Record<string, string> = Object.fromEntries((studentsRes.data ?? []).map((s: { id: string; name: string }) => [s.id, s.name]));
-        setSettings({ classId: cls.id, enabled: cls.social_enabled, weeklyLimit: cls.gift_weekly_limit, perFriendLimit: cls.gift_per_friend_weekly_limit });
+        // Đọc riêng để màn hình vẫn chạy nếu Supabase chưa có migration Phase 10B.
+        const shopRes = await supabase.from('classes').select('student_shop_enabled').eq('id', cls.id).maybeSingle();
+        const shopEnabled = !shopRes.error && shopRes.data && typeof shopRes.data.student_shop_enabled === 'boolean' ? shopRes.data.student_shop_enabled : null;
+        if (cancelled) return;
+        setSettings({ classId: cls.id, enabled: cls.social_enabled, weeklyLimit: cls.gift_weekly_limit, perFriendLimit: cls.gift_per_friend_weekly_limit, shopEnabled });
         setGifts(buildTeacherGiftRows({ gifts: giftsRes.data ?? [], names, revocations: revRes.data ?? [], reports: repRes.data ?? [] }));
         setFriendships((friendsRes.data ?? []).map((f: { id: number; requester_id: string; addressee_id: string; status: 'pending' | 'accepted'; created_at: string }) => ({
           id: f.id, a: names[f.requester_id] ?? '?', b: names[f.addressee_id] ?? '?', status: f.status, createdAt: Date.parse(f.created_at) || 0
@@ -77,11 +83,18 @@ export const useClassSocial = (className: string | null) => {
     return () => { cancelled = true; };
   }, [className, version]);
 
-  const saveSettings = async (next: Omit<ClassSocialSettings, 'classId'>) => {
+  const saveSettings = async (next: Omit<ClassSocialSettings, 'classId' | 'shopEnabled'>) => {
     if (!settings) return false;
     const { error: e } = await supabase.from('classes').update({
       social_enabled: next.enabled, gift_weekly_limit: next.weeklyLimit, gift_per_friend_weekly_limit: next.perFriendLimit
     }).eq('id', settings.classId);
+    if (!e) reload();
+    return !e;
+  };
+
+  const setShopEnabled = async (enabled: boolean) => {
+    if (!settings) return false;
+    const { error: e } = await supabase.from('classes').update({ student_shop_enabled: enabled }).eq('id', settings.classId);
     if (!e) reload();
     return !e;
   };
@@ -98,5 +111,5 @@ export const useClassSocial = (className: string | null) => {
     return !e;
   };
 
-  return { settings, gifts, friendships, loading, error, reload, saveSettings, revokeGift, removeFriendship };
+  return { settings, gifts, friendships, loading, error, reload, saveSettings, setShopEnabled, revokeGift, removeFriendship };
 };

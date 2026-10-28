@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 10 (10A giao diện học sinh xong, chờ Harry xem thử; 10B Shop + migration chưa làm)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 10 (10A giao diện + 10B Shop học sinh xong trên nhánh, chưa commit; migration `20261102100000_phase10_student_shop.sql` CHƯA chạy trên Supabase thật, chờ Harry duyệt)
 
 ## Mục tiêu
 
@@ -311,14 +311,19 @@ Dùng skill `impeccable`, `ui-ux-pro-max`; mỗi trang là một trang đầy đ
 
 - [x] 10.1 Nav bar học sinh: Profile, Shop, Friends; avatar ở dưới cùng, bấm để đăng xuất; học sinh không đổi được avatar
 - [x] 10.2 Thiết kế lại Profile (bớt phân mảnh) kèm phần skills đang có (bấm để đọc công dụng)
-- [ ] 10.3 Shop học sinh: mua trứng, nở trứng, đổi Pokémon đồng hành/support, mua skill (D32, D33)
-- [ ] 10.4 Migration: hàm DB cho từng thao tác mua (kiểm số dư, ghi `point_ledger`, tăng số phiên bản), cờ bật/tắt Shop theo lớp, test RLS/migration (`npm run test:db`)
-- [ ] 10.5 App giáo viên: gom thay đổi của học sinh khi mở/quay lại tab, tải lại khi gặp phiên bản lỗi thời; test tình huống dữ liệu cũ
+- [x] 10.3 Shop học sinh: mua trứng, nở trứng, đổi Pokémon đồng hành/support, mua skill (D32, D33)
+- [x] 10.4 Migration: hàm DB cho từng thao tác mua (kiểm số dư, ghi `point_ledger`, tăng số phiên bản), cờ bật/tắt Shop theo lớp, test RLS/migration (`npm run test:db`)
+- [x] 10.5 App giáo viên: gom thay đổi của học sinh khi mở/quay lại tab, tải lại khi gặp phiên bản lỗi thời; test tình huống dữ liệu cũ
 - [x] 10.6 Responsive 390 / 820 / 1440px (D22)
 
 **Phase 10A (2026-10-29, chưa commit, không đụng Supabase):** cổng học sinh có thanh điều hướng Hồ sơ / Cửa hàng / Bạn bè (thanh dọc bên trái giống hệt NavDock của giáo viên ở mọi khổ màn hình, kể cả điện thoại), avatar ở dưới cùng bấm để đăng xuất, học sinh không đổi được avatar. Hồ sơ gộp bớt khối: danh tính + Trainer Level một thẻ, Pokémon đồng hành kèm skills (bấm để đọc công dụng, số lượt còn lại trên 2), bộ sưu tập, và một thẻ hai tab Lịch sử/Huy hiệu. Bạn bè và quà chuyển sang trang Bạn bè. Trang Cửa hàng hiện "sắp mở" (chờ 10B). Skills lấy mô tả từ danh sách skill mặc định (skill giáo viên tự sửa chưa hiện ở học sinh). Kiểm chứng tự động: typecheck 0 lỗi, vitest 209/209, build OK, smoke tài khoản 12/12 (390/820/1440px). Chưa kiểm chứng trên trình duyệt thật.
 
 **Chốt cho 10B (Harry, 2026-10-29):** hàm DB sửa thẳng dữ liệu học sinh (mua là có ngay, atomic, ghi sổ điểm, tăng số phiên bản); Shop chỉ có công tắc bật/tắt theo lớp do giáo viên đặt, mặc định TẮT (không khai báo giờ học). Cần viết migration, test trên Postgres cục bộ, chờ Harry duyệt rồi mới chạy.
+
+**Phase 10B (2026-10-28, chưa commit; migration CHƯA chạy trên Supabase thật):** migration `supabase/migrations/20261102100000_phase10_student_shop.sql` (hoàn tác: `supabase/rollback/20261102100000_phase10_student_shop_down.sql`; chạy lại được). Gồm: cột `classes.student_shop_enabled` (mặc định TẮT); ràng buộc `point_ledger.source` thêm `'student_shop'`; bảng tham chiếu `shop_egg_pool` (1025 dex, 98 đặc biệt) và `shop_default_skills` (22 skill) chỉ hàm DB đọc được; hàm cho học sinh (security definer, chỉ học sinh đang hoạt động, khoá dòng, atomic): `student_shop_overview` (xem được cả khi đóng), `student_shop_buy_egg(normal|special)` (10/20 Hào Quang), `student_shop_hatch_egg` (nở nhanh: trả phần tiến độ còn thiếu), `student_shop_buy_skill`, `student_set_companion`, `student_set_support`. Mỗi lần mua sửa thẳng `students.game_state` + `points`, ghi `point_ledger` (không sửa được), tăng `revision`. Giá skill lấy từ `user_settings.pet_skills` của giáo viên nếu có, không thì bộ mặc định.
+Luật đã áp dụng (theo D32-D40 và chốt của Harry): mọi thao tác Shop (mua, nở nhanh, đổi đồng hành/hỗ trợ) chỉ khi giáo viên bật công tắc của lớp; mua trứng cất Pokémon đồng hành vào bộ sưu tập cho tới khi trứng nở (hộp xác nhận nói rõ); không mua trứng thứ hai khi đang ấp; không đổi đồng hành khi đang ấp; chọn đồng hành trùng hỗ trợ thì bỏ hỗ trợ; không mua skill khi chưa có đồng hành hoặc đã có skill đó. Quyền: anon và giáo viên không gọi được hàm học sinh; hàm phụ không cấp cho API.
+Giao diện: tab Cửa hàng học sinh (đóng: một thông báo; mở: trứng, skill bấm đọc công dụng rồi mua, đổi Pokémon; hộp xác nhận trước khi trừ điểm; lỗi hiện tiếng Việt). Giáo viên: công tắc "Cho phép học sinh dùng Cửa hàng" ở trang Bạn bè & quà của lớp, lưu ngay; ẩn công tắc nếu Supabase chưa chạy migration (không làm hỏng trang). 10.5: app giáo viên tự tải lại khi quay lại tab sau ít nhất 60 giây ẩn, chỉ khi máy này không còn thay đổi chưa lưu; cơ chế `stale_data` của Phase 7 vẫn là chốt chặn cuối. `toPet` của cổng học sinh chấp nhận thú do DB tạo (thiếu tên/loại, bổ sung theo dexId) và không bịa `instanceId`.
+Kiểm chứng tự động: `npm run test:db` OK (cả chế độ Supabase cũ/mới, chạy migration 2 lần, hoàn tác và chạy lại; test 70 gồm đóng/mở, mua trứng/nở nhanh/skill/đổi Pokémon, không đủ điểm, sổ cái, revision, giáo viên khác, tài khoản bị khoá, anon); vitest, typecheck, build, smoke: xem báo cáo cuối Phase. Chưa kiểm chứng: chạy trên Supabase thật, trình duyệt thật, ảnh Pokémon thật.
 
 ## Phase 11 - Skills tự động (không đổi schema)
 

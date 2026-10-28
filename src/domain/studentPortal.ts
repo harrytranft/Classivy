@@ -1,6 +1,6 @@
 import { EarnedBadge, PokemonPet, StudentEgg, TrainerProgress } from '../types';
 import { getEggLabel, getEggRequiredProgress } from './eggs';
-import { clamp, getPokemonDisplayName } from './pokemonProgression';
+import { clamp, getPokemonDisplayName, normalizePokemonPet } from './pokemonProgression';
 import {
   TrainerTitleDefinition,
   getBadgeDefinition,
@@ -70,13 +70,18 @@ const asNumber = (value: unknown, fallback = 0): number => (typeof value === 'nu
 const asString = (value: unknown, fallback = ''): string => (typeof value === 'string' ? value : fallback);
 
 const toPet = (value: unknown): PokemonPet | undefined => {
-  if (!isObject(value) || typeof value.dexId !== 'number' || typeof value.name !== 'string') return undefined;
-  return {
-    ...(value as unknown as PokemonPet),
+  // Thú tạo từ hàm DB (nở trứng ở Cửa hàng) chưa có tên/loại: bổ sung theo dexId như app giáo viên.
+  if (!isObject(value) || typeof value.dexId !== 'number') return undefined;
+  const raw = value as unknown as PokemonPet;
+  const normalized = normalizePokemonPet({
+    ...raw,
+    name: typeof value.name === 'string' ? value.name : '',
     types: Array.isArray(value.types) ? value.types.filter((t): t is string => typeof t === 'string') : [],
     accessories: Array.isArray(value.accessories) ? (value.accessories as string[]) : [],
     skills: Array.isArray(value.skills) ? (value.skills as string[]) : []
-  };
+  });
+  // Giữ nguyên instanceId gốc: nếu dữ liệu cũ chưa có thì để trống, không bịa mã mới (hàm DB khớp theo mã trong dữ liệu).
+  return { ...normalized, instanceId: typeof raw.instanceId === 'string' ? raw.instanceId : undefined };
 };
 
 const samePet = (a: PokemonPet, b: PokemonPet): boolean =>

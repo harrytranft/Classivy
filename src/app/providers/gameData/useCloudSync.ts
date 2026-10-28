@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { chooseModelForNewTeacher, loadCloudData, runLegacyUpgrade, saveCloudData } from './cloudStore';
 import { EMPTY_SNAPSHOT } from '../../../domain/cloudModel';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
@@ -12,6 +12,8 @@ import type { AuthUser } from '../../../features/auth/AuthContext';
 
 // Tải dữ liệu từ Supabase khi đăng nhập và tự đồng bộ ngược lên (debounce 1,5 giây, chỉ khi dữ liệu đổi).
 // Nơi lưu (cục JSON cũ hay bảng Phase 3) do cloudStore quyết định; phần còn lại giữ như trước.
+const STALE_REFRESH_AFTER_HIDDEN_MS = 60_000;
+
 export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoading: boolean) => {
   const {
     students, setStudents, skills,
@@ -26,6 +28,11 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
   } = data;
   // Tăng để tải lại toàn bộ từ đám mây (khi lần lưu bị từ chối vì máy khác đã sửa trước).
   const [reloadToken, setReloadToken] = useState(0);
+  // Học sinh có thể mua/đổi Pokémon ở thiết bị khác (Phase 10B) trong lúc app giáo viên mở nền.
+  // Khi giáo viên quay lại tab sau một lúc, tải lại bản mới nhất nếu máy này không còn thay đổi chưa lưu (D31).
+  const hasPendingChangesRef = useRef(false);
+  const busyRef = useRef(false);
+  const hiddenAtRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -210,6 +217,20 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
 
   useEffect(() => {
     if (!user || !initialCloudLoadComplete || !cloudLoadSuccess) return;
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') { hiddenAtRef.current = Date.now(); return; }
+      const hiddenAt = hiddenAtRef.current;
+      hiddenAtRef.current = null;
+      if (hiddenAt === null || Date.now() - hiddenAt < STALE_REFRESH_AFTER_HIDDEN_MS) return;
+      if (hasPendingChangesRef.current || busyRef.current) return;
+      setReloadToken(n => n + 1);
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [user, initialCloudLoadComplete, cloudLoadSuccess]);
+
+  useEffect(() => {
+    if (!user || !initialCloudLoadComplete || !cloudLoadSuccess) return;
 
     const currentSnapshot = JSON.stringify({
       students,
@@ -229,12 +250,14 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     // DIFFERENTIAL INCREMENTAL SYNC CHECK:
     // Only perform auto-sync if current data is DIFFERENT from the last synced snapshot!
     // If nothing changed, we skip cloud writes completely to preserve existing data and save bandwidth.
-    if (currentSnapshot === lastSyncedSnapshotRef.current) {
+    hasPendingChangesRef.current = currentSnapshot !== lastSyncedSnapshotRef.current;
+    if (!hasPendingChangesRef.current) {
       return;
     }
 
     const timer = setTimeout(async () => {
       setIsSyncing(true);
+      busyRef.current = true;
       try {
         const saved = await saveCloudData(user.uid, {
           students,
@@ -252,6 +275,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
         }, cloudDataModelRef.current, lastCloudSnapshotRef.current);
 
         lastSyncedSnapshotRef.current = currentSnapshot;
+        hasPendingChangesRef.current = false;
         lastCloudSnapshotRef.current = saved.snapshot;
         setLastSyncedTime(saved.updatedAt);
       } catch (err) {
@@ -264,6 +288,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           console.error("Auto-sync to cloud failed:", err);
         }
       } finally {
+        busyRef.current = false;
         setIsSyncing(false);
       }
     }, 1500); // 1.5s debounce to group multiple rapid edits together

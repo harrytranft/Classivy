@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 0-7 hoàn thành và gộp `main`; Phase 8 và Phase 9 (Cá Ngựa/Vòng quay/Tặng Pokémon toàn màn hình, không đổi luật) xong trên nhánh `claude/phase8-teacher-ui`, chưa commit, chờ Harry xem thử; Phase 10A (thanh điều hướng + Hồ sơ học sinh mới, không đụng Supabase) xong, chờ Harry xem thử; 10B Shop + migration chưa làm: hàm DB sửa thẳng game_state, công tắc Shop theo lớp mặc định tắt, cần Harry duyệt migration trước khi chạy)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 0-7 hoàn thành và gộp `main`; Phase 8, 9, 10A và 10B xong trên nhánh `claude/phase8-teacher-ui`, chưa commit, chờ Harry xem thử. 10B = Cửa hàng học sinh: migration `supabase/migrations/20261102100000_phase10_student_shop.sql` đã test trên Postgres cục bộ nhưng CHƯA chạy trên Supabase thật, chờ Harry duyệt rồi chạy; Phase 11 (tự động hoá skills) chỉ làm khi Harry yêu cầu)
 
 ## 1. Sản phẩm
 
@@ -80,6 +80,8 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 7. Quyết định còn mở
 
+- Phase 10B (đã làm theo mặc định, Harry có thể đổi): giá trứng 10/20 Hào Quang; nở nhanh = trả phần tiến độ còn thiếu; mua trứng cất Pokémon đồng hành cho tới khi nở; không mua trứng thứ hai khi đang ấp; không đổi đồng hành khi đang ấp. Skill của giáo viên tự sửa chưa hiện đúng tên/mô tả trong thẻ Hồ sơ học sinh (Cửa hàng thì đúng, lấy từ DB).
+
 - (Đã chốt: tắt đăng ký công khai, ô đăng nhập nhận cả email lẫn tên đăng nhập - D27.)
 - Phase 6: có muốn bạn cùng lớp chỉ thấy tên gọi (không họ) không? Hiện hiện tên đầy đủ như giáo viên nhập.
 - (Vai trò phụ huynh: Harry quyết định không thêm, D13.)
@@ -87,5 +89,5 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 ## 8. Bước tiếp theo
 
 1. Harry xem thử Phase 8 (đặc biệt: đổi tab qua lại có còn chớp loading không), rồi cho commit/gộp nhánh `claude/phase8-teacher-ui`.
-2. Bắt đầu Phase 10 (cổng học sinh v2) khi Harry yêu cầu; cần duyệt migration trước.
-3. Phase 10 cần Harry duyệt migration trước khi chạy trên Supabase thật.
+2. Harry duyệt rồi chạy migration Phase 10B trên Supabase (hoàn tác: `supabase/rollback/20261102100000_phase10_student_shop_down.sql`); chỉ coi là đã áp dụng khi Harry xác nhận. Sau đó bật công tắc "Cho phép học sinh dùng Cửa hàng" ở trang Bạn bè & quà của lớp để thử.
+3. Phase 11 (skills tự động hoá) khi Harry yêu cầu.

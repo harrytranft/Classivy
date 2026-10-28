@@ -11,7 +11,7 @@ export const AVATAR_MAX_LENGTH = 280_000;
 export const AVATAR_TARGET_LENGTH = 140_000;
 export const OPENING_BALANCE_EVENT_ID = 'opening-balance';
 
-export type LedgerSource = 'app' | 'migration' | 'opening_balance';
+export type LedgerSource = 'app' | 'migration' | 'opening_balance' | 'student_shop';
 
 export interface ClassChange {
   name: string;

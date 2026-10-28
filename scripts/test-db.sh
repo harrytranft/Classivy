@@ -21,6 +21,8 @@ MIGRATION7=supabase/migrations/20261101100000_phase7_hardening.sql
 DROP_LEGACY=supabase/migrations/20261101110000_drop_legacy_data.sql
 DROP_LEGACY_DOWN=supabase/rollback/20261101110000_drop_legacy_data_down.sql
 ROLLBACK7=supabase/rollback/20261101100000_phase7_hardening_down.sql
+MIGRATION10=supabase/migrations/20261102100000_phase10_student_shop.sql
+ROLLBACK10=supabase/rollback/20261102100000_phase10_student_shop_down.sql
 ROLLBACK_ROLE=supabase/rollback/20261030110000_sync_profile_role_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
@@ -130,10 +132,22 @@ echo "== Migration Phase 7 hardening (chạy 2 lần) + test (Phase 3-6 chạy l
 run -f "$MIGRATION7"
 run -f "$MIGRATION7"
 run -o /dev/null -f supabase/tests/60_phase7_hardening.test.sql
+
+echo "== Migration Phase 10B Cửa hàng học sinh (chạy 2 lần) + test, hoàn tác, chạy lại"
+run -f "$MIGRATION10"
+run -f "$MIGRATION10"
+run -o /dev/null -f supabase/tests/70_phase10_shop.test.sql
+run -f "$ROLLBACK10"
+run -c "do \$\$ begin
+  if to_regprocedure('public.student_shop_buy_egg(text)') is not null or to_regclass('public.shop_egg_pool') is not null then raise exception 'FAIL: phase 10B rollback left objects'; end if;
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'classes' and column_name = 'student_shop_enabled') then
+    raise exception 'FAIL: phase 10B rollback left column'; end if; end \$\$"
+run -f "$MIGRATION10"
 run -f "$ROLLBACK7"
 run -c "do \$\$ begin
   if to_regprocedure('public.save_teacher_changes_v2(jsonb)') is not null or to_regprocedure('public.is_teacher()') is not null then raise exception 'FAIL: phase 7 rollback left functions'; end if; end \$\$"
 run -f "$MIGRATION7"
+run -f "$ROLLBACK10"
 run -f "$ROLLBACK7"
 run -f "$ROLLBACK6"
 run -f "$ROLLBACK_ROLE"

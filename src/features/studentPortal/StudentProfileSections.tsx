@@ -17,7 +17,7 @@ const SectionTitle: React.FC<{ icon: React.ReactNode; children: React.ReactNode 
   </h2>
 );
 
-const PokemonArt: React.FC<{ pet: PokemonPet; className: string }> = ({ pet, className }) => (
+export const PokemonArt: React.FC<{ pet: PokemonPet; className: string }> = ({ pet, className }) => (
   <img
     src={getPokemonArtworkUrl(pet)}
     onError={event => handlePokemonArtworkError(event, pet)}

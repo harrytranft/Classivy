@@ -5,8 +5,9 @@ import { getStudentInitials } from '../../components/StudentAvatar';
 import { StudentPortalProfile } from '../../domain/studentPortal';
 import { ActivityTabs, CollectionGrid, CompanionCard, HeroCard } from './StudentProfileSections';
 import { StudentSocialPanel } from './social/StudentSocialPanel';
+import { StudentShop } from './StudentShop';
 
-// Cổng học sinh (Phase 10A): thanh điều hướng Hồ sơ / Cửa hàng / Bạn bè; avatar ở dưới cùng, bấm để đăng xuất.
+// Cổng học sinh (Phase 10A; Cửa hàng Phase 10B): thanh điều hướng Hồ sơ / Cửa hàng / Bạn bè; avatar ở dưới cùng, bấm để đăng xuất.
 // Học sinh không đổi được avatar (chỉ giáo viên). Responsive (D22): thanh dọc bên trái giống hệt app giáo viên (NavDock) ở mọi khổ màn hình.
 
 type PortalTab = 'profile' | 'shop' | 'friends';
@@ -120,13 +121,9 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
         )}
 
         {tab === 'shop' && (
-          <section className="mx-auto max-w-xl rounded-brand-lg border border-[#e6e2d4] bg-white p-8 text-center shadow-sm">
-            <div className="text-6xl" aria-hidden>🛍️</div>
-            <h1 className="mt-3 text-2xl font-extrabold text-brand-ink">Cửa hàng sắp mở</h1>
-            <p className="mt-2 text-base leading-relaxed text-brand-ink/70">
-              Sắp tới em sẽ mua trứng và skill bằng Hào Quang ở đây, rồi đổi Pokémon đồng hành thoải mái. Thầy cô sẽ báo khi cửa hàng mở nhé!
-            </p>
-          </section>
+          <div data-portal-column="activity" className="mx-auto max-w-3xl">
+            <StudentShop profile={profile} refreshSignal={refreshSignal} onChanged={onRefresh} />
+          </div>
         )}
 
         <p className="text-center text-[13px] text-brand-ink/70">Thông tin này chỉ mình em xem được.</p>

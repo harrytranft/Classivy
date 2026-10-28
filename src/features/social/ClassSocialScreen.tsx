@@ -36,7 +36,7 @@ const GiftLine: React.FC<{ gift: TeacherGiftRow; onRevoke: (gift: TeacherGiftRow
 export const ClassSocialScreen: React.FC = () => {
   const { routeClassName } = useApp();
   const className = routeClassName ?? null;
-  const { settings, gifts, friendships, loading, error, reload, saveSettings, revokeGift, removeFriendship } = useClassSocial(className);
+  const { settings, gifts, friendships, loading, error, reload, saveSettings, setShopEnabled, revokeGift, removeFriendship } = useClassSocial(className);
 
   const [draft, setDraft] = useState({ enabled: false, weeklyLimit: 5, perFriendLimit: 2 });
   const [tab, setTab] = useState<Tab>('gifts');
@@ -124,6 +124,25 @@ export const ClassSocialScreen: React.FC = () => {
           <p className="mt-3 text-xs text-brand-ink/70">
             Điểm tặng không trừ Hào Quang của người tặng. Điểm được cộng vào Hào Quang của người nhận khi app của bạn đang mở (tự kiểm tra vài phút một lần). Mỗi em tặng tối đa 10 món/ngày, 2 điểm/lần.
           </p>
+        </section>
+      )}
+
+      {settings && settings.shopEnabled !== null && (
+        <section aria-label="Cửa hàng học sinh" className="mb-6 rounded-brand-lg border border-[#e6e2d4] bg-white p-5">
+          <button type="button" role="switch" aria-checked={settings.shopEnabled} disabled={busy}
+            onClick={() => act(() => setShopEnabled(!settings.shopEnabled), settings.shopEnabled ? 'Đã đóng Cửa hàng của lớp.' : 'Đã mở Cửa hàng cho lớp.')}
+            className="inline-flex items-center gap-3 rounded-brand-md px-1 py-1 text-left disabled:opacity-60">
+            <span className={cx('relative h-7 w-12 rounded-full transition-colors', settings.shopEnabled ? 'bg-brand-emerald' : 'bg-[#cfccbf]')}>
+              <span className={cx('absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-[left]', settings.shopEnabled ? 'left-6' : 'left-1')} />
+            </span>
+            <span>
+              <span className="block font-extrabold text-brand-ink">Cho phép học sinh dùng Cửa hàng</span>
+              <span className="block text-xs text-brand-ink/70">
+                {settings.shopEnabled ? 'Đang mở: học sinh mua trứng, skill và đổi Pokémon bằng Hào Quang của mình.' : 'Đang đóng: học sinh chỉ xem được, chưa mua hay đổi Pokémon được.'}
+                {' '}Thay đổi có hiệu lực ngay. Khi học sinh mua, dữ liệu của em đổi ngay; hãy mở lại trang lớp để thấy bản mới nhất.
+              </span>
+            </span>
+          </button>
         </section>
       )}
 

@@ -36,6 +36,11 @@ interface Mock {
   giftError: string | null;
   /** Phase 6, giáo viên: các lần ghi bảng (PATCH classes, POST thu hồi, DELETE bạn bè). */
   writes: Array<{ method: string; path: string; body: unknown }>;
+  /** Phase 10B: kết quả student_shop_overview(), các lần gọi hàm Cửa hàng, mã lỗi giả, công tắc Cửa hàng của lớp (null = chưa có cột). */
+  shop: unknown;
+  shopCalls: Array<{ fn: string; body: Record<string, unknown> }>;
+  shopError: string | null;
+  shopClassEnabled: boolean | null;
 }
 
 const PROFILE_PAYLOAD = {
@@ -89,7 +94,8 @@ const SOCIAL_PAYLOAD = {
 
 async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
   const mock: Mock = { functionCalls: [], restPaths: [], rpcCalls: [], passwordUpdates: 0, errors: [], profile: PROFILE_PAYLOAD,
-    social: { enabled: false }, socialCalls: [], giftError: null, writes: [] };
+    social: { enabled: false }, socialCalls: [], giftError: null, writes: [],
+    shop: { enabled: false, points: 42, eggPrices: { normal: 10, special: 20 }, skills: [] }, shopCalls: [], shopError: null, shopClassEnabled: false };
   let firstLoginPending = true;
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ key, value }) => { window.localStorage.setItem(key, JSON.stringify(value)); },
@@ -118,6 +124,39 @@ async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
       return;
     }
     if (p === '/rest/v1/rpc/student_first_login_pending') { mock.rpcCalls.push('pending'); await json(route, firstLoginPending); return; }
+    if (p === '/rest/v1/rpc/student_shop_overview') { await json(route, mock.shop); return; }
+    const shopFn = p.match(/^\/rest\/v1\/rpc\/(student_shop_buy_egg|student_shop_hatch_egg|student_shop_buy_skill|student_set_companion|student_set_support)$/);
+    if (shopFn) {
+      const body = (request.postDataJSON() ?? {}) as Record<string, unknown>;
+      mock.shopCalls.push({ fn: shopFn[1], body });
+      if (mock.shopError) { await json(route, { code: 'P0001', message: mock.shopError, details: null, hint: null }, 400); return; }
+      const profile = JSON.parse(JSON.stringify(mock.profile)) as { points: number; game: { pet?: Record<string, unknown>; pets: Array<Record<string, unknown>>; egg?: Record<string, unknown> } };
+      if (shopFn[1] === 'student_shop_buy_egg') {
+        profile.points -= 10;
+        profile.game.egg = { status: 'egg', progress: 0, kind: 'normal' };
+        delete profile.game.pet;
+      } else if (shopFn[1] === 'student_shop_hatch_egg') {
+        profile.points -= 10 - Number(profile.game.egg?.progress ?? 0);
+        profile.game.egg = { status: 'hatched', progress: 10, kind: 'normal' };
+        // Thú tạo từ hàm DB: chưa có tên, chưa có loại (app tự bổ sung theo dexId).
+        const born = { instanceId: 'pk-born', dexId: 4, baseDexId: 4, name: '', hp: 100, accessories: [], skills: [], isShiny: false };
+        profile.game.pet = born;
+        profile.game.pets = [born, ...profile.game.pets];
+      } else if (shopFn[1] === 'student_shop_buy_skill') {
+        profile.points -= 20;
+        if (profile.game.pet) profile.game.pet.skills = [...(profile.game.pet.skills as string[]), String(body.p_skill_id)];
+      } else if (shopFn[1] === 'student_set_companion') {
+        profile.game.pet = profile.game.pets.find(pet => pet.instanceId === body.p_instance_id);
+      }
+      mock.profile = profile;
+      await json(route, { points: profile.points, revision: 1 });
+      return;
+    }
+    if (p.endsWith('/classes') && url.searchParams.get('select') === 'student_shop_enabled') {
+      if (mock.shopClassEnabled === null) await json(route, { code: '42703', message: 'column does not exist' }, 400);
+      else await json(route, { student_shop_enabled: mock.shopClassEnabled });
+      return;
+    }
     if (p === '/rest/v1/rpc/student_social_overview') { await json(route, mock.social); return; }
     const socialFn = p.match(/^\/rest\/v1\/rpc\/(student_send_friend_request|student_respond_friend_request|student_remove_friend|student_send_gift|student_report_gift)$/);
     if (socialFn) {
@@ -315,7 +354,7 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   await page.getByRole('tab', { name: /Huy hiệu/ }).click();
   await expect(page.getByText('Blaze Badge')).toBeVisible();
   await page.getByRole('button', { name: 'Cửa hàng' }).click();
-  await expect(page.getByRole('heading', { name: 'Cửa hàng sắp mở' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Cửa hàng đang đóng' })).toBeVisible();
   await page.getByRole('button', { name: 'Hồ sơ', exact: true }).click();
   if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/50-student-profile.png', fullPage: true });
   // Vừa khung điện thoại, không cuộn ngang.
@@ -435,7 +474,7 @@ test('giáo viên: bật bạn bè & quà, đặt hạn mức, thu hồi quà, g
   const mock = await setup(page, 'teacher');
   await page.goto('/class/6A/ban-be');
   await expect(page.getByRole('heading', { name: 'Bạn bè & quà · 6A' })).toBeVisible();
-  const toggle = page.getByRole('switch');
+  const toggle = page.getByRole('switch', { name: /Đang tắt|Đang bật cho lớp/ });
   await expect(toggle).toHaveAttribute('aria-checked', 'false');
   await expect(page.getByRole('button', { name: 'Lưu cài đặt' })).toBeDisabled();
   await toggle.click();
@@ -463,6 +502,108 @@ test('giáo viên: bật bạn bè & quà, đặt hạn mức, thu hồi quà, g
   await page.getByRole('button', { name: 'Gỡ' }).click();
   expect(mock.writes.at(-1)?.method).toBe('DELETE');
   expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: Cửa hàng đóng thì chỉ xem, không mua được', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Cửa hàng' }).click();
+  await expect(page.getByRole('heading', { name: 'Cửa hàng đang đóng' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Mua/ })).toHaveCount(0);
+  expect(mock.shopCalls).toEqual([]);
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: mua trứng, nở nhanh, mua skill, đổi Pokémon; lỗi hiện tiếng Việt', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  mock.shop = {
+    enabled: true, points: 42, eggPrices: { normal: 10, special: 20 },
+    skills: [
+      { id: 'sk_time_warp', name: 'Bẻ Cong Thời Gian', icon: '⏳', cost: 20, description: 'Yêu cầu cộng thêm 10 giây thời gian suy nghĩ.' },
+      { id: 'sk_guard', name: 'Khiên Hộ Mệnh', icon: '🛡️', cost: 15, description: 'Chặn một lần trừ điểm.' }
+    ]
+  };
+  // Bắt đầu không có trứng đang ấp.
+  const base = JSON.parse(JSON.stringify(PROFILE_PAYLOAD));
+  delete base.game.egg;
+  mock.profile = base;
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Cửa hàng' }).click();
+  await expect(page.getByText('42 Hào Quang').first()).toBeVisible();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/70-shop.png', fullPage: true });
+
+  // Mua trứng: có hộp xác nhận nói rõ Pokémon đồng hành được cất đi.
+  await page.getByRole('button', { name: 'Mua Trứng thường' }).click();
+  const confirm = page.getByRole('alertdialog', { name: 'Xác nhận mua' });
+  await expect(confirm).toContainText('cất vào bộ sưu tập');
+  await confirm.getByRole('button', { name: 'Thôi' }).click();
+  await expect(confirm).toHaveCount(0);
+  expect(mock.shopCalls).toEqual([]);
+  await page.getByRole('button', { name: 'Mua Trứng thường' }).click();
+  await confirm.getByRole('button', { name: 'Xác nhận mua' }).click();
+  await expect(page.getByRole('status')).toContainText('Đã mua Trứng thường');
+  expect(mock.shopCalls.at(-1)).toEqual({ fn: 'student_shop_buy_egg', body: { p_kind: 'normal' } });
+  await expect(page.getByText('32 Hào Quang').first()).toBeVisible();
+  // Đang ấp: không mua thêm trứng được.
+  await expect(page.getByRole('button', { name: 'Mua Trứng thường' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Mua Trứng đặc biệt' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' })).toBeDisabled();
+
+  // Nở nhanh: trả phần còn thiếu (10), thú mới thành đồng hành và có tên đúng dù DB chỉ lưu dexId.
+  await page.getByRole('button', { name: /Nở nhanh/ }).click();
+  await expect(confirm).toContainText('10 Hào Quang');
+  await confirm.getByRole('button', { name: 'Xác nhận mua' }).click();
+  await expect(page.getByRole('status')).toContainText('Trứng đã nở');
+  expect(mock.shopCalls.at(-1)?.fn).toBe('student_shop_hatch_egg');
+  await expect(page.getByText('22 Hào Quang').first()).toBeVisible();
+  await expect(page.getByText('Charmander').first()).toBeVisible();
+
+  // Skill: bấm đọc công dụng rồi mua.
+  await page.getByRole('button', { name: /Bẻ Cong Thời Gian/ }).click();
+  await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('10 giây');
+  await page.getByRole('button', { name: /Mua skill/ }).click();
+  await confirm.getByRole('button', { name: 'Xác nhận mua' }).click();
+  await expect(page.getByRole('status')).toContainText('Đã mua skill');
+  expect(mock.shopCalls.at(-1)).toEqual({ fn: 'student_shop_buy_skill', body: { p_skill_id: 'sk_time_warp' } });
+  await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('đã có skill này');
+
+  // Đổi đồng hành miễn phí.
+  await page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' }).click();
+  await expect(page.getByRole('status')).toContainText('Bulbasaur là Pokémon đồng hành mới');
+  expect(mock.shopCalls.at(-1)).toEqual({ fn: 'student_set_companion', body: { p_instance_id: 'pet-2' } });
+  await expect(page.getByText('2 Hào Quang').first()).toBeVisible();
+
+  // Lỗi từ DB (ví dụ lớp vừa đóng) hiện bằng tiếng Việt.
+  mock.shopError = 'shop_closed';
+  await page.getByRole('button', { name: 'Chọn Pikachu hỗ trợ' }).click();
+  await expect(page.getByRole('alert')).toContainText('Cửa hàng của lớp đang đóng');
+  const teacherTables = mock.restPaths.filter(p => /^(user_settings|classes|students|point_ledger)$/.test(p));
+  expect(teacherTables).toEqual([]);
+  expect(mock.errors).toEqual([]);
+});
+
+test('giáo viên: mở/đóng Cửa hàng học sinh cho lớp (có hiệu lực ngay)', async ({ page }) => {
+  const mock = await setup(page, 'teacher');
+  await page.goto('/class/6A/ban-be');
+  const toggle = page.getByRole('switch', { name: /Cho phép học sinh dùng Cửa hàng/ });
+  await expect(toggle).toHaveAttribute('aria-checked', 'false');
+  await toggle.click();
+  await expect(page.getByRole('status')).toContainText('Đã mở Cửa hàng cho lớp');
+  expect(mock.writes.at(-1)).toEqual({ method: 'PATCH', path: 'classes', body: { student_shop_enabled: true } });
+  expect(mock.errors).toEqual([]);
+});
+
+test('giáo viên: chưa chạy migration Phase 10B thì ẩn công tắc Cửa hàng, trang bạn bè vẫn chạy', async ({ page }) => {
+  const mock = await setup(page, 'teacher');
+  mock.shopClassEnabled = null;
+  await page.goto('/class/6A/ban-be');
+  await expect(page.getByRole('heading', { name: 'Bạn bè & quà · 6A' })).toBeVisible();
+  await expect(page.getByRole('switch', { name: /Đang tắt|Đang bật cho lớp/ })).toBeVisible();
+  await expect(page.getByRole('switch', { name: /Cửa hàng/ })).toHaveCount(0);
 });
 
 test('học sinh: lỗi tải hồ sơ hiện thông báo thân thiện và thử lại được', async ({ page }) => {
