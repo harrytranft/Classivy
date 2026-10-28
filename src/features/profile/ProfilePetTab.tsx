@@ -1,13 +1,14 @@
 import React from 'react';
 import { ProfileEggView } from './ProfileEggView';
 import { ProfilePetView } from './ProfilePetView';
-import { ProfileFusionSection } from './ProfileFusionSection';
+import { ProfileSkillLab } from './ProfileSkillLab';
 import { EggInventoryPanel } from './EggInventoryPanel';
 import { ExpeditionPanel } from './ExpeditionPanel';
 import { WeeklyChestPanel } from './WeeklyChestPanel';
 import { useApp } from '../../app/AppContext';
 
-// Tab Pokémon (Phase 12D, D45): Pokémon đồng hành hoặc trứng đang ấp, rồi kho trứng / thám hiểm / rương tuần (mỗi panel một lần), rồi Hợp nhất.
+// Tab Pokémon (Phase 12D, D45). Thứ tự: đồng hành/trứng, Pokémon đã sở hữu, Hợp nhất (ngay dưới danh sách sở hữu),
+// kỹ năng đang có, Kho trứng / Thám hiểm / Rương tuần (mỗi panel một lần), rồi Pokémon Skill Lab ở cuối cùng.
 export const ProfilePetTab: React.FC = () => {
   const { editingStudent, setSelectedFusionPetDexIds } = useApp();
   // Vào tab Pokémon thì bỏ lựa chọn hợp nhất còn sót từ lần trước.
@@ -18,7 +19,7 @@ export const ProfilePetTab: React.FC = () => {
       <EggInventoryPanel student={editingStudent} />
       <ExpeditionPanel student={editingStudent} />
       <WeeklyChestPanel student={editingStudent} />
-      <ProfileFusionSection />
+      {editingStudent.pet && <ProfileSkillLab />}
     </div>
   );
 };

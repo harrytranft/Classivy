@@ -4,6 +4,7 @@ import { createPokemonPetFromDexId, getPokemonArtworkUrl, getPokemonDisplayName,
 import { HistoryItem, Student } from '../../types';
 import { PokemonUiEvent } from '../../domain/gameEvents';
 import { appendAdventureJournal, applyTrainerJourneyProgress } from '../../domain/progression';
+import { ProfileFusionSection } from './ProfileFusionSection';
 import { useApp } from '../../app/AppContext';
 
 export const ProfileEggView: React.FC = () => {
@@ -218,6 +219,9 @@ export const ProfileEggView: React.FC = () => {
                             </div>
                           </div>
                         )}
+
+                        {/* Phase 12D: Hợp nhất nằm ngay dưới danh sách Pokémon sở hữu */}
+                        <ProfileFusionSection />
                       </div>
   );
 };

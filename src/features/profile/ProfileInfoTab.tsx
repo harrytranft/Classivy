@@ -86,20 +86,6 @@ export const ProfileInfoTab: React.FC = () => {
         );
       })()}
 
-      {editingStudent.adventureJournal && editingStudent.adventureJournal.length > 0 && (
-        <div className="rounded-[32px] border border-stone-200 bg-stone-50 p-5">
-          <h3 className="text-xl text-stone-900 font-extrabold">📖 Nhật ký phiêu lưu</h3>
-          <div className="mt-4 max-h-56 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
-            {editingStudent.adventureJournal.slice(0, 12).map(entry => (
-              <div key={entry.id} className="rounded-2xl bg-white p-3 text-sm shadow-sm">
-                <p className="font-bold text-stone-800">{entry.text}</p>
-                <p className="mt-1 text-xs font-bold text-stone-400">{new Date(entry.timestamp).toLocaleDateString()}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
         <div className="relative shrink-0 flex flex-col items-center gap-2">
           <StudentAvatar student={editingStudent} className="w-32 h-32 rounded-full border-4 border-[#D4AF37] shadow-lg" />
@@ -173,6 +159,20 @@ export const ProfileInfoTab: React.FC = () => {
           {editingStudent.history.length === 0 && <p className="text-center py-20 opacity-20 italic">Chưa có ghi chép nào...</p>}
         </div>
       </div>
+
+      {editingStudent.adventureJournal && editingStudent.adventureJournal.length > 0 && (
+        <div className="rounded-[32px] border border-stone-200 bg-stone-50 p-5">
+          <h3 className="text-xl text-stone-900 font-extrabold">📖 Nhật ký phiêu lưu</h3>
+          <div className="mt-4 max-h-56 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
+            {editingStudent.adventureJournal.slice(0, 12).map(entry => (
+              <div key={entry.id} className="rounded-2xl bg-white p-3 text-sm shadow-sm">
+                <p className="font-bold text-stone-800">{entry.text}</p>
+                <p className="mt-1 text-xs font-bold text-stone-400">{new Date(entry.timestamp).toLocaleDateString()}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
