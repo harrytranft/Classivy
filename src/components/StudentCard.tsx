@@ -5,6 +5,8 @@ import { PetSkill } from '../data/pokemonData';
 import { getPokemonArtworkUrl, getPokemonDisplayName, getPokemonNatureDefinition, handlePokemonArtworkError } from '../domain/pokemonProgression';
 import { getBadgeDefinition, getTrainerLevelPercent, getTrainerTitleDefinition, normalizeTrainerProgress, trainerXpNeededForNextLevel } from '../domain/trainerProgression';
 import { StudentAvatar } from './StudentAvatar';
+import { PointsBurst, usePointsFx } from './PointsFx';
+import { canReviveStudent } from '../domain/revive';
 import { Chip, ChipTone, ProgressBar, ShieldScore, cx } from './ui';
 
 interface StudentCardProps {
@@ -14,6 +16,8 @@ interface StudentCardProps {
   isSelected?: boolean;
   /** Hiện tên lớp trên thẻ (khi xem nhiều lớp cùng lúc). Trên trang của một lớp thì thừa. */
   showClassName?: boolean;
+  /** Có thì hiện nút Hồi sinh khi học sinh có điểm từ -20 trở xuống. */
+  onRevive?: (student: Student) => void;
 }
 
 const hpTone = (hp: number) => (hp > 50 ? 'leaf' : hp > 20 ? 'warning' : 'danger') as 'leaf' | 'warning' | 'danger';
@@ -23,9 +27,12 @@ export const StudentCard: React.FC<StudentCardProps> = ({
   onSelect,
   petSkills,
   isSelected,
-  showClassName
+  showClassName,
+  onRevive
 }) => {
   const isAbsent = student.isAbsent;
+  const pointsFx = usePointsFx(student.points);
+  const showRevive = !!onRevive && canReviveStudent(student);
 
   const egg = student.egg;
   const pet = student.pet;
@@ -75,6 +82,7 @@ export const StudentCard: React.FC<StudentCardProps> = ({
         onSelect(student);
       }}
       className={cx(
+        pointsFx && (pointsFx.delta > 0 ? 'cl-fx-pos' : 'cl-fx-neg'),
         'relative flex min-h-[340px] cursor-pointer flex-col gap-4 rounded-brand-lg border bg-white p-5 transition-[box-shadow,border-color,transform] duration-200',
         isSelected
           ? 'border-brand-forest shadow-[0_0_0_3px_#014a2d,0_10px_24px_-10px_rgba(0,38,25,0.45)]'
@@ -83,6 +91,16 @@ export const StudentCard: React.FC<StudentCardProps> = ({
             : 'border-[#e6e2d4] shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_2px_4px_rgba(12,37,39,0.05),0_14px_28px_-10px_rgba(1,74,45,0.28)]'
       )}
     >
+      <PointsBurst fx={pointsFx} />
+      {showRevive && (
+        <button
+          type="button"
+          onClick={event => { event.stopPropagation(); onRevive!(student); }}
+          className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full border-2 border-white bg-brand-danger px-4 py-1.5 text-[13px] font-extrabold text-white shadow-lg transition-transform hover:scale-105"
+        >
+          ✚ Hồi sinh
+        </button>
+      )}
       <div className="flex items-start gap-4">
         <div className="relative h-16 w-16 shrink-0">
           <StudentAvatar student={student} className="h-full w-full rounded-brand-md" />

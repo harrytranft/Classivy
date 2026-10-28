@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { PokemonReactionLayer } from '../features/pokemon/PokemonReactionLayer';
 import { AttendanceModal } from '../features/attendance/AttendanceModal';
@@ -20,18 +20,16 @@ import { RandomModal } from '../features/random/RandomModal';
 import { DataUpgradeModal } from '../features/dataUpgrade/DataUpgradeModal';
 import { SyncConflictBanner } from './SyncConflictBanner';
 import { useApp } from './AppContext';
+import { useGlobalShortcuts } from './useGlobalShortcuts';
+import { ShortcutHelpModal } from '../features/settings/ShortcutHelpModal';
 
 export const AppLayout: React.FC = () => {
   const { authLoading, user } = useApp();
+  const [showShortcutHelp, setShowShortcutHelp] = useState(false);
+  useGlobalShortcuts(() => setShowShortcutHelp(open => !open));
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-brand-forest-deep flex flex-col items-center justify-center text-brand-cream">
-        <div className="h-11 w-11 animate-spin rounded-full border-[3px] border-brand-gold border-t-transparent mb-4" aria-hidden></div>
-        <p className="text-sm font-bold text-brand-cream/80">Đang kết nối Classivy...</p>
-      </div>
-    );
-  }
+  // Trang loading toàn trang do AuthSplashGate (App.tsx) vẽ phủ lên trên.
+  if (authLoading) return null;
 
   if (!user) {
     return (
@@ -94,6 +92,9 @@ export const AppLayout: React.FC = () => {
 
       {/* MODAL: USER PROFILE / AUTH / LOGOUT */}
       <UserModal />
+
+      {/* Bảng phím tắt (phím ?) */}
+      {showShortcutHelp && <ShortcutHelpModal onClose={() => setShowShortcutHelp(false)} />}
     </div>
   );
 };

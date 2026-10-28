@@ -41,3 +41,34 @@ input, textarea, select {
     min-height: 100vh;
   }
 }
+
+/* Trang loading Classivy (kiểu DictaLearn: logo phóng nhẹ, thanh chạy, rồi phóng to và mờ dần). */
+.cl-splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 38%,#ffffff 0%,#fbf7e8 55%,#f3eccb 100%);}
+.cl-splash__inner{display:flex;flex-direction:column;align-items:center;gap:22px;padding:24px;}
+.cl-splash__logo{width:min(380px,72vw);height:auto;user-select:none;animation:clSplashIn .7s cubic-bezier(.22,1,.36,1) both;}
+.cl-splash__logo--static{animation:none;}
+.cl-splash__label{margin:-6px 0 0;font-weight:800;font-size:15px;color:#014a2d;letter-spacing:.01em;animation:clSplashIn .5s .15s cubic-bezier(.22,1,.36,1) both;}
+.cl-splash__bar{width:min(170px,42vw);height:4px;border-radius:999px;background:rgba(1,74,45,.14);overflow:hidden;}
+.cl-splash__bar span{display:block;height:100%;width:40%;border-radius:999px;background:linear-gradient(90deg,#04774f,#e5b93c);animation:clSplashBar 1.2s ease-in-out infinite;}
+.cl-splash--leaving{pointer-events:none;animation:clSplashOut .55s cubic-bezier(.4,0,.2,1) forwards;}
+.cl-splash--leaving .cl-splash__logo{animation:clSplashLogoOut .55s cubic-bezier(.4,0,.2,1) forwards;}
+.cl-splash--leaving .cl-splash__bar{opacity:0;transition:opacity .2s;}
+@keyframes clSplashIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+@keyframes clSplashBar{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}
+@keyframes clSplashOut{0%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes clSplashLogoOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){.cl-splash__logo,.cl-splash__bar span{animation-duration:.01s}.cl-splash--leaving,.cl-splash--leaving .cl-splash__logo{animation-duration:.2s}}
+
+/* Hiệu ứng cộng/trừ điểm trên thẻ học sinh (Phase 8.9). */
+.cl-points-burst{position:absolute;inset:0;z-index:20;pointer-events:none;display:grid;place-items:center;overflow:visible;}
+.cl-points-burst__num{font-size:4.5rem;font-weight:900;line-height:1;letter-spacing:-.02em;-webkit-text-stroke:6px #fff;paint-order:stroke fill;filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));animation:clPointRise 1.5s cubic-bezier(.2,.8,.2,1) forwards;}
+.cl-points-burst--pos .cl-points-burst__num{color:#0a9a69;}
+.cl-points-burst--neg .cl-points-burst__num{color:#c0392b;}
+.cl-points-burst__spark{position:absolute;left:50%;top:50%;font-size:1.4rem;opacity:0;animation:clSpark 1.1s ease-out forwards;}
+.cl-fx-pos{animation:clCardPop .7s ease-out;}
+.cl-fx-neg{animation:clCardShake .5s ease-in-out;}
+@keyframes clPointRise{0%{opacity:0;transform:translateY(24px) scale(.4)}18%{opacity:1;transform:translateY(0) scale(1.3)}35%{transform:translateY(-6px) scale(1)}75%{opacity:1;transform:translateY(-42px) scale(1)}100%{opacity:0;transform:translateY(-96px) scale(.9)}}
+@keyframes clSpark{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}20%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(180deg)}}
+@keyframes clCardPop{0%{box-shadow:0 0 0 0 rgba(10,154,105,.0)}30%{transform:scale(1.035);box-shadow:0 0 0 6px rgba(10,154,105,.35),0 0 34px 6px rgba(229,185,60,.45)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(10,154,105,0)}}
+@keyframes clCardShake{0%,100%{transform:translateX(0)}15%{transform:translateX(-9px);box-shadow:0 0 0 5px rgba(192,57,43,.35)}30%{transform:translateX(8px)}45%{transform:translateX(-6px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+@media (prefers-reduced-motion:reduce){.cl-fx-pos,.cl-fx-neg{animation:none}.cl-points-burst__spark{display:none}.cl-points-burst__num{animation-duration:.01s}}

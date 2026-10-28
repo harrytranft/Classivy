@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { SplashScreen } from '../../app/SplashScreen';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../auth/AuthContext';
 import { Button } from '../../components/ui';
@@ -84,7 +85,7 @@ const NOTICE: Record<'locked' | 'not_linked' | 'not_student' | 'error', { title:
 const StudentHome: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const { state, refresh, refreshing } = useStudentProfile();
 
-  if (state.kind === 'loading') return <Shell><p className="mt-6 text-base font-semibold text-brand-ink/70">Đang tải hồ sơ...</p></Shell>;
+  if (state.kind === 'loading') return <SplashScreen />;
 
   if (state.kind === 'loaded' && state.result.status === 'active') {
     return <StudentProfileScreen profile={state.result.profile} refreshing={refreshing} onRefresh={refresh} onLogout={onLogout} />;
@@ -119,7 +120,7 @@ export const StudentPortalApp: React.FC = () => {
 
   const handleLogout = () => { logout().catch(() => undefined); };
 
-  if (state === 'loading') return <Shell><p className="mt-6 text-base font-semibold text-brand-ink/70">Đang tải...</p></Shell>;
+  if (state === 'loading') return <SplashScreen />;
 
   if (state === 'must-change') return <Shell><ChangePasswordForm onDone={() => setState('ready')} /></Shell>;
 

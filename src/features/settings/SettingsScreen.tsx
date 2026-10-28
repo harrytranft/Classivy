@@ -6,6 +6,7 @@ import { Gender, LuckyWheelRewardType, Skill, Student } from '../../types';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS } from '../../data/pokemonData';
 import { createEgg } from '../../domain/eggs';
 import { useApp } from '../../app/AppContext';
+import { ShortcutsSettings } from './ShortcutsSettings';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -27,6 +28,10 @@ export const SettingsScreen: React.FC = () => {
         <h2 className="mt-1 text-3xl font-extrabold tracking-tight text-brand-ink">Cài đặt lớp học</h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-brand-ink/70">Tuỳ chỉnh hoạt động, phần thưởng và công cụ. Các thay đổi được đồng bộ cùng dữ liệu lớp.</p>
       </header>
+
+      <SettingsSection id="shortcuts" icon="⌨️" title="Phím tắt" subtitle="Dùng nhanh mọi chức năng bằng bàn phím; đổi phím theo ý bạn." collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
+        <ShortcutsSettings />
+      </SettingsSection>
 
       <SettingsSection id="bossRaid" icon="👹" title="Boss Raid" subtitle="Cài tần suất Boss xuất hiện sau các lượt Random Solo/Battle." collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="rounded-brand-lg border border-brand-emerald/20 bg-[#f4f8f1] p-5 text-left shadow-sm">

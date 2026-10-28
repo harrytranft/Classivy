@@ -34,9 +34,14 @@ const fakeSession = () => ({
   }
 });
 
+// Phase 8: ghi đè điểm học sinh mẫu cho một test (ví dụ để có em điểm <= -20).
+let POINT_OVERRIDES: Record<string, number> = {};
+
 const cloudRow = () => ({
   user_id: fakeSession().user.id,
-  students: FIXTURE.students,
+  students: FIXTURE.students.map((student: { id: string; points: number }) => (
+    POINT_OVERRIDES[student.id] !== undefined ? { ...student, points: POINT_OVERRIDES[student.id] } : student
+  )),
   ranks_male: FIXTURE.ranksMale,
   ranks_female: FIXTURE.ranksFemale,
   skills: FIXTURE.skills,
@@ -268,6 +273,7 @@ async function waitForApp(page: Page, loggedIn: boolean, expectSampleClass = tru
     }
     await page.locator('button[title^="Trạng thái sync"]').waitFor({ state: 'attached' });
   }
+  await page.locator('.cl-splash').waitFor({ state: 'detached' });
   await page.waitForTimeout(800);
 }
 
@@ -310,7 +316,7 @@ async function snapCloud(page: Page, name: string, state: SmokeState) {
   expect(json, `cloud ${name}`).toMatchSnapshot(`${name}.cloud.json`);
 }
 
-const navButton = (page: Page, title: string) => page.locator(`nav button[title="${title}"]`);
+const navButton = (page: Page, title: string) => page.locator(`nav button[aria-label="${title}"]`);
 // The side nav hides off-screen and slides in on hover (real CSS since Tailwind is built locally): hover it like a user.
 async function clickNav(page: Page, title: string) {
   await page.locator('.group\\/nav').hover();
@@ -326,6 +332,8 @@ async function chooseClass(page: Page, className: string) {
   if (await pickerCard.count() > 0) await pickerCard.click();
   else await page.locator('main select').first().selectOption(className);
   await page.locator(`main select option[value="${className}"]`).waitFor({ state: 'attached' });
+  // Trang loading khi vào lớp phủ lên trên trong ~1 giây: chờ nó biến mất như người dùng thật.
+  await page.locator('.cl-splash').waitFor({ state: 'detached' });
 }
 
 test('màn đăng nhập', async ({ page }) => {
@@ -348,6 +356,7 @@ test('các màn hình chính', async ({ page }) => {
   await snap(page, '13-settings-expanded', state);
 
   await clickNav(page, 'Lớp Học');
+  await chooseClass(page, '6A');
   await page.getByText('An 6A', { exact: true }).first().click();
   await page.getByText('Hồ Sơ Trainer').waitFor();
   await snap(page, '14-profile-info', state);
@@ -631,9 +640,11 @@ test('Phase 3: nâng cấp dữ liệu cũ sang bảng mới, rồi chỉ gửi 
   await page.waitForTimeout(2200);
 
   // Cộng điểm một học sinh: chỉ gửi đúng em đó và một dòng sổ điểm; không ghi lại cột students cũ.
+  await chooseClass(page, '6A');
+  // Vào lớp có thể tạo trạng thái Boss của lớp (không đổi học sinh): chờ lần lưu đó xong rồi mới đếm.
+  await page.waitForTimeout(2200);
   const rpcBefore = state.rpcCalls.length;
   const upsertsBefore = state.upserts.length;
-  await chooseClass(page, '6A');
   await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
   await page.locator('button.aspect-square').first().click();
   await page.waitForTimeout(2200);
@@ -733,4 +744,49 @@ test('Phase 7: máy khác vừa sửa thì không ghi đè, báo giáo viên và
   await page.locator('button.aspect-square').first().click();
   await expect.poll(() => state.rpcCalls.length, { timeout: 5000 }).toBe(callsBefore + 1);
   expect(state.errors).toEqual([]);
+});
+
+test('Phase 8: hiệu ứng điểm, phím tắt, hồi sinh, nút Lớp Học và đăng xuất không cần xác nhận', async ({ page }) => {
+  POINT_OVERRIDES = { 'stu-01': -25 };
+  await setupPage(page, { loggedIn: true });
+  POINT_OVERRIDES = {};
+  await chooseClass(page, '6A');
+  await expect(page).toHaveURL(/\/class\/6A$/);
+
+  // Thanh công cụ: các nút chỉ có icon (có tên cho trình đọc màn hình) và cùng một dòng.
+  const toolbarTops = await Promise.all(['Check đi học', 'Check Homework', 'Tài khoản học sinh', 'Bạn bè & quà', 'Thêm Trainer']
+    .map(async name => (await page.getByRole('button', { name, exact: true }).first().boundingBox())!.y));
+  expect(new Set(toolbarTops.map(y => Math.round(y))).size).toBe(1);
+
+  // Hiệu ứng cộng điểm bay trên thẻ học sinh.
+  await page.waitForTimeout(1500);
+  await page.getByRole('button', { name: /^Cộng điểm / }).nth(1).click({ force: true });
+  await page.locator('button.aspect-square').first().click();
+  await expect(page.locator('.cl-points-burst')).toBeVisible();
+
+  // Phím tắt: ? mở bảng, A mở điểm danh.
+  await page.waitForTimeout(500);
+  await page.keyboard.press('?');
+  await expect(page.getByText('Xem danh sách phím tắt')).toBeVisible();
+  await page.keyboard.press('?');
+  await expect(page.getByText('Xem danh sách phím tắt')).toHaveCount(0);
+  await page.keyboard.press('a');
+  await expect(page.getByRole('button', { name: 'Chốt điểm danh' })).toBeVisible();
+  await page.getByRole('button', { name: 'Đóng' }).first().click();
+
+  // Hồi sinh: nút chỉ hiện trên thẻ em có điểm <= -20, có hộp xác nhận.
+  await expect(page.getByRole('button', { name: /Hồi sinh/ })).toHaveCount(1);
+  await page.getByRole('button', { name: /Hồi sinh/ }).click();
+  await expect(page.getByText('Mất toàn bộ Pokémon')).toBeVisible();
+  await page.getByRole('dialog').getByRole('button', { name: 'Hồi sinh', exact: true }).click();
+  await expect(page.getByRole('button', { name: /Hồi sinh/ })).toHaveCount(0);
+
+  // Bấm "Lớp Học" khi đang trong lớp thì về trang chọn lớp.
+  await clickNav(page, 'Lớp Học');
+  await expect(page).toHaveURL(/\/class$/);
+
+  // Đăng xuất ngay, không hỏi lại.
+  await page.locator('nav button[title="Tài khoản giáo viên"]').click();
+  await page.getByRole('button', { name: 'Đăng xuất', exact: true }).click();
+  await expect(page.locator('nav[aria-label="Điều hướng chính"]')).toHaveCount(0);
 });

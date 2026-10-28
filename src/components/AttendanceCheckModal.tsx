@@ -45,7 +45,7 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
           {students.length === 0 ? (
             <p className="py-16 text-center text-sm font-bold text-gray-400">Không có trainer trong lớp hiện tại.</p>
           ) : (
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               {students.map(student => {
                 const lessonKey = lessonKeyFor(student);
                 const alreadyChecked = student.pokemonProgress?.lastAttendanceLessonKey === lessonKey;
@@ -54,25 +54,27 @@ export const AttendanceCheckModal: React.FC<AttendanceCheckModalProps> = ({
                 return (
                   <div
                     key={student.id}
-                    className={`flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors ${
+                    className={`flex min-w-0 flex-col items-stretch gap-3 rounded-brand-md border p-3 text-left transition-colors ${
                       alreadyChecked ? 'border-[#d9d6ca] bg-[#f1efe7] opacity-70' : statusStyles[status]
                     }`}
                   >
-                    <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-black text-gray-900">{student.name}</p>
-                      <p className="truncate text-xs font-bold text-gray-500">{student.className}</p>
+                    <div className="flex min-w-0 items-center gap-3">
+                      <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-black text-gray-900">{student.name}</p>
+                        <p className="truncate text-xs font-bold text-gray-500">{student.className}</p>
+                      </div>
                     </div>
                     {alreadyChecked ? (
                       <Chip tone="neutral">Đã chốt</Chip>
                     ) : (
-                      <div className="grid shrink-0 grid-cols-1 gap-1">
+                      <div className="grid grid-cols-3 gap-1">
                         {(['present', 'late', 'absent'] as AttendanceStatus[]).map(value => (
                           <button
                             key={value}
                             type="button"
                             onClick={() => onSetStatus(student.id, value)}
-                            className={`rounded-full border px-3 py-1 text-xs font-bold transition-colors ${
+                            className={`whitespace-nowrap rounded-full border px-0.5 py-1.5 text-[11px] font-bold transition-colors ${
                               status === value ? statusStyles[value] : 'border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink'
                             }`}
                           >

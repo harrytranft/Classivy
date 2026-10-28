@@ -1,5 +1,5 @@
 {
-  "upsertCount": 10,
+  "upsertCount": 11,
   "latest": {
     "user_id": "<uuid>",
     "students": [

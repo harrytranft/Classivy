@@ -40,12 +40,12 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
   }).length;
 
   return (
-    <Modal onClose={onClose} title="Kiểm tra bài tập" subtitle={`Ngày ${lessonDateKey} · ${students.length} Trainer đang có mặt`} icon="✎" size="lg" zIndex="z-[180]" footer={<><div className="mr-auto text-sm font-semibold text-brand-ink/70"><span className="font-bold text-brand-emerald">{doneCount}</span> hoàn thành · <span className="font-bold text-[#8f5500]">{notYetCount}</span> chưa xong · <span className="font-bold text-brand-danger">{missingCount}</span> thiếu · {actionableCount} chưa chốt</div><Button disabled={actionableCount <= 0} onClick={onConfirm}>Chốt bài tập</Button></>}>
+    <Modal onClose={onClose} title="Kiểm tra bài tập" subtitle={`Ngày ${lessonDateKey} · ${students.length} Trainer đang có mặt`} icon="✎" size="xl" zIndex="z-[180]" footer={<><div className="mr-auto text-sm font-semibold text-brand-ink/70"><span className="font-bold text-brand-emerald">{doneCount}</span> hoàn thành · <span className="font-bold text-[#8f5500]">{notYetCount}</span> chưa xong · <span className="font-bold text-brand-danger">{missingCount}</span> chưa làm · {actionableCount} chưa chốt</div><Button disabled={actionableCount <= 0} onClick={onConfirm}>Chốt bài tập</Button></>}>
         <div className="custom-scrollbar">
           {students.length === 0 ? (
             <p className="py-16 text-center text-sm font-bold text-gray-400">Không có trainer đang hiện diện để check BTVN.</p>
           ) : (
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               {students.map(student => {
                 const lessonKey = `${student.className}:${lessonDateKey}`;
                 const alreadyChecked = student.pokemonProgress?.lastHomeworkLessonKey === lessonKey;
@@ -57,7 +57,7 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                     onClick={() => {
                       if (!alreadyChecked) onToggle(student.id);
                     }}
-                    className={`flex min-w-0 items-center gap-3 rounded-brand-md border p-3 text-left transition-colors ${
+                    className={`flex min-w-0 cursor-pointer flex-col items-stretch gap-3 rounded-brand-md border p-3 text-left transition-colors ${
                       status === 'locked'
                         ? 'border-gray-200 bg-gray-50 opacity-70'
                         : status === 'missing'
@@ -67,19 +67,21 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                             : 'border-emerald-200 bg-emerald-50 hover:border-emerald-500'
                     }`}
                   >
-                    <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-black text-gray-900">{student.name}</p>
-                      <p className="truncate text-xs font-bold text-gray-500">{student.className}</p>
+                    <div className="flex min-w-0 items-center gap-3">
+                      <StudentAvatar student={student} className="h-12 w-12 shrink-0 rounded-2xl border border-white shadow-sm" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-black text-gray-900">{student.name}</p>
+                        <p className="truncate text-xs font-bold text-gray-500">{student.className}</p>
+                      </div>
                     </div>
                     {status === 'locked' ? (
                       <Chip tone="neutral">Đã chốt</Chip>
                     ) : (
-                      <div className="grid shrink-0 grid-cols-1 gap-1">
+                      <div className="grid grid-cols-3 gap-1">
                         {([
                           ['done', 'Hoàn thành', 'bg-brand-emerald text-white border-brand-emerald'],
                           ['not-yet', 'Chưa xong', 'bg-brand-gold text-brand-forest-deep border-brand-gold'],
-                          ['missing', 'Thiếu', 'bg-brand-danger text-white border-brand-danger']
+                          ['missing', 'Chưa làm', 'bg-brand-danger text-white border-brand-danger']
                         ] as const).map(([value, label, activeClass]) => (
                           <button
                             key={value}
@@ -88,7 +90,7 @@ export const HomeworkCheckModal: React.FC<HomeworkCheckModalProps> = ({
                               event.stopPropagation();
                               onSetStatus(student.id, value);
                             }}
-                            className={`rounded-full border px-3 py-1 text-xs font-bold transition-colors ${
+                            className={`whitespace-nowrap rounded-full border px-0.5 py-1.5 text-[11px] font-bold transition-colors ${
                               status === value ? activeClass : 'border-[#d9d6ca] bg-white text-brand-ink/60 hover:text-brand-ink'
                             }`}
                           >

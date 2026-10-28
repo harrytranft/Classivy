@@ -180,6 +180,8 @@ export interface Student {
   weeklyChest?: WeeklyChestProgress;
   adventureJournal?: AdventureJournalEntry[];
   supportPetInstanceId?: string;
+  /** Skills giữ lại sau Hồi sinh, gắn vào Pokémon kế tiếp (domain/revive.ts). */
+  retainedSkills?: { skills: string[]; skillUses: Record<string, number> };
   ludoTile?: number; // Position on board (0 to 49)
   ludoSteps?: number; // Total step count
   ludoMonsterStuck?: boolean; // Trapped by monster flag

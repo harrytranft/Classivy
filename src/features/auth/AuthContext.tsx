@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
 import { resolveDisplayName } from "../../domain/displayName";
+import { shouldShowAuthLoading } from "../../domain/authLoading";
 
 const FALLBACK_DISPLAY_NAME = "Trainer";
 const FALLBACK_AVATAR = "https://api.dicebear.com/7.x/bottts/svg";
@@ -95,13 +96,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const currentUidRef = useRef<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
 
     const syncSessionUser = async (usr: SupabaseUser | null) => {
       if (!isMounted) return;
-      setLoading(true);
+      const nextUid = usr?.id ?? null;
+      // Cùng một người dùng (quay lại tab, làm mới token): cập nhật âm thầm, không hiện loading.
+      if (shouldShowAuthLoading(currentUidRef.current, nextUid)) setLoading(true);
+      currentUidRef.current = nextUid;
 
       if (!usr) {
         setUser(null);
@@ -110,7 +115,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      setUser(toAuthUser(usr));
+      const nextUser = toAuthUser(usr);
+      // Giữ nguyên tham chiếu nếu không đổi, để các effect phụ thuộc `user` không chạy lại.
+      setUser((prev) => (prev && prev.uid === nextUser.uid && prev.email === nextUser.email && prev.role === nextUser.role ? prev : nextUser));
       setProfile(getMetadataProfile(usr));
 
       const syncedProfile = await ensureProfile(usr);

@@ -254,8 +254,8 @@ export const createLuckyWheelActions = (appState: AppState, app: AppActions): Lu
   const handleOpenLuckyWheel = () => {
     if (isLuckyWheelSpinning) return;
 
-    // Học sinh đã chọn ở trang lớp được tick sẵn; có thể tick thêm/bớt ngay trên trang vòng quay.
-    const candidates = students.filter(s => selectedStudentIds.includes(s.id) && !s.isAbsent && s.className === filterClass);
+    // Mặc định tick tất cả học sinh có đi học của lớp hiện tại; có thể tick bớt/thêm ngay trên trang vòng quay.
+    const candidates = students.filter(s => !s.isAbsent && s.className === filterClass);
     setLuckyWheelCandidateIds(candidates.map(s => s.id));
     const shuffledRewards = shuffleLuckyWheelRewards(luckyWheelRewards.length > 0 ? luckyWheelRewards : DEFAULT_LUCKY_WHEEL_REWARDS);
     setLuckyWheelMode('normal');

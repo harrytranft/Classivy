@@ -6,8 +6,8 @@ import { useApp } from '../../app/AppContext';
 
 export const UserModal: React.FC = () => {
   const {
-    confirmLogout, editingDisplayName, editingPhotoURL, logout, profileSaving,
-    setConfirmLogout, setEditingDisplayName, setEditingPhotoURL, setInitialCloudLoadComplete,
+    editingDisplayName, editingPhotoURL, logout, profileSaving,
+    setEditingDisplayName, setEditingPhotoURL, setInitialCloudLoadComplete,
     setProfileSaving, setShowUserModal, setSkills, setStudents,
     showUserModal, updateUserProfile, user
   } = useApp();
@@ -99,34 +99,18 @@ export const UserModal: React.FC = () => {
                       loading={profileSaving}
                     >Lưu thay đổi</Button>
 
-                    {!confirmLogout ? (
-                      <Button
-                        onClick={() => setConfirmLogout(true)}
-                        className="w-full" variant="secondary">
-                        Đăng xuất
-                      </Button>
-                    ) : (
-                      <div className="flex gap-2 w-full animate-in fade-in duration-200">
-                        <Button
-                          onClick={async () => {
-                            await logout();
-                            setShowUserModal(false);
-                            setConfirmLogout(false);
-                            // Clear states
-                            setStudents([]);
-                            setSkills(DEFAULT_SKILLS);
-                            setInitialCloudLoadComplete(false);
-                          }}
-                          className="flex-1" variant="danger">
-                          Xác nhận đăng xuất
-                        </Button>
-                        <Button
-                          onClick={() => setConfirmLogout(false)}
-                          className="flex-1" variant="secondary">
-                          Quay Lại
-                        </Button>
-                      </div>
-                    )}
+                    <Button
+                      onClick={async () => {
+                        await logout();
+                        setShowUserModal(false);
+                        // Clear states
+                        setStudents([]);
+                        setSkills(DEFAULT_SKILLS);
+                        setInitialCloudLoadComplete(false);
+                      }}
+                      className="w-full" variant="secondary">
+                      Đăng xuất
+                    </Button>
                   </div>
                 </>
               )}

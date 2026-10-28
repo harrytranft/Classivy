@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ArrowRight, School, UserPlus } from 'lucide-react';
 import { useApp } from '../../app/AppContext';
 import { Button, EmptyState } from '../../components/ui';
+import { resetClassSplash } from '../../app/SplashScreen';
 
 // Trang /class: chọn lớp để vào trang riêng của lớp đó.
 export const ClassPickerScreen: React.FC = () => {
   const { classOptions, students, setFilterClass, handleAddStudent } = useApp();
+  // Về trang chọn lớp thì lần vào lớp kế tiếp hiện lại trang loading.
+  useEffect(() => { resetClassSplash(); }, []);
 
   return (
     <div className="animate-in fade-in duration-300 space-y-8">

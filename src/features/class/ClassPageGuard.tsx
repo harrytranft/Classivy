@@ -2,11 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../../app/AppContext';
 import { SCREEN_PATHS } from '../../app/screenRoutes';
+import { ClassEntrySplash } from '../../app/SplashScreen';
 
 // Chặn trang lớp (và trang con của lớp) khi tên lớp trên đường dẫn không có học sinh nào.
 export const ClassPageGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { routeClassName, students, initialCloudLoadComplete } = useApp();
-  if (students.some(student => student.className === routeClassName)) return <>{children}</>;
+  if (students.some(student => student.className === routeClassName)) {
+    return <>{children}<ClassEntrySplash className={routeClassName} /></>;
+  }
   // Dữ liệu chưa tải xong thì chờ, tránh báo nhầm "không tìm thấy".
   if (!initialCloudLoadComplete && students.length === 0) return null;
   return (

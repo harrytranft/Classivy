@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 7 (đang làm, nhánh `claude/focused-lamport-rk8qji`; Phase 0-6 đã hoàn thành)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 9 (chờ Harry bảo bắt đầu; Phase 8 đã làm xong trên nhánh `claude/phase8-teacher-ui`, chờ Harry xem thử rồi gộp)
 
 ## Mục tiêu
 
@@ -48,6 +48,15 @@
 | D31 | Phase 7: hai máy cùng sửa một học sinh thì DB từ chối gói lỗi thời (số phiên bản), app không ghi đè, báo và tải lại | 2026-10-28 |
 | D22 | Giao diện học sinh responsive cả điện thoại, máy tính bảng và desktop (điện thoại trước rồi mở rộng). Áp dụng cho mọi màn học sinh ở Phase 5 và các Phase sau; mỗi màn có smoke test ở 390 / 820 / 1440px | 2026-10-28 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
+| D32 | Shop học sinh chỉ dùng ngoài giờ học; mỗi lần mua là một hàm DB kiểm tra số dư và ghi sổ điểm; app giáo viên tự gom (như D23) và dùng số phiên bản (D31) để không ghi đè. Có nút bật/tắt Shop theo lớp, mặc định TẮT | 2026-10-28 |
+| D33 | Học sinh được mua trứng, nở trứng, mua skill, đổi Pokémon đồng hành và support; đổi Pokémon không giới hạn; bấm skill để đọc công dụng | 2026-10-28 |
+| D34 | Nút Hồi sinh hiện trên thẻ học sinh khi điểm <= -20: điểm về 20, mất toàn bộ Pokémon, GIỮ trứng và skills; có hộp xác nhận riêng; ghi sổ điểm | 2026-10-28 |
+| D35 | Skill dùng ở tài khoản giáo viên, ngay sau Random hoặc khi cộng/trừ điểm (xem bảng dưới); giữ luật mỗi skill tối đa 2 lượt rồi mất; mọi lần dùng ghi lịch sử | 2026-10-28 |
+| D36 | Skill nhóm C (Nhân Đôi, Lá Chắn, Miễn Tử) chỉ hỏi khi học sinh thực sự có skill phù hợp, còn lại im lặng | 2026-10-28 |
+| D37 | Đồng Tâm Hiệp Lực: giáo viên bấm tay, không tự động, không cần dữ liệu "bạn cùng bàn" | 2026-10-28 |
+| D38 | Phím tắt phím đơn: A điểm danh, H homework, W vòng quay, R random, T hẹn giờ, / tìm kiếm, ? xem danh sách; Cài đặt có bảng liệt kê và cho đổi phím | 2026-10-28 |
+| D39 | Thứ tự giữ nguyên: Phase 8, 9, 10, 11 | 2026-10-28 |
+| D40 | Đăng xuất không cần xác nhận | 2026-10-28 |
 
 ## Tổng quan Phase
 
@@ -60,7 +69,11 @@
 | 4 | Giáo viên quản lý tài khoản học sinh | Hoàn thành (2026-10-28, PR #5) | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Hoàn thành (2026-10-28, PR #6); bổ sung responsive desktop (5.7) | **Có (migration)** |
 | 6 | Bạn bè, quà tặng, tặng điểm | Hoàn thành (2026-10-28, PR #8) | **Có (migration)** |
-| 7 | Hardening, kiểm thử bảo mật, ra mắt | Đang làm (nhánh `claude/focused-lamport-rk8qji`) | **Có (migration)** |
+| 7 | Hardening, kiểm thử bảo mật, ra mắt | Hoàn thành (2026-10-28, PR #9, đã gộp `main`) | **Có (migration)** |
+| 8 | Dọn giao diện giáo viên, sửa lỗi chớp loading, trang loading, Hồi sinh, phím tắt | Hoàn thành (2026-10-28), chờ Harry xem thử | Không |
+| 9 | Các trang "wow": Tặng quà, Vòng quay may mắn, Cá Ngựa | Kế hoạch | Không |
+| 10 | Cổng học sinh v2: nav, Profile, Shop học sinh | Kế hoạch | **Có (migration, cần Harry duyệt)** |
+| 11 | Skills tự động sau Random và khi cộng/trừ điểm | Kế hoạch | Không |
 
 Ghi chú: so với lộ trình đã trao đổi, Phase 2 (reskin + thuật ngữ) được tách riêng để các Phase tài khoản/xã hội dùng ngay hệ thiết kế mới; các Phase sau dời xuống một số.
 
@@ -240,7 +253,7 @@ src/
 
 ---
 
-## Phase 7 - Hardening và ra mắt (ĐANG LÀM, bắt đầu 2026-10-28)
+## Phase 7 - Hardening và ra mắt (HOÀN THÀNH 2026-10-28, PR #9)
 
 **Nhánh:** `claude/focused-lamport-rk8qji` (khởi động lại từ `main` sau PR #8). **Thiết kế:** `docs/adr/0005-phase-7-hardening.md` (D28-D31). **Runbook:** `docs/phase-7-runbook.md`.
 
@@ -250,9 +263,82 @@ src/
 - [x] 7.4 Kế hoạch triển khai từng lớp (pilot 1 lớp, bật xã hội sau 1 tuần, mở rộng 2-3 lớp/tuần), theo dõi hằng tuần, dừng khẩn cấp: `docs/phase-7-rollout.md`
 - [x] 7.5 Dọn dữ liệu cũ (D29): migration riêng `20261101110000_drop_legacy_data.sql`, có chốt dừng khi còn giáo viên chưa nâng cấp; ảnh mới nén ~100 KB (D30)
 - [x] 7.6 Harry chạy `docs/phase-7-runbook.md` bước 1 trên dev (2026-10-28): tất cả mục pass, không lỗi (gồm 1.3 thử hai máy, 1.5, 1.7 dọn dữ liệu cũ, 1.8 Advisors)
-- [ ] 7.7 Harry chạy bước 2 trên production (sao lưu, migration hardening, gộp nhánh - Harry yêu cầu gộp 2026-10-28, rồi migration dọn dữ liệu cũ), bắt đầu pilot theo `docs/phase-7-rollout.md`
+- [x] 7.7 (Harry xác nhận xong, đã gộp vào `main`) Harry chạy bước 2 trên production (sao lưu, migration hardening, gộp nhánh - Harry yêu cầu gộp 2026-10-28, rồi migration dọn dữ liệu cũ), bắt đầu pilot theo `docs/phase-7-rollout.md`
 
 **Bàn giao cho Harry:** migration `20261101100000_phase7_hardening.sql` (dev rồi production), gộp nhánh, rồi `20261101110000_drop_legacy_data.sql` **sau khi sao lưu**. **Chưa có gì được áp dụng trên Supabase thật.**
+
+---
+
+## Phase 8 - Dọn giao diện giáo viên và sửa lỗi (HOÀN THÀNH 2026-10-28, chờ Harry xem thử; không đụng Supabase)
+
+- [x] 8.1 Sửa chớp loading: `AuthContext.tsx` hiện bật `loading=true` mỗi lần `onAuthStateChange` (quay lại tab, làm mới token). Chỉ hiện loading ở lần mở app đầu và lúc vừa đăng nhập; cùng một người dùng thì cập nhật âm thầm. Có test.
+- [x] 8.2 Trang loading giống DictaLearn (đọc code DictaLearn trước); hiện sau đăng nhập (giáo viên và học sinh) và khi bấm vào từng lớp
+- [x] 8.3 Đăng xuất không confirm (D40)
+- [x] 8.4 Nav bar chỉ icon, hover hiện label; bấm "Class" khi đang trong lớp thì về `/class`
+- [x] 8.5 Trang Class: các nút điểm danh, homework, tài khoản học sinh, bạn bè, thêm trainer chỉ icon, cùng một dòng
+- [x] 8.6 Check đi học và Check homework cùng kích thước, 4 cột; đổi "Thiếu" thành "Chưa làm"
+- [x] 8.7 Nút Vòng quay mặc định chọn hết học sinh có đi học của lớp hiện tại
+- [x] 8.8 Modal hẹn giờ to hơn; logo Classivy to hơn
+- [x] 8.9 Hiệu ứng cộng/trừ điểm bay ngay trên thẻ học sinh
+- [x] 8.10 Nút Hồi sinh (D34): logic thuần trong `src/domain/` + test
+- [x] 8.11 Phím tắt (D38) + bảng trong Cài đặt
+- [x] 8.12 Kiểm chứng: `npm test`, `typecheck`, `smoke`, `build`; ảnh chụp giao diện
+
+**Kết quả (2026-10-28, nhánh `claude/phase8-teacher-ui`, chưa commit):**
+- 8.1 Nguyên nhân chớp loading: `AuthContext` bật `loading` mỗi lần Supabase phát lại tín hiệu (quay lại tab, làm mới token). Nay chỉ hiện loading khi đăng nhập/đổi người dùng (`src/domain/authLoading.ts`, có test); `user` giữ nguyên tham chiếu nếu không đổi.
+- 8.2 Trang loading: `src/app/SplashScreen.tsx` + CSS `.cl-splash` trong `src/index.css` + bản tĩnh trong `index.html`. Hiện sau đăng nhập (giáo viên và học sinh), tối thiểu 0,9 giây; vào từng lớp hiện 0,7 giây kèm tên lớp (các trang con cùng lớp không hiện lại). Tham chiếu: `docs/reference/dictalearn-splash.md`.
+- 8.4 "Lớp Học" trên nav luôn về `/class`. 8.7 Vòng quay mặc định chọn hết học sinh có đi học của lớp.
+- 8.9 Hiệu ứng điểm ở `src/components/PointsFx.tsx`: tự nhận mọi thay đổi điểm (Ban thưởng, Random, Vòng quay...), bỏ qua thay đổi > 200 điểm hoặc 1,2 giây đầu sau khi thẻ hiện.
+- 8.10 Hồi sinh: `src/domain/revive.ts`. Skills nằm trên Pokémon nên khi mất Pokémon, skills (và số lượt đã dùng) được lưu ở `student.retainedSkills` (trong `game_state` JSON, không cần migration) và tự gắn vào Pokémon kế tiếp em nhận. Ghi một dòng lịch sử cho sổ điểm.
+- 8.11 Phím tắt: `src/domain/shortcuts.ts`, bảng ở Cài đặt, phím `?` mở bảng nhắc. Phím lưu trên máy (localStorage `classivy_shortcuts_v1`), không đồng bộ đám mây.
+- Kiểm chứng tự động: typecheck 0 lỗi; vitest 209/209 (thêm 16 test: authLoading, revive, shortcuts); build đạt; smoke 23/23 sau khi cập nhật ảnh gốc có chủ đích (DOM đổi do nav/nút/modal mới; các file `*-cloud.json` chỉ đổi `upsertCount` +1 do nay chờ trang loading nên lần lưu khởi tạo Boss tách riêng). Thêm smoke test "Phase 8" (toolbar một dòng, hiệu ứng điểm, phím tắt, hồi sinh, nút Lớp Học, đăng xuất không confirm); sửa 2 test cũ cho đúng hành vi mới.
+- **Chưa kiểm chứng:** lỗi chớp loading trên trình duyệt thật (chỉ có unit test logic; Harry thử đổi tab qua lại); hiệu ứng chuyển động và trang loading bằng mắt trên màn chiếu lớp; phím tắt khi dùng bộ gõ tiếng Việt (Telex) - phím tắt bỏ qua khi đang gõ trong ô nhập.
+
+---
+
+## Phase 9 - Các trang "wow" (không đụng Supabase)
+
+Dùng skill `impeccable`, `ui-ux-pro-max`; mỗi trang là một trang đầy đủ, không giống modal.
+
+- [ ] 9.1 Trang Tặng quà/Tặng Pokémon: cảm giác Pokémon sống cùng học sinh (nở, xuất hiện, phản ứng, hiệu ứng ánh sáng và hạt), muốn nuôi và chăm sóc
+- [ ] 9.2 Vòng quay may mặc: dựng lại như một màn hình cuối giờ (vòng quay mượt, hồi hộp, hiệu ứng trúng thưởng, âm thanh)
+- [ ] 9.3 Cá Ngựa: phóng to bàn cờ, quân và chữ; bố cục chiếm đủ màn hình lớp
+- [ ] 9.4 Tôn trọng `prefers-reduced-motion`; smoke test ở nhiều kích thước
+
+## Phase 10 - Cổng học sinh v2 (CÓ migration, cần Harry duyệt trước khi chạy)
+
+- [ ] 10.1 Nav bar học sinh: Profile, Shop, Friends; avatar ở dưới cùng, bấm để đăng xuất; học sinh không đổi được avatar
+- [ ] 10.2 Thiết kế lại Profile (bớt phân mảnh) kèm phần skills đang có (bấm để đọc công dụng)
+- [ ] 10.3 Shop học sinh: mua trứng, nở trứng, đổi Pokémon đồng hành/support, mua skill (D32, D33)
+- [ ] 10.4 Migration: hàm DB cho từng thao tác mua (kiểm số dư, ghi `point_ledger`, tăng số phiên bản), cờ bật/tắt Shop theo lớp, test RLS/migration (`npm run test:db`)
+- [ ] 10.5 App giáo viên: gom thay đổi của học sinh khi mở/quay lại tab, tải lại khi gặp phiên bản lỗi thời; test tình huống dữ liệu cũ
+- [ ] 10.6 Responsive 390 / 820 / 1440px (D22)
+
+## Phase 11 - Skills tự động (không đổi schema)
+
+Mọi skill giữ 2 lượt, dùng xong ghi lịch sử, hết lượt tự mất. Thẻ học sinh sau Random hiện skill đang có và số lượt còn lại.
+
+| Nhóm | Skill | Hành vi |
+|---|---|---|
+| A. Tự chạy khi Random | Vòng Quay Tự Tin | Được gọi trúng thì tự +2 điểm, hiệu ứng, trừ 1 lượt |
+| B. Hộp hỏi sau Random (Dùng / Không) | Né Trực Diện | Random lại, loại em này |
+| | Đổi Đề Thần Tốc | Thẻ nhắc đổi câu hỏi dễ hơn |
+| | Mắt Thần Trí Tuệ | Thẻ nhắc cho 1 gợi ý |
+| | Trợ Thủ Tra Cứu | Tự bật đồng hồ 30 giây |
+| | Đồng Đội Hỗ Trợ | Chọn một bạn trong lớp từ danh sách |
+| C. Khi cộng/trừ điểm (chỉ hỏi nếu em có skill, D36) | Nhân Đôi | Hỏi, nếu Dùng thì nhân đôi điểm cộng |
+| | Lá Chắn Hộ Vệ | Lần trừ điểm đầu trong ngày: hỏi, nếu Dùng thì giảm 50% |
+| | Kim Bài Miễn Tử | Hỏi, nếu Dùng thì bỏ qua lần trừ điểm |
+| D. Dùng ngoài Random | Hộ Tống Đồng Đội | Nút "Cứu viện" trên thẻ em bị phạt, tối đa 3 điểm |
+| | Cướp Quyền Tranh Đoạt | Nút "Ưu tiên phát biểu": hiện tên em lên màn hình lớp, trừ 1 lượt |
+| | Đồng Tâm Hiệp Lực | Giáo viên bấm tay (D37): chọn hai em, cộng ké 1 điểm |
+
+- [ ] 11.1 Logic thuần `src/domain/skills` + test cho từng skill (điều kiện, lượt dùng, hết lượt)
+- [ ] 11.2 Hộp hỏi sau Random và khi cộng/trừ điểm
+- [ ] 11.3 Nút skill ngoài Random (nhóm D)
+- [ ] 11.4 Lịch sử dùng skill; kiểm chứng đầy đủ
+
+Loading DictaLearn: xem `docs/reference/dictalearn-splash.md` (logo + zoom/fade, thanh chạy, boot splash tĩnh trong `index.html` để không nháy; dùng chung cho đăng nhập và khi vào lớp).
 
 ---
 

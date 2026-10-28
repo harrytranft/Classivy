@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StudentCard } from '../../components/StudentCard';
+import { Button, Modal } from '../../components/ui';
+import { Student } from '../../types';
+import { REVIVE_POINTS, reviveStudent } from '../../domain/revive';
 import { ClassDock } from '../../components/ClassDock';
-import { Button } from '../../components/ui';
 import { BookCheck, ChevronDown, ClipboardCheck, KeyRound, HeartHandshake, Minus, Plus, Search, UserCheck, UserPlus, UserX } from 'lucide-react';
 import { useApp } from '../../app/AppContext';
 import { CLASS_SUB_PAGES, classPath } from '../../app/screenRoutes';
+
+// Nút chỉ có icon: tên hiện khi rê chuột (hoặc focus bàn phím), đọc được bằng trình đọc màn hình.
+const IconAction: React.FC<{ label: string; onClick: () => void; primary?: boolean; children: React.ReactNode }> = ({ label, onClick, primary, children }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    aria-label={label}
+    className={`group/ia relative grid h-11 w-11 shrink-0 place-items-center rounded-brand-md border transition-colors ${
+      primary
+        ? 'border-brand-forest bg-brand-forest text-brand-cream hover:bg-brand-forest-deep'
+        : 'border-brand-forest/25 bg-white text-brand-forest hover:border-brand-forest/50 hover:bg-brand-cream'
+    }`}
+  >
+    {children}
+    <span className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 -translate-x-1/2 whitespace-nowrap rounded-brand-sm bg-brand-forest-deep px-3 py-1.5 text-[13px] font-bold text-brand-cream opacity-0 shadow-lg transition-opacity group-hover/ia:opacity-100 group-focus-visible/ia:opacity-100">{label}</span>
+  </button>
+);
 
 export const ClassScreen: React.FC = () => {
   const {
@@ -15,14 +34,22 @@ export const ClassScreen: React.FC = () => {
     petSkills, searchQuery, selectedStudentIds, setActiveTab, setCurrentScreen,
     setEditingStudent, setFeedbackSource, setFilterClass,
     setIsMultiSelectMode, setSearchQuery, setSelectedStudentIds, setShowGroupModal,
-    setShowSkillModal, setShowTimerModal, toggleAttendance, navigateTo
+    setShowSkillModal, setShowTimerModal, setStudents, toggleAttendance, navigateTo
   } = useApp();
+  const [reviveTarget, setReviveTarget] = useState<Student | null>(null);
+  const confirmRevive = () => {
+    if (!reviveTarget) return;
+    const targetId = reviveTarget.id;
+    setStudents(prev => prev.map(student => student.id === targetId ? reviveStudent(student) : student));
+    setReviveTarget(null);
+  };
   return (
     <div className="animate-in fade-in duration-300">
-      <div className="mb-8 flex flex-wrap items-center gap-3 rounded-brand-lg border border-[#e6e2d4] bg-white p-3 shadow-[0_1px_2px_rgba(12,37,39,0.04)]">
-        <label className="relative flex min-w-[220px] flex-1 items-center">
+      <div className="mb-8 flex flex-nowrap items-center gap-3 rounded-brand-lg border border-[#e6e2d4] bg-white p-3 shadow-[0_1px_2px_rgba(12,37,39,0.04)]">
+        <label className="relative flex min-w-0 flex-1 items-center">
           <Search className="pointer-events-none absolute left-3.5 h-5 w-5 text-brand-ink/45" aria-hidden />
           <input
+            id="class-search"
             type="text"
             placeholder="Tìm kiếm trainer..."
             className="h-11 w-full rounded-brand-md border border-[#dcd8c8] bg-brand-cream pl-11 pr-3 text-[15px] text-brand-ink outline-none placeholder:text-brand-ink/65 focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/25"
@@ -46,27 +73,11 @@ export const ClassScreen: React.FC = () => {
           <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-forest" aria-hidden />
         </div>
 
-        <Button variant="secondary" icon={<ClipboardCheck className="h-[18px] w-[18px]" aria-hidden />} onClick={openAttendanceCheck}>
-          Check đi học
-        </Button>
-        <Button variant="secondary" icon={<BookCheck className="h-[18px] w-[18px]" aria-hidden />} onClick={openHomeworkCheck}>
-          Check Homework
-        </Button>
-        <Button
-          variant="secondary"
-          icon={<KeyRound className="h-[18px] w-[18px]" aria-hidden />}
-          onClick={() => navigateTo(classPath(filterClass, CLASS_SUB_PAGES.accounts))}
-        >
-          Tài khoản học sinh
-        </Button>
-        <Button
-          variant="secondary"
-          icon={<HeartHandshake className="h-[18px] w-[18px]" aria-hidden />}
-          onClick={() => navigateTo(classPath(filterClass, CLASS_SUB_PAGES.social))}
-        >
-          Bạn bè & quà
-        </Button>
-        <Button icon={<UserPlus className="h-[18px] w-[18px]" aria-hidden />} onClick={handleAddStudent}>Thêm Trainer</Button>
+        <IconAction label="Check đi học" onClick={openAttendanceCheck}><ClipboardCheck className="h-5 w-5" aria-hidden /></IconAction>
+        <IconAction label="Check Homework" onClick={openHomeworkCheck}><BookCheck className="h-5 w-5" aria-hidden /></IconAction>
+        <IconAction label="Tài khoản học sinh" onClick={() => navigateTo(classPath(filterClass, CLASS_SUB_PAGES.accounts))}><KeyRound className="h-5 w-5" aria-hidden /></IconAction>
+        <IconAction label="Bạn bè & quà" onClick={() => navigateTo(classPath(filterClass, CLASS_SUB_PAGES.social))}><HeartHandshake className="h-5 w-5" aria-hidden /></IconAction>
+        <IconAction label="Thêm Trainer" primary onClick={handleAddStudent}><UserPlus className="h-5 w-5" aria-hidden /></IconAction>
       </div>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -77,6 +88,7 @@ export const ClassScreen: React.FC = () => {
               petSkills={petSkills}
               isSelected={selectedStudentIds.includes(s.id)}
               showClassName={filterClass === 'Tất cả'}
+              onRevive={setReviveTarget}
               onSelect={(st) => {
                 if (isMultiSelectMode) {
                   setSelectedStudentIds(prev => prev.includes(st.id) ? prev.filter(id => id !== st.id) : [...prev, st.id]);
@@ -118,6 +130,16 @@ export const ClassScreen: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {reviveTarget && (
+        <Modal onClose={() => setReviveTarget(null)} title={`Hồi sinh ${reviveTarget.name}?`} subtitle="Thao tác này không hoàn tác được" icon="✚" size="md" zIndex="z-[200]" footer={<><Button variant="secondary" onClick={() => setReviveTarget(null)}>Huỷ</Button><Button variant="danger" onClick={confirmRevive}>Hồi sinh</Button></>}>
+          <ul className="list-disc space-y-2 pl-5 text-[15px] text-brand-ink">
+            <li>Hào Quang của {reviveTarget.name} về <b>{REVIVE_POINTS}</b> điểm.</li>
+            <li><b>Mất toàn bộ Pokémon</b> (đồng hành và support).</li>
+            <li>Giữ lại trứng và skills (skills gắn vào Pokémon kế tiếp em nhận).</li>
+          </ul>
+        </Modal>
+      )}
 
       <ClassDock
         onRandom={handleRandom}

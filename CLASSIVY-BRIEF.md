@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 0-6 hoàn thành; Phase 7 hardening/ra mắt đã viết xong trên nhánh `claude/focused-lamport-rk8qji`, chờ Harry chạy runbook)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 0-7 hoàn thành và gộp `main`; Phase 8 xong trên nhánh `claude/phase8-teacher-ui`, chờ Harry xem thử và gộp; kế tiếp Phase 9)
 
 ## 1. Sản phẩm
 
@@ -49,7 +49,9 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - **Phase 4 (hoàn thành 2026-10-28, PR #5 đã gộp `main`):** Harry chạy runbook trên dev và production, xác nhận "ok hết" (gồm thử học sinh trên production và 3 mục "ghi lại"). Nội dung: đã viết migration `20261029100000_phase4_student_accounts.sql` (+ hoàn tác), Edge Function `student-accounts` (tạo/hàng loạt, đặt lại mật khẩu, khoá/mở, thu hồi), trang `/class/<lớp>/tai-khoan` (lọc, xác nhận, thẻ đăng nhập in được, nhật ký), ô đăng nhập nhận tên đăng nhập, cổng học sinh tối thiểu (đổi mật khẩu lần đầu; tài khoản học sinh không tải dữ liệu giáo viên). Kiểm chứng tự động đạt (typecheck, 172 test, test:db 2 kiểu dự án, smoke 11/11, build). 
 - **Phase 5 (hoàn thành 2026-10-28, PR #6 đã gộp `main`; Harry xác nhận đã chạy migration và thử ổn):** migration `20261030100000_phase5_student_portal.sql` (+ hoàn tác) thêm hàm `get_my_student_profile()` (security definer: chỉ dữ liệu của người gọi, danh sách khoá cho phép, trứng không lộ Pokémon sắp nở, 30 dòng lịch sử, tài khoản khoá chỉ nhận `locked`). Giao diện hồ sơ học sinh điện thoại trước trong `src/features/studentPortal/` (Hào Quang, Trainer Level, Pokémon, trứng, bộ sưu tập, huy hiệu, lịch sử, nút Cập nhật; màn khoá/chưa gắn/lỗi). Kiểm chứng tự động đạt (typecheck, 182 test, test:db 2 kiểu dự án, smoke 13/13, build). Bổ sung sau nghiệm thu (task 5.7, PR #7 đã gộp): bố cục responsive máy tính bảng/desktop.
 - **Phase 6 (hoàn thành 2026-10-28, PR #8):** migration `20261031100000_phase6_social.sql` (+ hoàn tác): cột cài đặt ở `classes`, bảng `student_friendships`, `student_gifts` (bất biến), `student_gift_revocations`, `student_gift_reports`, hàm học sinh (security definer) và `teacher_pending_gift_adjustments()`. App: `src/domain/social.ts`, `src/app/providers/gameData/useGiftCollector.ts` (gom hàng chờ), cổng học sinh `src/features/studentPortal/social/`, trang giáo viên `src/features/social/` (`/class/<lớp>/ban-be`). Harry thử trên dev ổn và xác nhận hoàn thành.
-- **Phase 7 (dev pass toàn bộ bước 1 ngày 2026-10-28; gộp `main` theo yêu cầu Harry; production chưa xác nhận):** rà soát `docs/security-review-phase7.md`; migration `20261101100000_phase7_hardening.sql` (`is_teacher()`, `students.revision`, `save_teacher_changes_v2`, thu quyền thừa) và `20261101110000_drop_legacy_data.sql` (chạy sau sao lưu); app gửi số phiên bản, banner `SyncConflictBanner` khi bị từ chối; `npm run test:load` (`scripts/test-load.sh`, `supabase/load/`); hướng dẫn `docs/huong-dan/`; kế hoạch triển khai `docs/phase-7-rollout.md`. **Chưa chạy trên Supabase thật.**
+- **Phase 7 (hoàn thành 2026-10-28, PR #9, Harry xác nhận xong và đã gộp `main`):** rà soát `docs/security-review-phase7.md`; migration `20261101100000_phase7_hardening.sql` (`is_teacher()`, `students.revision`, `save_teacher_changes_v2`, thu quyền thừa) và `20261101110000_drop_legacy_data.sql` (chạy sau sao lưu); app gửi số phiên bản, banner `SyncConflictBanner` khi bị từ chối; `npm run test:load` (`scripts/test-load.sh`, `supabase/load/`); hướng dẫn `docs/huong-dan/`; kế hoạch triển khai `docs/phase-7-rollout.md`.
+- **Phase 8 (xong 2026-10-28, nhánh `claude/phase8-teacher-ui`, chưa commit):** sửa chớp loading (nguyên nhân: `AuthContext` bật loading mỗi lần Supabase phát lại tín hiệu), trang loading kiểu DictaLearn (`src/app/SplashScreen.tsx`), nav chỉ icon, nút icon một dòng ở trang Class, Check đi học/Homework 4 cột cùng cỡ ("Thiếu" -> "Chưa làm"), vòng quay mặc định chọn hết em có mặt, hẹn giờ to hơn, hiệu ứng điểm trên thẻ, Hồi sinh (`src/domain/revive.ts`; skills giữ ở `retainedSkills`), phím tắt (Cài đặt + phím ?), đăng xuất không confirm. Kiểm chứng: typecheck, 209 test, build, smoke 23/23. Chưa kiểm chứng: lỗi chớp loading trên trình duyệt thật.
+- **Kế hoạch Phase 8-11 (Harry chốt 2026-10-28, quyết định D32-D40 trong `PLAN.md`):** P8 dọn giao diện giáo viên (sửa chớp loading do `AuthContext` bật `loading` mỗi lần `onAuthStateChange`; trang loading như DictaLearn, xem `docs/reference/dictalearn-splash.md`; nav icon-only; Hồi sinh; phím tắt), P9 trang Tặng quà/Vòng quay/Cá Ngựa, P10 cổng học sinh v2 + Shop (có migration), P11 skills tự động (12 skill, luật 2 lượt giữ nguyên).
 
 ## 5. Bản đồ repo (hiện tại)
 
@@ -84,6 +86,6 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-1. Harry chạy `docs/phase-7-runbook.md` bước 2 trên production: sao lưu, migration hardening (ngay khi bản gộp lên Vercel), rồi migration dọn dữ liệu cũ; Advisors.
-2. Bắt đầu pilot một lớp theo `docs/phase-7-rollout.md`.
-3. Sau pilot: nghiệm thu Phase 7 (= ra mắt). Việc có thể làm sau: bỏ hàm cũ `save_teacher_changes` khi mọi máy dùng bản mới; tên hiển thị riêng cho bạn cùng lớp (nếu Harry muốn).
+1. Harry xem thử Phase 8 (đặc biệt: đổi tab qua lại có còn chớp loading không), rồi cho commit/gộp nhánh `claude/phase8-teacher-ui`.
+2. Bắt đầu Phase 9 (trang Tặng quà, Vòng quay, Cá Ngựa) khi Harry yêu cầu.
+3. Phase 10 cần Harry duyệt migration trước khi chạy trên Supabase thật.
