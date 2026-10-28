@@ -9,6 +9,47 @@
 begin;
 
 -- ---------------------------------------------------------------------------
+-- 0. Dọn đường: dự án Classivy gốc còn bảng public.students cũ của Imperial School (cột class_name, pet,
+--    history...; app không dùng). KHÔNG xoá: đổi tên thành students_imperial_old (đổi tên cả chỉ mục để
+--    không trùng tên với bảng mới), bật RLS không kèm policy và thu quyền API => không ai đọc/ghi qua app được.
+--    Bảng classes/point_ledger có sẵn mà sai cấu trúc thì dừng với thông báo rõ ràng, không đoán.
+-- ---------------------------------------------------------------------------
+
+do $$
+declare
+  idx record;
+begin
+  if to_regclass('public.students') is not null
+     and not exists (select 1 from information_schema.columns
+                     where table_schema = 'public' and table_name = 'students' and column_name = 'client_id') then
+    if to_regclass('public.students_imperial_old') is not null then
+      raise exception 'Đã có cả public.students (cấu trúc cũ) và public.students_imperial_old. Dừng lại, báo Claude.';
+    end if;
+    alter table public.students rename to students_imperial_old;
+    for idx in
+      select i.relname from pg_index x join pg_class i on i.oid = x.indexrelid
+      where x.indrelid = 'public.students_imperial_old'::regclass
+    loop
+      execute format('alter index public.%I rename to %I', idx.relname, 'imperial_old_' || idx.relname);
+    end loop;
+    alter table public.students_imperial_old enable row level security;
+    revoke all on public.students_imperial_old from anon, authenticated;
+    raise notice 'Đã đổi tên bảng students cũ thành students_imperial_old (giữ nguyên dữ liệu).';
+  end if;
+
+  if to_regclass('public.classes') is not null
+     and not exists (select 1 from information_schema.columns
+                     where table_schema = 'public' and table_name = 'classes' and column_name = 'boss_state') then
+    raise exception 'Đã có bảng public.classes nhưng khác cấu trúc Phase 3. Dừng lại, báo Claude.';
+  end if;
+  if to_regclass('public.point_ledger') is not null
+     and not exists (select 1 from information_schema.columns
+                     where table_schema = 'public' and table_name = 'point_ledger' and column_name = 'client_event_id') then
+    raise exception 'Đã có bảng public.point_ledger nhưng khác cấu trúc Phase 3. Dừng lại, báo Claude.';
+  end if;
+end $$;
+
+-- ---------------------------------------------------------------------------
 -- 1. SQL chờ từ Phase 2 (docs/phase-3-pending-sql.md)
 -- ---------------------------------------------------------------------------
 

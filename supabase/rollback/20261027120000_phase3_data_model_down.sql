@@ -13,6 +13,22 @@ drop table if exists public.students;
 drop table if exists public.classes;
 drop function if exists public.set_updated_at();
 
+-- Trả lại tên cũ cho bảng students của Imperial School nếu migration đã đổi tên nó.
+do $$
+declare
+  idx record;
+begin
+  if to_regclass('public.students_imperial_old') is not null and to_regclass('public.students') is null then
+    for idx in
+      select i.relname from pg_index x join pg_class i on i.oid = x.indexrelid
+      where x.indrelid = 'public.students_imperial_old'::regclass and i.relname like 'imperial_old_%'
+    loop
+      execute format('alter index public.%I rename to %I', idx.relname, substr(idx.relname, length('imperial_old_') + 1));
+    end loop;
+    alter table public.students_imperial_old rename to students;
+  end if;
+end $$;
+
 alter table public.user_settings drop constraint if exists user_settings_data_model_version_check;
 alter table public.user_settings drop column if exists data_model_version;
 

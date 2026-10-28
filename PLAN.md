@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (dev `classivy-dev` đã chạy ổn 2026-10-28; tiếp theo: PR gộp `main` rồi chạy migration production theo runbook bước 2)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 4 (chưa bắt đầu; Phase 3 đã nghiệm thu 2026-10-28)
 
 ## Mục tiêu
 
@@ -28,6 +28,7 @@
 | D10 | Bỏ hẳn trang Plaza và phần thời tiết (Weather Plaza trong Cài đặt). Thanh điều hướng màu xanh như nền logo, bo hai góc phải; nút Tặng quà màu trắng; dock phóng to kiểu macOS | 2026-10-27 |
 | D11 | Màn đăng nhập chỉ còn email + mật khẩu cho tài khoản đã có; bỏ nút "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (code nền giữ lại cho Phase 4). Harry xác nhận 2026-10-27 | 2026-10-27 |
 | D12 | Phase 3 theo ADR 0001: mô hình lai (bảng `classes`, `students`, `point_ledger`; dữ liệu game JSON trong `students.game_state`), một học sinh một lớp, **xoá học sinh là xoá hẳn** (kể cả sổ điểm), sổ điểm giữ toàn bộ lịch sử, ảnh đại diện tạm lưu DB (nén <= ~200 KB), chuyển dữ liệu trong app do giáo viên bấm, có dự án Supabase dev riêng | 2026-10-27 |
+| D13 | Không thêm vai trò phụ huynh. Đổi tên các hồ sơ giáo viên còn mang tên mặc định cũ "Học sĩ triều đình" thành "Trainer" | 2026-10-28 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -37,7 +38,7 @@
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
-| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Dev chạy ổn (2026-10-28), chờ production | **Có (migration)** |
+| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Hoàn thành (2026-10-28) | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
@@ -152,7 +153,7 @@ src/
 
 ---
 
-## Phase 3 - Mô hình dữ liệu mới + RLS (CODE XONG 2026-10-27, chờ chạy trên Supabase dev)
+## Phase 3 - Mô hình dữ liệu mới + RLS (HOÀN THÀNH 2026-10-28)
 
 **Mục tiêu:** học sinh, lớp, điểm là dữ liệu bảng thật, có RLS chặt, dữ liệu cũ được chuyển sang mà không mất.
 
@@ -164,7 +165,7 @@ src/
 - [x] 3.3 Chuyển dữ liệu trong app: `src/domain/legacyImport.ts` (chạy thử, kiểm tra lỗi chặn/lưu ý, số dư đầu kỳ, đối chiếu từng học sinh, chạy lại được sau khi chuyển dở) + hộp thoại `src/features/dataUpgrade/DataUpgradeModal.tsx` (tải sao lưu JSON trước; lỗi thì giữ cách lưu cũ) (2026-10-27)
 - [x] 3.4 Lớp truy cập dữ liệu: `src/app/providers/gameData/cloudStore.ts` chọn cách lưu cũ/mới theo `data_model_version`; bảng mới chỉ gửi phần thay đổi (`src/domain/cloudModel.ts`, có test), lưu lần lượt không chồng nhau; sao lưu/khôi phục/nhập JSON đi cùng đường; nén ảnh đại diện quá lớn (`src/lib/imageCompression.ts`). App không có chế độ khách nên không cần giữ (2026-10-27)
 - [x] 3.5 Harry chạy trên **dự án Supabase dev** (`classivy-dev`) theo `docs/phase-3-runbook.md` bước 1: Harry xác nhận "chạy ổn" 2026-10-28 (sau khi sửa lỗi cấp quyền ở dự án mới, xem Nhật ký)
-- [x] 3.6 Checklist triển khai + sao lưu + hoàn tác: `docs/phase-3-runbook.md` bước 2 và "Nếu có sự cố" (2026-10-27). Chạy production chờ 3.5
+- [x] 3.6 Checklist triển khai + sao lưu + hoàn tác: `docs/phase-3-runbook.md` bước 2 và "Nếu có sự cố". Harry chạy migration trên production (sau bản sửa bảng `students` cũ), nâng cấp dữ liệu, xác nhận "mọi thứ đã ổn" 2026-10-28
 
 **Bàn giao cho Harry:** sao lưu dữ liệu, chạy migration trên dev rồi production theo hướng dẫn; xác nhận từng bước trước khi coi là đã áp dụng.
 
@@ -210,7 +211,8 @@ src/
 
 ## Đề xuất phát sinh (chờ Harry duyệt)
 
-- Có cần vai trò phụ huynh (xem điểm con) không? Hiện ngoài phạm vi.
+- ~~Có cần vai trò phụ huynh (xem điểm con) không?~~ → Harry: **không** (D13, 2026-10-28).
+- ~~Đổi tên hồ sơ còn mang tên mặc định cũ "Học sĩ triều đình" thành "Trainer"~~ → Harry duyệt (D13); **đã viết** `supabase/migrations/20261028130000_rename_legacy_display_names.sql` (chỉ đổi tên mặc định cũ, tên tự đặt giữ nguyên; có test) + app coi tên cũ trong thông tin đăng ký là chưa đặt tên (`src/domain/displayName.ts`, có test) để đăng nhập lại không ghi tên cũ trở lại. **Chờ Harry chạy trên production.**
 - ~~**[Lỗi game]** Cá Ngựa: bị Quái vật giữ, lắc 6 vẫn bị kẹt~~ → Harry duyệt sửa, **đã sửa 2026-10-26** (`checkMonsterEscape` trong `src/domain/ludo.ts`, có test).
 - ~~**[Lỗi có sẵn]** Danh sách cấp bậc rỗng làm trắng trang~~ → giải quyết bằng việc bỏ hệ cấp bậc (D7, task 2.0).
 - ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
@@ -218,6 +220,8 @@ src/
 - ~~**[Giao diện, gộp vào 2.4]** Thông báo "Pokémon phản ứng" phủ một lớp trong suốt lên toàn màn hình: bấm vào bất kỳ đâu (kể cả nút "Lắc xí ngầu" ở Cá Ngựa) chỉ để tắt thông báo, phải bấm lần nữa. Phát hiện khi smoke test chạy với CSS thật. Đề xuất khi reskin: thông báo không chặn thao tác bên dưới.~~ → **đã sửa** (toast nổi ở đầu trang, không phủ lớp chặn).
 - ~~**[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt"~~ → **đã bỏ hiệu ứng làm mờ** khi reskin thẻ học sinh (2026-10-27).
 - ~~**[Truy cập, gộp vào 2.4]** Thẻ học sinh bấm được bằng chuột nhưng chưa vào được bằng phím Tab (là `div` có `onClick`). Đề xuất đổi sang nút/đường dẫn thật khi rà `accessibility-review`.~~ → **đã sửa 2026-10-27**: thẻ có `role="button"`, `tabIndex=0`, Enter/Space để mở.
+
+- ~~**[Bảo mật]** Dự án Supabase gốc còn hai bảng cũ thời Imperial School: `app_state`, `users` (0 dòng, app không dùng), có thể chưa bật RLS.~~ → Harry duyệt 2026-10-28; **đã viết** `supabase/migrations/20261028120000_lock_legacy_tables.sql` (bật RLS không policy + thu quyền API, không xoá; có test và file hoàn tác). **Harry đã chạy trên production, kiểm tra `relrowsecurity = true` cho cả hai bảng (2026-10-28).** Xoá hẳn hai bảng (và `students_imperial_old`) để Phase 7 nếu Harry muốn.
 
 ## Quy trình sau mỗi Phase
 
@@ -328,3 +332,6 @@ src/
 
 **Phase 3 - 2026-10-28** (Harry chạy runbook bước 1 trên `classivy-dev`): bước 1.4c lỗi `permission denied for table profiles/user_settings` (42501). Nguyên nhân: dự án Supabase mới tạo không tự cấp quyền bảng cho vai trò `authenticated` như dự án cũ; `supabase-schema.sql` dựa vào việc tự cấp đó. Sửa: thêm `grant` rõ ràng vào `supabase-schema.sql` và migration Phase 3; `npm run test:db` giờ chạy cả hai kiểu dự án (cũ/mới), bỏ phần grant thì kiểu "mới" báo đúng lỗi này. Dữ liệu thật không bị ảnh hưởng (dự án gốc không đụng tới).
 - 2026-10-28: Harry xác nhận runbook bước 1 trên `classivy-dev` chạy ổn (migration, nâng cấp, dùng thử). Đây là kiểm chứng thủ công trên dev; production chưa chạy.
+- 2026-10-28: chạy migration trên production lỗi `42703: column "class_id" does not exist`, migration tự huỷ, không thay đổi gì (Harry kiểm tra: `data_model_version` chưa có). Nguyên nhân: dự án gốc còn bảng `public.students` cũ của Imperial School (0 dòng, cột `class_name`, `pet`...); `create table if not exists` bỏ qua nên bước tạo chỉ mục `class_id` lỗi. Sửa: migration thêm bước 0 đổi tên bảng cũ thành `students_imperial_old` (giữ dữ liệu, đổi tên chỉ mục, bật RLS, thu quyền API), dừng với thông báo rõ nếu `classes`/`point_ledger` có sẵn mà sai cấu trúc; file hoàn tác trả lại tên cũ. `npm run test:db` giờ mô phỏng bảng cũ này; bỏ bước 0 thì test báo đúng lỗi của Harry.
+- 2026-10-28: Harry chạy migration Phase 3 (bản có bước 0) trên production, nâng cấp dữ liệu, xác nhận ổn -> **nghiệm thu Phase 3** (kiểm chứng thủ công trên production do Harry thực hiện). PR #3 đã gộp trước bản sửa bước 0 nên bản sửa + migration khoá `app_state`/`users` đi qua PR tiếp theo (nhánh `claude/phase3-followup`). `npm run test:db` (2 kiểu dự án, có mô phỏng bảng cũ của dự án gốc) đạt; bỏ phần khoá thì test đỏ đúng chỗ.
+- 2026-10-28: Harry chạy `20261028120000_lock_legacy_tables.sql` trên production, câu kiểm tra trả `true` cho `app_state` và `users`. Thêm migration đổi tên hồ sơ mặc định cũ + `resolveDisplayName`: `npm test` 130/130, `npm run test:db` đạt (2 kiểu dự án), build đạt, `npm run smoke` 8/8.

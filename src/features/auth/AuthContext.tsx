@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { isSupabaseConfigured, supabase } from "../../lib/supabaseClient";
+import { resolveDisplayName } from "../../domain/displayName";
 
 const FALLBACK_DISPLAY_NAME = "Trainer";
 const FALLBACK_AVATAR = "https://api.dicebear.com/7.x/bottts/svg";
@@ -35,7 +36,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const getMetadataProfile = (usr: SupabaseUser): UserProfile => ({
-  displayName: usr.user_metadata?.display_name || usr.user_metadata?.full_name || FALLBACK_DISPLAY_NAME,
+  displayName: resolveDisplayName(usr.user_metadata?.display_name, usr.user_metadata?.full_name),
   photoURL: usr.user_metadata?.photo_url || usr.user_metadata?.avatar_url || FALLBACK_AVATAR,
   email: usr.email || ""
 });
