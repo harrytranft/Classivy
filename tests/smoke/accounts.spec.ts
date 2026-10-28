@@ -275,6 +275,28 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   expect(mock.errors).toEqual([]);
 });
 
+// D22: hồ sơ học sinh responsive. Điện thoại một cột (test trên), máy tính bảng và desktop hai cột.
+for (const viewport of [{ name: 'tablet', width: 820, height: 1180 }, { name: 'desktop', width: 1440, height: 900 }]) {
+  test(`học sinh: hồ sơ hai cột trên ${viewport.name}`, async ({ page }) => {
+    const mock = await setup(page, 'student');
+    await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto('/');
+    await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
+
+    const identity = await page.locator('[data-portal-column="identity"]').boundingBox();
+    const activity = await page.locator('[data-portal-column="activity"]').boundingBox();
+    expect(identity && activity).toBeTruthy();
+    // Hai cột nằm cạnh nhau (cùng hàng trên), cột hoạt động ở bên phải.
+    expect(activity!.x).toBeGreaterThan(identity!.x + identity!.width - 1);
+    expect(Math.abs(activity!.y - identity!.y)).toBeLessThan(2);
+    if (viewport.name === 'desktop') expect(activity!.width).toBeGreaterThan(identity!.width);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: `test-results/screens/52-student-profile-${viewport.name}.png`, fullPage: true });
+    expect(mock.errors).toEqual([]);
+  });
+}
+
 test('học sinh: lỗi tải hồ sơ hiện thông báo thân thiện và thử lại được', async ({ page }) => {
   const mock = await setup(page, 'student');
   await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
