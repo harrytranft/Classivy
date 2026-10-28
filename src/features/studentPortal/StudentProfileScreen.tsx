@@ -4,10 +4,11 @@ import { Button, ShieldScore } from '../../components/ui';
 import { getStudentInitials } from '../../components/StudentAvatar';
 import { StudentPortalProfile } from '../../domain/studentPortal';
 import { BadgeList, CollectionGrid, CompanionCard, HistoryList, TrainerCard } from './StudentProfileSections';
+import { StudentSocialPanel } from './social/StudentSocialPanel';
 
 // Hồ sơ của chính học sinh (Phase 5, chỉ xem). Không có vị trí xếp hạng trong lớp (Harry chốt 2026-10-28).
 // Responsive (D22): điện thoại một cột; máy tính bảng (md) hai cột đều; desktop (lg) cột trái cố định
-// (danh tính, Trainer Level, Pokémon) + cột phải rộng (bộ sưu tập, huy hiệu, lịch sử).
+// (danh tính, Trainer Level, Pokémon) + cột phải rộng (bạn bè và quà - Phase 6, bộ sưu tập, huy hiệu, lịch sử).
 
 interface StudentProfileScreenProps {
   profile: StudentPortalProfile;
@@ -18,9 +19,12 @@ interface StudentProfileScreenProps {
 
 export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ profile, refreshing, onRefresh, onLogout }) => {
   const [refreshFailed, setRefreshFailed] = useState(false);
+  // Tăng mỗi lần bấm "Cập nhật" để khu bạn bè + quà tải lại cùng hồ sơ.
+  const [refreshSignal, setRefreshSignal] = useState(0);
 
   const refresh = async () => {
     setRefreshFailed(false);
+    setRefreshSignal(n => n + 1);
     setRefreshFailed(!(await onRefresh()));
   };
 
@@ -68,6 +72,7 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
             <CompanionCard companion={profile.companion} egg={profile.egg} />
           </div>
           <div data-portal-column="activity" className="space-y-4">
+            <StudentSocialPanel refreshSignal={refreshSignal} />
             <CollectionGrid pets={profile.collection} supportPetInstanceId={profile.supportPetInstanceId} />
             <BadgeList badges={profile.badges} />
             <HistoryList items={profile.history} />

@@ -30,6 +30,12 @@ interface Mock {
   errors: string[];
   /** Kết quả hàm get_my_student_profile() (Phase 5); test đổi được giữa chừng. */
   profile: unknown;
+  /** Phase 6: kết quả student_social_overview(), các lần gọi hàm xã hội (tên + tham số), lỗi giả cho lần tặng quà. */
+  social: unknown;
+  socialCalls: Array<{ fn: string; body: Record<string, unknown> }>;
+  giftError: string | null;
+  /** Phase 6, giáo viên: các lần ghi bảng (PATCH classes, POST thu hồi, DELETE bạn bè). */
+  writes: Array<{ method: string; path: string; body: unknown }>;
 }
 
 const PROFILE_PAYLOAD = {
@@ -60,8 +66,30 @@ const AUDIT_ROWS = [
   { id: 1, action: 'create_account', student_name: 'Trần Bảo', class_name: '6A', detail: { username: 'bao123' }, created_at: '2026-10-27T01:00:00Z' }
 ];
 
+const CLASS_SOCIAL_ROW = { id: 'class-6a', social_enabled: false, gift_weekly_limit: 5, gift_per_friend_weekly_limit: 2 };
+const GIFT_ROWS = [
+  { id: 1, sender_id: ACCOUNT_ROWS[0].id, recipient_id: ACCOUNT_ROWS[1].id, amount: 2, sticker_id: 'star', message_id: 'thanks_help', created_at: '2026-10-28T01:00:00Z' },
+  { id: 2, sender_id: ACCOUNT_ROWS[1].id, recipient_id: ACCOUNT_ROWS[0].id, amount: 2, sticker_id: 'heart', message_id: null, created_at: '2026-10-27T01:00:00Z' }
+];
+
+const SOCIAL_PAYLOAD = {
+  enabled: true,
+  me: 'me',
+  wallet: { week_key: '2026-W44', limit: 5, per_friend_limit: 2, used: 1 },
+  friends: [{ id: 'f-bao', name: 'Trần Bảo', pet_dex_id: 1, given_this_week: 1 }],
+  incoming: [{ request_id: 31, id: 'f-chi', name: 'Lê Chi' }],
+  outgoing: [{ request_id: 32, id: 'f-dung', name: 'Phạm Dũng' }],
+  classmates: [{ id: 'f-an', name: 'Hoàng An' }],
+  received: [
+    { id: 11, name: 'Trần Bảo', amount: 2, sticker_id: 'trophy', message_id: 'great_answer', created_at: '2026-10-28T01:00:00Z', state: 'pending', reported: false },
+    { id: 12, name: 'Lê Chi', amount: 0, sticker_id: 'heart', message_id: null, created_at: '2026-10-27T01:00:00Z', state: 'applied', reported: false }
+  ],
+  sent: [{ id: 13, name: 'Trần Bảo', amount: 1, sticker_id: 'clap', message_id: null, created_at: '2026-10-26T01:00:00Z', state: 'applied' }]
+};
+
 async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
-  const mock: Mock = { functionCalls: [], restPaths: [], rpcCalls: [], passwordUpdates: 0, errors: [], profile: PROFILE_PAYLOAD };
+  const mock: Mock = { functionCalls: [], restPaths: [], rpcCalls: [], passwordUpdates: 0, errors: [], profile: PROFILE_PAYLOAD,
+    social: { enabled: false }, socialCalls: [], giftError: null, writes: [] };
   let firstLoginPending = true;
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ key, value }) => { window.localStorage.setItem(key, JSON.stringify(value)); },
@@ -90,6 +118,24 @@ async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
       return;
     }
     if (p === '/rest/v1/rpc/student_first_login_pending') { mock.rpcCalls.push('pending'); await json(route, firstLoginPending); return; }
+    if (p === '/rest/v1/rpc/student_social_overview') { await json(route, mock.social); return; }
+    const socialFn = p.match(/^\/rest\/v1\/rpc\/(student_send_friend_request|student_respond_friend_request|student_remove_friend|student_send_gift|student_report_gift)$/);
+    if (socialFn) {
+      mock.socialCalls.push({ fn: socialFn[1], body: request.postDataJSON() ?? {} });
+      if (socialFn[1] === 'student_send_gift' && mock.giftError) { await json(route, { code: 'P0001', message: mock.giftError, details: null, hint: null }, 400); return; }
+      await json(route, socialFn[1] === 'student_send_gift' ? { gift_id: 99 } : null);
+      return;
+    }
+    if (/\/rest\/v1\/(classes|student_gift_revocations|student_friendships)$/.test(p) && request.method() !== 'GET') {
+      mock.writes.push({ method: request.method(), path: p.replace('/rest/v1/', ''), body: request.postDataJSON() });
+      await route.fulfill({ status: request.method() === 'POST' ? 201 : 204, body: '' });
+      return;
+    }
+    if (p.endsWith('/classes') && url.searchParams.get('select')?.includes('social_enabled')) { await json(route, CLASS_SOCIAL_ROW); return; }
+    if (p.endsWith('/student_gifts')) { await json(route, GIFT_ROWS); return; }
+    if (p.endsWith('/student_gift_revocations')) { await json(route, [{ gift_id: 2, reason: 'đổi qua lại', revoked_at: '2026-10-28T02:00:00Z' }]); return; }
+    if (p.endsWith('/student_gift_reports')) { await json(route, [{ gift_id: 1 }]); return; }
+    if (p.endsWith('/student_friendships')) { await json(route, [{ id: 5, requester_id: ACCOUNT_ROWS[0].id, addressee_id: ACCOUNT_ROWS[1].id, status: 'accepted', created_at: '2026-10-27T01:00:00Z' }]); return; }
     if (p === '/rest/v1/rpc/get_my_student_profile') { mock.rpcCalls.push('profile'); await json(route, mock.profile); return; }
     if (p === '/rest/v1/rpc/complete_first_login') { mock.rpcCalls.push('complete'); firstLoginPending = false; await route.fulfill({ status: 204, body: '' }); return; }
 
@@ -296,6 +342,116 @@ for (const viewport of [{ name: 'tablet', width: 820, height: 1180 }, { name: 'd
     expect(mock.errors).toEqual([]);
   });
 }
+
+// Phase 6: bạn bè + quà trên cổng học sinh (D24-D26), ở cả 3 khổ màn hình (D22).
+for (const viewport of [{ name: 'mobile', width: 390, height: 844 }, { name: 'tablet', width: 820, height: 1180 }, { name: 'desktop', width: 1440, height: 900 }]) {
+  test(`học sinh: bạn bè và quà tặng (${viewport.name})`, async ({ page }) => {
+    const mock = await setup(page, 'student');
+    mock.social = SOCIAL_PAYLOAD;
+    await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto('/');
+
+    await expect(page.getByRole('heading', { name: 'Ví điểm tặng' })).toBeVisible();
+    await expect(page.getByText('4/5')).toBeVisible();
+    await expect(page.getByText('Em có +2 Hào Quang được tặng đang chờ cộng')).toBeVisible();
+    // Khu xã hội nằm ở cột phải trên máy tính bảng/desktop.
+    if (viewport.name !== 'mobile') {
+      const wallet = await page.getByRole('heading', { name: 'Ví điểm tặng' }).boundingBox();
+      const identity = await page.locator('[data-portal-column="identity"]').boundingBox();
+      expect(wallet!.x).toBeGreaterThan(identity!.x + identity!.width - 1);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: `test-results/screens/60-student-social-${viewport.name}.png`, fullPage: true });
+    if (viewport.name !== 'mobile') { expect(mock.errors).toEqual([]); return; }
+
+    // Lời mời đến: đồng ý.
+    await page.getByRole('region', { name: 'Lời mời kết bạn' }).getByRole('button', { name: 'Đồng ý' }).click();
+    await expect(page.getByRole('status')).toContainText('Hai bạn đã là bạn bè!');
+    expect(mock.socialCalls.at(-1)).toEqual({ fn: 'student_respond_friend_request', body: { p_request_id: 31, p_accept: true } });
+
+    // Kết bạn với bạn cùng lớp.
+    await page.getByRole('button', { name: 'Kết bạn với bạn cùng lớp (1)' }).click();
+    await page.getByRole('button', { name: 'Kết bạn', exact: true }).click();
+    expect(mock.socialCalls.at(-1)).toEqual({ fn: 'student_send_friend_request', body: { p_student_id: 'f-an' } });
+
+    // Tặng quà: đã tặng Bảo 1/2 điểm tuần này => chỉ còn +1, nút +2 bị khoá.
+    await page.getByRole('button', { name: 'Tặng quà' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Tặng quà cho Trần Bảo' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('button', { name: '+2' })).toBeDisabled();
+    await expect(dialog.getByRole('textbox')).toHaveCount(0);
+    await dialog.getByRole('button', { name: 'Cúp vàng' }).click();
+    await dialog.getByRole('button', { name: 'Bạn làm tốt lắm!' }).click();
+    if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/62-send-gift.png' });
+    // Lỗi từ DB (ví hết) hiện ngay trong hộp thoại, bằng tiếng Việt.
+    mock.giftError = 'weekly_limit';
+    await dialog.getByRole('button', { name: 'Gửi quà' }).click();
+    await expect(dialog.getByRole('alert')).toContainText('Ví điểm tặng tuần này đã hết');
+    mock.giftError = null;
+    await dialog.getByRole('button', { name: 'Gửi quà' }).click();
+    await expect(dialog).toHaveCount(0);
+    expect(mock.socialCalls.at(-1)).toEqual({ fn: 'student_send_gift', body: { p_recipient_id: 'f-bao', p_amount: 1, p_sticker_id: 'trophy', p_message_id: 'good_job' } });
+
+    // Quà nhận được: báo thầy cô.
+    const gift = page.getByRole('listitem').filter({ hasText: 'Từ Trần Bảo' });
+    await expect(gift).toContainText('Câu trả lời của bạn hay quá!');
+    await expect(gift).toContainText('Đang chờ cộng');
+    await gift.getByRole('button', { name: 'Báo thầy cô' }).click();
+    expect(mock.socialCalls.at(-1)).toEqual({ fn: 'student_report_gift', body: { p_gift_id: 11 } });
+
+    // Quà đã tặng.
+    await page.getByRole('tab', { name: 'Đã tặng' }).click();
+    await expect(page.getByRole('tabpanel')).toContainText('Tặng Trần Bảo');
+
+    const teacherTables = mock.restPaths.filter(p => /^(user_settings|classes|students|point_ledger|student_gifts|student_friendships)$/.test(p));
+    expect(teacherTables).toEqual([]);
+    expect(mock.errors).toEqual([]);
+  });
+}
+
+test('học sinh: lớp chưa bật bạn bè thì chỉ hiện một dòng nhẹ nhàng', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.getByText('Bạn bè và quà tặng sẽ mở khi thầy cô bật cho lớp em.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ví điểm tặng' })).toHaveCount(0);
+  expect(mock.errors).toEqual([]);
+});
+
+test('giáo viên: bật bạn bè & quà, đặt hạn mức, thu hồi quà, gỡ bạn bè', async ({ page }) => {
+  const mock = await setup(page, 'teacher');
+  await page.goto('/class/6A/ban-be');
+  await expect(page.getByRole('heading', { name: 'Bạn bè & quà · 6A' })).toBeVisible();
+  const toggle = page.getByRole('switch');
+  await expect(toggle).toHaveAttribute('aria-checked', 'false');
+  await expect(page.getByRole('button', { name: 'Lưu cài đặt' })).toBeDisabled();
+  await toggle.click();
+  await page.getByLabel('Ví điểm tặng / tuần').selectOption('3');
+  await page.getByRole('button', { name: 'Lưu cài đặt' }).click();
+  await expect(page.getByRole('status')).toContainText('Đã lưu cài đặt');
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/61-teacher-social.png', fullPage: true });
+  expect(mock.writes.at(-1)).toEqual({ method: 'PATCH', path: 'classes', body: { social_enabled: true, gift_weekly_limit: 3, gift_per_friend_weekly_limit: 2 } });
+
+  // Nhật ký quà: quà 2 đã thu hồi; quà 1 bị báo cáo, thu hồi được.
+  const gifts = page.getByRole('listitem');
+  await expect(gifts.filter({ hasText: 'đổi qua lại' })).toContainText('Đã thu hồi');
+  const reported = gifts.filter({ hasText: 'Bị báo cáo' });
+  await expect(reported).toContainText('Nguyễn Minh Anh → Trần Bảo');
+  await expect(reported).toContainText('Cảm ơn bạn đã giúp mình!');
+  await page.getByRole('tab', { name: 'Báo cáo (1)' }).click();
+  await page.getByRole('button', { name: 'Thu hồi' }).click();
+  await page.getByRole('dialog').getByRole('textbox').fill('tặng qua lại');
+  await page.getByRole('dialog').getByRole('button', { name: 'Thu hồi' }).click();
+  await expect(page.getByRole('status')).toContainText('Đã thu hồi quà');
+  expect(mock.writes.at(-1)).toEqual({ method: 'POST', path: 'student_gift_revocations', body: { gift_id: 1, reason: 'tặng qua lại' } });
+
+  await page.getByRole('tab', { name: 'Bạn bè (1)' }).click();
+  await expect(page.getByRole('listitem')).toContainText('Nguyễn Minh Anh và Trần Bảo');
+  await page.getByRole('button', { name: 'Gỡ' }).click();
+  expect(mock.writes.at(-1)?.method).toBe('DELETE');
+  expect(mock.errors).toEqual([]);
+});
 
 test('học sinh: lỗi tải hồ sơ hiện thông báo thân thiện và thử lại được', async ({ page }) => {
   const mock = await setup(page, 'student');
