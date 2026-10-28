@@ -3,6 +3,7 @@ import {
   fetchTeacherTables,
   fetchUserSettings,
   saveTeacherChanges,
+  saveTeacherChangesChecked,
   setDataModelVersion,
   upsertTeacherSettings,
   upsertUserSettings,
@@ -59,15 +60,15 @@ export const loadCloudData = async (userId: string): Promise<CloudLoadResult | n
 export const chooseModelForNewTeacher = async (): Promise<CloudDataModel> =>
   (await areTeacherTablesAvailable()) ? 'tables' : 'legacy';
 
-const sendChanges = async (previous: CloudSnapshot, next: CloudSnapshot) => {
+const sendChanges = async (previous: CloudSnapshot, next: CloudSnapshot): Promise<Record<string, number>> => {
   const changes = diffSnapshots(previous, next);
-  if (isEmptyChanges(changes)) return;
+  if (isEmptyChanges(changes)) return {};
   // Gói thường (vài học sinh) đi trong một transaction; gói rất lớn (nhập file) chia nhỏ.
-  if (changes.students.length <= 20) {
-    await saveTeacherChanges(changes);
-    return;
-  }
-  for (const chunk of chunkChanges(changes)) await saveTeacherChanges(chunk);
+  // Mỗi gói mang số phiên bản; máy khác đã sửa trước thì DB từ chối (StaleDataError) thay vì ghi đè.
+  const batches = changes.students.length <= 20 ? [changes] : chunkChanges(changes);
+  const revisions: Record<string, number> = {};
+  for (const batch of batches) Object.assign(revisions, (await saveTeacherChangesChecked(batch)).revisions);
+  return revisions;
 };
 
 // Lưu lần lượt: hai lần lưu không chồng nhau (lần cũ ghi đè lần mới).
@@ -94,14 +95,17 @@ const saveNow = async (
   dataModel: CloudDataModel,
   previous: CloudSnapshot
 ): Promise<{ updatedAt: number; snapshot: CloudSnapshot }> => {
-  const snapshot: CloudSnapshot = { students: data.students, bossStatesByClass: data.bossStatesByClass || {} };
+  const base: CloudSnapshot = { students: data.students, bossStatesByClass: data.bossStatesByClass || {} };
   if (dataModel === 'legacy') {
-    return { updatedAt: await upsertUserSettings(userId, data), snapshot };
+    return { updatedAt: await upsertUserSettings(userId, data), snapshot: base };
   }
   const { students: _students, bossStatesByClass: _boss, updatedAt: _u, dataModelVersion: _v, ...settings } = data;
   // Học sinh trước, cài đặt sau: với giáo viên mới, dòng user_settings (data_model_version = 2) chỉ được tạo
   // khi học sinh đã lên bảng; lỗi giữa chừng thì lần sau app thử lại từ đầu thay vì đọc ra lớp trống.
-  await sendChanges(previous, snapshot);
+  const revisions = await sendChanges(previous, base);
+  const ids = new Set(base.students.map(student => student.id));
+  const kept = Object.fromEntries(Object.entries(previous.revisions ?? {}).filter(([id]) => ids.has(id)));
+  const snapshot: CloudSnapshot = { ...base, revisions: { ...kept, ...revisions } };
   const updatedAt = await upsertTeacherSettings(userId, settings);
   return { updatedAt, snapshot };
 };

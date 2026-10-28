@@ -18,6 +18,7 @@ Classivy (trước đây là Imperial School) là web app lớp học gamificati
 - `npm run smoke` - Playwright smoke test (dữ liệu mẫu, Supabase giả; lần đầu cần `npx playwright install chromium`). Cập nhật ảnh gốc khi CỐ Ý đổi giao diện: `npm run smoke -- --update-snapshots`. Lưu ảnh chụp để xem bằng mắt: `SMOKE_SCREENSHOTS=1 npm run smoke` (vào `test-results/screens/`)
 - `npm run typecheck` - kiểm tra kiểu TypeScript (phải 0 lỗi)
 - `npm run test:db` - test migration + RLS trên PostgreSQL cục bộ (cần Postgres đang chạy, kết nối qua PGHOST/PGUSER...; không chạm Supabase thật)
+- `npm run test:load` - kiểm thử tải nhẹ trên PostgreSQL cục bộ (350 học sinh, đo thời gian truy vấn chính và dung lượng; không chạm Supabase thật)
 - `npm run build` - build production
 
 Biến môi trường: `.env.example` (chỉ khoá `anon` của Supabase). Không tạo hoặc in ra khoá thật.

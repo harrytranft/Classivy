@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { chooseModelForNewTeacher, loadCloudData, runLegacyUpgrade, saveCloudData } from './cloudStore';
 import { EMPTY_SNAPSHOT } from '../../../domain/cloudModel';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
@@ -6,6 +6,7 @@ import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWA
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS } from '../../../data/pokemonData';
 import { Student } from '../../../types';
+import { isStaleDataError } from '../../../lib/supabaseData';
 import { GameDataState } from './useGameDataState';
 import type { AuthUser } from '../../../features/auth/AuthContext';
 
@@ -21,8 +22,10 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
     setIsSyncing, setLastSyncedTime, initialCloudLoadComplete, setInitialCloudLoadComplete,
     cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
-    cloudDataModelRef, lastCloudSnapshotRef, setLegacyUpgradeAvailable
+    cloudDataModelRef, lastCloudSnapshotRef, setLegacyUpgradeAvailable, setSyncConflict
   } = data;
+  // Tăng để tải lại toàn bộ từ đám mây (khi lần lưu bị từ chối vì máy khác đã sửa trước).
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     if (authLoading) return;
@@ -203,7 +206,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     };
 
     fetchCloudData();
-  }, [user, authLoading]);
+  }, [user, authLoading, reloadToken]);
 
   useEffect(() => {
     if (!user || !initialCloudLoadComplete || !cloudLoadSuccess) return;
@@ -252,7 +255,14 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
         lastCloudSnapshotRef.current = saved.snapshot;
         setLastSyncedTime(saved.updatedAt);
       } catch (err) {
-        console.error("Auto-sync to cloud failed:", err);
+        if (isStaleDataError(err)) {
+          // Không ghi đè dữ liệu máy khác vừa lưu: dừng lưu, tải lại bản mới nhất, báo giáo viên làm lại thao tác.
+          setSyncConflict(true);
+          setInitialCloudLoadComplete(false);
+          setReloadToken(n => n + 1);
+        } else {
+          console.error("Auto-sync to cloud failed:", err);
+        }
       } finally {
         setIsSyncing(false);
       }

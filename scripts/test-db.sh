@@ -17,6 +17,10 @@ ROLLBACK5=supabase/rollback/20261030100000_phase5_student_portal_down.sql
 MIGRATION_ROLE=supabase/migrations/20261030110000_sync_profile_role.sql
 MIGRATION6=supabase/migrations/20261031100000_phase6_social.sql
 ROLLBACK6=supabase/rollback/20261031100000_phase6_social_down.sql
+MIGRATION7=supabase/migrations/20261101100000_phase7_hardening.sql
+DROP_LEGACY=supabase/migrations/20261101110000_drop_legacy_data.sql
+DROP_LEGACY_DOWN=supabase/rollback/20261101110000_drop_legacy_data_down.sql
+ROLLBACK7=supabase/rollback/20261101100000_phase7_hardening_down.sql
 ROLLBACK_ROLE=supabase/rollback/20261030110000_sync_profile_role_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
@@ -121,6 +125,16 @@ run -c "do \$\$ begin
   if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'classes' and column_name = 'social_enabled') then
     raise exception 'FAIL: phase 6 rollback left columns'; end if; end \$\$"
 run -f "$MIGRATION6"
+
+echo "== Migration Phase 7 hardening (chạy 2 lần) + test (Phase 3-6 chạy lại với chốt mới)"
+run -f "$MIGRATION7"
+run -f "$MIGRATION7"
+run -o /dev/null -f supabase/tests/60_phase7_hardening.test.sql
+run -f "$ROLLBACK7"
+run -c "do \$\$ begin
+  if to_regprocedure('public.save_teacher_changes_v2(jsonb)') is not null or to_regprocedure('public.is_teacher()') is not null then raise exception 'FAIL: phase 7 rollback left functions'; end if; end \$\$"
+run -f "$MIGRATION7"
+run -f "$ROLLBACK7"
 run -f "$ROLLBACK6"
 run -f "$ROLLBACK_ROLE"
 run -f "$ROLLBACK5"
@@ -143,6 +157,25 @@ run -c "do \$\$ begin
   if (select students::text from public.user_settings where user_id = 'dddddddd-0000-4000-8000-000000000004') <> '[{\"id\": \"old\"}]' then
     raise exception 'FAIL: rollback lost legacy data'; end if; end \$\$"
 run -f "$MIGRATION"
+
+echo "== Xoá dữ liệu cũ (Phase 7): chốt an toàn khi còn giáo viên chưa nâng cấp, rồi xoá, chạy 2 lần"
+if run -f "$DROP_LEGACY" 2>/dev/null; then echo "FAIL: drop_legacy_data ran while a teacher still had legacy students"; exit 1; fi
+run -c "do \$\$ begin
+  if (select jsonb_array_length(students) from public.user_settings where user_id = 'dddddddd-0000-4000-8000-000000000004') <> 1 then
+    raise exception 'FAIL: guard did not keep legacy data'; end if; end \$\$"
+run -c "update public.user_settings set data_model_version = 2 where user_id = 'dddddddd-0000-4000-8000-000000000004'"
+run -f "$DROP_LEGACY"
+run -f "$DROP_LEGACY"
+run -c "do \$\$ begin
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'user_settings' and column_name in ('students', 'boss_states_by_class')) then
+    raise exception 'FAIL: legacy columns still there'; end if;
+  if to_regclass('public.students_imperial_old') is not null or to_regclass('public.app_state') is not null or to_regclass('public.users') is not null then
+    raise exception 'FAIL: legacy tables still there'; end if;
+  if (select count(*) from public.user_settings) = 0 then raise exception 'FAIL: settings rows lost'; end if; end \$\$"
+run -f "$DROP_LEGACY_DOWN"
+run -c "do \$\$ begin
+  if (select count(*) from information_schema.columns where table_schema = 'public' and table_name = 'user_settings' and column_name in ('students', 'boss_states_by_class')) <> 2 then
+    raise exception 'FAIL: drop_legacy rollback did not recreate columns'; end if; end \$\$"
 
 "${PSQL[@]}" -d postgres -c "drop database $DB"
 done

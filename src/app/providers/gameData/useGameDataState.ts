@@ -73,6 +73,8 @@ export const useGameDataState = () => {
   const cloudDataModelRef = useRef<CloudDataModel>('legacy');
   const lastCloudSnapshotRef = useRef<CloudSnapshot>(EMPTY_SNAPSHOT);
   const [legacyUpgradeAvailable, setLegacyUpgradeAvailable] = useState(false);
+  // Phase 7 (D31): máy khác vừa sửa dữ liệu nên lần lưu của máy này bị từ chối; app tải lại và báo giáo viên.
+  const [syncConflict, setSyncConflict] = useState(false);
 
   return {
     students, setStudents, skills,
@@ -83,7 +85,8 @@ export const useGameDataState = () => {
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
     isSyncing, setIsSyncing, lastSyncedTime, setLastSyncedTime, initialCloudLoadComplete,
     setInitialCloudLoadComplete, cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
-    cloudDataModelRef, lastCloudSnapshotRef, legacyUpgradeAvailable, setLegacyUpgradeAvailable
+    cloudDataModelRef, lastCloudSnapshotRef, legacyUpgradeAvailable, setLegacyUpgradeAvailable,
+    syncConflict, setSyncConflict
   };
 };
 
