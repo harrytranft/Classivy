@@ -39,9 +39,9 @@ File liên quan:
 
 ## Bước 2 - Production (chỉ sau khi bước 1 ổn)
 
-- [ ] 2.1 Sao lưu: Cài đặt > "Export JSON Backup" trong app thật.
-- [ ] 2.2 SQL Editor của dự án production: chạy migration như 1.1.
-- [ ] 2.3 `npx supabase functions deploy student-accounts --project-ref <ref-production>`.
+- [x] 2.1 Sao lưu: Cài đặt > "Export JSON Backup" trong app thật.
+- [x] 2.2 SQL Editor của dự án production: chạy migration như 1.1.
+- [x] 2.3 `npx supabase functions deploy student-accounts --project-ref <ref-production>`.
 - [ ] 2.4 Merge nhánh Phase 4 để Vercel đưa giao diện mới lên (hoặc thử preview Vercel của nhánh trước).
 - [ ] 2.5 Thử nhanh một học sinh thử (tạo, đăng nhập, thu hồi) rồi mới dùng với lớp thật.
 - [ ] 2.6 **Khuyến nghị bảo mật (cần Harry quyết):** Authentication > Sign In / Providers > tắt **"Allow new users to sign up"**. UI đăng ký đã bỏ (D11) nhưng API đăng ký công khai vẫn mở: ai biết địa chỉ dự án và khoá anon đều có thể tự tạo tài khoản kiểu giáo viên. Tắt đăng ký không ảnh hưởng việc giáo viên tạo tài khoản học sinh (Edge Function dùng quyền quản trị). Giáo viên mới sau này phải do bạn tạo trong Authentication > Users.
