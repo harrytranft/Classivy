@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 5 đã nghiệm thu (2026-10-28); đang làm bổ sung responsive desktop (5.7). Tiếp theo: Phase 6
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 6 (đang làm, nhánh `claude/focused-lamport-rk8qji`; Phase 4 và 5 đã nghiệm thu)
 
 ## Mục tiêu
 
@@ -37,6 +37,11 @@
 | D19 | Phase 5: "hạng" trên hồ sơ học sinh = Trainer Level + danh hiệu + huy hiệu; không hiển thị vị trí trong lớp | 2026-10-28 |
 | D20 | Phase 5: học sinh chỉ xem; mọi thay đổi vẫn do giáo viên (tương tác để Phase 6) | 2026-10-28 |
 | D21 | Ảnh đại diện giữ trong DB (đã nén); dời chuyển sang Supabase Storage tới Phase 7 (sửa Q5 ADR 0001) | 2026-10-28 |
+| D23 | Phase 6: điểm tặng cộng vào Hào Quang người nhận qua "hàng chờ" trong DB, app giáo viên tự gom (khi mở, khi quay lại tab, mỗi 3 phút) kèm dòng lịch sử; không ghi đè, không cộng trùng | 2026-10-28 |
+| D24 | Phase 6: ví điểm tặng mặc định 5 điểm/tuần, tối đa 2 điểm/tuần cho cùng một bạn, 0-2 điểm/lần; giáo viên chỉnh theo lớp | 2026-10-28 |
+| D25 | Phase 6: quà = sticker + lời nhắn định sẵn (không vật phẩm game, không chữ tự do) | 2026-10-28 |
+| D26 | Phase 6: kết bạn bằng lời mời + chấp nhận; tính năng mặc định TẮT, giáo viên bật theo lớp; chỉ tặng cho bạn bè; tặng tự động, giáo viên xem nhật ký và thu hồi | 2026-10-28 |
+| D27 | Ô đăng nhập nhận cả email (giáo viên) lẫn tên đăng nhập (học sinh), chỉnh D11; Supabase đã tắt đăng ký công khai, giáo viên mới do Harry tạo trong Authentication (Harry xác nhận) | 2026-10-28 |
 | D22 | Giao diện học sinh responsive cả điện thoại, máy tính bảng và desktop (điện thoại trước rồi mở rộng). Áp dụng cho mọi màn học sinh ở Phase 5 và các Phase sau; mỗi màn có smoke test ở 390 / 820 / 1440px | 2026-10-28 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
@@ -50,7 +55,7 @@
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Hoàn thành (2026-10-28) | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Hoàn thành (2026-10-28, PR #5) | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Hoàn thành (2026-10-28, PR #6); bổ sung responsive desktop (5.7) | **Có (migration)** |
-| 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
+| 6 | Bạn bè, quà tặng, tặng điểm | Đang làm (nhánh `claude/focused-lamport-rk8qji`) | **Có (migration)** |
 | 7 | Hardening, kiểm thử bảo mật, ra mắt | Chưa bắt đầu | Có |
 
 Ghi chú: so với lộ trình đã trao đổi, Phase 2 (reskin + thuật ngữ) được tách riêng để các Phase tài khoản/xã hội dùng ngay hệ thiết kế mới; các Phase sau dời xuống một số.
@@ -213,14 +218,21 @@ src/
 
 ---
 
-## Phase 6 - Bạn bè, quà tặng, tặng điểm (roadmap)
+## Phase 6 - Bạn bè, quà tặng, tặng điểm (ĐANG LÀM, bắt đầu 2026-10-28)
 
-- [ ] 6.1 Kết bạn trong cùng lớp (gửi lời mời, chấp nhận, huỷ); giáo viên bật/tắt tính năng theo lớp
-- [ ] 6.2 Ví "điểm tặng" có hạn mức tuần do giáo viên đặt; hàm DB atomic + sổ cái bất biến
-- [ ] 6.3 Quà tặng (vật phẩm/emoji/lời nhắn định sẵn), không chat tự do
-- [ ] 6.4 Chống lạm dụng: giới hạn tần suất, chặn gian lận qua lại giữa hai tài khoản, báo cáo, giáo viên xem và thu hồi giao dịch
-- [ ] 6.5 Thiết kế tương tác lành mạnh (không bêu xấu, không xếp hạng cuối lớp công khai)
-- [ ] 6.6 Mọi màn học sinh mới (bạn bè, quà, ví) responsive điện thoại + máy tính bảng + desktop theo D22, smoke test 3 khổ
+**Nhánh:** `claude/focused-lamport-rk8qji` (khởi động lại từ `main` sau PR #7). **Thiết kế:** `docs/adr/0004-phase-6-social.md` (D23-D26). **Runbook:** `docs/phase-6-runbook.md`.
+
+- [x] 6.0 ADR 0004 + quyết định D23-D26 (Harry chốt 2026-10-28, cả 4 theo đề xuất)
+- [x] 6.1 (test SQL + smoke với Supabase giả; chưa chạy trên Supabase thật) Kết bạn trong cùng lớp: lời mời, chấp nhận/từ chối, mời chéo tự thành bạn, huỷ lời mời, thôi làm bạn; chỉ bạn cùng lớp có tài khoản đang hoạt động; tối đa 10 lời mời chờ. Giáo viên bật/tắt theo lớp (mặc định tắt) trên trang `/class/<lớp>/ban-be`, gỡ quan hệ được
+- [x] 6.2 (test SQL + unit + smoke) Ví điểm tặng: 5 điểm/tuần, 2 điểm/tuần/bạn, 0-2 điểm/lần (giáo viên chỉnh 0-50); hàm DB khoá dòng người gửi (atomic); sổ cái `student_gifts` bất biến; điểm vào Hào Quang qua hàng chờ `teacher_pending_gift_adjustments()` + `useGiftCollector` (dòng sổ điểm `gift-<id>`, không cộng trùng, không kích hoạt hiệu ứng game)
+- [x] 6.3 (test SQL + smoke) Quà: 8 sticker + 6 lời khen định sẵn, không ô gõ chữ; danh mục đối chiếu DB bằng unit test
+- [x] 6.4 (test SQL + smoke) Chống lạm dụng: 10 quà/ngày, hạn mức mỗi bạn chặn đổi điểm qua lại, quà thu hồi không trả ví; học sinh "Báo thầy cô"; giáo viên xem nhật ký 100 quà, tab Báo cáo, thu hồi (tự trừ lại nếu đã cộng) kèm lý do riêng; tài khoản khoá không dùng được gì
+- [x] 6.5 Tương tác lành mạnh: không bảng xếp hạng quà/bạn bè; học sinh chỉ thấy tên + Pokémon đồng hành của bạn (không điểm, không ảnh); quà nhận được chỉ người nhận xem; thông báo lỗi thân thiện
+- [x] 6.6 (smoke 390/820/1440px) Khu bạn bè & quà ở cột phải trên máy tính bảng/desktop, không cuộn ngang
+- [x] 6.7 Harry chạy `docs/phase-6-runbook.md` bước 1 trên `classivy-dev` (2026-10-28): 1.6 điểm tặng không bị cộng trùng; 1.7 thu hồi quà thì điểm tự trừ lại
+- [ ] 6.8 Harry chạy bước 2 trên production (migration, pilot một lớp), nghiệm thu. Harry yêu cầu gộp nhánh vào `main` (2026-10-28) = bước 2.3 của runbook; **migration production cần chạy trước hoặc ngay khi Vercel đưa bản mới lên**
+
+**Bàn giao cho Harry:** chạy `20261031100000_phase6_social.sql` trên dev rồi production, thử theo runbook. **Chưa có gì được áp dụng trên Supabase thật.**
 
 ---
 
@@ -376,3 +388,11 @@ src/
 - 2026-10-28: Harry báo tài khoản học sinh hiện `role = teacher` trên Supabase. Đã tái hiện trong `npm run test:db` (tạo người dùng rồi mới gắn role, như Supabase làm) và sửa bằng `20261030110000_sync_profile_role.sql`; test mới `supabase/tests/40_sync_profile_role.test.sql` (tài khoản cũ được sửa, học sinh mới thành `student`, tài khoản tạo trong Authentication vẫn `teacher`, người dùng không tự đổi được vai trò); migration chạy 2 lần, hoàn tác, chạy lại; cả 2 kiểu dự án đạt.
 - 2026-10-28: Harry xác nhận Phase 5 ổn -> **nghiệm thu Phase 5**; PR #6 đã gộp `main`. Harry yêu cầu giao diện học sinh responsive cả desktop (D22). Task 5.7: `npm run typecheck` 0 lỗi; smoke thêm 2 test (820px và 1440px: hai cột nằm cạnh nhau, cột phải rộng hơn trên desktop, không cuộn ngang) cùng test 390px sẵn có; đã xem ảnh chụp 3 khổ. Không migration.
 - 2026-10-28: Harry xác nhận **Phase 4 ok hết** (runbook bước 2.5 trên production và 3 mục "ghi lại" ở bước 1.5: email ảo được chấp nhận, khoá/phiên đang mở, trigger xoá tài khoản khi xoá học sinh) -> **nghiệm thu Phase 4** (kiểm chứng thủ công do Harry thực hiện). Harry xác nhận mục 1.6 runbook Phase 5 đúng như mong đợi.
+- 2026-10-28: Harry xác nhận đã tắt đăng ký công khai của Supabase và đăng nhập được bằng cả email lẫn tên đăng nhập (D27).
+
+**Phase 6 - 2026-10-28** (kiểm thử tự động trên máy của phiên Claude; CHƯA chạy trên Supabase dev/production, chưa thử tay):
+- `npm run typecheck`: 0 lỗi. `npm test`: 22 file, 193 test đạt (thêm `social.test.ts` 11: danh mục khớp migration, đọc tổng quan, ví còn lại cho từng bạn, mã lỗi -> tiếng Việt, cộng hàng chờ không trùng/không chạm dữ liệu game, bảng quà giáo viên). `npm run build`: thành công.
+- `npm run test:db` (PostgreSQL 16, cả kiểu dự án cũ và mới): đạt, thêm `supabase/tests/50_phase6_social.test.sql` (mặc định tắt; chỉ giáo viên của lớp bật được; danh sách bạn cùng lớp; không mời được lớp khác/giáo viên khác/chưa có tài khoản/chính mình; lời mời, chấp nhận, mời chéo; bạn bè không lộ điểm; hạn mức mỗi bạn, tuần, mỗi lần, ngày; sticker/lời nhắn lạ bị từ chối; học sinh không đọc/ghi thẳng bảng; hàng chờ đúng, hết chờ sau khi cộng; báo cáo; thu hồi trước/sau khi cộng; giáo viên khác không thu hồi được; sổ cái bất biến kể cả quản trị; tài khoản khoá; thôi làm bạn; tắt tính năng; ẩn danh; xoá học sinh kéo theo quà). Migration chạy 2 lần, hoàn tác, chạy lại. Thử bỏ hạn mức mỗi bạn và bỏ dấu "đã cộng" -> test đỏ đúng chỗ.
+- `npm run smoke`: 21/21 đạt. Mới: học sinh bạn bè & quà ở 3 khổ (đồng ý lời mời, kết bạn, tặng quà với nút +2 bị khoá đúng hạn mức, lỗi ví hết hiện trong hộp thoại, báo thầy cô, tab đã tặng, không chạm bảng giáo viên); lớp chưa bật; trang giáo viên (bật, hạn mức, thu hồi kèm lý do, gỡ bạn bè); app giáo viên cộng hàng chờ đúng một lần kể cả sau khi mở lại. 18 ảnh gốc DOM cập nhật có chủ đích: chỉ thêm nút "Bạn bè & quà" trên trang lớp, không dòng nào bị xoá; dữ liệu đồng bộ không đổi. Đã xem ảnh chụp các màn mới.
+- **Chưa kiểm chứng:** Supabase thật; hai lần tặng đồng thời thật (khoá dòng chỉ đọc mã); thử tay trên điện thoại.
+- 2026-10-28: Harry chạy runbook Phase 6 bước 1 trên `classivy-dev`: điểm tặng không bị cộng trùng khi tải lại (1.6), thu hồi quà thì điểm tự trừ lại (1.7) (kiểm chứng thủ công trên dev). Harry yêu cầu gộp vào `main`. Production chưa được xác nhận.

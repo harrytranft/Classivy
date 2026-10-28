@@ -3,6 +3,7 @@ import { useAuth } from '../../features/auth/AuthContext';
 import { useGameDataState } from './gameData/useGameDataState';
 import { useCloudSync } from './gameData/useCloudSync';
 import { useLocalPersistence } from './gameData/useLocalPersistence';
+import { useGiftCollector } from './gameData/useGiftCollector';
 import { createBackupActions } from './gameData/backupActions';
 
 // Dữ liệu lớp học dùng chung (học sinh, cấp bậc, kỹ năng, cài đặt) + lưu localStorage + đồng bộ Supabase + sao lưu/khôi phục.
@@ -12,6 +13,7 @@ const useGameDataValue = () => {
   const data = useGameDataState();
   useCloudSync(data, user, authLoading);
   useLocalPersistence(data, user, authLoading);
+  useGiftCollector(data, user);
   return { ...data, ...createBackupActions(data, user) };
 };
 

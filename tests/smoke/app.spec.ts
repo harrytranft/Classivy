@@ -124,6 +124,8 @@ interface SetupOptions {
    * Không đặt = Supabase chưa chạy migration: bảng mới trả 404, app dùng cách lưu cũ.
    */
   phase3?: boolean;
+  /** Phase 6: hàng chờ điểm tặng (teacher_pending_gift_adjustments). Dòng đã có trong sổ điểm giả thì không trả nữa. */
+  pendingGifts?: { student_client_id: string; client_event_id: string; amount: number; reason: string; occurred_at: string }[];
 }
 
 async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState> {
@@ -209,6 +211,12 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
       }
       const offset = Number(url.searchParams.get('offset') || 0);
       const rows = offset > 0 ? [] : tableRows(state, target);
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rows) });
+      return;
+    }
+    if (url.pathname.endsWith('/rpc/teacher_pending_gift_adjustments') && options.pendingGifts) {
+      const done = new Set(state.tables.ledger.map(entry => `${entry.studentClientId}/${entry.clientEventId}`));
+      const rows = options.pendingGifts.filter(g => !done.has(`${g.student_client_id}/${g.client_event_id}`));
       await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rows) });
       return;
     }
@@ -657,5 +665,29 @@ test('Phase 3: giáo viên mới dùng bảng mới ngay khi Supabase đã chạ
   expect(firstUpsert).not.toHaveProperty('students');
   expect(Object.keys(state.tables.students)).toHaveLength(FIXTURE.students.length);
   await expect(page.getByTestId('data-upgrade')).toHaveCount(0);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 6: điểm tặng trong hàng chờ được cộng vào Hào Quang đúng một lần', async ({ page }) => {
+  const target = FIXTURE.students[0] as { id: string; name: string; points: number; className: string };
+  const state = await setupPage(page, {
+    loggedIn: true,
+    emptyCloud: true,
+    phase3: true,
+    localStorageSeed: { classivy_school_data_v6: JSON.stringify(FIXTURE.students) },
+    pendingGifts: [{ student_client_id: target.id, client_event_id: 'gift-41', amount: 2, reason: '🎁 Quà từ Bạn Smoke: +2 Hào Quang', occurred_at: '2026-10-28T01:00:00Z' }]
+  });
+  await page.waitForTimeout(2200);
+  const giftRows = () => state.tables.ledger.filter(entry => entry.clientEventId === 'gift-41');
+  expect(giftRows()).toHaveLength(1);
+  expect(giftRows()[0]).toMatchObject({ studentClientId: target.id, amount: 2 });
+  expect(state.tables.students[target.id].points).toBe(target.points + 2);
+
+  // Mở lại app (hàng chờ không còn dòng này): không cộng lần nữa.
+  await page.goto('/');
+  await waitForApp(page, true);
+  await page.waitForTimeout(2200);
+  expect(giftRows()).toHaveLength(1);
+  expect(state.tables.students[target.id].points).toBe(target.points + 2);
   expect(state.errors).toEqual([]);
 });
