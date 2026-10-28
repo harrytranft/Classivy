@@ -17,7 +17,7 @@ File liên quan:
 ## Bước 1 - Dự án dev (bản thử, Q7)
 
 - [ ] 1.1 Vào supabase.com, tạo dự án mới tên `classivy-dev` (gói Free, vùng Singapore).
-- [ ] 1.2 Vào **SQL Editor**, dán toàn bộ `supabase-schema.sql` (schema cũ), bấm **Run**.
+- [ ] 1.2 Vào **SQL Editor**, dán toàn bộ `supabase-schema.sql` (schema cũ, **bản mới nhất trên nhánh Phase 3**: có thêm phần cấp quyền mà dự án Supabase mới tạo cần), bấm **Run**. Nếu app báo lỗi `permission denied for table ...` trong Console thì là đã dán bản cũ: dán lại bản mới và **Run** lần nữa (chạy lại không mất dữ liệu).
 - [ ] 1.3 Vào **Authentication > Users**, tạo một tài khoản giáo viên thử (email + mật khẩu).
 - [ ] 1.4a Lấy dữ liệu thật để thử: mở app thật (trang Vercel), đăng nhập tài khoản cũ, Cài đặt > "Export JSON Backup". Máy tải về file `classivy_backup_....json`.
 - [ ] 1.4b Chạy app ở máy với dự án dev: tạo file `.env.local`, ghi `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY` của **dự án dev** (Project Settings > API, chỉ lấy khoá `anon`). Chạy `npm run dev`, mở `localhost:3000`, đăng nhập bằng tài khoản thử ở bước 1.3. **App trống là bình thường** (dự án dev mới chưa có dữ liệu; dữ liệu thật vẫn nằm ở dự án cũ).

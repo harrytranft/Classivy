@@ -33,7 +33,13 @@ as $$
 $$;
 
 grant usage on schema public to anon, authenticated, service_role;
--- Supabase mặc định cấp quyền trên bảng/hàm mới trong public cho các vai trò API; RLS mới là lớp chặn.
+-- Dự án Supabase cũ tự cấp mọi quyền trên bảng/hàm mới trong public cho các vai trò API (RLS là lớp chặn).
+-- Dự án mới tạo (vd classivy-dev, 2026-10) KHÔNG tự cấp: SQL phải tự GRANT. scripts/test-db.sh chạy cả hai kiểu
+-- (biến psql legacy_grants = on/off) để chắc chắn schema + migration chạy được ở cả dự án cũ lẫn mới.
+\if :legacy_grants
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 alter default privileges in schema public grant execute on functions to anon, authenticated, service_role;
+\else
+alter default privileges in schema public revoke execute on functions from public;
+\endif

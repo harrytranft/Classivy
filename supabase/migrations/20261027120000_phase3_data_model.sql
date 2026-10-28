@@ -17,6 +17,12 @@ alter table public.user_settings drop column if exists ranks_female;
 
 alter table public.profiles alter column display_name set default 'Trainer';
 
+-- Quyền đọc/ghi hai bảng cũ cho người dùng đăng nhập. Dự án Supabase mới tạo không tự cấp
+-- (lỗi "permission denied for table ..."); dự án cũ đã có sẵn nên chạy lại không sao. RLS vẫn giới hạn theo chủ.
+grant usage on schema public to authenticated;
+grant select on public.profiles to authenticated;
+grant select, insert, update on public.user_settings to authenticated;
+
 -- ---------------------------------------------------------------------------
 -- 2. profiles.role: 'teacher' (mặc định) hoặc 'student' (Phase 4, chỉ Edge Function đặt
 --    qua app_metadata, client không sửa được).

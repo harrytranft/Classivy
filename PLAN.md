@@ -325,3 +325,6 @@ src/
 - `npm run build`: thành công.
 - `npm run test:db` (PostgreSQL 16 cục bộ, `auth` giả lập): 60 kiểm tra đạt; migration chạy 2 lần, hoàn tác, chạy lại đều đạt. Thử làm hỏng policy đọc `students` -> test đỏ đúng chỗ.
 - `npm run smoke`: 8/8 đạt. 6 test cũ (Supabase chưa chạy migration) giữ nguyên ảnh gốc DOM và dữ liệu đồng bộ -> hành vi cũ không đổi. 2 test mới: nâng cấp (chạy thử, tải sao lưu, đối chiếu, tổng sổ = điểm), sau đó cộng điểm chỉ gửi 1 học sinh + 1 dòng sổ, không ghi cột cũ, mở lại đọc từ bảng; giáo viên mới dùng bảng mới ngay. Thử bỏ phần "chỉ gửi thay đổi" -> test đỏ đúng chỗ.
+
+**Phase 3 - 2026-10-28** (Harry chạy runbook bước 1 trên `classivy-dev`): bước 1.4c lỗi `permission denied for table profiles/user_settings` (42501). Nguyên nhân: dự án Supabase mới tạo không tự cấp quyền bảng cho vai trò `authenticated` như dự án cũ; `supabase-schema.sql` dựa vào việc tự cấp đó. Sửa: thêm `grant` rõ ràng vào `supabase-schema.sql` và migration Phase 3; `npm run test:db` giờ chạy cả hai kiểu dự án (cũ/mới), bỏ phần grant thì kiểu "mới" báo đúng lỗi này. Dữ liệu thật không bị ảnh hưởng (dự án gốc không đụng tới).
+

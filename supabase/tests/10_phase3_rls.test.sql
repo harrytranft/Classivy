@@ -156,6 +156,14 @@ select test.throws($sql$update public.profiles set role = 'student'$sql$, '42501
 select test.throws($sql$insert into public.point_ledger (student_id, amount, client_event_id, created_by) select id, 1, 'forged', 'bbbbbbbb-0000-4000-8000-000000000002' from public.students limit 1$sql$,
   '42501', 'A cannot forge created_by');
 select test.eq(test.affected($sql$update public.profiles set display_name = 'Cô A' where email = 'a@test'$sql$), 1, 'A can still edit own display name');
+select test.eq((select count(*)::int from public.profiles), 1, 'A reads own profile');
+select test.eq(test.affected($sql$
+  insert into public.user_settings (user_id, skills, data_model_version) values ('aaaaaaaa-0000-4000-8000-000000000001', '[]', 1)
+  on conflict (user_id) do update set skills = excluded.skills, data_model_version = excluded.data_model_version$sql$),
+  1, 'A can upsert own user_settings (app save)');
+select test.eq(test.affected($sql$update public.user_settings set data_model_version = 2$sql$), 1, 'A can switch own data_model_version');
+select test.eq((select data_model_version from public.user_settings), 2::smallint, 'A reads own user_settings');
+select test.throws($sql$insert into public.user_settings (user_id) values ('bbbbbbbb-0000-4000-8000-000000000002')$sql$, '42501', 'A cannot create settings for B');
 select test.eq(test.affected($sql$
   insert into public.profiles (user_id, email, display_name, photo_url, last_login_at, updated_at)
   values ('aaaaaaaa-0000-4000-8000-000000000001', 'a@test', 'Cô A', '', now(), now())
