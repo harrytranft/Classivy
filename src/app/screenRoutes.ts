@@ -2,7 +2,7 @@ import { Screen } from '../types/app';
 
 // Ánh xạ giữa "màn hình" cũ (currentScreen) và đường dẫn URL.
 // '/' chuyển về '/class' (trang chọn lớp). Mỗi lớp có trang riêng /class/<lớp>,
-// kèm các trang con theo lớp: Cá Ngựa, Vòng quay may mắn, Tặng Pokémon.
+// kèm các trang con theo lớp: Cá Ngựa, Vòng quay may mắn, Tặng Pokémon, Tài khoản học sinh (Phase 4).
 export const SCREEN_PATHS: Record<Exclude<Screen, 'profile'>, string> = {
   class: '/class',
   settings: '/settings'
@@ -30,7 +30,8 @@ export const ALL_CLASSES = 'Tất cả';
 export const CLASS_SUB_PAGES = {
   ludo: 'ca-ngua',
   wheel: 'vong-quay',
-  gift: 'tang-pokemon'
+  gift: 'tang-pokemon',
+  accounts: 'tai-khoan'
 } as const;
 
 export type ClassSubPage = typeof CLASS_SUB_PAGES[keyof typeof CLASS_SUB_PAGES];

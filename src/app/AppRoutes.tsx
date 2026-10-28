@@ -12,6 +12,7 @@ const ProfileScreen = lazy(() => import('../features/profile/ProfileScreen').the
 const LudoModal = lazy(() => import('../features/ludo/LudoModal').then(m => ({ default: m.LudoModal })));
 const LuckyWheelModal = lazy(() => import('../features/wheel/LuckyWheelModal').then(m => ({ default: m.LuckyWheelModal })));
 const GiftPokemonModal = lazy(() => import('../features/pokemon/GiftPokemonModal').then(m => ({ default: m.GiftPokemonModal })));
+const StudentAccountsScreen = lazy(() => import('../features/accounts/StudentAccountsScreen').then(m => ({ default: m.StudentAccountsScreen })));
 const SettingsScreen = lazy(() => import('../features/settings/SettingsScreen').then(m => ({ default: m.SettingsScreen })));
 
 // '/' và đường dẫn lạ về trang chọn lớp. Giữ nguyên ?query và #hash khi chuyển hướng: Supabase đọc mã đăng nhập (Google, xác nhận email) từ URL.
@@ -35,6 +36,7 @@ export const AppRoutes: React.FC = () => (
       <Route path={`class/:className/${CLASS_SUB_PAGES.ludo}`} element={<ClassPageGuard><LudoModal /></ClassPageGuard>} />
       <Route path={`class/:className/${CLASS_SUB_PAGES.wheel}`} element={<ClassPageGuard><LuckyWheelModal /></ClassPageGuard>} />
       <Route path={`class/:className/${CLASS_SUB_PAGES.gift}`} element={<ClassPageGuard><GiftPokemonModal /></ClassPageGuard>} />
+      <Route path={`class/:className/${CLASS_SUB_PAGES.accounts}`} element={<ClassPageGuard><StudentAccountsScreen /></ClassPageGuard>} />
       <Route path="student/:studentId" element={<ProfileRoute />} />
       <Route path="settings" element={<SettingsScreen />} />
       <Route path="*" element={<RedirectToClass />} />

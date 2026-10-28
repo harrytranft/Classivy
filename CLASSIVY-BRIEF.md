@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 3 hoàn thành, Harry nghiệm thu trên production; tiếp theo Phase 4)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 3 hoàn thành; Phase 4 đã viết xong trên nhánh `claude/phase4-student-accounts`, chờ Harry chạy runbook trên dev)
 
 ## 1. Sản phẩm
 
@@ -27,6 +27,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Màn đăng nhập chỉ còn email + mật khẩu; bỏ "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (D11, 2026-10-27).
 - Bỏ hệ cấp bậc cung đình và "Thánh chỉ"/Gemini; bảng Ban thưởng/Phạt dùng Trainer Level (D7, 2026-10-27) - đã làm (task 2.0).
 - D13 (2026-10-28): không thêm vai trò phụ huynh; đổi tên hồ sơ mặc định cũ thành "Trainer".
+- Phase 4 (D14-D17, 2026-10-28): tên đăng nhập = tên + số ngẫu nhiên (sửa tay được); mật khẩu ngẫu nhiên 8 ký tự in trên thẻ, học sinh bắt buộc đổi ở lần đăng nhập đầu; tách "Thu hồi tài khoản" (giữ học sinh + điểm) với "Xoá học sinh" (xoá hẳn kèm tài khoản, đúng D12; không có xoá mềm); có bảng nhật ký thao tác `teacher_audit_log`. Thiết kế: `docs/adr/0002-phase-4-student-accounts.md`.
 - Phase 3 (D12): mô hình lai theo `docs/adr/0001-phase-3-data-model.md`; một học sinh một lớp; **xoá học sinh là xoá hẳn** (kể cả sổ điểm); sổ điểm giữ toàn bộ lịch sử; ảnh đại diện tạm lưu DB (nén); chuyển dữ liệu trong app do giáo viên bấm; có dự án Supabase dev riêng (Harry duyệt 2026-10-27).
 - Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
 
@@ -39,12 +40,14 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 3 (dữ liệu mới + RLS): **hoàn thành 2026-10-28**. Migration `20261027120000_phase3_data_model.sql` đã chạy trên `classivy-dev` và **production** (Harry xác nhận), dữ liệu đã nâng cấp: app dùng bảng `classes`/`students`/`point_ledger` (`data_model_version = 2`), chỉ gửi phần thay đổi. Cột cũ `user_settings.students` giữ làm bản dự phòng tới Phase 7. Bảng `students` cũ của Imperial School đổi tên thành `students_imperial_old` (khoá).
 - Bài học Supabase: dự án mới không tự cấp quyền bảng (phải `grant` rõ ràng); dự án gốc có bảng cũ trùng tên. `npm run test:db` mô phỏng cả hai.
 - Migration khoá `app_state`/`users` đã chạy trên production (Harry xác nhận 2026-10-28).
-- **Còn chờ Harry:** gộp PR nhánh `claude/phase3-followup` (bản migration Phase 3 có bước 0, migration khoá bảng cũ, đổi tên hồ sơ), rồi chạy `supabase/migrations/20261028130000_rename_legacy_display_names.sql` trên production.
+- Phase 3 follow-up: PR #4 (`claude/phase3-followup`) đã gộp vào `main`. Việc chạy `20261028130000_rename_legacy_display_names.sql` trên production: **xác nhận lại với Harry** (BRIEF trước ghi là chờ chạy).
+- **Phase 4 (đang làm, nhánh `claude/phase4-student-accounts`, chưa commit):** đã viết migration `20261029100000_phase4_student_accounts.sql` (+ hoàn tác), Edge Function `student-accounts` (tạo/hàng loạt, đặt lại mật khẩu, khoá/mở, thu hồi), trang `/class/<lớp>/tai-khoan` (lọc, xác nhận, thẻ đăng nhập in được, nhật ký), ô đăng nhập nhận tên đăng nhập, cổng học sinh tối thiểu (đổi mật khẩu lần đầu; tài khoản học sinh không tải dữ liệu giáo viên). Kiểm chứng tự động đạt (typecheck, 172 test, test:db 2 kiểu dự án, smoke 11/11, build). **Chưa chạy trên Supabase dev/production, Edge Function chưa chạy trên Supabase thật.**
 
 ## 5. Bản đồ repo (hiện tại)
 
 - `src/app/`: khung app (`App.tsx` ~20 dòng, `AppRoutes`, `AppLayout`, `AppContext`), `controller/` (gom state/hành động), `providers/` (`GameDataProvider` + `gameData/` đồng bộ Supabase/localStorage, `UiEventsProvider`).
-- `src/features/<tính năng>/`: state, hành động, giao diện của class, students, attendance, homework, random, ludo, wheel, shop, pokemon, profile, settings, tools, feedback, auth.
+- `src/features/<tính năng>/`: state, hành động, giao diện của class, students, attendance, homework, random, ludo, wheel, shop, pokemon, profile, settings, tools, feedback, auth, accounts (Phase 4: quản lý tài khoản học sinh), studentPortal (Phase 4: cổng học sinh tối thiểu).
+- `supabase/functions/`: Edge Function `student-accounts` (`handler.ts` có test, `index.ts` là điểm vào Deno) và `_shared/studentAccount.ts` (logic thuần dùng chung với app). Runbook: `docs/phase-4-runbook.md`.
 - `src/domain/`: logic thuần có test (điểm, điểm danh, bài tập, battle, Cá Ngựa, Boss, Pokémon, tiến trình, trứng, ngày/tuần).
 - `src/components/` (component dùng chung), `src/data/` (hằng số, `pokemonData`), `src/lib/` (Supabase, âm thanh), `src/types/`.
 - `tests/smoke/` + `fixtures/sample-class.json`: smoke test Playwright. `docs/architecture.md`: hướng dẫn kiến trúc.
@@ -60,13 +63,17 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - SQL chờ từ Phase 2 (`docs/phase-3-pending-sql.md`) đã gộp vào migration Phase 3. Đổi tên hồ sơ cũ "Học sĩ triều đình" -> "Trainer": Harry duyệt (D13), file `20261028130000_rename_legacy_display_names.sql` chờ Harry chạy trên production.
 - Phase 3: `students.points` vẫn do game đặt trực tiếp; sổ điểm là nhật ký (tổng sổ = điểm ngay sau khi chuyển, có thể lệch nếu điểm đổi mà không ghi lịch sử). Ví tặng điểm Phase 6 phải dùng hàm DB atomic riêng (D2).
 - Phase 4 tạo tài khoản học sinh phải đặt `app_metadata.role = 'student'` để hồ sơ nhận vai trò học sinh.
-- Giới hạn gói miễn phí Supabase (500 MB/dự án, 2 dự án, dự án nghỉ 7 ngày bị tạm dừng) ghi trong runbook Phase 3; Edge Functions cần xác minh trước Phase 4.
+- Giới hạn gói miễn phí Supabase (500 MB/dự án, 2 dự án, dự án nghỉ 7 ngày bị tạm dừng) ghi trong runbook Phase 3. Edge Functions gói Free: 256 MB, 2 giây CPU/yêu cầu, 150 giây tổng, 100 hàm (tài liệu Supabase); hạn mức số lần gọi/tháng chưa tìm thấy, xem Dashboard.
+- Phase 4 cần thử trên dev: email ảo `@students.classivy.invalid` có được Supabase chấp nhận; phiên đang mở của học sinh bị khoá còn sống bao lâu; trigger xoá `auth.users` khi xoá học sinh; chi tiết trong `docs/phase-4-runbook.md`. API đăng ký công khai của Supabase vẫn mở (UI đã bỏ): khuyến nghị tắt "Allow new users to sign up" (cần Harry quyết).
+- Cờ "phải đổi mật khẩu" là cơ chế giao diện, không phải ranh giới bảo mật (DB không biết mật khẩu đã đổi chưa).
 
 ## 7. Quyết định còn mở
 
-- Không còn quyết định mở. (Vai trò phụ huynh: Harry quyết định không thêm, D13.)
+- Tắt đăng ký công khai của Supabase Auth (khuyến nghị, xem runbook Phase 4 bước 2.6)? Cần Harry quyết vì liên quan cách đăng nhập.
+- Ô đăng nhập hiện nhận cả email lẫn tên đăng nhập (chỉnh D11 để học sinh đăng nhập được): Harry xác nhận khi nghiệm thu.
+- (Vai trò phụ huynh: Harry quyết định không thêm, D13.)
 
 ## 8. Bước tiếp theo
 
-1. Harry gộp PR `claude/phase3-followup`, chạy migration đổi tên hồ sơ trên production, báo lại.
-2. Phase 4: giáo viên quản lý tài khoản học sinh (Edge Function tạo/khoá/xoá tài khoản, tên đăng nhập + mật khẩu do giáo viên cấp, `app_metadata.role = 'student'`). Bắt đầu bằng kiểm tra giới hạn Edge Functions gói Free và phân tích sâu Phase 4.
+1. Harry chạy `docs/phase-4-runbook.md` bước 1 trên `classivy-dev` (migration `20261029100000_phase4_student_accounts.sql`, `npx supabase functions deploy student-accounts`, thử theo danh sách), báo lại kết quả và 3 mục cần ghi lại. Sau đó mới production (bước 2).
+2. Sau khi Harry xác nhận: đóng Phase 4 trong PLAN, gộp nhánh. Phase 5 (cổng học sinh: xem hồ sơ, điểm, Pokémon của chính mình + chính sách RLS cho học sinh) bắt đầu bằng phân tích sâu riêng.

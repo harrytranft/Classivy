@@ -1,0 +1,6 @@
+# Cấu hình tối thiểu để Supabase CLI triển khai Edge Function (Phase 4). Chưa dùng `supabase start`.
+# project_id chỉ là tên gọi cục bộ; dự án thật được chọn bằng `--project-ref` khi triển khai (xem docs/phase-4-runbook.md).
+project_id = "classivy"
+
+[functions.student-accounts]
+verify_jwt = true

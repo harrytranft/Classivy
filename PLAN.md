@@ -29,6 +29,10 @@
 | D11 | Màn đăng nhập chỉ còn email + mật khẩu cho tài khoản đã có; bỏ nút "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (code nền giữ lại cho Phase 4). Harry xác nhận 2026-10-27 | 2026-10-27 |
 | D12 | Phase 3 theo ADR 0001: mô hình lai (bảng `classes`, `students`, `point_ledger`; dữ liệu game JSON trong `students.game_state`), một học sinh một lớp, **xoá học sinh là xoá hẳn** (kể cả sổ điểm), sổ điểm giữ toàn bộ lịch sử, ảnh đại diện tạm lưu DB (nén <= ~200 KB), chuyển dữ liệu trong app do giáo viên bấm, có dự án Supabase dev riêng | 2026-10-27 |
 | D13 | Không thêm vai trò phụ huynh. Đổi tên các hồ sơ giáo viên còn mang tên mặc định cũ "Học sĩ triều đình" thành "Trainer" | 2026-10-28 |
+| D14 | Phase 4: tên đăng nhập học sinh = tên + số ngẫu nhiên (vd `minhanh472`), giáo viên sửa tay được; hệ thống đổi thành email ảo nội bộ | 2026-10-28 |
+| D15 | Phase 4: mật khẩu ban đầu ngẫu nhiên (in trên thẻ), học sinh bắt buộc đổi ở lần đăng nhập đầu | 2026-10-28 |
+| D16 | Phase 4: tách "Thu hồi tài khoản" (xoá đăng nhập, giữ học sinh + điểm) và "Xoá học sinh" (xoá hẳn như D12, kèm tài khoản); khoá/mở khoá là tạm thời; không có xoá mềm | 2026-10-28 |
+| D17 | Phase 4: thêm bảng nhật ký thao tác của giáo viên (chỉ thêm, không ghi mật khẩu) | 2026-10-28 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -39,7 +43,7 @@
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Hoàn thành (2026-10-28) | **Có (migration)** |
-| 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
+| 4 | Giáo viên quản lý tài khoản học sinh | Đang làm (nhánh `claude/phase4-student-accounts`) | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
 | 7 | Hardening, kiểm thử bảo mật, ra mắt | Chưa bắt đầu | Có |
@@ -171,13 +175,18 @@ src/
 
 ---
 
-## Phase 4 - Giáo viên quản lý tài khoản học sinh (roadmap)
+## Phase 4 - Giáo viên quản lý tài khoản học sinh (ĐANG LÀM, bắt đầu 2026-10-28)
 
-- [ ] 4.1 Edge Function: tạo tài khoản (đơn lẻ và hàng loạt từ danh sách lớp), đặt lại mật khẩu, khoá/mở khoá, xoá mềm
-- [ ] 4.2 Quy ước tên đăng nhập, mật khẩu ban đầu, ép đổi mật khẩu lần đầu
-- [ ] 4.3 Màn hình quản lý học sinh (tìm, lọc, sửa, khoá, xoá, in thẻ đăng nhập)
-- [ ] 4.4 Nhật ký thao tác của giáo viên; xác nhận trước khi xoá
-- [ ] 4.5 Kiểm thử phân quyền: giáo viên chỉ thấy học sinh lớp mình
+**Nhánh:** `claude/phase4-student-accounts`. **Thiết kế:** `docs/adr/0002-phase-4-student-accounts.md` (quyết định D14-D17).
+
+- [x] 4.0 ADR 0002 + quyết định D14-D17 (Harry chốt 2026-10-28)
+- [x] 4.1 (đã viết và test với kho giả, **chưa triển khai/chạy trên Supabase thật**) Edge Function `student-accounts`: `create` (một em hoặc cả lớp, tối đa 60/lần), `reset_password`, `lock`/`unlock`, `revoke` (thu hồi tài khoản, giữ học sinh). Xoá học sinh dùng luồng sẵn có + trigger DB xoá luôn tài khoản (D16)
+- [x] 4.2 (đã viết; test bằng vitest + smoke với Supabase giả) Quy ước tên đăng nhập, mật khẩu ngẫu nhiên, ép đổi mật khẩu lần đầu (ô đăng nhập nhận tên đăng nhập; màn đổi mật khẩu cho tài khoản học sinh; tài khoản học sinh không tải dữ liệu giáo viên)
+- [x] 4.3 (smoke với Supabase giả đạt; chưa thử tay) Màn hình quản lý tài khoản theo lớp `/class/<lớp>/tai-khoan` (tìm, lọc, tạo, đặt lại mật khẩu, khoá, thu hồi, in thẻ đăng nhập). Sửa thông tin học sinh dùng luồng sẵn có
+- [x] 4.4 (migration + test DB đạt; chưa chạy trên Supabase thật) Nhật ký thao tác (bảng `teacher_audit_log`) + hộp xác nhận trước thao tác phá huỷ
+- [x] 4.5 (test SQL 2 kiểu dự án + test hàm với kho giả có phân quyền) Kiểm thử phân quyền: giáo viên chỉ tác động học sinh lớp mình (test SQL + test Edge Function với Supabase giả)
+
+**Bàn giao cho Harry:** chạy migration `20261029100000_phase4_student_accounts.sql` trên dev rồi production, triển khai hàm `student-accounts` bằng Supabase CLI, thử theo `docs/phase-4-runbook.md` (có danh sách 3 điều cần "ghi lại" trên dev). **Chưa có gì được áp dụng trên Supabase thật.** Phase 4 chưa được coi là hoàn thành cho tới khi Harry chạy runbook bước 1 trên dev và xác nhận.
 
 ---
 
@@ -335,3 +344,10 @@ src/
 - 2026-10-28: chạy migration trên production lỗi `42703: column "class_id" does not exist`, migration tự huỷ, không thay đổi gì (Harry kiểm tra: `data_model_version` chưa có). Nguyên nhân: dự án gốc còn bảng `public.students` cũ của Imperial School (0 dòng, cột `class_name`, `pet`...); `create table if not exists` bỏ qua nên bước tạo chỉ mục `class_id` lỗi. Sửa: migration thêm bước 0 đổi tên bảng cũ thành `students_imperial_old` (giữ dữ liệu, đổi tên chỉ mục, bật RLS, thu quyền API), dừng với thông báo rõ nếu `classes`/`point_ledger` có sẵn mà sai cấu trúc; file hoàn tác trả lại tên cũ. `npm run test:db` giờ mô phỏng bảng cũ này; bỏ bước 0 thì test báo đúng lỗi của Harry.
 - 2026-10-28: Harry chạy migration Phase 3 (bản có bước 0) trên production, nâng cấp dữ liệu, xác nhận ổn -> **nghiệm thu Phase 3** (kiểm chứng thủ công trên production do Harry thực hiện). PR #3 đã gộp trước bản sửa bước 0 nên bản sửa + migration khoá `app_state`/`users` đi qua PR tiếp theo (nhánh `claude/phase3-followup`). `npm run test:db` (2 kiểu dự án, có mô phỏng bảng cũ của dự án gốc) đạt; bỏ phần khoá thì test đỏ đúng chỗ.
 - 2026-10-28: Harry chạy `20261028120000_lock_legacy_tables.sql` trên production, câu kiểm tra trả `true` cho `app_state` và `users`. Thêm migration đổi tên hồ sơ mặc định cũ + `resolveDisplayName`: `npm test` 130/130, `npm run test:db` đạt (2 kiểu dự án), build đạt, `npm run smoke` 8/8.
+
+**Phase 4 - 2026-10-28** (kiểm thử tự động trên máy của phiên Claude; CHƯA chạy trên Supabase dev/production, chưa thử tay trên preview, Edge Function chưa chạy trên Deno/Supabase thật):
+- `npm run typecheck`: 0 lỗi. `npm test`: 20 file, 172 test đạt (thêm `studentAccount.test.ts` 17, `studentAccountsHandler.test.ts` 17, `accountView.test.ts` 8: tên đăng nhập/mật khẩu, kiểm tra yêu cầu, phân quyền giữa giáo viên, không ghi mật khẩu vào nhật ký, hoàn tác khi lỗi giữa chừng, che chi tiết lỗi). `npm run build`: thành công.
+- `npm run test:db` (PostgreSQL 16, `auth` giả lập, cả kiểu dự án Supabase cũ và mới): đạt, gồm test Phase 4: client không ghi được `username`/`must_change_password`/`status`/`auth_user_id`; định dạng và duy nhất của `username`; nhật ký chỉ `service_role` ghi, giáo viên chỉ đọc của mình, bất biến kể cả quyền quản trị; hàm lần đăng nhập đầu; xoá học sinh xoá luôn người dùng Auth (và hồ sơ), ghi nhật ký, không bao giờ xoá tài khoản giáo viên; xoá tài khoản giáo viên xoá dây chuyền không lỗi; migration chạy 2 lần, hoàn tác, chạy lại. Test đã bắt một lỗi thật trong lúc viết (ghi nhật ký khi xoá dây chuyền vi phạm khoá ngoại): đã sửa bằng kiểm tra giáo viên còn tồn tại.
+- `npm run smoke`: 11/11 đạt (3 test mới trong `tests/smoke/accounts.spec.ts`: trang tài khoản - lọc, xác nhận, tạo, thẻ đăng nhập, khoá, nhật ký; lỗi từ hàm; cổng học sinh - đổi mật khẩu lần đầu và không chạm dữ liệu giáo viên; thử gỡ chốt chặn học sinh trong `App.tsx` -> test đỏ). 19 ảnh gốc DOM cập nhật có chủ đích, đã đối chiếu từng dòng: chỉ khác nút mới "Tài khoản học sinh" (18 trang lớp) và ô đăng nhập "Email hoặc tên đăng nhập" (đăng nhập).
+- **Chưa kiểm chứng (cần dev):** Supabase có chấp nhận email `@students.classivy.invalid`; `ban_duration` với phiên đang mở; trigger xoá `auth.users` từ `public` đúng quyền; bản in thẻ trên máy in thật; giao diện trên điện thoại; triển khai CLI (`supabase/config.toml` tối thiểu mới được thêm, chưa chạy `functions deploy`).
+- Thay đổi nhỏ ngoài task: tin nhắn xác nhận xoá học sinh nói rõ xoá cả tài khoản và sổ điểm; `tsconfig.json` loại `supabase/functions/**/index.ts` (mã Deno) khỏi typecheck.
