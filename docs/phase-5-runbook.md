@@ -3,8 +3,8 @@
 Làm lần lượt từ trên xuống, **dev trước, production sau**. Chưa làm bước nào trên Supabase thật cho tới khi Harry tự chạy và xác nhận.
 
 File liên quan:
-- Migration: `supabase/migrations/20261030100000_phase5_student_portal.sql`
-- Hoàn tác: `supabase/rollback/20261030100000_phase5_student_portal_down.sql`
+- Migration: `supabase/migrations/20261030100000_phase5_student_portal.sql`, rồi `supabase/migrations/20261030110000_sync_profile_role.sql` (sửa vai trò học sinh bị ghi thành `teacher`)
+- Hoàn tác: `supabase/rollback/20261030100000_phase5_student_portal_down.sql`, `supabase/rollback/20261030110000_sync_profile_role_down.sql`
 - Thiết kế: `docs/adr/0003-phase-5-student-portal.md`
 
 ## Điều cần biết trước
@@ -15,7 +15,10 @@ File liên quan:
 
 ## Bước 1 - Dự án dev (`classivy-dev`)
 
-- [ ] 1.1 SQL Editor của dự án dev: dán toàn bộ file migration, bấm **Run**. Mong đợi: "Success. No rows returned".
+- [ ] 1.1 SQL Editor của dự án dev: dán toàn bộ file `20261030100000_phase5_student_portal.sql`, bấm **Run**. Mong đợi: "Success. No rows returned". Làm tiếp y như vậy với `20261030110000_sync_profile_role.sql`.
+- [ ] 1.1b Kiểm tra vai trò (Table Editor > `profiles`, hoặc chạy câu dưới): tài khoản học sinh đã tạo phải là `student`, tài khoản tạo trong Authentication là `teacher`:
+  `select p.email, p.role, u.raw_app_meta_data->>'role' as app_role from public.profiles p join auth.users u on u.id = p.user_id order by p.role;`
+  Hai cột `role` và `app_role` phải khớp (`app_role` trống = giáo viên).
 - [ ] 1.2 Chạy app ở máy với dự án dev (nhánh Phase 5, `.env.local` của dev). Bằng tài khoản giáo viên thử: chọn một học sinh có Pokémon, vài lần cộng/trừ điểm; vào **Tài khoản học sinh** tạo (hoặc đặt lại mật khẩu) cho em đó.
 - [ ] 1.3 Cửa sổ ẩn danh, **khổ điện thoại** (hoặc mở trên điện thoại thật cùng mạng): đăng nhập bằng tên đăng nhập. Sau màn đổi mật khẩu phải thấy hồ sơ: tên, lớp, Hào Quang, Trainer Level, Pokémon, huy hiệu, lịch sử điểm (mới nhất trước). So với trang giáo viên: **điểm và Pokémon phải khớp**.
 - [ ] 1.4 Giáo viên cộng điểm cho em đó, đợi vài giây cho app lưu; ở cửa sổ học sinh bấm **Cập nhật**: điểm mới và dòng lịch sử mới xuất hiện.
@@ -27,7 +30,7 @@ File liên quan:
 ## Bước 2 - Production (chỉ sau khi bước 1 ổn)
 
 - [ ] 2.1 Sao lưu: Cài đặt > "Export JSON Backup" trong app thật.
-- [ ] 2.2 SQL Editor của dự án production: chạy migration như 1.1.
+- [ ] 2.2 SQL Editor của dự án production: chạy 2 migration như 1.1, rồi kiểm tra như 1.1b.
 - [ ] 2.3 Merge nhánh Phase 5 để Vercel đưa giao diện mới lên (hoặc thử preview Vercel của nhánh trước).
 - [ ] 2.4 Thử với một học sinh thử (đăng nhập, xem hồ sơ, khoá/mở khoá) rồi mới phát tài khoản cho lớp thật.
 

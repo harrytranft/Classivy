@@ -64,7 +64,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Kiểm chứng sau rà soát (2026-10-27): typecheck 0 lỗi, `npm test` 106/106, build đạt, `npm run smoke` 6/6. Chưa thử tay trên preview Vercel.
 - SQL chờ từ Phase 2 (`docs/phase-3-pending-sql.md`) đã gộp vào migration Phase 3. Đổi tên hồ sơ cũ "Học sĩ triều đình" -> "Trainer": Harry duyệt (D13), file `20261028130000_rename_legacy_display_names.sql` chờ Harry chạy trên production.
 - Phase 3: `students.points` vẫn do game đặt trực tiếp; sổ điểm là nhật ký (tổng sổ = điểm ngay sau khi chuyển, có thể lệch nếu điểm đổi mà không ghi lịch sử). Ví tặng điểm Phase 6 phải dùng hàm DB atomic riêng (D2).
-- Phase 4 tạo tài khoản học sinh phải đặt `app_metadata.role = 'student'` để hồ sơ nhận vai trò học sinh.
+- Phase 4 tạo tài khoản học sinh phải đặt `app_metadata.role = 'student'` để hồ sơ nhận vai trò học sinh. Lỗi đã gặp (2026-10-28): Supabase gắn `app_metadata` SAU khi tạo người dùng nên hồ sơ bị ghi `teacher`; sửa bằng `20261030110000_sync_profile_role.sql` (`profiles.role` luôn theo `app_metadata.role`; tạo trong Authentication = giáo viên).
 - Giới hạn gói miễn phí Supabase (500 MB/dự án, 2 dự án, dự án nghỉ 7 ngày bị tạm dừng) ghi trong runbook Phase 3. Edge Functions gói Free: 256 MB, 2 giây CPU/yêu cầu, 150 giây tổng, 100 hàm (tài liệu Supabase); hạn mức số lần gọi/tháng chưa tìm thấy, xem Dashboard.
 - Phase 4 cần thử trên dev: email ảo `@students.classivy.invalid` có được Supabase chấp nhận; phiên đang mở của học sinh bị khoá còn sống bao lâu; trigger xoá `auth.users` khi xoá học sinh; chi tiết trong `docs/phase-4-runbook.md`. API đăng ký công khai của Supabase vẫn mở (UI đã bỏ): khuyến nghị tắt "Allow new users to sign up" (cần Harry quyết).
 - Phase 5: lý do trong lịch sử điểm là chữ tự do giáo viên/game ghi; học sinh thấy nguyên văn (nếu có tên bạn khác thì em thấy). Cần thử trên dev: thông báo đăng nhập tài khoản khoá có khác nhau giữa mật khẩu sai/đúng không (runbook Phase 5 bước 1.6).
@@ -79,5 +79,5 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 ## 8. Bước tiếp theo
 
 1. Phase 4: Harry làm runbook Phase 4 bước 2.5 (thử một học sinh trên production) và báo 3 mục "ghi lại" ở bước 1.5 -> đóng Phase 4 trong PLAN.
-2. Phase 5: Harry chạy `docs/phase-5-runbook.md` bước 1 trên `classivy-dev` (migration `20261030100000_phase5_student_portal.sql`, thử trên điện thoại, báo mục 1.6), rồi bước 2 trên production và gộp nhánh.
+2. Phase 5: Harry chạy `docs/phase-5-runbook.md` bước 1 trên `classivy-dev` (migration `20261030100000_phase5_student_portal.sql` rồi `20261030110000_sync_profile_role.sql`, thử trên điện thoại, báo mục 1.6), rồi bước 2 trên production và gộp nhánh.
 3. Sau nghiệm thu Phase 5: Phase 6 (bạn bè, quà tặng, ví điểm tặng) bắt đầu bằng ADR riêng + câu hỏi cho Harry (hạn mức tuần, loại quà, giáo viên bật/tắt theo lớp).

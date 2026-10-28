@@ -14,6 +14,8 @@ MIGRATION4=supabase/migrations/20261029100000_phase4_student_accounts.sql
 ROLLBACK4=supabase/rollback/20261029100000_phase4_student_accounts_down.sql
 MIGRATION5=supabase/migrations/20261030100000_phase5_student_portal.sql
 ROLLBACK5=supabase/rollback/20261030100000_phase5_student_portal_down.sql
+MIGRATION_ROLE=supabase/migrations/20261030110000_sync_profile_role.sql
+ROLLBACK_ROLE=supabase/rollback/20261030110000_sync_profile_role_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
 
@@ -91,6 +93,19 @@ run -c "do \$\$ begin
   if to_regprocedure('public.get_my_student_profile()') is not null then raise exception 'FAIL: phase 5 rollback left function'; end if; end \$\$"
 run -f "$MIGRATION5"
 run -f "$ROLLBACK5"
+
+echo "== Đồng bộ profiles.role theo app_metadata (chạy 2 lần) + test"
+# Tái hiện lỗi thật: Supabase tạo người dùng trước, gắn role học sinh sau => hồ sơ bị ghi 'teacher'.
+run -c "insert into auth.users (id, email) values ('bbbbbbbb-0000-4000-8000-0000000000b1', 'stale@students.test')" \
+    -c "update auth.users set raw_app_meta_data = '{\"role\":\"student\"}' where id = 'bbbbbbbb-0000-4000-8000-0000000000b1'"
+run -f "$MIGRATION_ROLE"
+run -f "$MIGRATION_ROLE"
+run -o /dev/null -f supabase/tests/40_sync_profile_role.test.sql
+run -f "$ROLLBACK_ROLE"
+run -c "do \$\$ begin
+  if to_regprocedure('public.sync_profile_role_from_app_metadata()') is not null then raise exception 'FAIL: role sync rollback left function'; end if; end \$\$"
+run -f "$MIGRATION_ROLE"
+run -f "$ROLLBACK_ROLE"
 
 echo "== Hoàn tác Phase 4, chạy lại, rồi hoàn tác để thử hoàn tác Phase 3"
 run -f "$ROLLBACK4"
