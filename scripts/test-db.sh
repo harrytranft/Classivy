@@ -15,6 +15,8 @@ ROLLBACK4=supabase/rollback/20261029100000_phase4_student_accounts_down.sql
 MIGRATION5=supabase/migrations/20261030100000_phase5_student_portal.sql
 ROLLBACK5=supabase/rollback/20261030100000_phase5_student_portal_down.sql
 MIGRATION_ROLE=supabase/migrations/20261030110000_sync_profile_role.sql
+MIGRATION6=supabase/migrations/20261031100000_phase6_social.sql
+ROLLBACK6=supabase/rollback/20261031100000_phase6_social_down.sql
 ROLLBACK_ROLE=supabase/rollback/20261030110000_sync_profile_role_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
@@ -106,6 +108,22 @@ run -c "do \$\$ begin
   if to_regprocedure('public.sync_profile_role_from_app_metadata()') is not null then raise exception 'FAIL: role sync rollback left function'; end if; end \$\$"
 run -f "$MIGRATION_ROLE"
 run -f "$ROLLBACK_ROLE"
+
+echo "== Migration Phase 6 (chạy 2 lần) + test bạn bè, quà, ví điểm tặng"
+run -f "$MIGRATION5"
+run -f "$MIGRATION_ROLE"
+run -f "$MIGRATION6"
+run -f "$MIGRATION6"
+run -o /dev/null -f supabase/tests/50_phase6_social.test.sql
+run -f "$ROLLBACK6"
+run -c "do \$\$ begin
+  if to_regclass('public.student_gifts') is not null or to_regclass('public.student_friendships') is not null then raise exception 'FAIL: phase 6 rollback left tables'; end if;
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'classes' and column_name = 'social_enabled') then
+    raise exception 'FAIL: phase 6 rollback left columns'; end if; end \$\$"
+run -f "$MIGRATION6"
+run -f "$ROLLBACK6"
+run -f "$ROLLBACK_ROLE"
+run -f "$ROLLBACK5"
 
 echo "== Hoàn tác Phase 4, chạy lại, rồi hoàn tác để thử hoàn tác Phase 3"
 run -f "$ROLLBACK4"
