@@ -2,7 +2,7 @@ import React from 'react';
 import { StudentCard } from '../../components/StudentCard';
 import { ClassDock } from '../../components/ClassDock';
 import { Button } from '../../components/ui';
-import { BookCheck, ChevronDown, ClipboardCheck, KeyRound, Minus, Plus, Search, UserCheck, UserPlus, UserX } from 'lucide-react';
+import { BookCheck, ChevronDown, ClipboardCheck, KeyRound, HeartHandshake, Minus, Plus, Search, UserCheck, UserPlus, UserX } from 'lucide-react';
 import { useApp } from '../../app/AppContext';
 import { CLASS_SUB_PAGES, classPath } from '../../app/screenRoutes';
 
@@ -58,6 +58,13 @@ export const ClassScreen: React.FC = () => {
           onClick={() => navigateTo(classPath(filterClass, CLASS_SUB_PAGES.accounts))}
         >
           Tài khoản học sinh
+        </Button>
+        <Button
+          variant="secondary"
+          icon={<HeartHandshake className="h-[18px] w-[18px]" aria-hidden />}
+          onClick={() => navigateTo(classPath(filterClass, CLASS_SUB_PAGES.social))}
+        >
+          Bạn bè & quà
         </Button>
         <Button icon={<UserPlus className="h-[18px] w-[18px]" aria-hidden />} onClick={handleAddStudent}>Thêm Trainer</Button>
       </div>
