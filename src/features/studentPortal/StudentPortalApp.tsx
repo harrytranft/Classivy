@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { SplashScreen } from '../../app/SplashScreen';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../auth/AuthContext';
 import { Button } from '../../components/ui';
@@ -22,7 +21,7 @@ export const validateNewPassword = (password: string, confirm: string): string |
 const Shell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="flex min-h-screen items-center justify-center bg-brand-cream p-4 font-brand">
     <div className="w-full max-w-md rounded-brand-lg border border-[#e6e2d4] bg-white p-8 text-center shadow-[0_24px_60px_-18px_rgba(0,38,25,0.28)]">
-      <img src="/brand/classivy-app-icon-dark.png" alt="Classivy" className="mx-auto h-16 w-16 rounded-brand-lg" />
+      <img src="/brand/classivy-logo-horizontal.png" alt="Classivy" className="mx-auto h-auto w-full max-w-[240px]" />
       {children}
     </div>
   </div>
@@ -82,10 +81,13 @@ const NOTICE: Record<'locked' | 'not_linked' | 'not_student' | 'error', { title:
   error: { title: 'Chưa tải được hồ sơ', body: 'Có lỗi kết nối. Hãy thử lại, hoặc hỏi thầy cô nếu vẫn lỗi.' }
 };
 
-const StudentHome: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+const StudentHome: React.FC<{ onLogout: () => void; onLoaded: () => void }> = ({ onLogout, onLoaded }) => {
   const { state, refresh, refreshing } = useStudentProfile();
+  const loaded = state.kind !== 'loading';
+  useEffect(() => { if (loaded) onLoaded(); }, [loaded]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (state.kind === 'loading') return <SplashScreen />;
+  // Trang loading toàn trang do AuthSplashGate (app/App.tsx) vẽ, giống tài khoản giáo viên; ở đây chỉ chờ.
+  if (!loaded) return null;
 
   if (state.kind === 'loaded' && state.result.status === 'active') {
     return <StudentProfileScreen profile={state.result.profile} refreshing={refreshing} onRefresh={refresh} onLogout={onLogout} />;
@@ -104,9 +106,11 @@ const StudentHome: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   );
 };
 
-export const StudentPortalApp: React.FC = () => {
+/** `onReadyChange`: báo cho khung ứng dụng cổng học sinh đã tải xong (true) hay đang tải (false) để hiện/gỡ trang loading. */
+export const StudentPortalApp: React.FC<{ onReadyChange?: (ready: boolean) => void }> = ({ onReadyChange }) => {
   const { logout } = useAuth();
   const [state, setState] = useState<'loading' | 'must-change' | 'ready' | 'error'>('loading');
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,8 +123,11 @@ export const StudentPortalApp: React.FC = () => {
   }, []);
 
   const handleLogout = () => { logout().catch(() => undefined); };
+  // Đổi mật khẩu lần đầu và màn lỗi sẵn sàng ngay; màn hồ sơ sẵn sàng khi StudentHome tải xong hồ sơ.
+  const ready = state === 'must-change' || state === 'error' || (state === 'ready' && profileLoaded);
+  useEffect(() => { onReadyChange?.(ready); }, [ready, onReadyChange]);
 
-  if (state === 'loading') return <SplashScreen />;
+  if (state === 'loading') return null;
 
   if (state === 'must-change') return <Shell><ChangePasswordForm onDone={() => setState('ready')} /></Shell>;
 
@@ -134,5 +141,5 @@ export const StudentPortalApp: React.FC = () => {
     );
   }
 
-  return <StudentHome onLogout={handleLogout} />;
+  return <StudentHome onLogout={handleLogout} onLoaded={() => setProfileLoaded(true)} />;
 };

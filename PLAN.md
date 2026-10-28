@@ -50,7 +50,7 @@
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 | D32 | Shop học sinh chỉ dùng ngoài giờ học; mỗi lần mua là một hàm DB kiểm tra số dư và ghi sổ điểm; app giáo viên tự gom (như D23) và dùng số phiên bản (D31) để không ghi đè. Có nút bật/tắt Shop theo lớp, mặc định TẮT | 2026-10-28 |
 | D33 | Học sinh được mua trứng, nở trứng, mua skill, đổi Pokémon đồng hành và support; đổi Pokémon không giới hạn; bấm skill để đọc công dụng | 2026-10-28 |
-| D34 | Nút Hồi sinh hiện trên thẻ học sinh khi điểm <= -20: điểm về 20, mất toàn bộ Pokémon, GIỮ trứng và skills; có hộp xác nhận riêng; ghi sổ điểm | 2026-10-28 |
+| D34 | Nút Hồi sinh hiện trên thẻ học sinh khi điểm <= -20: điểm về 20, mất toàn bộ Pokémon KÈM skills (skills gắn trên Pokémon; Harry chốt lại 2026-10-28), GIỮ trứng; có hộp xác nhận riêng; ghi sổ điểm | 2026-10-28 |
 | D35 | Skill dùng ở tài khoản giáo viên, ngay sau Random hoặc khi cộng/trừ điểm (xem bảng dưới); giữ luật mỗi skill tối đa 2 lượt rồi mất; mọi lần dùng ghi lịch sử | 2026-10-28 |
 | D36 | Skill nhóm C (Nhân Đôi, Lá Chắn, Miễn Tử) chỉ hỏi khi học sinh thực sự có skill phù hợp, còn lại im lặng | 2026-10-28 |
 | D37 | Đồng Tâm Hiệp Lực: giáo viên bấm tay, không tự động, không cần dữ liệu "bạn cùng bàn" | 2026-10-28 |
@@ -286,10 +286,10 @@ src/
 
 **Kết quả (2026-10-28, nhánh `claude/phase8-teacher-ui`, chưa commit):**
 - 8.1 Nguyên nhân chớp loading: `AuthContext` bật `loading` mỗi lần Supabase phát lại tín hiệu (quay lại tab, làm mới token). Nay chỉ hiện loading khi đăng nhập/đổi người dùng (`src/domain/authLoading.ts`, có test); `user` giữ nguyên tham chiếu nếu không đổi.
-- 8.2 Trang loading: `src/app/SplashScreen.tsx` + CSS `.cl-splash` trong `src/index.css` + bản tĩnh trong `index.html`. Hiện sau đăng nhập (giáo viên và học sinh), tối thiểu 0,9 giây; vào từng lớp hiện 0,7 giây kèm tên lớp (các trang con cùng lớp không hiện lại). Tham chiếu: `docs/reference/dictalearn-splash.md`.
+- 8.2 Trang loading: `src/app/SplashScreen.tsx` + CSS `.cl-splash` trong `src/index.css` + bản tĩnh trong `index.html`. Hiện sau đăng nhập (giáo viên và học sinh), tối thiểu 0,9 giây; với học sinh, trang loading giữ tới khi hồ sơ tải xong (`StudentPortalApp` báo `onReadyChange` cho `app/App.tsx`), không còn màn "Đang tải..." riêng; vào từng lớp hiện 0,7 giây kèm tên lớp (các trang con cùng lớp không hiện lại). Tham chiếu: `docs/reference/dictalearn-splash.md`.
 - 8.4 "Lớp Học" trên nav luôn về `/class`. 8.7 Vòng quay mặc định chọn hết học sinh có đi học của lớp.
 - 8.9 Hiệu ứng điểm ở `src/components/PointsFx.tsx`: tự nhận mọi thay đổi điểm (Ban thưởng, Random, Vòng quay...), bỏ qua thay đổi > 200 điểm hoặc 1,2 giây đầu sau khi thẻ hiện.
-- 8.10 Hồi sinh: `src/domain/revive.ts`. Skills nằm trên Pokémon nên khi mất Pokémon, skills (và số lượt đã dùng) được lưu ở `student.retainedSkills` (trong `game_state` JSON, không cần migration) và tự gắn vào Pokémon kế tiếp em nhận. Ghi một dòng lịch sử cho sổ điểm.
+- 8.10 Hồi sinh: `src/domain/revive.ts`. Mất toàn bộ Pokémon kèm skills (skills gắn trên Pokémon), giữ trứng; ghi một dòng lịch sử cho sổ điểm. Không cần migration.
 - 8.11 Phím tắt: `src/domain/shortcuts.ts`, bảng ở Cài đặt, phím `?` mở bảng nhắc. Phím lưu trên máy (localStorage `classivy_shortcuts_v1`), không đồng bộ đám mây.
 - Kiểm chứng tự động: typecheck 0 lỗi; vitest 209/209 (thêm 16 test: authLoading, revive, shortcuts); build đạt; smoke 23/23 sau khi cập nhật ảnh gốc có chủ đích (DOM đổi do nav/nút/modal mới; các file `*-cloud.json` chỉ đổi `upsertCount` +1 do nay chờ trang loading nên lần lưu khởi tạo Boss tách riêng). Thêm smoke test "Phase 8" (toolbar một dòng, hiệu ứng điểm, phím tắt, hồi sinh, nút Lớp Học, đăng xuất không confirm); sửa 2 test cũ cho đúng hành vi mới.
 - **Chưa kiểm chứng:** lỗi chớp loading trên trình duyệt thật (chỉ có unit test logic; Harry thử đổi tab qua lại); hiệu ứng chuyển động và trang loading bằng mắt trên màn chiếu lớp; phím tắt khi dùng bộ gõ tiếng Việt (Telex) - phím tắt bỏ qua khi đang gõ trong ô nhập.

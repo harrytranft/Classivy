@@ -1,6 +1,5 @@
 import { PokemonNatureId, PokemonPet, Student, StudentPokemonProgress } from '../types';
 import { LIST_POKEMONS, POKEMON_EVOLUTION_CHAINS } from '../data/pokemonData';
-import { applyRetainedSkills } from './revive';
 import { getPassiveIdForBaseDexId } from './pokemonPassives';
 
 const MAX_NORMAL_LEVEL = 30;
@@ -406,7 +405,7 @@ export const normalizeStudentPokemonData = (student: Student): Student => {
     return pets.findIndex(candidate => isSamePokemonPet(candidate, pet)) === index;
   });
 
-  return applyRetainedSkills({
+  return {
     ...student,
     eggInventory: student.eggInventory || [],
     pet: activePet,
@@ -417,7 +416,7 @@ export const normalizeStudentPokemonData = (student: Student): Student => {
     eggFragments: student.eggFragments || {},
     weeklyChest: student.weeklyChest,
     adventureJournal: student.adventureJournal || []
-  });
+  };
 };
 
 export interface AddPokemonXpResult {

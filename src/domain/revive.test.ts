@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Student, PokemonPet } from '../types';
-import { REVIVE_POINTS, applyRetainedSkills, canReviveStudent, reviveStudent } from './revive';
-import { normalizeStudentPokemonData } from './pokemonProgression';
+import { REVIVE_POINTS, canReviveStudent, reviveStudent } from './revive';
 
 const pet = (instanceId: string, skills: string[], skillUses: Record<string, number> = {}): PokemonPet => ({
   instanceId, dexId: 25, name: 'Pikachu', types: ['Electric'], accessories: [], skills, skillUses, hp: 80
@@ -19,7 +18,7 @@ describe('hồi sinh', () => {
     expect(reviveStudent(s)).toBe(s);
   });
 
-  it('đưa điểm về 20, mất Pokémon, giữ trứng, ghi lịch sử', () => {
+  it('đưa điểm về 20, mất toàn bộ Pokémon, giữ trứng, ghi lịch sử', () => {
     const p = pet('a', ['sk_guard']);
     const s = baseStudent({
       pet: p, pets: [p], supportPetInstanceId: 'a',
@@ -36,15 +35,10 @@ describe('hồi sinh', () => {
     expect(r.history[0].amount).toBe(45);
   });
 
-  it('giữ skills và số lượt đã dùng, gắn vào Pokémon kế tiếp', () => {
-    const p1 = pet('a', ['sk_guard', 'sk_lucky'], { sk_guard: 1, sk_lucky: 0 });
-    const p2 = pet('b', ['sk_guard'], { sk_guard: 0 });
+  it('mất cả skills cùng Pokémon, không để lại gì cho Pokémon kế tiếp', () => {
+    const p1 = pet('a', ['sk_guard', 'sk_lucky'], { sk_guard: 1 });
+    const p2 = pet('b', ['sk_double']);
     const r = reviveStudent(baseStudent({ pet: p1, pets: [p1, p2] }));
-    expect(r.retainedSkills).toEqual({ skills: ['sk_guard', 'sk_lucky'], skillUses: { sk_guard: 0, sk_lucky: 0 } });
-    const newPet = pet('c', []);
-    const next = normalizeStudentPokemonData({ ...r, pet: newPet, pets: [newPet] });
-    expect(next.retainedSkills).toBeUndefined();
-    expect(next.pet?.skills).toEqual(['sk_guard', 'sk_lucky']);
-    expect(applyRetainedSkills(r)).toBe(r);
+    expect(JSON.stringify(r)).not.toMatch(/sk_guard|sk_lucky|sk_double/);
   });
 });

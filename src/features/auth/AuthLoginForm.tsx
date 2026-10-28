@@ -52,7 +52,6 @@ export const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess 
             required
             value={email}
             onChange={e => setEmail(e.target.value)}
-            placeholder="email giáo viên hoặc tên đăng nhập"
             className="w-full rounded-brand-md border border-[#d9d6ca] p-3 text-sm font-semibold outline-none focus:ring-2 focus:ring-brand-emerald/30"
           />
         </div>
@@ -66,7 +65,6 @@ export const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess 
             required
             value={password}
             onChange={e => setPassword(e.target.value)}
-            placeholder="••••••••"
             className="w-full rounded-brand-md border border-[#d9d6ca] p-3 text-sm font-semibold outline-none focus:ring-2 focus:ring-brand-emerald/30"
           />
         </div>

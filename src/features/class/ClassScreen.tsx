@@ -135,8 +135,8 @@ export const ClassScreen: React.FC = () => {
         <Modal onClose={() => setReviveTarget(null)} title={`Hồi sinh ${reviveTarget.name}?`} subtitle="Thao tác này không hoàn tác được" icon="✚" size="md" zIndex="z-[200]" footer={<><Button variant="secondary" onClick={() => setReviveTarget(null)}>Huỷ</Button><Button variant="danger" onClick={confirmRevive}>Hồi sinh</Button></>}>
           <ul className="list-disc space-y-2 pl-5 text-[15px] text-brand-ink">
             <li>Hào Quang của {reviveTarget.name} về <b>{REVIVE_POINTS}</b> điểm.</li>
-            <li><b>Mất toàn bộ Pokémon</b> (đồng hành và support).</li>
-            <li>Giữ lại trứng và skills (skills gắn vào Pokémon kế tiếp em nhận).</li>
+            <li><b>Mất toàn bộ Pokémon</b> (đồng hành và support) <b>và skills</b> của các Pokémon đó.</li>
+            <li>Giữ lại trứng.</li>
           </ul>
         </Modal>
       )}

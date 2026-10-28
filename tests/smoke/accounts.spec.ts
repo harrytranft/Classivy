@@ -287,7 +287,11 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
 
+  // Cùng trang loading như giáo viên (logo Classivy) giữ tới khi hồ sơ tải xong; không có chữ "Đang tải..." riêng.
+  await expect(page.locator('.cl-splash__logo').first()).toBeVisible();
+  await expect(page.getByText('Đang tải', { exact: false })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
   await expect(page.getByText('Lớp 6A')).toBeVisible();
   await expect(page.getByText('Cấp 2', { exact: true })).toBeVisible();
   await expect(page.getByText('🌱 Rookie Trainer')).toBeVisible();
@@ -329,6 +333,7 @@ for (const viewport of [{ name: 'tablet', width: 820, height: 1180 }, { name: 'd
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     await page.goto('/');
     await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
+    await expect(page.locator('.cl-splash')).toHaveCount(0);
 
     const identity = await page.locator('[data-portal-column="identity"]').boundingBox();
     const activity = await page.locator('[data-portal-column="activity"]').boundingBox();
@@ -398,7 +403,7 @@ for (const viewport of [{ name: 'mobile', width: 390, height: 844 }, { name: 'ta
     await expect(gift).toContainText('Câu trả lời của bạn hay quá!');
     await expect(gift).toContainText('Đang chờ cộng');
     await gift.getByRole('button', { name: 'Báo thầy cô' }).click();
-    expect(mock.socialCalls.at(-1)).toEqual({ fn: 'student_report_gift', body: { p_gift_id: 11 } });
+    await expect.poll(() => mock.socialCalls.at(-1)).toEqual({ fn: 'student_report_gift', body: { p_gift_id: 11 } });
 
     // Quà đã tặng.
     await page.getByRole('tab', { name: 'Đã tặng' }).click();

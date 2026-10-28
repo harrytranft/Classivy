@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { GameDataProvider } from './providers/GameDataProvider';
 import { UiEventsProvider } from './providers/UiEventsProvider';
@@ -24,9 +24,14 @@ const TeacherApp: React.FC = () => (
 // Tài khoản học sinh (Phase 4) vào cổng học sinh và KHÔNG bao giờ mount GameDataProvider (không tải/ghi dữ liệu giáo viên).
 const App: React.FC = () => {
   const { user, loading } = useAuth();
+  const isStudent = user?.role === 'student';
+  // Học sinh: giữ trang loading cho tới khi hồ sơ tải xong (cùng một trang loading như giáo viên, không nháy hai lần).
+  const [portalReady, setPortalReady] = useState(false);
+  useEffect(() => { if (!isStudent) setPortalReady(false); }, [isStudent, user?.uid]);
+  const handlePortalReady = useCallback((ready: boolean) => setPortalReady(ready), []);
   return (
-    <AuthSplashGate loading={loading}>
-      {user?.role === 'student' ? <StudentPortalApp /> : <TeacherApp />}
+    <AuthSplashGate loading={loading || (isStudent && !portalReady)}>
+      {isStudent ? <StudentPortalApp onReadyChange={handlePortalReady} /> : <TeacherApp />}
     </AuthSplashGate>
   );
 };

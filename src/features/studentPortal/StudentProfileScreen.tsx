@@ -32,7 +32,7 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
     <div className="min-h-screen bg-brand-cream font-brand text-base text-brand-ink">
       <header className="sticky top-0 z-10 border-b border-[#e6e2d4] bg-white/95">
         <div className="mx-auto flex max-w-md items-center justify-between gap-2 px-4 py-2 md:max-w-3xl md:px-6 lg:max-w-6xl lg:px-8">
-          <img src="/brand/classivy-logo-horizontal.png" alt="Classivy" className="h-8 w-auto" />
+          <img src="/brand/classivy-logo-horizontal.png" alt="Classivy" className="h-14 w-auto md:h-16" />
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="md" icon={<RefreshCw size={18} />} loading={refreshing} onClick={refresh} aria-label="Cập nhật hồ sơ">
               <span className="sr-only sm:not-sr-only">Cập nhật</span>
