@@ -36,7 +36,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
 - Phase 2 (hệ thiết kế, reskin, thuật ngữ): hoàn thành, Harry nghiệm thu preview (2026-10-27), gộp vào `main` qua PR từ nhánh `claude/phase2-rebranding`. Nội dung: bỏ cấp bậc/Gemini, hệ thiết kế + Tailwind local, thuật ngữ Trainer, localStorage `classivy_*`, Modal/Toast và reskin shell, lớp, hồ sơ, cài đặt, đăng nhập, công cụ, điểm danh/bài tập cùng các modal game. Vòng cuối đã làm lại Random và Tặng Pokémon theo nền kem/trắng, CTA xanh rừng/vàng, tăng tương phản và dọn CTA đỏ không có nghĩa cảnh báo. Phông chữ: một nguồn duy nhất `fontFamily.sans` = Plus Jakarta Sans/Be Vietnam Pro; `font-royal` và kiểu VIẾT HOA giãn chữ đã bỏ. Rà soát sau Codex đã sửa: smoke đỏ, CSS ép màu làm nút trừ điểm Battle thành xanh, bảng Cá Ngựa mất nền (xem Nhật ký kiểm chứng trong PLAN).
 - Phase 3 (dữ liệu mới + RLS): **code xong 2026-10-27** trên nhánh `claude/phase3-data-model`, chưa gộp `main`. Có migration + file hoàn tác, test RLS trên Postgres cục bộ (`npm run test:db`), lớp lưu mới chỉ gửi phần thay đổi, hộp thoại "Nâng cấp cách lưu dữ liệu" (chạy thử, sao lưu, đối chiếu). App chạy được cả trước và sau migration (chưa chạy = cách lưu cũ).
-- **Migration CHƯA chạy ở đâu cả.** Supabase thật vẫn ở schema cũ (`profiles`, `user_settings`). Bước tiếp: Harry làm `docs/phase-3-runbook.md` bước 1 (dự án dev) rồi báo kết quả.
+- Migration **đã chạy trên dự án dev `classivy-dev`** và Harry xác nhận ổn (2026-10-28). **Production chưa chạy**: dự án Classivy gốc vẫn ở schema cũ (`profiles`, `user_settings`). Bài học: dự án Supabase mới không tự cấp quyền bảng, SQL phải `grant` rõ ràng (đã sửa, `npm run test:db` kiểm cả hai kiểu).
 
 ## 5. Bản đồ repo (hiện tại)
 
@@ -65,6 +65,6 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-1. Harry chạy `docs/phase-3-runbook.md` bước 1 trên dự án Supabase **dev**, báo kết quả (task 3.5).
-2. Ổn thì gộp PR Phase 3, chạy bước 2 trên production, Harry xác nhận -> nghiệm thu Phase 3.
+1. ~~Harry chạy runbook bước 1 trên dev~~ - xong 2026-10-28.
+2. Gộp PR Phase 3, chạy bước 2 trên production, Harry xác nhận -> nghiệm thu Phase 3.
 3. Phase 4: giáo viên quản lý tài khoản học sinh (Edge Function).

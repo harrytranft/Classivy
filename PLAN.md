@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (phần code xong trên nhánh `claude/phase3-data-model`; chờ Harry chạy migration trên Supabase dev theo `docs/phase-3-runbook.md`)
+**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (dev `classivy-dev` đã chạy ổn 2026-10-28; tiếp theo: PR gộp `main` rồi chạy migration production theo runbook bước 2)
 
 ## Mục tiêu
 
@@ -37,7 +37,7 @@
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
-| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Code xong, chờ Harry chạy trên dev (3.5) | **Có (migration)** |
+| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Dev chạy ổn (2026-10-28), chờ production | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
@@ -163,7 +163,7 @@ src/
 - [x] 3.2b Test RLS trên PostgreSQL 16 cục bộ với `auth` giả: `npm run test:db` (`scripts/test-db.sh`, `supabase/tests/`), 60 kiểm tra: giáo viên A/B tách biệt, ẩn danh bị chặn, sổ điểm bất biến (kể cả quyền quản trị), không ghi được `auth_user_id`/`status`/`role`, khoá ngoại chặn gắn lớp/sổ sang giáo viên khác, xoá học sinh/giáo viên kéo theo dữ liệu; migration chạy 2 lần + hoàn tác + chạy lại; dữ liệu cũ không đổi (2026-10-27)
 - [x] 3.3 Chuyển dữ liệu trong app: `src/domain/legacyImport.ts` (chạy thử, kiểm tra lỗi chặn/lưu ý, số dư đầu kỳ, đối chiếu từng học sinh, chạy lại được sau khi chuyển dở) + hộp thoại `src/features/dataUpgrade/DataUpgradeModal.tsx` (tải sao lưu JSON trước; lỗi thì giữ cách lưu cũ) (2026-10-27)
 - [x] 3.4 Lớp truy cập dữ liệu: `src/app/providers/gameData/cloudStore.ts` chọn cách lưu cũ/mới theo `data_model_version`; bảng mới chỉ gửi phần thay đổi (`src/domain/cloudModel.ts`, có test), lưu lần lượt không chồng nhau; sao lưu/khôi phục/nhập JSON đi cùng đường; nén ảnh đại diện quá lớn (`src/lib/imageCompression.ts`). App không có chế độ khách nên không cần giữ (2026-10-27)
-- [ ] 3.5 Harry chạy trên **dự án Supabase dev** theo `docs/phase-3-runbook.md` bước 1 và báo kết quả
+- [x] 3.5 Harry chạy trên **dự án Supabase dev** (`classivy-dev`) theo `docs/phase-3-runbook.md` bước 1: Harry xác nhận "chạy ổn" 2026-10-28 (sau khi sửa lỗi cấp quyền ở dự án mới, xem Nhật ký)
 - [x] 3.6 Checklist triển khai + sao lưu + hoàn tác: `docs/phase-3-runbook.md` bước 2 và "Nếu có sự cố" (2026-10-27). Chạy production chờ 3.5
 
 **Bàn giao cho Harry:** sao lưu dữ liệu, chạy migration trên dev rồi production theo hướng dẫn; xác nhận từng bước trước khi coi là đã áp dụng.
@@ -327,4 +327,4 @@ src/
 - `npm run smoke`: 8/8 đạt. 6 test cũ (Supabase chưa chạy migration) giữ nguyên ảnh gốc DOM và dữ liệu đồng bộ -> hành vi cũ không đổi. 2 test mới: nâng cấp (chạy thử, tải sao lưu, đối chiếu, tổng sổ = điểm), sau đó cộng điểm chỉ gửi 1 học sinh + 1 dòng sổ, không ghi cột cũ, mở lại đọc từ bảng; giáo viên mới dùng bảng mới ngay. Thử bỏ phần "chỉ gửi thay đổi" -> test đỏ đúng chỗ.
 
 **Phase 3 - 2026-10-28** (Harry chạy runbook bước 1 trên `classivy-dev`): bước 1.4c lỗi `permission denied for table profiles/user_settings` (42501). Nguyên nhân: dự án Supabase mới tạo không tự cấp quyền bảng cho vai trò `authenticated` như dự án cũ; `supabase-schema.sql` dựa vào việc tự cấp đó. Sửa: thêm `grant` rõ ràng vào `supabase-schema.sql` và migration Phase 3; `npm run test:db` giờ chạy cả hai kiểu dự án (cũ/mới), bỏ phần grant thì kiểu "mới" báo đúng lỗi này. Dữ liệu thật không bị ảnh hưởng (dự án gốc không đụng tới).
-
+- 2026-10-28: Harry xác nhận runbook bước 1 trên `classivy-dev` chạy ổn (migration, nâng cấp, dùng thử). Đây là kiểm chứng thủ công trên dev; production chưa chạy.
