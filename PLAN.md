@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 4 (chưa bắt đầu; Phase 3 đã nghiệm thu 2026-10-28)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 5 (đang làm, nhánh `claude/focused-lamport-rk8qji`; Phase 4 đã gộp `main`, chờ Harry xác nhận runbook 2.5)
 
 ## Mục tiêu
 
@@ -33,6 +33,10 @@
 | D15 | Phase 4: mật khẩu ban đầu ngẫu nhiên (in trên thẻ), học sinh bắt buộc đổi ở lần đăng nhập đầu | 2026-10-28 |
 | D16 | Phase 4: tách "Thu hồi tài khoản" (xoá đăng nhập, giữ học sinh + điểm) và "Xoá học sinh" (xoá hẳn như D12, kèm tài khoản); khoá/mở khoá là tạm thời; không có xoá mềm | 2026-10-28 |
 | D17 | Phase 4: thêm bảng nhật ký thao tác của giáo viên (chỉ thêm, không ghi mật khẩu) | 2026-10-28 |
+| D18 | Phase 5: học sinh đọc hồ sơ qua một hàm DB chọn lọc `get_my_student_profile()`, không mở quyền đọc bảng cho học sinh | 2026-10-28 |
+| D19 | Phase 5: "hạng" trên hồ sơ học sinh = Trainer Level + danh hiệu + huy hiệu; không hiển thị vị trí trong lớp | 2026-10-28 |
+| D20 | Phase 5: học sinh chỉ xem; mọi thay đổi vẫn do giáo viên (tương tác để Phase 6) | 2026-10-28 |
+| D21 | Ảnh đại diện giữ trong DB (đã nén); dời chuyển sang Supabase Storage tới Phase 7 (sửa Q5 ADR 0001) | 2026-10-28 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -43,8 +47,8 @@
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Hoàn thành (2026-10-28) | **Có (migration)** |
-| 4 | Giáo viên quản lý tài khoản học sinh | Đang làm (nhánh `claude/phase4-student-accounts`) | **Có (migration + Edge Function)** |
-| 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
+| 4 | Giáo viên quản lý tài khoản học sinh | Đã gộp `main` (PR #5); chờ Harry xác nhận runbook bước 2.5 | **Có (migration + Edge Function)** |
+| 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Đang làm (nhánh `claude/focused-lamport-rk8qji`) | **Có (migration)** |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
 | 7 | Hardening, kiểm thử bảo mật, ra mắt | Chưa bắt đầu | Có |
 
@@ -190,12 +194,20 @@ src/
 
 ---
 
-## Phase 5 - Cổng học sinh (roadmap)
+## Phase 5 - Cổng học sinh (ĐANG LÀM, bắt đầu 2026-10-28)
 
-- [ ] 5.1 Trang đăng nhập học sinh, giao diện điện thoại trước
-- [ ] 5.2 Xem hồ sơ: điểm, rank, Pokémon, huy hiệu, lịch sử điểm (chỉ của mình)
-- [ ] 5.3 Tài khoản bị khoá hiển thị thông báo rõ ràng, không lộ thông tin
-- [ ] 5.4 Kiểm thử RLS: học sinh không đọc được dữ liệu người khác
+**Nhánh:** `claude/focused-lamport-rk8qji`. **Thiết kế:** `docs/adr/0003-phase-5-student-portal.md` (D18-D21). **Runbook:** `docs/phase-5-runbook.md`.
+
+- [x] 5.0 ADR 0003 + quyết định D18-D21 (Harry chốt 2026-10-28: hàm DB chọn lọc, chỉ Trainer Level, chỉ xem, ảnh giữ DB)
+- [x] 5.1 (smoke với Supabase giả, khổ 390px; chưa thử trên điện thoại thật) Đăng nhập học sinh: dùng chung màn đăng nhập (ô nhận tên đăng nhập từ Phase 4), sau đổi mật khẩu vào thẳng hồ sơ; giao diện một cột, điện thoại trước, chữ 16px/nhãn 13px, nút ≥ 44px, không cuộn ngang
+- [x] 5.2 (unit + smoke; chưa chạy trên Supabase thật) Hồ sơ chỉ của mình: Hào Quang, Trainer Level + danh hiệu (D19), Pokémon đồng hành + HP, trứng đang ấp (không lộ Pokémon sắp nở), bộ sưu tập, huy hiệu, 30 dòng lịch sử gần nhất; nút "Cập nhật" (không hỏi liên tục)
+- [x] 5.3 (test DB + smoke) Tài khoản bị khoá: đăng nhập bị Supabase từ chối với thông báo chung (Phase 4); phiên đang mở mà bị khoá thì hàm trả `locked`, màn hình chỉ còn "Tài khoản đang tạm khoá" + Đăng xuất. Thêm màn cho "chưa gắn học sinh", "không phải tài khoản học sinh", lỗi mạng (thử lại được)
+- [x] 5.4 (test SQL 2 kiểu dự án) RLS: học sinh vẫn đọc 0 dòng ở `students`/`point_ledger`/`classes`/`student_recent_history`; hàm chỉ trả dữ liệu của người gọi, chỉ khoá danh sách cho phép, không có `teacher_id`/tên đăng nhập/dữ liệu bạn khác; khoá → chỉ trạng thái; ẩn danh bị chặn; tài khoản giáo viên gắn nhầm → `not_student`
+- [x] 5.4b (test SQL 2 kiểu dự án; chưa chạy trên Supabase thật) **Sửa lỗi Harry báo 2026-10-28:** tài khoản học sinh tạo từ app hiện `role = teacher` trong `profiles`. Nguyên nhân: Supabase tạo người dùng trước rồi mới gắn `app_metadata.role = 'student'`, trigger tạo hồ sơ chỉ chạy lúc tạo. Sửa: migration `20261030110000_sync_profile_role.sql` (trigger đồng bộ `profiles.role` theo `app_metadata.role` + sửa các tài khoản đã tạo). Quy tắc Harry chốt: tạo trong Supabase Authentication = giáo viên, giáo viên tạo trong app = học sinh. Hệ quả nếu không sửa: hồ sơ Phase 5 báo "không phải tài khoản học sinh"; học sinh lọt qua chốt "chỉ giáo viên" của Edge Function (RLS vẫn chặn tác động học sinh người khác)
+- [ ] 5.5 Harry chạy `docs/phase-5-runbook.md` bước 1 trên `classivy-dev` (migration + thử trên điện thoại) và báo kết quả mục 1.6
+- [ ] 5.6 Harry chạy bước 2 trên production, nghiệm thu
+
+**Bàn giao cho Harry:** chạy `20261030100000_phase5_student_portal.sql` rồi `20261030110000_sync_profile_role.sql` trên dev rồi production (sau migration Phase 4), thử theo runbook. **Chưa có gì được áp dụng trên Supabase thật.**
 
 ---
 
@@ -352,3 +364,10 @@ src/
 - **Chưa kiểm chứng (cần dev):** Supabase có chấp nhận email `@students.classivy.invalid`; `ban_duration` với phiên đang mở; trigger xoá `auth.users` từ `public` đúng quyền; bản in thẻ trên máy in thật; giao diện trên điện thoại; triển khai CLI (`supabase/config.toml` tối thiểu mới được thêm, chưa chạy `functions deploy`).
 - Thay đổi nhỏ ngoài task: tin nhắn xác nhận xoá học sinh nói rõ xoá cả tài khoản và sổ điểm; `tsconfig.json` loại `supabase/functions/**/index.ts` (mã Deno) khỏi typecheck.
 - 2026-10-28: Harry báo đã làm runbook Phase 4 tới bước 2.4 (migration + triển khai hàm trên production; trước đó gặp và sửa lỗi thiếu quyền `service_role` đọc `profiles`, đã đưa vào migration). Harry yêu cầu gộp nhánh. **Chưa có xác nhận kết quả thử ở 2.5** (tạo/đăng nhập/thu hồi một học sinh thử trên production) và 3 mục "ghi lại" ở bước 1.5, nên Phase 4 chưa được ghi là nghiệm thu.
+
+**Phase 5 - 2026-10-28** (kiểm thử tự động trên máy của phiên Claude; CHƯA chạy trên Supabase dev/production, chưa thử tay trên điện thoại thật):
+- `npm run typecheck`: 0 lỗi. `npm test`: 21 file, 182 test đạt (thêm `studentPortal.test.ts` 10: đọc gói dữ liệu, bỏ huy hiệu/Pokémon hỏng, lịch sử mới nhất trước, trạng thái khoá/chưa gắn, dữ liệu sai dạng). `npm run build`: thành công.
+- `npm run test:db` (PostgreSQL 16, `auth` giả, cả kiểu dự án cũ và mới): đạt, thêm `supabase/tests/30_phase5_portal.test.sql` (dữ liệu của mình, danh sách khoá cho phép, trứng không lộ `assignedDexId`, không có `teacher_id`/tên đăng nhập, lịch sử tối đa 30 và bỏ số dư đầu kỳ, không thấy lịch sử bạn khác, học sinh vẫn đọc 0 dòng ở bảng, khoá chỉ trả trạng thái, chưa gắn/không phải học sinh, ẩn danh bị chặn); migration chạy 2 lần, hoàn tác, chạy lại. Thử bỏ kiểm tra khoá trong hàm -> test đỏ đúng chỗ.
+- `npm run smoke`: 13/13 đạt (2 test mới: hồ sơ ở khổ 390px - nội dung, thứ tự lịch sử, dấu +/−, không có hạng trong lớp, chỉ có nút Cập nhật/Đăng xuất, không cuộn ngang, bị khoá giữa chừng thì dữ liệu biến mất, không chạm bảng giáo viên; lỗi tải hồ sơ -> thử lại). Không ảnh gốc DOM nào đổi (giao diện giáo viên giữ nguyên). Đã xem ảnh chụp hồ sơ và màn khoá.
+- **Chưa kiểm chứng (cần dev):** hàm trên Supabase thật; hiển thị trên điện thoại thật và ảnh Pokémon thật (smoke chặn mạng ngoài nên chỉ thấy hình thay thế); thông báo đăng nhập tài khoản khoá khi mật khẩu sai/đúng (runbook 1.6).
+- 2026-10-28: Harry báo tài khoản học sinh hiện `role = teacher` trên Supabase. Đã tái hiện trong `npm run test:db` (tạo người dùng rồi mới gắn role, như Supabase làm) và sửa bằng `20261030110000_sync_profile_role.sql`; test mới `supabase/tests/40_sync_profile_role.test.sql` (tài khoản cũ được sửa, học sinh mới thành `student`, tài khoản tạo trong Authentication vẫn `teacher`, người dùng không tự đổi được vai trò); migration chạy 2 lần, hoàn tác, chạy lại; cả 2 kiểu dự án đạt.
