@@ -20,7 +20,7 @@ export const EggInventoryPanel = ({ student }: { student: Student }) => {
     <div className="rounded-[32px] border border-amber-200 bg-amber-50/60 p-5 text-left shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h4 className="text-xl text-amber-950 font-extrabold">🥚 Egg Inventory</h4>
+          <h4 className="text-xl text-amber-950 font-extrabold">🥚 Kho trứng</h4>
           <p className="mt-1 text-xs font-bold text-amber-900/70">
             {Object.entries(counts).map(([label, count]) => `${label} x${count}`).join(' · ')}
           </p>

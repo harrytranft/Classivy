@@ -79,15 +79,14 @@
 </div>
 <button class="text-sm font-bold text-brand-forest transition-colors hover:text-brand-forest-deep">← Quay lại lớp</button>
 </div>
-<div class="flex shrink-0 overflow-x-auto border-b border-[#e6e2d4]">
-<button class="min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors border-brand-forest text-brand-forest">📜 Tiểu sử &amp; công trạng</button>
-<button class="min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors flex items-center justify-center gap-2 border-transparent text-brand-ink/60 hover:text-brand-ink">
-<span>🔥</span>
-<span>Linh thú hộ mệnh</span>
+<div role="tablist" aria-label="Hồ sơ Trainer" class="flex shrink-0 overflow-x-auto border-b border-[#e6e2d4]">
+<button role="tab" aria-selected="true" class="flex min-w-max flex-1 items-center justify-center gap-2 border-b-2 px-3 py-3 text-sm font-bold transition-colors border-brand-forest text-brand-forest">
+<span aria-hidden="true">🧑‍🎓</span>
+<span>Hồ sơ</span>
 </button>
-<button class="min-w-max flex-1 border-b-2 px-3 py-3 text-sm font-bold transition-colors flex items-center justify-center gap-2 border-transparent text-brand-ink/60 hover:text-brand-ink">
-<span>🔮</span>
-<span>Hợp nhất linh thú</span>
+<button role="tab" aria-selected="false" class="flex min-w-max flex-1 items-center justify-center gap-2 border-b-2 px-3 py-3 text-sm font-bold transition-colors border-transparent text-brand-ink/60 hover:text-brand-ink">
+<span aria-hidden="true">🔥</span>
+<span>Pokémon</span>
 </button>
 </div>
 <div class="space-y-8 animate-in fade-in duration-300">
@@ -111,13 +110,13 @@
 </div>
 <div class="mt-4 grid gap-3 sm:grid-cols-2">
 <div class="rounded-2xl bg-white p-3">
-<p class="mb-2 text-xs font-black text-stone-400">Unlocked Titles</p>
+<p class="mb-2 text-xs font-black text-stone-400">Danh hiệu đã mở</p>
 <div class="flex flex-wrap gap-2">
 <button class="rounded-full border px-3 py-1 text-xs font-black border-brand-forest bg-brand-forest text-brand-cream">🌱 Rookie Trainer</button>
 </div>
 </div>
 <div class="rounded-2xl bg-white p-3">
-<p class="mb-2 text-xs font-black text-stone-400">Gym Badges</p>
+<p class="mb-2 text-xs font-black text-stone-400">Huy hiệu</p>
 <p class="text-xs font-bold text-stone-400">Chưa có huy hiệu.</p>
 </div>
 </div>
@@ -151,7 +150,7 @@
 <button class="bg-gray-100 text-red-800 px-6 py-4 rounded-xl font-bold hover:bg-gray-200 transition-all">Xóa</button>
 </div>
 <div class="pt-8 border-t">
-<h3 class="text-xl mb-6 text-gray-800 font-extrabold">Biên Niên Sử</h3>
+<h3 class="text-xl mb-6 text-gray-800 font-extrabold">Lịch sử điểm</h3>
 <div class="space-y-3 h-80 overflow-y-auto pr-2 custom-scrollbar">
 <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex justify-between items-center group hover:border-red-800/20">
 <div>

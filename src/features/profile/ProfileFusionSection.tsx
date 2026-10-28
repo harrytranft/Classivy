@@ -3,7 +3,8 @@ import { getPokemonArtworkUrl, getPokemonDisplayName, handlePokemonArtworkError 
 import { getFusionCandidates } from '../../domain/pokemonCollection';
 import { useApp } from '../../app/AppContext';
 
-export const ProfileFusionTab: React.FC = () => {
+// Phase 12D: Hợp nhất là một khu bên trong tab Pokémon (không còn tab riêng).
+export const ProfileFusionSection: React.FC = () => {
   const {
     editingStudent, handleFuseSelectedPokemons, petSkills, selectedFusionPetDexIds,
     setSelectedFusionPetDexIds

@@ -49,7 +49,8 @@ export const deterministicNatureFromInstanceId = (instanceId?: string, dexId?: n
 
 export const getPokemonDisplayName = (pet?: PokemonPet): string => {
   if (!pet) return '';
-  return pet.nickname || pet.speciesName || pet.name;
+  const species = pet.speciesName || pet.name;
+  return pet.nickname || (pet.isFusion && species ? `Hợp Thể ${species}` : species);
 };
 
 const officialArtworkUrl = (dexId: number, shiny = false, cdn: 'jsdelivr' | 'raw' = 'jsdelivr'): string => {

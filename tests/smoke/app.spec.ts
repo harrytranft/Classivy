@@ -370,10 +370,13 @@ test('các màn hình chính', async ({ page }) => {
   await page.getByText('An 6A', { exact: true }).first().click();
   await page.getByText('Hồ Sơ Trainer').waitFor();
   await snap(page, '14-profile-info', state);
-  await page.getByRole('button', { name: /Ấp trứng Pokémon|Linh thú hộ mệnh/ }).click();
+  // Phase 12D (D45): Hồ sơ Trainer chỉ còn hai tab (Hồ sơ, Pokémon); Hợp nhất nằm trong tab Pokémon.
+  await expect(page.getByRole('tab')).toHaveCount(2);
+  await expect(page.getByRole('tab', { name: 'Hồ sơ' })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('tab', { name: /Pokémon/ }).click();
+  await expect(page.getByRole('tab', { name: /Pokémon/ })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('heading', { name: /Hợp nhất Pokémon/ })).toBeVisible();
   await snap(page, '15-profile-pet', state);
-  await page.getByRole('button', { name: /Hợp nhất linh thú/ }).click();
-  await snap(page, '16-profile-fusion', state);
   await page.getByRole('button', { name: /Quay lại lớp/ }).click();
   await snap(page, '17-back-to-class', state);
   await snapCloud(page, '18-screens', state);

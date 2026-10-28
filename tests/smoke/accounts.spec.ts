@@ -125,7 +125,7 @@ async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
     }
     if (p === '/rest/v1/rpc/student_first_login_pending') { mock.rpcCalls.push('pending'); await json(route, firstLoginPending); return; }
     if (p === '/rest/v1/rpc/student_shop_overview') { await json(route, mock.shop); return; }
-    const shopFn = p.match(/^\/rest\/v1\/rpc\/(student_shop_buy_egg|student_shop_hatch_egg|student_shop_buy_skill|student_set_companion|student_set_support)$/);
+    const shopFn = p.match(/^\/rest\/v1\/rpc\/(student_shop_buy_egg|student_shop_hatch_egg|student_shop_buy_skill|student_set_companion|student_set_support|student_fuse_pets)$/);
     if (shopFn) {
       const body = (request.postDataJSON() ?? {}) as Record<string, unknown>;
       mock.shopCalls.push({ fn: shopFn[1], body });
@@ -147,6 +147,12 @@ async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
         if (profile.game.pet) profile.game.pet.skills = [...(profile.game.pet.skills as string[]), String(body.p_skill_id)];
       } else if (shopFn[1] === 'student_set_companion') {
         profile.game.pet = profile.game.pets.find(pet => pet.instanceId === body.p_instance_id);
+      } else if (shopFn[1] === 'student_fuse_pets') {
+        const ids = body.p_instance_ids as string[];
+        // Thú do hàm DB tạo: chưa có tên, có cờ isFusion; app hiển thị "Hợp Thể <loài>".
+        const fused = { instanceId: 'pk-fused', dexId: 6, baseDexId: 6, name: '', isFusion: true, hp: 100, accessories: [], skills: [], level: 2 };
+        profile.game.pets = [fused, ...profile.game.pets.filter(pet => !ids.includes(String(pet.instanceId)))];
+        profile.game.pet = fused;
       }
       mock.profile = profile;
       await json(route, { points: profile.points, revision: 1 });
@@ -694,8 +700,73 @@ test('học sinh: trang Pokémon - Cửa hàng đóng thì không đổi đượ
   await page.goto('/');
   await expect(page.locator('.cl-splash')).toHaveCount(0);
   await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
-  await expect(page.getByText('Thầy cô sẽ mở Cửa hàng khi tới giờ')).toBeVisible();
+  await expect(page.getByText('Thầy cô sẽ mở Cửa hàng khi tới giờ. Lúc đó em đổi')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' })).toHaveCount(0);
+  expect(mock.shopCalls).toEqual([]);
+  expect(mock.errors).toEqual([]);
+});
+
+// Phase 12C (D42): học sinh tự Hợp nhất Pokémon trên trang Pokémon.
+test('học sinh: Hợp nhất Pokémon (chọn 2, xác nhận, nhận Pokémon mới); đóng/đang ấp thì khoá', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  mock.shop = { enabled: true, points: 42, eggPrices: { normal: 10, special: 20 }, skills: [] };
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
+  // Đang ấp trứng (hồ sơ mẫu có trứng): chưa hợp nhất được.
+  await expect(page.getByText('Đang ấp trứng nên chưa hợp nhất được')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Hợp nhất 2 Pokémon' })).toHaveCount(0);
+
+  // Hết ấp trứng: chọn 2 Pokémon rồi hợp nhất.
+  const base = JSON.parse(JSON.stringify(PROFILE_PAYLOAD));
+  delete base.game.egg;
+  mock.profile = base;
+  await page.getByRole('button', { name: 'Cập nhật hồ sơ' }).click();
+  const fuse = page.getByRole('button', { name: 'Hợp nhất 2 Pokémon' });
+  await expect(fuse).toBeDisabled();
+  await page.getByRole('button', { name: 'Chọn Pikachu để hợp nhất' }).click();
+  await expect(fuse).toBeDisabled();
+  await page.getByRole('button', { name: 'Chọn Bulbasaur để hợp nhất' }).click();
+  await expect(page.getByText('Đã chọn 2/2')).toBeVisible();
+  await fuse.click();
+  const dialog = page.getByRole('dialog', { name: 'Hợp nhất Pokémon?' });
+  await expect(dialog).toContainText('Pikachu và Bulbasaur sẽ biến mất');
+  await dialog.getByRole('button', { name: 'Thôi' }).click();
+  await expect(dialog).toHaveCount(0);
+  expect(mock.shopCalls).toEqual([]);
+  await fuse.click();
+  await page.getByRole('dialog', { name: 'Hợp nhất Pokémon?' }).getByRole('button', { name: 'Xác nhận hợp nhất' }).click();
+  await expect(page.getByRole('status')).toContainText('Hợp nhất thành công');
+  expect(mock.shopCalls.at(-1)).toEqual({ fn: 'student_fuse_pets', body: { p_instance_ids: ['pet-1', 'pet-2'] } });
+  await expect(page.getByText('Hợp Thể Charizard').first()).toBeVisible();
+  await expect(page.getByText('Bulbasaur')).toHaveCount(0);
+  await expect(page.getByText('Em cần ít nhất 2 Pokémon để hợp nhất.')).toBeVisible();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/71-fusion.png', fullPage: true });
+
+  // Lỗi từ DB (lớp vừa đóng) hiện tiếng Việt.
+  mock.profile = JSON.parse(JSON.stringify(base));
+  await page.getByRole('button', { name: 'Cập nhật hồ sơ' }).click();
+  await page.getByRole('button', { name: 'Chọn Pikachu để hợp nhất' }).click();
+  await page.getByRole('button', { name: 'Chọn Bulbasaur để hợp nhất' }).click();
+  mock.shopError = 'shop_closed';
+  await page.getByRole('button', { name: 'Hợp nhất 2 Pokémon' }).click();
+  await page.getByRole('dialog', { name: 'Hợp nhất Pokémon?' }).getByRole('button', { name: 'Xác nhận hợp nhất' }).click();
+  await expect(page.getByRole('alert')).toContainText('Cửa hàng của lớp đang đóng');
+  const teacherTables = mock.restPaths.filter(p => /^(user_settings|classes|students|point_ledger)$/.test(p));
+  expect(teacherTables).toEqual([]);
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: Hợp nhất bị khoá khi Cửa hàng đóng', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  mock.shop = { enabled: false, points: 42, eggPrices: { normal: 10, special: 20 }, skills: [] };
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
+  await expect(page.getByText('lúc đó em hợp nhất được nhé')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Hợp nhất 2 Pokémon' })).toHaveCount(0);
   expect(mock.shopCalls).toEqual([]);
   expect(mock.errors).toEqual([]);
 });

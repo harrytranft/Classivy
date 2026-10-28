@@ -11,7 +11,8 @@ export type ShopAction =
   | { fn: 'student_shop_hatch_egg'; args?: undefined }
   | { fn: 'student_shop_buy_skill'; args: { p_skill_id: string } }
   | { fn: 'student_set_companion'; args: { p_instance_id: string } }
-  | { fn: 'student_set_support'; args: { p_instance_id: string | null } };
+  | { fn: 'student_set_support'; args: { p_instance_id: string | null } }
+  | { fn: 'student_fuse_pets'; args: { p_instance_ids: string[] } };
 
 export const useStudentShop = (refreshSignal: number, onChanged: () => Promise<unknown>) => {
   const [state, setState] = useState<ShopState>({ kind: 'loading' });

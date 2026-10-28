@@ -21,7 +21,7 @@ export const ExpeditionPanel = ({ student }: { student: Student }) => {
     <div className="rounded-[32px] border border-emerald-200 bg-emerald-50/70 p-5 text-left shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h4 className="text-xl text-emerald-950 font-extrabold">🧭 Pokémon Expedition</h4>
+          <h4 className="text-xl text-emerald-950 font-extrabold">🧭 Thám hiểm Pokémon</h4>
           <p className="mt-1 text-xs font-bold text-emerald-900/70">
             {!student.pet
               ? 'Cần active Pokémon để đi expedition.'

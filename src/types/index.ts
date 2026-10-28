@@ -122,6 +122,7 @@ export interface PokemonPet {
   bond?: number;
   charge?: number;
   isShiny?: boolean;
+  isFusion?: boolean; // Tạo từ Hợp nhất ở tài khoản học sinh (DB không giữ tên loài): hiển thị "Hợp Thể <loài>"
   masteryXp?: number;
   masteryStars?: number;
   passiveId?: string;

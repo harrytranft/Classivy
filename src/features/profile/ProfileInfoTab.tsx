@@ -41,7 +41,7 @@ export const ProfileInfoTab: React.FC = () => {
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl bg-white p-3">
-                <p className="mb-2 text-xs font-black text-stone-400">Unlocked Titles</p>
+                <p className="mb-2 text-xs font-black text-stone-400">Danh hiệu đã mở</p>
                 <div className="flex flex-wrap gap-2">
                   {(trainerProgress.unlockedTitleIds || ['rookie']).map(titleId => {
                     const title = getTrainerTitleDefinition(titleId);
@@ -68,7 +68,7 @@ export const ProfileInfoTab: React.FC = () => {
                 </div>
               </div>
               <div className="rounded-2xl bg-white p-3">
-                <p className="mb-2 text-xs font-black text-stone-400">Gym Badges</p>
+                <p className="mb-2 text-xs font-black text-stone-400">Huy hiệu</p>
                 {earnedBadgeViews.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {earnedBadgeViews.map(({ badge, definition }) => (
@@ -88,7 +88,7 @@ export const ProfileInfoTab: React.FC = () => {
 
       {editingStudent.adventureJournal && editingStudent.adventureJournal.length > 0 && (
         <div className="rounded-[32px] border border-stone-200 bg-stone-50 p-5">
-          <h3 className="text-xl text-stone-900 font-extrabold">📖 Adventure Journal</h3>
+          <h3 className="text-xl text-stone-900 font-extrabold">📖 Nhật ký phiêu lưu</h3>
           <div className="mt-4 max-h-56 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
             {editingStudent.adventureJournal.slice(0, 12).map(entry => (
               <div key={entry.id} className="rounded-2xl bg-white p-3 text-sm shadow-sm">
@@ -118,7 +118,7 @@ export const ProfileInfoTab: React.FC = () => {
                 onClick={() => handleRemoveStudentCustomAvatar(editingStudent.id)}
                 className="text-xs font-bold text-red-600 hover:underline"
               >
-                Xoá ảnh riêng (Dùng Avatar cấp bậc)
+                Xoá ảnh riêng (dùng avatar mặc định)
               </button>
             )}
           </div>
@@ -142,7 +142,7 @@ export const ProfileInfoTab: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t">
         <button onClick={() => { 
           setStudents(prev => prev.map(s => s.id === editingStudent.id ? editingStudent : s)); 
-          alert("Đã lưu ý chỉ!");
+          alert("Đã lưu thông tin học sinh.");
           setCurrentScreen('class');
         }} className="flex-1 bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-green-700 hover:scale-[1.01] transition-all">Lưu Thông Tin</button>
         <button onClick={() => { 
@@ -159,7 +159,7 @@ export const ProfileInfoTab: React.FC = () => {
       </div>
 
       <div className="pt-8 border-t">
-        <h3 className="text-xl mb-6 text-gray-800 font-extrabold">Biên Niên Sử</h3>
+        <h3 className="text-xl mb-6 text-gray-800 font-extrabold">Lịch sử điểm</h3>
         <div className="space-y-3 h-80 overflow-y-auto pr-2 custom-scrollbar">
           {editingStudent.history.map(h => (
             <div key={h.id} className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex justify-between items-center group hover:border-red-800/20">

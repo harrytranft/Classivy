@@ -3,9 +3,6 @@ import { getNextMasteryTarget, getPokemonArtworkUrl, getPokemonDisplayName, hand
 import { PokemonPassiveBadge } from '../../components/PokemonPassiveBadge';
 import { getPassiveDefinition, getPassiveIcon } from '../../domain/pokemonPassives';
 import { getSynergyLabel, isSamePokemon } from '../../domain/pokemonCollection';
-import { EggInventoryPanel } from './EggInventoryPanel';
-import { ExpeditionPanel } from './ExpeditionPanel';
-import { WeeklyChestPanel } from './WeeklyChestPanel';
 import { useApp } from '../../app/AppContext';
 
 export const ProfilePetView: React.FC = () => {
@@ -16,10 +13,6 @@ export const ProfilePetView: React.FC = () => {
   } = useApp();
   return (
                       <div className="space-y-8 animate-in fade-in duration-300">
-                        {<EggInventoryPanel student={editingStudent} />}
-                        {<ExpeditionPanel student={editingStudent} />}
-                        {<WeeklyChestPanel student={editingStudent} />}
-
                         <div className="bg-amber-50/50 rounded-3xl border border-amber-200/50 p-6 flex flex-col md:flex-row gap-6 items-center">
                           <div className="shrink-0 w-44 h-44 bg-white rounded-2xl border-4 border-amber-300 p-4 flex items-center justify-center relative shadow-lg overflow-hidden group">
                             <div className="absolute inset-0 bg-radial-gradient from-amber-200/50 via-transparent to-transparent opacity-60 group-hover:scale-125 transition-transform" />
@@ -57,7 +50,7 @@ export const ProfilePetView: React.FC = () => {
                               </div>
 
                               <div className="text-right sm:text-right">
-                                <p className="text-xs font-bold text-gray-400">Tài chính của bạn</p>
+                                <p className="text-xs font-bold text-gray-400">Hào Quang hiện có</p>
                                 <p className="text-xl font-black text-red-800">{editingStudent.points}đ Hào Quang</p>
                               </div>
                             </div>

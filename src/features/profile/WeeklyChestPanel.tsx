@@ -19,7 +19,7 @@ export const WeeklyChestPanel = ({ student }: { student: Student }) => {
     <div className="rounded-[32px] border border-sky-200 bg-sky-50/70 p-5 text-left shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h4 className="text-xl text-sky-950 font-extrabold">🎁 Weekly Chest</h4>
+          <h4 className="text-xl text-sky-950 font-extrabold">🎁 Rương tuần</h4>
           <p className="mt-1 text-xs font-bold text-sky-900/70">
             Tuần {chest.weekKey} · {chest.claimed ? 'Đã nhận' : chest.progress >= 100 ? 'Sẵn sàng mở' : `${chest.progress}/100`}
           </p>

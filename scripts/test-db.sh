@@ -23,6 +23,8 @@ DROP_LEGACY_DOWN=supabase/rollback/20261101110000_drop_legacy_data_down.sql
 ROLLBACK7=supabase/rollback/20261101100000_phase7_hardening_down.sql
 MIGRATION10=supabase/migrations/20261102100000_phase10_student_shop.sql
 ROLLBACK10=supabase/rollback/20261102100000_phase10_student_shop_down.sql
+MIGRATION12=supabase/migrations/20261103100000_phase12_student_fusion.sql
+ROLLBACK12=supabase/rollback/20261103100000_phase12_student_fusion_down.sql
 ROLLBACK_ROLE=supabase/rollback/20261030110000_sync_profile_role_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
@@ -143,10 +145,20 @@ run -c "do \$\$ begin
   if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'classes' and column_name = 'student_shop_enabled') then
     raise exception 'FAIL: phase 10B rollback left column'; end if; end \$\$"
 run -f "$MIGRATION10"
+
+echo "== Migration Phase 12C Hợp nhất của học sinh (chạy 2 lần) + test, hoàn tác, chạy lại"
+run -f "$MIGRATION12"
+run -f "$MIGRATION12"
+run -o /dev/null -f supabase/tests/80_phase12_fusion.test.sql
+run -f "$ROLLBACK12"
+run -c "do \$\$ begin
+  if to_regprocedure('public.student_fuse_pets(text[])') is not null or to_regprocedure('public.shop_pet_level(jsonb)') is not null then raise exception 'FAIL: phase 12C rollback left functions'; end if; end \$\$"
+run -f "$MIGRATION12"
 run -f "$ROLLBACK7"
 run -c "do \$\$ begin
   if to_regprocedure('public.save_teacher_changes_v2(jsonb)') is not null or to_regprocedure('public.is_teacher()') is not null then raise exception 'FAIL: phase 7 rollback left functions'; end if; end \$\$"
 run -f "$MIGRATION7"
+run -f "$ROLLBACK12"
 run -f "$ROLLBACK10"
 run -f "$ROLLBACK7"
 run -f "$ROLLBACK6"

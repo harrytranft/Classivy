@@ -4,9 +4,6 @@ import { createPokemonPetFromDexId, getPokemonArtworkUrl, getPokemonDisplayName,
 import { HistoryItem, Student } from '../../types';
 import { PokemonUiEvent } from '../../domain/gameEvents';
 import { appendAdventureJournal, applyTrainerJourneyProgress } from '../../domain/progression';
-import { EggInventoryPanel } from './EggInventoryPanel';
-import { ExpeditionPanel } from './ExpeditionPanel';
-import { WeeklyChestPanel } from './WeeklyChestPanel';
 import { useApp } from '../../app/AppContext';
 
 export const ProfileEggView: React.FC = () => {
@@ -184,10 +181,6 @@ export const ProfileEggView: React.FC = () => {
                             </div>
                           </div>
                         </div>
-
-                        {<EggInventoryPanel student={editingStudent} />}
-                        {<ExpeditionPanel student={editingStudent} />}
-                        {<WeeklyChestPanel student={editingStudent} />}
 
                         {/* OWNED PORTFOLIO SELECTION IN EGG SCREEN (WHEN WAITING FOR HATCH) */}
                         {editingStudent.pets && editingStudent.pets.length > 0 && (
