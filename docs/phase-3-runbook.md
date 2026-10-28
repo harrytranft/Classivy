@@ -47,7 +47,7 @@ Chỉ làm sau khi bước 1 ổn. Nên làm ngoài giờ dạy.
 
 - [ ] 2.1 **Sao lưu:** trong app thật, Cài đặt > "Export JSON Backup". Thêm nữa, nếu được: Supabase > Database > Backups (gói Free có bản sao lưu hằng ngày nhưng không tải về được; file JSON là bản chắc chắn nhất).
 - [ ] 2.2 Gộp PR Phase 3 vào `main` để Vercel triển khai app mới. App mới vẫn dùng cách lưu cũ cho tới khi chạy migration, nên thứ tự 2.2 và 2.3 không bắt buộc, nhưng nên triển khai app trước.
-- [ ] 2.3 Supabase dự án thật > SQL Editor: dán file migration, **Run**.
+- [ ] 2.3 Supabase dự án thật > SQL Editor: dán file migration (**bản mới nhất**, có bước 0 "dọn đường"), **Run**. Dự án gốc còn bảng `students` cũ của Imperial School (trống, app không dùng): migration tự đổi tên nó thành `students_imperial_old` (không xoá, khoá truy cập qua app) rồi mới tạo bảng mới. Kết quả mong đợi: "Success. No rows returned". Nếu báo lỗi: migration tự huỷ toàn bộ, không có gì thay đổi; chép lỗi gửi Claude.
 - [ ] 2.4 Mở app, đăng nhập, làm như bước 1.6 - 1.9.
 - [ ] 2.5 Mỗi máy/trình duyệt khác của Harry: chỉ cần tải lại trang; máy đã nâng cấp thì máy khác tự đọc bảng mới.
 

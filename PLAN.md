@@ -219,6 +219,8 @@ src/
 - ~~**[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt"~~ → **đã bỏ hiệu ứng làm mờ** khi reskin thẻ học sinh (2026-10-27).
 - ~~**[Truy cập, gộp vào 2.4]** Thẻ học sinh bấm được bằng chuột nhưng chưa vào được bằng phím Tab (là `div` có `onClick`). Đề xuất đổi sang nút/đường dẫn thật khi rà `accessibility-review`.~~ → **đã sửa 2026-10-27**: thẻ có `role="button"`, `tabIndex=0`, Enter/Space để mở.
 
+- **[Bảo mật, chờ Harry duyệt]** Dự án Supabase gốc còn hai bảng cũ thời Imperial School: `app_state`, `users` (0 dòng, app không dùng). Chưa rõ có bật RLS không; nếu không thì ai có khoá `anon` có thể ghi vào. Đề xuất: bật RLS (không policy) hoặc xoá hẳn hai bảng này. Bảng `students` cũ đã được migration Phase 3 đổi tên thành `students_imperial_old` và khoá truy cập.
+
 ## Quy trình sau mỗi Phase
 
 1. Chạy kiểm thử trong phạm vi có thể (`npm test`, `npm run build`, kiểm tra thủ công nếu cần).
@@ -328,3 +330,4 @@ src/
 
 **Phase 3 - 2026-10-28** (Harry chạy runbook bước 1 trên `classivy-dev`): bước 1.4c lỗi `permission denied for table profiles/user_settings` (42501). Nguyên nhân: dự án Supabase mới tạo không tự cấp quyền bảng cho vai trò `authenticated` như dự án cũ; `supabase-schema.sql` dựa vào việc tự cấp đó. Sửa: thêm `grant` rõ ràng vào `supabase-schema.sql` và migration Phase 3; `npm run test:db` giờ chạy cả hai kiểu dự án (cũ/mới), bỏ phần grant thì kiểu "mới" báo đúng lỗi này. Dữ liệu thật không bị ảnh hưởng (dự án gốc không đụng tới).
 - 2026-10-28: Harry xác nhận runbook bước 1 trên `classivy-dev` chạy ổn (migration, nâng cấp, dùng thử). Đây là kiểm chứng thủ công trên dev; production chưa chạy.
+- 2026-10-28: chạy migration trên production lỗi `42703: column "class_id" does not exist`, migration tự huỷ, không thay đổi gì (Harry kiểm tra: `data_model_version` chưa có). Nguyên nhân: dự án gốc còn bảng `public.students` cũ của Imperial School (0 dòng, cột `class_name`, `pet`...); `create table if not exists` bỏ qua nên bước tạo chỉ mục `class_id` lỗi. Sửa: migration thêm bước 0 đổi tên bảng cũ thành `students_imperial_old` (giữ dữ liệu, đổi tên chỉ mục, bật RLS, thu quyền API), dừng với thông báo rõ nếu `classes`/`point_ledger` có sẵn mà sai cấu trúc; file hoàn tác trả lại tên cũ. `npm run test:db` giờ mô phỏng bảng cũ này; bỏ bước 0 thì test báo đúng lỗi của Harry.
