@@ -4,6 +4,7 @@ import { BossBattlePanel } from '../../components/BossBattlePanel';
 import { StudentAvatar } from '../../components/StudentAvatar';
 import { PokemonMiniStatus } from '../../components/PokemonMiniStatus';
 import { useApp } from '../../app/AppContext';
+import { RandomSkillsPanel } from './RandomSkillsPanel';
 
 export const RandomModal: React.FC = () => {
   const {
@@ -132,42 +133,7 @@ export const RandomModal: React.FC = () => {
                   <p className="mt-1 text-xs font-bold text-brand-ink/60">{randomStudent.className}</p>
                 </div>
 
-                {/* SKILLS BOUGHT FOR POKEMON DISPLAY & USE DIRECTLY */}
-                {randomStudent.pet?.skills && randomStudent.pet.skills.length > 0 && (
-                  <div className="mb-6 p-4 bg-indigo-50/60 rounded-3xl border border-indigo-100 text-left">
-                    <p className="text-xs font-black text-indigo-900 mb-2">⚡ Tuyệt Chiêu Pokémon Có Thể Kích Hoạt (Tối Đa 2 Lần):</p>
-                    <div className="space-y-2 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
-                      {randomStudent.pet.skills.map(skId => {
-                        const sk = petSkills.find(x => x.id === skId);
-                        if (!sk) return null;
-                        const currentUses = randomStudent.pet?.skillUses?.[skId] || 0;
-                        const remainingUses = Math.max(0, 2 - currentUses);
-                        return (
-                          <div key={skId} className="flex items-center justify-between bg-white p-2.5 rounded-2xl border border-indigo-200 gap-2">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="text-xl">{sk.icon}</span>
-                              <div className="min-w-0">
-                              <p className="truncate text-xs font-bold text-brand-ink">{sk.name}</p>
-                                <span className="text-xs text-indigo-600 font-semibold">Còn {remainingUses}/2 lượt</span>
-                              </div>
-                            </div>
-                            <button
-                              disabled={remainingUses <= 0}
-                              onClick={() => {
-                                handleUsePetSkill(randomStudent.id, skId, sk.name);
-                                const updated = students.find(s => s.id === randomStudent.id);
-                                if (updated) setRandomStudent(updated);
-                              }}
-                              className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-black text-xs px-3 py-1.5 rounded-xl shrink-0"
-                            >
-                              Sử Dụng
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+                <RandomSkillsPanel key={randomStudent.id} student={students.find(item => item.id === randomStudent.id) || randomStudent} />
 
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button 

@@ -37,9 +37,19 @@ const fakeSession = () => ({
 // Phase 8: ghi đè điểm học sinh mẫu cho một test (ví dụ để có em điểm <= -20).
 let POINT_OVERRIDES: Record<string, number> = {};
 
+// Phase 11: gán skill cho Pokémon của học sinh mẫu trong một test (em chưa có Pokémon thì tạo Pokémon tối thiểu).
+let SKILL_OVERRIDES: Record<string, string[]> = {};
+const withSkills = (student: { id: string; pet?: Record<string, unknown> | null; pets?: unknown[] }) => {
+  const extra = SKILL_OVERRIDES[student.id];
+  if (!extra) return student;
+  const pet = student.pet || { instanceId: `pet-${student.id}`, dexId: 25, name: 'Pikachu', types: ['Electric'], hp: 100, accessories: [], level: 1 };
+  const nextPet = { ...pet, skills: extra, skillUses: {} };
+  return { ...student, pet: nextPet, pets: [nextPet] };
+};
+
 const cloudRow = () => ({
   user_id: fakeSession().user.id,
-  students: FIXTURE.students.map((student: { id: string; points: number }) => (
+  students: FIXTURE.students.map((student: { id: string; points: number }) => withSkills(
     POINT_OVERRIDES[student.id] !== undefined ? { ...student, points: POINT_OVERRIDES[student.id] } : student
   )),
   ranks_male: FIXTURE.ranksMale,
@@ -846,3 +856,135 @@ for (const viewport of [{ name: 'mobile', width: 390, height: 844 }, { name: 'ta
     expect(state.errors).toEqual([]);
   });
 }
+
+
+// Phase 11: skill tự động (nhóm A/B khi Random, nhóm C khi cộng/trừ điểm, nhóm D ngoài Random).
+const PHASE11_SKILLS = () => {
+  const common = ['sk_lucky', 'sk_swap', 'sk_decree', 'sk_companion', 'sk_evade'];
+  const ids = ['stu-01', 'stu-02', 'stu-03', 'stu-04', 'stu-06', 'stu-07'];
+  return Object.fromEntries(ids.map(id => [id, [...common, ...({
+    'stu-01': ['sk_double', 'sk_guard'], 'stu-02': ['sk_survival'], 'stu-04': ['sk_rapid', 'sk_soul_link'], 'stu-07': ['sk_rescue']
+  } as Record<string, string[]>)[id] ?? []]]));
+};
+type SavedStudent = { id: string; points: number; history: { reason: string; amount: number }[]; pet?: { skills: string[]; skillUses: Record<string, number> } };
+const savedStudents = async (page: Page, state: SmokeState): Promise<Record<string, SavedStudent>> => {
+  await page.waitForTimeout(2200);
+  const latest = state.upserts[state.upserts.length - 1] as unknown as { students: SavedStudent[] };
+  return Object.fromEntries(latest.students.map(student => [student.id, student]));
+};
+
+test('Phase 11: skill khi cộng/trừ điểm và nút ngoài Random (nhóm C, D)', async ({ page }) => {
+  SKILL_OVERRIDES = PHASE11_SKILLS();
+  const state = await setupPage(page, { loggedIn: true });
+  SKILL_OVERRIDES = {};
+  await chooseClass(page, '6A');
+  const openPoints = (name: string) => page.getByRole('button', { name: `Cộng điểm ${name}` }).dispatchEvent('click');
+  const openPenalty = (name: string) => page.getByRole('button', { name: `Trừ điểm ${name}` }).dispatchEvent('click');
+  const firstTile = () => page.locator('button.aspect-square').first();
+
+  // C1. Nhân Đôi: hỏi mỗi lần cộng điểm; "Không" giữ nguyên điểm và lượt.
+  await openPoints('An');
+  await firstTile().click();
+  const prompt = page.getByRole('dialog', { name: 'Skill: Pháp Bảo Nhân Đôi' });
+  await expect(prompt).toContainText('+2 thành +4');
+  await prompt.getByRole('button', { name: 'Không' }).click();
+  await expect(prompt).toHaveCount(0);
+  let saved = await savedStudents(page, state);
+  expect(saved['stu-01'].points).toBe(17);
+  expect(saved['stu-01'].pet?.skillUses.sk_double).toBeUndefined();
+
+  // C2. "Dùng skill": điểm nhân đôi, trừ 1 lượt, ghi lịch sử.
+  await openPoints('An');
+  await firstTile().click();
+  await page.getByRole('dialog', { name: 'Skill: Pháp Bảo Nhân Đôi' }).getByRole('button', { name: 'Dùng skill' }).click();
+  saved = await savedStudents(page, state);
+  expect(saved['stu-01'].points).toBe(21);
+  expect(saved['stu-01'].pet?.skillUses.sk_double).toBe(1);
+  expect(saved['stu-01'].history.some(item => item.reason.includes('[Skill] Pháp Bảo Nhân Đôi'))).toBe(true);
+
+  // C3. Lá Chắn Hộ Vệ: lần trừ điểm đầu trong ngày giảm 50% (-2 thành -1).
+  await openPenalty('An');
+  await firstTile().click();
+  const guard = page.getByRole('dialog', { name: 'Skill: Lá Chắn Hộ Vệ' });
+  await expect(guard).toContainText('-2 thành -1');
+  await guard.getByRole('button', { name: 'Dùng skill' }).click();
+  saved = await savedStudents(page, state);
+  expect(saved['stu-01'].points).toBe(20);
+
+  // C4. Kim Bài Miễn Tử: bỏ qua lần trừ điểm (điểm giữ nguyên, vẫn ghi lượt skill).
+  await openPenalty('Bình');
+  await firstTile().click();
+  await page.getByRole('dialog', { name: 'Skill: Kim Bài Miễn Tử' }).getByRole('button', { name: 'Dùng skill' }).click();
+  saved = await savedStudents(page, state);
+  expect(saved['stu-02'].points).toBe(30);
+  expect(saved['stu-02'].pet?.skillUses.sk_survival).toBe(1);
+
+  // C5. Em không có skill phù hợp: không hỏi gì cả (D36).
+  await openPoints('Dũng');
+  await firstTile().click();
+  await expect(page.getByRole('dialog', { name: /^Skill:/ })).toHaveCount(0);
+
+  // D1. Cứu viện: nút chỉ hiện trên thẻ em bị phạt hôm nay; Khoa (có Hộ Tống) tặng 2 điểm cho An.
+  await page.getByRole('button', { name: '🤝 Cứu viện' }).first().dispatchEvent('click');
+  const rescue = page.getByRole('dialog', { name: 'Hộ Tống Đồng Đội' });
+  await rescue.getByRole('button', { name: /Khoa/ }).click();
+  await rescue.getByRole('button', { name: '2 điểm' }).click();
+  saved = await savedStudents(page, state);
+  expect(saved['stu-01'].points).toBe(22);
+  expect(saved['stu-07'].points).toBe(103);
+
+  // D2. Cướp Quyền Tranh Đoạt: hiện tên em lên màn hình lớp; Đồng Tâm Hiệp Lực: cộng ké 1 điểm.
+  const dungSkills = page.getByLabel('Skill của Dũng');
+  await dungSkills.getByRole('button', { name: /Ưu tiên phát biểu/ }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Dùng skill' }).click();
+  await expect(page.getByRole('status').filter({ hasText: 'được phát biểu trước' })).toContainText('Dũng');
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/80-rapid.png' });
+  await page.getByRole('button', { name: 'Xong' }).click();
+  await dungSkills.getByRole('button', { name: /Đồng Tâm Hiệp Lực/ }).click();
+  await page.getByRole('dialog', { name: 'Đồng Tâm Hiệp Lực' }).getByRole('button', { name: /^An/ }).click();
+  saved = await savedStudents(page, state);
+  expect(saved['stu-04'].points).toBe(63);
+  expect(saved['stu-04'].pet?.skillUses.sk_rapid).toBe(1);
+  expect(saved['stu-04'].pet?.skillUses.sk_soul_link).toBe(1);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 11: skill sau Random (Vòng Quay Tự Tin tự chạy, hộp Dùng/Không, Né Trực Diện)', async ({ page }) => {
+  SKILL_OVERRIDES = PHASE11_SKILLS();
+  const state = await setupPage(page, { loggedIn: true });
+  SKILL_OVERRIDES = {};
+  await chooseClass(page, '6A');
+  await dockButton(page, DOCK.random).click();
+  await page.getByRole('button', { name: /Chế độ Solo/ }).click();
+  const panel = page.getByTestId('random-skills');
+  await expect(panel).toBeVisible();
+  const titleOf = async () => (await panel.locator('p').first().textContent()) || '';
+  const firstTitle = await titleOf();
+  // Nhóm A: tự +2 điểm và trừ 1 lượt, không cần bấm.
+  await expect(panel).toContainText('Vòng Quay Tự Tin');
+  await expect(panel).toContainText('(1/2)');
+
+  // Nhóm B: Đổi Đề, Trợ Thủ Tra Cứu (đồng hồ 30 giây), Đồng Đội Hỗ Trợ (chọn bạn).
+  await panel.getByRole('button', { name: 'Dùng Đổi Đề Thần Tốc', exact: true }).click();
+  await expect(panel.getByRole('listitem').filter({ hasText: 'đổi sang câu hỏi dễ hơn' })).toBeVisible();
+  await panel.getByRole('button', { name: 'Dùng Trợ Thủ Tra Cứu', exact: true }).click();
+  await expect(panel.getByRole('timer')).toContainText('0:30');
+  await panel.getByRole('button', { name: 'Dùng Đồng Đội Hỗ Trợ', exact: true }).click();
+  await page.getByRole('dialog', { name: 'Chọn bạn hỗ trợ' }).getByRole('button').first().click();
+  await expect(panel.getByText('được mời cùng thảo luận')).toBeVisible();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/81-random-skills.png' });
+
+  // "Không" chỉ ẩn hộp hỏi, không trừ lượt.
+  await expect(panel.getByRole('button', { name: 'Không dùng Skill Né Trực Diện', exact: true })).toBeVisible();
+
+  // Né Trực Diện: gọi lại, loại em này; em mới cũng được Vòng Quay Tự Tin.
+  await panel.getByRole('button', { name: 'Dùng Skill Né Trực Diện', exact: true }).click();
+  await expect.poll(titleOf).not.toBe(firstTitle);
+  await expect(page.getByTestId('random-skills')).toContainText('(1/2)');
+
+  const saved = await savedStudents(page, state);
+  const used = Object.values(saved).filter(item => item.pet?.skillUses && Object.keys(item.pet.skillUses).length > 0);
+  expect(used.length).toBeGreaterThanOrEqual(2);
+  expect(Object.values(saved).some(item => item.history.some(h => h.reason.includes('Né Trực Diện')))).toBe(true);
+  expect(state.errors).toEqual([]);
+});

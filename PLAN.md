@@ -344,10 +344,12 @@ Mọi skill giữ 2 lượt, dùng xong ghi lịch sử, hết lượt tự mấ
 | | Cướp Quyền Tranh Đoạt | Nút "Ưu tiên phát biểu": hiện tên em lên màn hình lớp, trừ 1 lượt |
 | | Đồng Tâm Hiệp Lực | Giáo viên bấm tay (D37): chọn hai em, cộng ké 1 điểm |
 
-- [ ] 11.1 Logic thuần `src/domain/skills` + test cho từng skill (điều kiện, lượt dùng, hết lượt)
-- [ ] 11.2 Hộp hỏi sau Random và khi cộng/trừ điểm
-- [ ] 11.3 Nút skill ngoài Random (nhóm D)
-- [ ] 11.4 Lịch sử dùng skill; kiểm chứng đầy đủ
+- [x] 11.1 Logic thuần `src/domain/skills` + test cho từng skill (điều kiện, lượt dùng, hết lượt)
+- [x] 11.2 Hộp hỏi sau Random và khi cộng/trừ điểm
+- [x] 11.3 Nút skill ngoài Random (nhóm D)
+- [x] 11.4 Lịch sử dùng skill; kiểm chứng đầy đủ
+
+**Phase 11 xong 2026-10-28 (nhánh `claude/phase8-teacher-ui`, chưa commit, không cần migration).** Quyết định Harry: Nhân Đôi hỏi ở MỌI lần cộng điểm dương; 10 skill ngoài bảng (Tàng Hình, Khiên Phản Đòn, Song Kiếm, Sám Hối, Phúc Lành, Truyền Cảm Hứng, Bạch Ngọc Chữa Lành, Ủy Thác, Bẻ Cong Thời Gian, Thiên Tử) giữ luồng "Sử Dụng" thủ công cũ; giáo viên bấm Dùng/Không thay học sinh. Chi tiết: logic `src/domain/skills.ts`; Lá Chắn làm tròn xuống (-floor(|a|/2)); Kim Bài ưu tiên hơn Lá Chắn; nhóm C chỉ áp cho điểm cộng/trừ thủ công/cá nhân; nút Cứu viện hiện cho em có lần trừ điểm hôm nay khi lớp có em còn Hộ Tống; hộp hỏi sau Random ở `RandomSkillsPanel`; nút nhóm D ở `SkillActions`. Mỗi lần dùng ghi lịch sử `[Skill] <tên>: ... (n/2)`. Sửa lỗi phát hiện khi test: bước tự +2 của Vòng Quay Tự Tin từng ghi đè lượt Né Trực Diện vừa dùng. Kiểm chứng tự động: typecheck 0 lỗi, 221 test, build OK, smoke 32/32. Chưa kiểm chứng: trình duyệt thật (sandbox không có ảnh Pokémon).
 
 Loading DictaLearn: xem `docs/reference/dictalearn-splash.md` (logo + zoom/fade, thanh chạy, boot splash tĩnh trong `index.html` để không nháy; dùng chung cho đăng nhập và khi vào lớp).
 

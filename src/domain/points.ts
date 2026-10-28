@@ -2,6 +2,7 @@ import { HistoryItem, PokemonReleaseEvent, Student } from '../types';
 import { HatchAnnouncementItem } from '../types/app';
 import { GameEventSource, PokemonUiEvent, applyGameEventToStudent, applyPetHpDeltaToStudent } from './gameEvents';
 import { normalizeStudentPokemonData } from './pokemonProgression';
+import { consumeSkillUse } from './skills';
 import { addWeeklyChestProgress, advanceEggForStudent, applyTrainerJourneyProgress } from './progression';
 
 // Phần tính toán của "cộng/trừ điểm Hào Quang" (trước đây nằm trong handleUpdatePoints).
@@ -12,6 +13,17 @@ export interface PointsUpdateInput {
   amount: number;
   reason: string;
   source: GameEventSource;
+  /** Phase 11: kết quả sau khi giáo viên chọn dùng skill (Nhân Đôi, Lá Chắn, Kim Bài) cho từng em. */
+  overrides?: Record<string, PointsOverride>;
+}
+
+export interface PointsOverride {
+  /** Điểm thực tế của em này (thay cho số chung). 0 = bỏ qua lần cộng/trừ. */
+  amount: number;
+  /** Lý do ghi lịch sử (mặc định dùng lý do chung). */
+  reason?: string;
+  /** Skill được dùng (trừ lượt, ghi lịch sử riêng). */
+  skillUse?: { skillId: string; skillName: string; detail: string };
 }
 
 export interface PointsUpdateResult {
@@ -23,7 +35,7 @@ export interface PointsUpdateResult {
 }
 
 export const applyPointsToStudents = (students: Student[], input: PointsUpdateInput): PointsUpdateResult => {
-  const { ids, amount, reason, source } = input;
+  const { ids, amount: baseAmount, reason: baseReason, source, overrides } = input;
   let hatchItems: HatchAnnouncementItem[] = [];
   let evolvedMessages: string[] = [];
   let progressionEvents: PokemonUiEvent[] = [];
@@ -31,6 +43,15 @@ export const applyPointsToStudents = (students: Student[], input: PointsUpdateIn
 
   const updatedStudents = students.map(s => {
     if (ids.includes(s.id)) {
+      const override = overrides?.[s.id];
+      const amount = override ? override.amount : baseAmount;
+      const reason = override?.reason ?? baseReason;
+      if (override?.skillUse) {
+        const { skillId, skillName, detail } = override.skillUse;
+        s = consumeSkillUse(s, skillId, skillName, detail);
+      }
+      // Bỏ qua hoàn toàn (Kim Bài Miễn Tử): không đổi điểm, HP, trứng; chỉ ghi lượt dùng skill.
+      if (amount === 0 && override) return s;
       const newPoints = s.points + amount;
       const history: HistoryItem = { id: Date.now().toString() + Math.random(), amount, reason, timestamp: Date.now() };
 

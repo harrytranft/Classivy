@@ -1,11 +1,22 @@
 import { GameEventSource, PokemonUiEvent } from '../../domain/gameEvents';
-import { applyPointsToStudents } from '../../domain/points';
+import { PointsOverride, applyPointsToStudents } from '../../domain/points';
+import { PointsSkillKind, describePointsSkill, getPointsSkillPrompts, resolvePointsWithSkills } from '../../domain/skills';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
 
 // Cộng/trừ điểm Hào Quang: hành động trung tâm mà Random, Battle, Vòng quay... cùng gọi.
 export interface PointsActions {
-  handleUpdatePoints: (ids: string[], amount: number, reason: string, source?: GameEventSource) => Promise<void>;
+  handleUpdatePoints: (ids: string[], amount: number, reason: string, source?: GameEventSource, options?: PointsUpdateOptions) => Promise<void>;
+  /** Như handleUpdatePoints nhưng hỏi giáo viên "Dùng skill?" nếu em có Nhân Đôi / Lá Chắn / Kim Bài (Phase 11, D36). */
+  requestPointsUpdate: (ids: string[], amount: number, reason: string, source?: GameEventSource) => Promise<void>;
+  answerPointsSkill: (use: boolean) => Promise<void>;
+  cancelPointsRequest: () => void;
+}
+
+export interface PointsUpdateOptions {
+  overrides?: Record<string, PointsOverride>;
+  /** Giữ hộp Random đang mở (skill tự chạy sau Random, không phải kết quả Ban thưởng/Phạt). */
+  keepRandomOpen?: boolean;
 }
 
 export const createPointsActions = (appState: AppState, app: AppActions): PointsActions => {
@@ -14,14 +25,16 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
     setEditingStudent, setFeedbackSource, setHatchAnnouncementItems, setHatchSuccessMessage,
     setIsMultiSelectMode, setManualPoints, setPokemonReleaseEvent, setRandomStudent,
     setSelectedStudentIds, setShowHatchModal, setShowRandomModal, setShowSkillModal,
-    setStudents, showHatchAnnouncement, showPokemonReaction, students
+    setStudents, showHatchAnnouncement, showPokemonReaction, students, pendingPoints, setPendingPoints
   } = appState;
 
-  const handleUpdatePoints = async (ids: string[], amount: number, reason: string, source: GameEventSource = 'manual') => {
+  const handleUpdatePoints = async (ids: string[], amount: number, reason: string, source: GameEventSource = 'manual', options: PointsUpdateOptions = {}) => {
     if (isNaN(amount)) return;
+    // Một em được chọn: số điểm thực tế có thể khác (Nhân Đôi, Lá Chắn, Kim Bài); dùng nó cho âm thanh/thông báo.
+    const shownAmount = ids.length === 1 && options.overrides?.[ids[0]] ? options.overrides[ids[0]].amount : amount;
 
     // Play Sound using dynamic URLs
-    const sound = new Audio(amount >= 0 ? posSoundUrl : negSoundUrl);
+    const sound = new Audio(shownAmount >= 0 ? posSoundUrl : negSoundUrl);
     sound.play().catch(() => {});
 
     const {
@@ -30,7 +43,7 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
       evolvedMessages,
       progressionEvents,
       releaseEvent: releaseEventToShow
-    } = applyPointsToStudents(students, { ids, amount, reason, source });
+    } = applyPointsToStudents(students, { ids, amount, reason, source, overrides: options.overrides });
 
     setStudents(updatedStudents);
     if (releaseEventToShow) setPokemonReleaseEvent(releaseEventToShow);
@@ -56,13 +69,13 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
         });
       }
       const hasActivePetAfterUpdate = updatedStudents.some(student => ids.includes(student.id) && !!student.pet);
-      if (amount !== 0 && hasActivePetAfterUpdate) {
+      if (shownAmount !== 0 && hasActivePetAfterUpdate) {
         toastEvents.push({
           type: 'hp',
-          message: amount > 0 ? `HP +${amount}` : `HP -${Math.abs(amount)}`
+          message: shownAmount > 0 ? `HP +${shownAmount}` : `HP -${Math.abs(shownAmount)}`
         });
       }
-      showPokemonReaction(toastEvents, amount >= 0 ? 'Pokémon phản ứng vui vẻ' : 'Pokémon vẫn cố gắng');
+      showPokemonReaction(toastEvents, shownAmount >= 0 ? 'Pokémon phản ứng vui vẻ' : 'Pokémon vẫn cố gắng');
       if (hatchItems.length > 0) {
         showHatchAnnouncement(
           hatchItems,
@@ -81,7 +94,7 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
     }
 
     setShowSkillModal(false);
-    if (source !== 'solo') {
+    if (source !== 'solo' && !options.keepRandomOpen) {
       setShowRandomModal(false);
     }
     setFeedbackSource('manual');
@@ -91,7 +104,7 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
     if (source === 'solo') {
       const resolvedClassName = updatedStudents.find(student => ids.includes(student.id))?.className;
       app.incrementBossCounterForClass(resolvedClassName);
-      if (amount > 0 && ids.length === 1 && !releaseEventToShow) {
+      if (shownAmount > 0 && ids.length === 1 && !releaseEventToShow) {
         const ludoStudent = updatedStudents.find(student => student.id === ids[0]);
         if (ludoStudent) {
           setShowRandomModal(false);
@@ -101,7 +114,52 @@ export const createPointsActions = (appState: AppState, app: AppActions): Points
     }
   };
 
+  const requestPointsUpdate = async (ids: string[], amount: number, reason: string, source: GameEventSource = 'manual') => {
+    if (isNaN(amount)) return;
+    const prompts = source === 'manual' || source === 'solo' ? getPointsSkillPrompts(students, ids, amount) : [];
+    if (prompts.length === 0) return handleUpdatePoints(ids, amount, reason, source);
+    setPendingPoints({ ids, amount, reason, source, prompts, index: 0, accepted: {} });
+  };
+
+  const finishPointsRequest = async (request: NonNullable<typeof pendingPoints>) => {
+    const overrides: Record<string, PointsOverride> = {};
+    for (const [studentId, kinds] of Object.entries(request.accepted)) {
+      const resolved = resolvePointsWithSkills(request.amount, kinds);
+      const used = request.prompts.find(prompt => prompt.studentId === studentId && prompt.kind === resolved.used[0]);
+      if (!used) continue;
+      const info = describePointsSkill(used, request.amount);
+      overrides[studentId] = {
+        amount: resolved.amount,
+        reason: resolved.amount !== 0 ? `${request.reason} (${info.title})` : request.reason,
+        skillUse: { skillId: used.skillId, skillName: info.title, detail: info.detail }
+      };
+    }
+    setPendingPoints(null);
+    // Mọi em được bỏ qua (Kim Bài): handleUpdatePoints vẫn chạy để ghi lượt skill và đóng các hộp.
+    await handleUpdatePoints(request.ids, request.amount, request.reason, request.source, { overrides });
+  };
+
+  const answerPointsSkill = async (use: boolean) => {
+    const request = pendingPoints;
+    if (!request) return;
+    const prompt = request.prompts[request.index];
+    const accepted = { ...request.accepted };
+    if (use) accepted[prompt.studentId] = [...(accepted[prompt.studentId] || []), prompt.kind];
+    // Em đã dùng Kim Bài thì không cần hỏi Lá Chắn nữa.
+    let index = request.index + 1;
+    while (index < request.prompts.length) {
+      const next = request.prompts[index];
+      if (next.kind === 'guard' && accepted[next.studentId]?.includes('survival')) { index += 1; continue; }
+      break;
+    }
+    const next = { ...request, accepted, index };
+    if (index >= request.prompts.length) await finishPointsRequest(next);
+    else setPendingPoints(next);
+  };
+
+  const cancelPointsRequest = () => setPendingPoints(null);
+
   return {
-    handleUpdatePoints
+    handleUpdatePoints, requestPointsUpdate, answerPointsSkill, cancelPointsRequest
   };
 };

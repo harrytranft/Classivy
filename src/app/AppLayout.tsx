@@ -14,6 +14,7 @@ import { LudoEventPopup } from '../features/ludo/LudoEventPopup';
 import { HatchModal } from '../features/pokemon/HatchModal';
 import { PokemonReleaseModal } from '../features/pokemon/PokemonReleaseModal';
 import { SkillPointsModal } from '../features/feedback/SkillPointsModal';
+import { SkillPromptModal } from '../features/feedback/SkillPromptModal';
 import { UserModal } from '../features/auth/UserModal';
 import { ShopModal } from '../features/shop/ShopModal';
 import { RandomModal } from '../features/random/RandomModal';
@@ -61,6 +62,7 @@ export const AppLayout: React.FC = () => {
 
       {/* MODAL: SKILL POINT BOARD */}
       <SkillPointsModal />
+      <SkillPromptModal />
 
       {/* MODAL: RANDOM */}
       <RandomModal />

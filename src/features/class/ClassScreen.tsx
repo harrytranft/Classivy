@@ -3,6 +3,7 @@ import { StudentCard } from '../../components/StudentCard';
 import { Button, Modal } from '../../components/ui';
 import { Student } from '../../types';
 import { REVIVE_POINTS, reviveStudent } from '../../domain/revive';
+import { SkillAction, SkillActionButtons, SkillActionDialogs } from '../skills/SkillActions';
 import { ClassDock } from '../../components/ClassDock';
 import { BookCheck, ChevronDown, ClipboardCheck, KeyRound, HeartHandshake, Minus, Plus, Search, UserCheck, UserPlus, UserX } from 'lucide-react';
 import { useApp } from '../../app/AppContext';
@@ -34,8 +35,9 @@ export const ClassScreen: React.FC = () => {
     petSkills, searchQuery, selectedStudentIds, setActiveTab, setCurrentScreen,
     setEditingStudent, setFeedbackSource, setFilterClass,
     setIsMultiSelectMode, setSearchQuery, setSelectedStudentIds, setShowGroupModal,
-    setShowSkillModal, setShowTimerModal, setStudents, toggleAttendance, navigateTo
+    setShowSkillModal, setShowTimerModal, setStudents, students, toggleAttendance, navigateTo
   } = useApp();
+  const [skillAction, setSkillAction] = useState<SkillAction | null>(null);
   const [reviveTarget, setReviveTarget] = useState<Student | null>(null);
   const confirmRevive = () => {
     if (!reviveTarget) return;
@@ -98,6 +100,7 @@ export const ClassScreen: React.FC = () => {
                 }
               }}
             />
+            <SkillActionButtons student={s} students={students} onAction={setSkillAction} />
             <div className="absolute bottom-[104px] right-4 z-10 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
               <button
                 type="button"
@@ -140,6 +143,8 @@ export const ClassScreen: React.FC = () => {
           </ul>
         </Modal>
       )}
+
+      <SkillActionDialogs action={skillAction} onClose={() => setSkillAction(null)} />
 
       <ClassDock
         onRandom={handleRandom}

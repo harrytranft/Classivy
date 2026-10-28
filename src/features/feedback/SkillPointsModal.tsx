@@ -5,7 +5,7 @@ import { useApp } from '../../app/AppContext';
 
 export const SkillPointsModal: React.FC = () => {
   const {
-    activeTab, feedbackSource, handleUpdatePoints, manualPoints, selectedStudentIds,
+    activeTab, feedbackSource, requestPointsUpdate, manualPoints, selectedStudentIds,
     setActiveTab, setCurrentScreen, setFeedbackSource, setManualPoints, setShowSkillModal,
     showSkillModal, sidebarData, skills
   } = useApp();
@@ -90,7 +90,7 @@ export const SkillPointsModal: React.FC = () => {
                             onChange={e => setManualPoints(e.target.value)}
                           />
                           <button 
-                            onClick={() => handleUpdatePoints(selectedStudentIds, parseInt(manualPoints), "Điều chỉnh thủ công", feedbackSource)}
+                            onClick={() => requestPointsUpdate(selectedStudentIds, parseInt(manualPoints), "Điều chỉnh thủ công", feedbackSource)}
                             className="bg-purple-600 text-white text-xs px-4 py-2 rounded-full font-bold hover:bg-purple-700 transition-all"
                           >
                             Lưu điểm
@@ -110,7 +110,7 @@ export const SkillPointsModal: React.FC = () => {
                         {skills.filter(s => s.type === (activeTab === 'positive' ? 'positive' : 'negative')).map(sk => (
                           <button 
                             key={sk.id} 
-                            onClick={() => handleUpdatePoints(selectedStudentIds, sk.points, sk.name, feedbackSource)} 
+                            onClick={() => requestPointsUpdate(selectedStudentIds, sk.points, sk.name, feedbackSource)} 
                             className="flex flex-col items-center justify-center gap-3 p-6 rounded-3xl border-2 border-gray-100 hover:border-purple-200 hover:bg-purple-50 transition-all group relative aspect-square"
                           >
                             <div className="text-5xl group-hover:scale-125 transition-transform duration-300">{sk.icon}</div>

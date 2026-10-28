@@ -77,6 +77,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 6: điểm tặng chỉ vào Hào Quang khi app giáo viên đang mở (dữ liệu bảng). Hai lần tặng đồng thời: khoá dòng trong hàm, chưa thử tải thật. Hai máy cùng sửa một học sinh: Phase 7 chặn ghi đè (thao tác bị từ chối phải làm lại).
 - Phase 5: lý do trong lịch sử điểm là chữ tự do giáo viên/game ghi; học sinh thấy nguyên văn (nếu có tên bạn khác thì em thấy). Thông báo đăng nhập tài khoản khoá (runbook 1.6): Harry xác nhận đúng như mong đợi.
 - Cờ "phải đổi mật khẩu" là cơ chế giao diện, không phải ranh giới bảo mật (DB không biết mật khẩu đã đổi chưa).
+- **Phase 11 (xong 2026-10-28, nhánh `claude/phase8-teacher-ui`, chưa commit, không đổi schema):** skills tự động: Vòng Quay Tự Tin tự +2 khi trúng Random; hộp Dùng/Không sau Random (Né Trực Diện, Đổi Đề, Mắt Thần, Trợ Thủ 30s, Đồng Đội); hộp hỏi khi cộng/trừ điểm (Nhân Đôi mọi lần cộng dương, Lá Chắn lần trừ đầu ngày -50%, Kim Bài bỏ qua trừ điểm); nút Cứu viện, Ưu tiên phát biểu, Đồng Tâm Hiệp Lực. 10 skill còn lại giữ luồng thủ công. Giáo viên bấm thay học sinh. Kiểm chứng: typecheck, 221 test, build, smoke 32/32 (chưa thử trình duyệt thật).
 
 ## 7. Quyết định còn mở
 
@@ -88,6 +89,7 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-1. Harry xem thử Phase 8 (đặc biệt: đổi tab qua lại có còn chớp loading không), rồi cho commit/gộp nhánh `claude/phase8-teacher-ui`.
+0. Phase 10B: migration `20261102100000_phase10_student_shop.sql` CHƯA chạy trên Supabase thật, chờ Harry duyệt.
+1. Harry xem thử Phase 8-11 (đặc biệt: đổi tab qua lại có còn chớp loading không), rồi cho commit/gộp nhánh `claude/phase8-teacher-ui`.
 2. Harry duyệt rồi chạy migration Phase 10B trên Supabase (hoàn tác: `supabase/rollback/20261102100000_phase10_student_shop_down.sql`); chỉ coi là đã áp dụng khi Harry xác nhận. Sau đó bật công tắc "Cho phép học sinh dùng Cửa hàng" ở trang Bạn bè & quà của lớp để thử.
 3. Phase 11 (skills tự động hoá) khi Harry yêu cầu.
