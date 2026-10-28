@@ -88,7 +88,7 @@ export const SkillsPanel: React.FC<{ pet: PokemonPet }> = ({ pet }) => {
 /** Danh tính + Trainer Level gộp một khối cho bớt phân mảnh. */
 export const HeroCard: React.FC<{ name: string; className: string; points: number; avatar?: string; trainer: PortalTrainer }> = ({ name, className, points, avatar, trainer }) => (
   <section className="rounded-brand-lg bg-brand-forest p-5 text-brand-cream">
-    <div className="flex items-center gap-4">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
       {avatar ? (
         <img src={avatar} alt={name} className="h-16 w-16 shrink-0 rounded-brand-md object-cover ring-2 ring-brand-gold" referrerPolicy="no-referrer" />
       ) : (
@@ -96,7 +96,7 @@ export const HeroCard: React.FC<{ name: string; className: string; points: numbe
           {getStudentInitials(name)}
         </div>
       )}
-      <div className="min-w-0 flex-1">
+      <div className="min-w-[8rem] flex-1">
         <h1 className="break-words text-2xl font-extrabold leading-tight">{name}</h1>
         {className && <p className="text-[13px] font-semibold text-brand-cream/80">Lớp {className}</p>}
       </div>
