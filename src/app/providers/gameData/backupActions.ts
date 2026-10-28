@@ -2,7 +2,7 @@ import React from 'react';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
-import { fetchUserSettings, upsertUserSettings } from '../../../lib/supabaseData';
+import { loadCloudData, saveCloudData } from './cloudStore';
 import { pickBackupFields } from '../../../domain/backup';
 import { GameDataState } from './useGameDataState';
 import type { AuthUser } from '../../../features/auth/AuthContext';
@@ -16,7 +16,7 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     setLuckyWheelDisplayRewards, customLudoTiles, setCustomLudoTiles, posSoundUrl,
     setPosSoundUrl, negSoundUrl, setNegSoundUrl, timerSoundUrl, setTimerSoundUrl,
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
-    setIsSyncing, setLastSyncedTime
+    setIsSyncing, setLastSyncedTime, cloudDataModelRef, lastCloudSnapshotRef
   } = data;
 
   const handleExportJSON = () => {
@@ -104,7 +104,7 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
         // Trigger immediate sync to Supabase if user is authenticated
         if (user) {
           setIsSyncing(true);
-          upsertUserSettings(user.uid, {
+          saveCloudData(user.uid, {
               students: importedStudents,
               skills: data.skills || [],
               petSkills: data.petSkills || petSkills,
@@ -117,8 +117,9 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
               luckyWheelRewards: data.luckyWheelRewards || luckyWheelRewards,
               bossStatesByClass: importedBossStates,
               bossEncounterFrequency: importedBossFrequency
-          }).then((updatedAt) => {
-            setLastSyncedTime(updatedAt);
+          }, cloudDataModelRef.current, lastCloudSnapshotRef.current).then((saved) => {
+            lastCloudSnapshotRef.current = saved.snapshot;
+            setLastSyncedTime(saved.updatedAt);
             setIsSyncing(false);
           }).catch((err) => {
             console.error("Cloud sync during import failed:", err);
@@ -143,7 +144,7 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     }
     setIsSyncing(true);
     try {
-      const updatedAt = await upsertUserSettings(user.uid, {
+      const saved = await saveCloudData(user.uid, {
         students,
         skills,
         petSkills,
@@ -156,8 +157,9 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
         luckyWheelRewards,
         bossStatesByClass,
         bossEncounterFrequency
-      });
-      setLastSyncedTime(updatedAt);
+      }, cloudDataModelRef.current, lastCloudSnapshotRef.current);
+      lastCloudSnapshotRef.current = saved.snapshot;
+      setLastSyncedTime(saved.updatedAt);
       if (!silent) {
         alert("Toàn bộ dữ liệu trainer, Pokémon và lớp học đã được sao lưu lên đám mây thành công!");
       }
@@ -181,9 +183,12 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     }
     setIsSyncing(true);
     try {
-      const cloudData = await fetchUserSettings(user.uid);
+      const loaded = await loadCloudData(user.uid);
+      const cloudData = loaded?.data;
 
-      if (cloudData) {
+      if (loaded && cloudData) {
+        cloudDataModelRef.current = loaded.dataModel;
+        lastCloudSnapshotRef.current = loaded.snapshot ?? lastCloudSnapshotRef.current;
         if (cloudData.students && Array.isArray(cloudData.students)) {
           setStudents(cloudData.students);
         }

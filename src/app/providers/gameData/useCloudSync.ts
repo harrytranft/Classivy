@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { fetchUserSettings, upsertUserSettings } from '../../../lib/supabaseData';
+import { chooseModelForNewTeacher, loadCloudData, runLegacyUpgrade, saveCloudData } from './cloudStore';
+import { EMPTY_SNAPSHOT } from '../../../domain/cloudModel';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, NEG_SOUND_KEY, POS_SOUND_KEY, TIMER_SOUND_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
@@ -9,6 +10,7 @@ import { GameDataState } from './useGameDataState';
 import type { AuthUser } from '../../../features/auth/AuthContext';
 
 // Tải dữ liệu từ Supabase khi đăng nhập và tự đồng bộ ngược lên (debounce 1,5 giây, chỉ khi dữ liệu đổi).
+// Nơi lưu (cục JSON cũ hay bảng Phase 3) do cloudStore quyết định; phần còn lại giữ như trước.
 export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoading: boolean) => {
   const {
     students, setStudents, skills,
@@ -18,7 +20,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     setPosSoundUrl, negSoundUrl, setNegSoundUrl, timerSoundUrl, setTimerSoundUrl,
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
     setIsSyncing, setLastSyncedTime, initialCloudLoadComplete, setInitialCloudLoadComplete,
-    cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef
+    cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
+    cloudDataModelRef, lastCloudSnapshotRef, setLegacyUpgradeAvailable
   } = data;
 
   useEffect(() => {
@@ -29,15 +32,19 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
       setCloudLoadSuccess(false);
       setLastSyncedTime(null);
       lastSyncedSnapshotRef.current = '';
+      cloudDataModelRef.current = 'legacy';
+      lastCloudSnapshotRef.current = EMPTY_SNAPSHOT;
+      setLegacyUpgradeAvailable(false);
       return;
     }
 
     const fetchCloudData = async () => {
       setIsSyncing(true);
       try {
-        const cloudData = await fetchUserSettings(user.uid);
+        const loaded = await loadCloudData(user.uid);
+        const cloudData = loaded?.data;
 
-        if (cloudData) {
+        if (loaded && cloudData) {
           const cloudStudents = Array.isArray(cloudData.students)
             ? cloudData.students.map(normalizeStudentPokemonData)
             : [];
@@ -70,6 +77,21 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           setBossStatesByClass(cloudBossStates);
           localStorage.setItem(BOSS_STATES_KEY, JSON.stringify(cloudBossStates));
           setLastSyncedTime(cloudData.updatedAt || Date.now());
+
+          cloudDataModelRef.current = loaded.dataModel;
+          lastCloudSnapshotRef.current = loaded.snapshot ?? EMPTY_SNAPSHOT;
+          if (loaded.canUpgrade) {
+            if (cloudStudents.length === 0 && Object.keys(cloudBossStates).length === 0) {
+              // Chưa có học sinh nào: chuyển sang bảng mới luôn, không cần hỏi.
+              const upgraded = await runLegacyUpgrade(user.uid, { students: [], bossStatesByClass: {} });
+              if (upgraded.ok) {
+                cloudDataModelRef.current = 'tables';
+                lastCloudSnapshotRef.current = upgraded.snapshot;
+              }
+            } else {
+              setLegacyUpgradeAvailable(true);
+            }
+          }
 
           // Save snapshot ref to prevent immediate re-sync of unchanged data
           lastSyncedSnapshotRef.current = JSON.stringify({
@@ -126,7 +148,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           const localBossStates = savedBossStates ? normalizeBossStatesByClass(JSON.parse(savedBossStates), localBossFrequency) : {};
 
           // Push local state to cloud to prevent data loss on onboarding
-          const updatedAt = await upsertUserSettings(user.uid, {
+          const dataModel = await chooseModelForNewTeacher();
+          const pushed = await saveCloudData(user.uid, {
             students: localStudents,
             skills: localSkills,
             petSkills: localPetSkills,
@@ -139,7 +162,10 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
             luckyWheelRewards: localLuckyWheelRewards,
             bossStatesByClass: localBossStates,
             bossEncounterFrequency: localBossFrequency
-          });
+          }, dataModel, EMPTY_SNAPSHOT);
+          const updatedAt = pushed.updatedAt;
+          cloudDataModelRef.current = dataModel;
+          lastCloudSnapshotRef.current = pushed.snapshot;
 
           lastSyncedSnapshotRef.current = JSON.stringify({
             students: localStudents,
@@ -207,7 +233,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     const timer = setTimeout(async () => {
       setIsSyncing(true);
       try {
-        const updatedAt = await upsertUserSettings(user.uid, {
+        const saved = await saveCloudData(user.uid, {
           students,
           skills,
           petSkills,
@@ -220,10 +246,11 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           luckyWheelRewards,
           bossStatesByClass,
           bossEncounterFrequency
-        });
+        }, cloudDataModelRef.current, lastCloudSnapshotRef.current);
 
         lastSyncedSnapshotRef.current = currentSnapshot;
-        setLastSyncedTime(updatedAt);
+        lastCloudSnapshotRef.current = saved.snapshot;
+        setLastSyncedTime(saved.updatedAt);
       } catch (err) {
         console.error("Auto-sync to cloud failed:", err);
       } finally {

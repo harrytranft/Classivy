@@ -49,6 +49,12 @@ add column if not exists boss_states_by_class jsonb not null default '{}'::jsonb
 alter table public.user_settings
 add column if not exists boss_encounter_frequency text not null default 'occasional';
 
+-- Cấp quyền rõ ràng: dự án Supabase mới tạo không còn tự cấp quyền bảng cho người dùng đăng nhập
+-- (lỗi "permission denied for table ..."). RLS bên dưới vẫn giới hạn mỗi người chỉ thấy dòng của mình.
+grant usage on schema public to anon, authenticated;
+grant select, insert, update on public.profiles to authenticated;
+grant select, insert, update on public.user_settings to authenticated;
+
 alter table public.profiles enable row level security;
 alter table public.user_settings enable row level security;
 

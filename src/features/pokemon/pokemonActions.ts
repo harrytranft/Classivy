@@ -7,6 +7,7 @@ import { advanceEggForStudent } from '../../domain/progression';
 import { getFusionCandidates, isSamePokemon } from '../../domain/pokemonCollection';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
+import { compressImageDataUrl } from '../../lib/imageCompression';
 
 // Hành động với Pokémon và hồ sơ trainer: trứng, skill, đổi tên, đồng hành, hợp nhất, ảnh riêng.
 export interface PokemonActions {
@@ -405,8 +406,9 @@ export const createPokemonActions = (appState: AppState, app: AppActions): Pokem
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
+    reader.onload = async (event) => {
+      // Ảnh quá lớn được nén lại để vừa giới hạn lưu trên đám mây (Phase 3, Q5).
+      const base64 = await compressImageDataUrl(event.target?.result as string).catch(() => event.target?.result as string);
       const updated = students.map(s => {
         if (s.id === studentId) {
           const updatedS = { ...s, customAvatar: base64 };

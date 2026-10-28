@@ -28,7 +28,7 @@ src/types/                  kiểu dữ liệu (index.ts: dữ liệu; app.ts: k
    - `gameData/useLocalPersistence.ts`: lưu/đọc localStorage (khoá `classivy_*`; khoá cũ `imperial_*` được chép sang một lần khi mở app ở `src/main.tsx` qua `domain/storageMigration.ts`, khoá cũ giữ nguyên để hoàn tác).
    - `gameData/backupActions.ts`: xuất/nhập JSON, sao lưu/khôi phục thủ công. Nhập file chỉ lấy các trường còn dùng (`domain/backup.ts`), nên file cũ có phần cấp bậc vẫn nhập được.
    - Cột `ranks_male`/`ranks_female` trên Supabase không còn được đọc/ghi (hệ cấp bậc đã bỏ, D7); xoá cột ở migration Phase 3.
-   - Phase 3 sẽ thay phần đồng bộ (một snapshot JSON mỗi giáo viên) bằng bảng dữ liệu riêng; chỉ cần sửa trong thư mục này.
+   - `gameData/cloudStore.ts` (Phase 3): chọn nơi lưu theo `user_settings.data_model_version`. `legacy` = một snapshot JSON (như trước); `tables` = bảng `classes`/`students`/`point_ledger`, mỗi lần lưu chỉ gửi phần thay đổi (`domain/cloudModel.ts`: `diffSnapshots`) qua hàm DB `save_teacher_changes` (một transaction). Supabase chưa chạy migration => luôn `legacy`. Chuyển dữ liệu cũ: `domain/legacyImport.ts` + `features/dataUpgrade/DataUpgradeModal.tsx`. Thiết kế: `docs/adr/0001-phase-3-data-model.md`.
 2. **UiEventsProvider**: toast Pokémon, thông báo level-up, nở trứng, hàng đợi Pokémon rời đi.
 3. **AppProvider** (`AppContext.tsx`) ghép mỗi lần render:
    - `useAppState()`: dữ liệu + sự kiện + state của từng tính năng (`features/*/use*State.ts`) + giá trị suy ra (`useDerivedState`).

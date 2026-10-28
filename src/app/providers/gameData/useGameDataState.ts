@@ -3,6 +3,8 @@ import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, LudoTileSpec,
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_LUDO_TILES, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY } from '../../../data/constants';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, PetSkill } from '../../../data/pokemonData';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency } from '../../../domain/bossSystem';
+import { CloudSnapshot, EMPTY_SNAPSHOT } from '../../../domain/cloudModel';
+import type { CloudDataModel } from './cloudStore';
 
 // State dữ liệu lớp học dùng chung. Khởi tạo giống hệt App.tsx cũ (một số giá trị đọc từ localStorage).
 export const useGameDataState = () => {
@@ -66,6 +68,11 @@ export const useGameDataState = () => {
   const [initialCloudLoadComplete, setInitialCloudLoadComplete] = useState(false);
   const [cloudLoadSuccess, setCloudLoadSuccess] = useState(false);
   const lastSyncedSnapshotRef = useRef<string>('');
+  // Phase 3: dữ liệu lớp đang lưu ở đâu ('legacy' = cục JSON cũ, 'tables' = bảng mới),
+  // mốc lần lưu thành công trước (để chỉ gửi phần thay đổi) và lời mời nâng cấp dữ liệu cũ.
+  const cloudDataModelRef = useRef<CloudDataModel>('legacy');
+  const lastCloudSnapshotRef = useRef<CloudSnapshot>(EMPTY_SNAPSHOT);
+  const [legacyUpgradeAvailable, setLegacyUpgradeAvailable] = useState(false);
 
   return {
     students, setStudents, skills,
@@ -75,7 +82,8 @@ export const useGameDataState = () => {
     posSoundUrl, setPosSoundUrl, negSoundUrl, setNegSoundUrl, timerSoundUrl, setTimerSoundUrl,
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
     isSyncing, setIsSyncing, lastSyncedTime, setLastSyncedTime, initialCloudLoadComplete,
-    setInitialCloudLoadComplete, cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef
+    setInitialCloudLoadComplete, cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
+    cloudDataModelRef, lastCloudSnapshotRef, legacyUpgradeAvailable, setLegacyUpgradeAvailable
   };
 };
 
