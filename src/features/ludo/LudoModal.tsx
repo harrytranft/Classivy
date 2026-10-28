@@ -69,7 +69,7 @@ export const LudoModal: React.FC = () => {
                     <div
                       key={tileIdx}
                       title={spec ? `${spec.title}: ${spec.desc}` : undefined}
-                      className={`relative flex min-h-[84px] flex-col items-center justify-between rounded-xl border-2 p-1 shadow-sm transition-all sm:min-h-0 ${
+                      className={`group/tile relative flex min-h-[84px] flex-col items-center justify-between rounded-xl border-2 p-1 shadow-sm transition-all sm:min-h-0 ${
                         tileIdx === 0 ? 'border-green-500 bg-gradient-to-b from-green-100 to-emerald-50' :
                         tileIdx === LUDO_FINISH_TILE ? 'border-yellow-500 bg-gradient-to-b from-yellow-200 via-amber-100 to-orange-100 shadow-[0_0_24px_rgba(250,204,21,0.45)]' :
                         spec?.type === 'monster' ? 'border-red-500 bg-gradient-to-b from-red-100 to-rose-50' :
@@ -84,23 +84,45 @@ export const LudoModal: React.FC = () => {
                       {spec && <span className="text-3xl leading-none drop-shadow lg:text-4xl">{spec.icon}</span>}
                       {tileIdx === 0 && <span className="rounded bg-green-700 px-1.5 text-[11px] font-black text-white">Xuất phát</span>}
                       {tileIdx === LUDO_FINISH_TILE && <span className="rounded bg-yellow-600 px-1.5 text-[11px] font-black text-white">ĐÍCH</span>}
-                      <div className="z-10 flex flex-wrap items-center justify-center gap-1">
-                        {studentsOnTile.map(st => (
-                          <motion.div
-                            key={st.id}
-                            layout
-                            initial={{ scale: 0.6, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                            className="relative"
-                          >
-                            <StudentAvatar student={st} className="h-10 w-10 rounded-full border-2 border-amber-900 shadow-md ring-2 ring-amber-300 sm:h-[clamp(2.25rem,6.2vh,4rem)] sm:w-[clamp(2.25rem,6.2vh,4rem)]" />
-                            <div className="absolute -bottom-1 left-1/2 max-w-[64px] -translate-x-1/2 truncate rounded-full border border-white bg-amber-900 px-1.5 text-xs font-black text-amber-100 shadow">
-                              {st.name.split(' ').pop()}
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
+                      {(() => {
+                        const shown = studentsOnTile.slice(0, 2);
+                        const extra = studentsOnTile.slice(2);
+                        const size = shown.length > 1
+                          ? 'h-7 w-7 sm:h-[clamp(1.75rem,4.4vh,2.75rem)] sm:w-[clamp(1.75rem,4.4vh,2.75rem)]'
+                          : 'h-10 w-10 sm:h-[clamp(2.25rem,6.2vh,4rem)] sm:w-[clamp(2.25rem,6.2vh,4rem)]';
+                        return (
+                          <div className="z-10 flex flex-wrap items-center justify-center gap-0.5">
+                            {shown.map(st => (
+                              <motion.div
+                                key={st.id}
+                                layout
+                                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                                className="relative"
+                              >
+                                <StudentAvatar student={st} className={`${size} rounded-full border-2 border-amber-900 shadow-md ring-2 ring-amber-300`} />
+                                {shown.length === 1 && (
+                                  <div className="absolute -bottom-1 left-1/2 max-w-[64px] -translate-x-1/2 truncate rounded-full border border-white bg-amber-900 px-1.5 text-xs font-black text-amber-100 shadow">
+                                    {st.name.split(' ').pop()}
+                                  </div>
+                                )}
+                              </motion.div>
+                            ))}
+                            {extra.length > 0 && (
+                              <>
+                                <span className="grid h-6 min-w-6 place-items-center rounded-full bg-amber-900 px-1 text-xs font-black text-amber-100">+{extra.length}</span>
+                                <div role="tooltip" className={`pointer-events-none absolute ${tileIdx % 10 < 2 ? 'left-0' : tileIdx % 10 > 7 ? 'right-0' : 'left-1/2 -translate-x-1/2'} ${tileIdx >= 30 ? 'bottom-full' : 'top-full'} z-30 hidden w-max max-w-[220px] flex-wrap justify-center gap-1 rounded-2xl border-2 border-amber-400 bg-white p-2 shadow-2xl group-hover/tile:flex`}>
+                                  {extra.map(st => (
+                                    <div key={st.id} className="flex flex-col items-center">
+                                      <StudentAvatar student={st} className="h-10 w-10 rounded-full border-2 border-amber-900" />
+                                      <span className="max-w-[56px] truncate text-[11px] font-black text-amber-950">{st.name.split(' ').pop()}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                   );
                 })}

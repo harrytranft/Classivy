@@ -501,6 +501,10 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/22d-wheel-result.png' });
   await snap(page, '42-wheel-result', state);
   await snapCloud(page, '42-wheel-result', state);
+  // Sau khi quay xong, "Hoàn tất" chỉ đóng bảng kết quả: vẫn ở trang vòng quay, quay tiếp được.
+  await page.getByRole('button', { name: 'Hoàn tất' }).click();
+  await expect(page).toHaveURL(/\/class\/6A\/vong-quay$/);
+  await expect(page.getByRole('button', { name: 'Bắt Đầu Quay' })).toBeVisible();
 
   // 9. Cài đặt: đổi tần suất Boss
   await reopen();
@@ -812,6 +816,14 @@ for (const viewport of [{ name: 'mobile', width: 390, height: 844 }, { name: 'ta
     await expect(page.locator('.cl-splash')).toHaveCount(0);
     await expect(page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ })).toBeVisible();
     expect(await noOverflow()).toBe(true);
+    // Nhiều trainer ở ô xuất phát: chỉ hiện 2 avatar + "+N"; rê chuột vào ô thì hiện đủ.
+    await expect(page.getByText('+3', { exact: true })).toBeVisible();
+    await expect(page.getByRole('tooltip')).toBeHidden();
+    if (viewport.name === 'desktop') {
+      await page.getByText('Xuất phát').hover();
+      await expect(page.getByRole('tooltip')).toBeVisible();
+      if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/70b-ludo-hover.png' });
+    }
     if (viewport.name !== 'mobile') {
       const tile = await page.getByText('Xuất phát').boundingBox();
       expect(tile).not.toBeNull();

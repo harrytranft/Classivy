@@ -8,7 +8,7 @@ export const LuckyWheelModal: React.FC = () => {
     isLuckyWheelSpinning, luckyWheelBackground, luckyWheelCandidateIds,
     luckyWheelDisplayRewards, luckyWheelMode, luckyWheelPendingResult, luckyWheelRef,
     luckyWheelResult, luckyWheelRewards, luckyWheelRotation, openLudoForClass,
-    closeLuckyWheel, showLuckyWheelModal, startLuckyWheelSpin,
+    closeLuckyWheel, showLuckyWheelModal, startLuckyWheelSpin, setLuckyWheelResult, setLuckyWheelPendingResult,
     students, filterClass, toggleLuckyWheelCandidate
   } = useApp();
   // Trainer có mặt của lớp đang mở, để tick chọn người được quay.
@@ -219,7 +219,7 @@ export const LuckyWheelModal: React.FC = () => {
                   )}
                 </div>
 
-                <button onClick={() => closeLuckyWheel()} className="mt-5 w-full rounded-2xl bg-gradient-to-r from-fuchsia-600 to-amber-500 py-4 text-lg font-black text-white shadow-lg transition-all hover:brightness-110">
+                <button onClick={() => { setLuckyWheelResult(null); setLuckyWheelPendingResult(null); }} className="mt-5 w-full rounded-2xl bg-gradient-to-r from-fuchsia-600 to-amber-500 py-4 text-lg font-black text-white shadow-lg transition-all hover:brightness-110">
                   Hoàn tất
                 </button>
               </div>
