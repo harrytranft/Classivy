@@ -25,6 +25,27 @@ const Row: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <li className="flex min-h-14 items-center justify-between gap-3 py-2">{children}</li>
 );
 
+/** Lời mời kết bạn đến: dùng ở trang Bạn bè và ở đầu Hồ sơ (Phase 12A). Không có lời mời thì không hiện gì. */
+export const IncomingRequests: React.FC<{ incoming: SocialOverview['incoming']; busy: boolean; actions: SocialActions; className?: string }> = ({ incoming, busy, actions, className }) => {
+  if (incoming.length === 0) return null;
+  return (
+    <section aria-label="Lời mời kết bạn" className={`rounded-brand-md bg-[#f3e9fa] p-3 ${className ?? ''}`}>
+      <p className="text-[13px] font-bold text-brand-violet-deep">Lời mời kết bạn</p>
+      <ul>
+        {incoming.map(request => (
+          <Row key={request.requestId}>
+            <span className="min-w-0 truncate font-bold text-brand-ink">{request.name}</span>
+            <span className="flex shrink-0 gap-2">
+              <Button size="md" disabled={busy} onClick={() => actions.respond(request.requestId, true)}>Đồng ý</Button>
+              <Button size="md" variant="ghost" disabled={busy} onClick={() => actions.respond(request.requestId, false)}>Từ chối</Button>
+            </span>
+          </Row>
+        ))}
+      </ul>
+    </section>
+  );
+};
+
 export const SocialFriendsCard: React.FC<SocialFriendsCardProps> = ({ overview, busy, actions, onGift }) => {
   const [showClassmates, setShowClassmates] = useState(false);
   const { friends, incoming, outgoing, classmates } = overview;
@@ -35,22 +56,7 @@ export const SocialFriendsCard: React.FC<SocialFriendsCardProps> = ({ overview, 
         <Users size={20} className="text-brand-violet" aria-hidden /> Bạn bè
       </h2>
 
-      {incoming.length > 0 && (
-        <section aria-label="Lời mời kết bạn" className="mb-4 rounded-brand-md bg-[#f3e9fa] p-3">
-          <p className="text-[13px] font-bold text-brand-violet-deep">Lời mời kết bạn</p>
-          <ul>
-            {incoming.map(request => (
-              <Row key={request.requestId}>
-                <span className="min-w-0 truncate font-bold text-brand-ink">{request.name}</span>
-                <span className="flex shrink-0 gap-2">
-                  <Button size="md" disabled={busy} onClick={() => actions.respond(request.requestId, true)}>Đồng ý</Button>
-                  <Button size="md" variant="ghost" disabled={busy} onClick={() => actions.respond(request.requestId, false)}>Từ chối</Button>
-                </span>
-              </Row>
-            ))}
-          </ul>
-        </section>
-      )}
+      <IncomingRequests incoming={incoming} busy={busy} actions={actions} className="mb-4" />
 
       {friends.length === 0 ? (
         <p className="text-base text-brand-ink/70">Em chưa có bạn bè trên Classivy. Gửi lời mời cho bạn cùng lớp nhé!</p>

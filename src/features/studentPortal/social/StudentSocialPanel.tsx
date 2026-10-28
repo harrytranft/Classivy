@@ -5,7 +5,7 @@ import { SocialOverview } from '../../../domain/social';
 import { SendGiftModal } from './SendGiftModal';
 import { SocialFriendsCard } from './SocialFriendsCard';
 import { SocialGiftsCard } from './SocialGiftsCard';
-import { useStudentSocial } from './useStudentSocial';
+import { StudentSocial } from './useStudentSocial';
 
 // Khu bạn bè + quà trên cổng học sinh (Phase 6). Lớp chưa bật thì chỉ hiện một dòng nhẹ nhàng.
 
@@ -30,8 +30,9 @@ const WalletCard: React.FC<{ overview: SocialOverview }> = ({ overview }) => {
   );
 };
 
-export const StudentSocialPanel: React.FC<{ refreshSignal: number }> = ({ refreshSignal }) => {
-  const { state, busy, notice, clearNotice, actions } = useStudentSocial(refreshSignal);
+// Trạng thái bạn bè do cổng học sinh giữ (để chấm đỏ trên nav và thẻ lời mời ở Hồ sơ dùng chung dữ liệu).
+export const StudentSocialPanel: React.FC<{ social: StudentSocial }> = ({ social }) => {
+  const { state, busy, notice, clearNotice, actions } = social;
   const [giftFriendId, setGiftFriendId] = useState<string | null>(null);
 
   if (state.kind === 'loading') return null;

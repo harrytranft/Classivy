@@ -334,6 +334,8 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   await expect(page.getByText('Lớp 6A')).toBeVisible();
   await expect(page.getByText('Cấp 2', { exact: true })).toBeVisible();
   await expect(page.getByText('🌱 Rookie Trainer')).toBeVisible();
+  // Phase 12A: Pokémon đồng hành, bộ sưu tập, trứng và skill nằm ở trang Pokémon.
+  await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
   await expect(page.getByText('Pikachu', { exact: true }).first()).toBeVisible();
   await expect(page.getByRole('heading', { name: /Bộ sưu tập/ })).toContainText('(1)');
   await expect(page.getByText('Bulbasaur')).toBeVisible();
@@ -342,6 +344,7 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   await page.getByRole('button', { name: /Lá Chắn Hộ Vệ/ }).click();
   await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('Còn 1/2 lượt dùng');
   await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('Giảm 50%');
+  await page.getByRole('button', { name: 'Hồ sơ', exact: true }).click();
   // Lịch sử mới nhất trước, điểm trừ có dấu (không chỉ dựa vào màu).
   const history = page.getByRole('listitem').filter({ hasText: /Quên vở|Trả lời hay/ });
   await expect(history.first()).toContainText('Quên vở');
@@ -350,7 +353,8 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   // Không có vị trí xếp hạng trong lớp, không có nút thao tác game.
   await expect(page.getByText(/Hạng \d/)).toHaveCount(0);
   // Thanh điều hướng có Hồ sơ, Cửa hàng, Bạn bè và avatar để đăng xuất; không có nút thao tác game.
-  await expect(page.getByRole('button', { name: 'Đăng xuất' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Tài khoản của em' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Pokémon', exact: true })).toBeVisible();
   await page.getByRole('tab', { name: /Huy hiệu/ }).click();
   await expect(page.getByText('Blaze Badge')).toBeVisible();
   await page.getByRole('button', { name: 'Cửa hàng' }).click();
@@ -619,4 +623,54 @@ test('học sinh: lỗi tải hồ sơ hiện thông báo thân thiện và th�
   await expect(page.getByText('boom')).toHaveCount(0);
   await page.getByRole('button', { name: 'Thử lại' }).click();
   await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
+});
+
+
+// Phase 12A (D41): lời mời kết bạn hiện ở Hồ sơ + chấm đỏ trên nav; (D44) avatar mở hộp Đăng xuất.
+test('học sinh: lời mời kết bạn hiện ở Hồ sơ kèm chấm đỏ trên nav, trả lời ngay tại Hồ sơ', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  mock.social = SOCIAL_PAYLOAD;
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Bạn bè, 1 lời mời mới/ })).toBeVisible();
+  const invites = page.getByRole('region', { name: 'Lời mời kết bạn' });
+  await expect(invites).toBeVisible();
+  await invites.getByRole('button', { name: 'Đồng ý' }).click();
+  await expect(page.getByRole('status')).toContainText('Hai bạn đã là bạn bè!');
+  expect(mock.socialCalls.at(-1)).toEqual({ fn: 'student_respond_friend_request', body: { p_request_id: 31, p_accept: true } });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: không có lời mời thì Hồ sơ không hiện thẻ lời mời và nav không có chấm đỏ', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Lời mời kết bạn' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Bạn bè', exact: true })).toBeVisible();
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: bấm avatar mở hộp Đăng xuất, chỉ đăng xuất khi tự bấm', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  const logoutRequests: string[] = [];
+  page.on('request', r => { if (r.url().includes('/auth/v1/logout')) logoutRequests.push(r.url()); });
+  await page.getByRole('button', { name: 'Tài khoản của em' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Đăng xuất?' });
+  await expect(dialog).toBeVisible();
+  expect(logoutRequests).toEqual([]);
+  await dialog.getByRole('button', { name: 'Ở lại' }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
+  expect(logoutRequests).toEqual([]);
+  await page.getByRole('button', { name: 'Tài khoản của em' }).click();
+  await page.getByRole('dialog', { name: 'Đăng xuất?' }).getByRole('button', { name: 'Đăng xuất' }).click();
+  await expect.poll(() => logoutRequests.length).toBeGreaterThan(0);
+  expect(mock.errors).toEqual([]);
 });

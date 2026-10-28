@@ -57,6 +57,11 @@
 | D38 | Phím tắt phím đơn: A điểm danh, H homework, W vòng quay, R random, T hẹn giờ, / tìm kiếm, ? xem danh sách; Cài đặt có bảng liệt kê và cho đổi phím | 2026-10-28 |
 | D39 | Thứ tự giữ nguyên: Phase 8, 9, 10, 11 | 2026-10-28 |
 | D40 | Đăng xuất không cần xác nhận | 2026-10-28 |
+| D41 | Phase 12 (cổng học sinh v3): nav Hồ sơ / Pokémon / Bạn bè / Cửa hàng; lời mời kết bạn hiện ở Hồ sơ và Bạn bè (chấm đỏ trên nav) | 2026-10-28 |
+| D42 | "Đổi Pokémon" = đổi đồng hành/hỗ trợ trong bộ sưu tập (chuyển từ Cửa hàng sang trang Pokémon); học sinh được tự Hợp nhất, dùng đúng luật hợp nhất của giáo viên, qua hàm DB mới (12C, cần migration + Harry duyệt) | 2026-10-28 |
+| D43 | Cửa hàng: skill thành danh sách một cột, bấm thì chi tiết + nút Mua bung ngay bên dưới skill đó | 2026-10-28 |
+| D44 | Bấm avatar học sinh mở modal có nút Đăng xuất và Huỷ (thay D40 cho cổng học sinh; giáo viên giữ nguyên) | 2026-10-28 |
+| D45 | Hồ sơ Trainer của giáo viên làm theo cấu trúc học sinh: hai tab Hồ sơ / Pokémon, Hợp nhất nằm trong tab Pokémon, dùng chung component (12D) | 2026-10-28 |
 
 ## Tổng quan Phase
 
@@ -74,6 +79,7 @@
 | 9 | Các trang "wow": Tặng quà, Vòng quay may mắn, Cá Ngựa | Kế hoạch | Không |
 | 10 | Cổng học sinh v2: nav, Profile, Shop học sinh | Kế hoạch | **Có (migration, cần Harry duyệt)** |
 | 11 | Skills tự động sau Random và khi cộng/trừ điểm | Kế hoạch | Không |
+| 12 | Cổng học sinh v3: nav 4 mục, modal đăng xuất, trang Pokémon, Hợp nhất, dọn Hồ sơ Trainer | Kế hoạch (12A đang làm) | Chỉ 12C (migration, cần Harry duyệt) |
 
 Ghi chú: so với lộ trình đã trao đổi, Phase 2 (reskin + thuật ngữ) được tách riêng để các Phase tài khoản/xã hội dùng ngay hệ thiết kế mới; các Phase sau dời xuống một số.
 
@@ -354,6 +360,19 @@ Mọi skill giữ 2 lượt, dùng xong ghi lịch sử, hết lượt tự mấ
 Loading DictaLearn: xem `docs/reference/dictalearn-splash.md` (logo + zoom/fade, thanh chạy, boot splash tĩnh trong `index.html` để không nháy; dùng chung cho đăng nhập và khi vào lớp).
 
 ---
+
+## Phase 12 - Cổng học sinh v3 và dọn Hồ sơ Trainer (chỉ 12C có migration)
+
+Nhánh: `claude/phase12-student-portal`. Quyết định: D41-D45. Không mở rộng phạm vi ngoài các bước dưới.
+
+- [x] 12A Nav học sinh 4 mục (Hồ sơ, Pokémon, Bạn bè, Cửa hàng); avatar mở modal Đăng xuất/Huỷ; chấm đỏ lời mời trên Bạn bè + thẻ "Có N lời mời" (Chấp nhận/Từ chối) ở đầu Hồ sơ (nâng state bạn bè lên cổng học sinh). Không đổi DB
+- [ ] 12B Trang Pokémon của học sinh (đồng hành + skill, bộ sưu tập, Đổi đồng hành/hỗ trợ, trứng đang ấp); Hồ sơ bớt khối tương ứng; Cửa hàng: skill dạng danh sách một cột, bấm bung chi tiết + nút Mua ngay dưới skill (D43). Không đổi DB
+- [ ] 12C Học sinh tự Hợp nhất Pokémon: hàm DB mới dùng đúng luật hợp nhất của giáo viên (tái dùng logic `src/domain/`), có migration + rollback + test `npm run test:db`. **Chờ Harry duyệt trước khi chạy trên Supabase thật**
+- [ ] 12D Hồ sơ Trainer (giáo viên): hai tab Hồ sơ / Pokémon, dùng chung component với 12B, bỏ ba panel bị lặp (Kho trứng, Thám hiểm, Rương tuần), dọn từ vựng cũ ("công trạng", "Biên Niên Sử", "Adventure Journal"). Không đổi DB
+
+**12A xong 2026-10-28 (nhánh `claude/phase12-student-portal`, chưa commit, không đụng Supabase).** Nav học sinh: Hồ sơ / Pokémon / Bạn bè / Cửa hàng; avatar mở hộp "Đăng xuất?" (Ở lại / Đăng xuất); chấm đỏ có số lời mời trên Bạn bè và thẻ lời mời (Đồng ý / Từ chối) ở đầu Hồ sơ, dùng chung state bạn bè do cổng học sinh giữ (`useStudentSocial` nâng lên `StudentProfileScreen`). Tạm thời trang Pokémon chứa Pokémon đồng hành + bộ sưu tập (đã chuyển khỏi Hồ sơ); Đổi đồng hành/hỗ trợ và trứng chuyển sang trang này ở 12B. Avatar nay có tên truy cập "Tài khoản của em". Kiểm chứng (bản sao tạm, kho thật không bị chạm): typecheck 0 lỗi, vitest 221/221, smoke 35/35 (thêm 3 test: lời mời ở Hồ sơ + chấm đỏ, không có lời mời, hộp Đăng xuất), build OK. Chưa kiểm chứng trên trình duyệt thật hay Supabase thật.
+
+Thứ tự: 12A, 12B, 12C, 12D (12B trước 12D để dùng chung component; 12C tách riêng vì là bước duy nhất đụng schema). Mọi màn học sinh responsive 390/820/1440px (D22). Phase 11 đã xong; ý tưởng tính năng dùng trên lớp (giáo viên) để brainstorm riêng, chưa vào kế hoạch.
 
 ## Đề xuất phát sinh (chờ Harry duyệt)
 

@@ -92,4 +92,4 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 0. Phase 10B: migration `20261102100000_phase10_student_shop.sql` Harry xác nhận ĐÃ chạy (2026-10-28). Phase 8-11 đã gộp `main` cục bộ (cần đẩy lên GitHub).
 1. Harry xem thử Phase 8-11 (đặc biệt: đổi tab qua lại có còn chớp loading không), rồi cho commit/gộp nhánh `claude/phase8-teacher-ui`.
 2. Harry duyệt rồi chạy migration Phase 10B trên Supabase (hoàn tác: `supabase/rollback/20261102100000_phase10_student_shop_down.sql`); chỉ coi là đã áp dụng khi Harry xác nhận. Sau đó bật công tắc "Cho phép học sinh dùng Cửa hàng" ở trang Bạn bè & quà của lớp để thử.
-3. Phase 11 (skills tự động hoá) khi Harry yêu cầu.
+3. Phase 12 (cổng học sinh v3, D41-D45) đang làm trên nhánh `claude/phase12-student-portal` (12A xong, chưa commit): 12A nav 4 mục + modal đăng xuất + lời mời kết bạn ở Hồ sơ; 12B trang Pokémon + skill bung ngay dưới; 12C Hợp nhất cho học sinh (migration, chờ Harry duyệt); 12D dọn Hồ sơ Trainer. Chi tiết `PLAN.md`. Ý tưởng tính năng dùng trên lớp: Harry sẽ brainstorm riêng.

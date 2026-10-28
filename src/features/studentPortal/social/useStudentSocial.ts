@@ -62,3 +62,5 @@ export const useStudentSocial = (refreshSignal: number) => {
 
   return { state, busy, notice, clearNotice: () => setNotice(null), actions, reload: load };
 };
+
+export type StudentSocial = ReturnType<typeof useStudentSocial>;
