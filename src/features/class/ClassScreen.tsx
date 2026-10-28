@@ -2,8 +2,9 @@ import React from 'react';
 import { StudentCard } from '../../components/StudentCard';
 import { ClassDock } from '../../components/ClassDock';
 import { Button } from '../../components/ui';
-import { BookCheck, ChevronDown, ClipboardCheck, Minus, Plus, Search, UserCheck, UserPlus, UserX } from 'lucide-react';
+import { BookCheck, ChevronDown, ClipboardCheck, KeyRound, Minus, Plus, Search, UserCheck, UserPlus, UserX } from 'lucide-react';
 import { useApp } from '../../app/AppContext';
+import { CLASS_SUB_PAGES, classPath } from '../../app/screenRoutes';
 
 export const ClassScreen: React.FC = () => {
   const {
@@ -14,7 +15,7 @@ export const ClassScreen: React.FC = () => {
     petSkills, searchQuery, selectedStudentIds, setActiveTab, setCurrentScreen,
     setEditingStudent, setFeedbackSource, setFilterClass,
     setIsMultiSelectMode, setSearchQuery, setSelectedStudentIds, setShowGroupModal,
-    setShowSkillModal, setShowTimerModal, toggleAttendance
+    setShowSkillModal, setShowTimerModal, toggleAttendance, navigateTo
   } = useApp();
   return (
     <div className="animate-in fade-in duration-300">
@@ -50,6 +51,13 @@ export const ClassScreen: React.FC = () => {
         </Button>
         <Button variant="secondary" icon={<BookCheck className="h-[18px] w-[18px]" aria-hidden />} onClick={openHomeworkCheck}>
           Check Homework
+        </Button>
+        <Button
+          variant="secondary"
+          icon={<KeyRound className="h-[18px] w-[18px]" aria-hidden />}
+          onClick={() => navigateTo(classPath(filterClass, CLASS_SUB_PAGES.accounts))}
+        >
+          Tài khoản học sinh
         </Button>
         <Button icon={<UserPlus className="h-[18px] w-[18px]" aria-hidden />} onClick={handleAddStudent}>Thêm Trainer</Button>
       </div>

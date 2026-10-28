@@ -10,6 +10,8 @@ export PGOPTIONS="${PGOPTIONS:-} -c client_min_messages=warning"
 PSQL=(psql -X -q -v ON_ERROR_STOP=1)
 MIGRATION=supabase/migrations/20261027120000_phase3_data_model.sql
 ROLLBACK=supabase/rollback/20261027120000_phase3_data_model_down.sql
+MIGRATION4=supabase/migrations/20261029100000_phase4_student_accounts.sql
+ROLLBACK4=supabase/rollback/20261029100000_phase4_student_accounts_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
 
@@ -70,6 +72,20 @@ run -c "do \$\$ declare t text; begin
   end loop; end \$\$"
 echo "== Test RLS"
 run -o /dev/null -f supabase/tests/10_phase3_rls.test.sql
+
+echo "== Migration Phase 4 (chạy 2 lần) + test tài khoản học sinh"
+run -f "$MIGRATION4"
+run -f "$MIGRATION4"
+run -o /dev/null -f supabase/tests/20_phase4_accounts.test.sql
+
+echo "== Hoàn tác Phase 4, chạy lại, rồi hoàn tác để thử hoàn tác Phase 3"
+run -f "$ROLLBACK4"
+run -c "do \$\$ begin
+  if to_regclass('public.teacher_audit_log') is not null then raise exception 'FAIL: phase 4 rollback left audit table'; end if;
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'students' and column_name in ('username', 'must_change_password')) then
+    raise exception 'FAIL: phase 4 rollback left columns'; end if; end \$\$"
+run -f "$MIGRATION4"
+run -f "$ROLLBACK4"
 
 echo "== Hoàn tác rồi chạy lại migration"
 run -f "$ROLLBACK"

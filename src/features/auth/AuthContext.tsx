@@ -10,6 +10,8 @@ export interface AuthUser {
   uid: string;
   id: string;
   email?: string;
+  /** 'student' khi Edge Function đặt app_metadata.role = 'student' (Phase 4); còn lại là giáo viên. */
+  role: 'teacher' | 'student';
 }
 
 interface UserProfile {
@@ -44,13 +46,15 @@ const getMetadataProfile = (usr: SupabaseUser): UserProfile => ({
 const toAuthUser = (usr: SupabaseUser): AuthUser => ({
   uid: usr.id,
   id: usr.id,
-  email: usr.email || ""
+  email: usr.email || "",
+  role: usr.app_metadata?.role === "student" ? "student" : "teacher"
 });
 
 const normalizeAuthError = (message?: string) => {
   const raw = message || "";
   const lower = raw.toLowerCase();
-  if (lower.includes("invalid login credentials")) return "Email hoặc mật khẩu không chính xác.";
+  if (lower.includes("invalid login credentials")) return "Tên đăng nhập/email hoặc mật khẩu không chính xác.";
+  if (lower.includes("banned")) return "Tài khoản này hiện không đăng nhập được. Hãy hỏi giáo viên của bạn.";
   if (lower.includes("email not confirmed")) return "Email chưa được xác nhận. Vui lòng mở email Supabase đã gửi và bấm link xác nhận.";
   if (lower.includes("already registered") || lower.includes("already exists")) return "Địa chỉ Email này đã được sử dụng.";
   if (lower.includes("password")) return "Mật khẩu không hợp lệ hoặc quá yếu (cần tối thiểu 6 ký tự).";

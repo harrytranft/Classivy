@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
+import { normalizeLoginInput } from '../../domain/studentAccount';
 
 export const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   const { loginWithEmail } = useAuth();
@@ -13,13 +14,14 @@ export const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess 
     setErrorMsg(null);
 
     if (!email.trim() || !password.trim()) {
-      setErrorMsg("Vui lòng nhập đầy đủ Email và Mật khẩu.");
+      setErrorMsg("Vui lòng nhập đầy đủ tên đăng nhập (hoặc email) và mật khẩu.");
       return;
     }
 
     setSubmitting(true);
     try {
-      await loginWithEmail(email.trim(), password);
+      // Có "@" là email giáo viên; không có là tên đăng nhập học sinh (đổi sang email nội bộ).
+      await loginWithEmail(normalizeLoginInput(email), password);
       if (onSuccess) onSuccess();
     } catch (err: any) {
       setErrorMsg(err.message || "Có lỗi xảy ra, vui lòng thử lại.");
@@ -40,14 +42,17 @@ export const AuthLoginForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess 
       <form onSubmit={handleSubmit} className="space-y-4 text-left">
         <div>
           <label className="mb-1 block text-sm font-bold text-brand-ink">
-            Địa chỉ Email
+            Email hoặc tên đăng nhập
           </label>
           <input
-            type="email"
+            type="text"
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="username"
             required
             value={email}
             onChange={e => setEmail(e.target.value)}
-            placeholder="teacher@example.com"
+            placeholder="email giáo viên hoặc tên đăng nhập"
             className="w-full rounded-brand-md border border-[#d9d6ca] p-3 text-sm font-semibold outline-none focus:ring-2 focus:ring-brand-emerald/30"
           />
         </div>

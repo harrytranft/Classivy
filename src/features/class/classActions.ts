@@ -55,8 +55,8 @@ export const createClassActions = (appState: AppState, app: AppActions): ClassAc
     if (selectedStudentIds.length === 0) return;
     const count = selectedStudentIds.length;
     const confirmMsg = count === 1 
-      ? `Bạn có chắc chắn muốn xóa trainer này?` 
-      : `Bạn có chắc chắn muốn xóa ${count} trainer đã chọn?`;
+      ? `Bạn có chắc chắn muốn xóa trainer này? Điểm, lịch sử và tài khoản đăng nhập của em (nếu có) cũng bị xoá hẳn, không khôi phục được.`
+      : `Bạn có chắc chắn muốn xóa ${count} trainer đã chọn? Điểm, lịch sử và tài khoản đăng nhập của các em (nếu có) cũng bị xoá hẳn, không khôi phục được.`;
     
     if (window.confirm(confirmMsg)) {
       setStudents(prev => prev.filter(s => !selectedStudentIds.includes(s.id)));
