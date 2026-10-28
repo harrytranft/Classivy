@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 6 (đang làm, nhánh `claude/focused-lamport-rk8qji`; Phase 4 và 5 đã nghiệm thu)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 7 (đang làm, nhánh `claude/focused-lamport-rk8qji`; Phase 0-6 đã hoàn thành)
 
 ## Mục tiêu
 
@@ -42,6 +42,10 @@
 | D25 | Phase 6: quà = sticker + lời nhắn định sẵn (không vật phẩm game, không chữ tự do) | 2026-10-28 |
 | D26 | Phase 6: kết bạn bằng lời mời + chấp nhận; tính năng mặc định TẮT, giáo viên bật theo lớp; chỉ tặng cho bạn bè; tặng tự động, giáo viên xem nhật ký và thu hồi | 2026-10-28 |
 | D27 | Ô đăng nhập nhận cả email (giáo viên) lẫn tên đăng nhập (học sinh), chỉnh D11; Supabase đã tắt đăng ký công khai, giáo viên mới do Harry tạo trong Authentication (Harry xác nhận) | 2026-10-28 |
+| D28 | Phase 7: chốt "chỉ giáo viên" (`profiles.role = 'teacher'`) trong mọi policy dữ liệu giáo viên | 2026-10-28 |
+| D29 | Phase 7: xoá dữ liệu cũ sau khi sao lưu (`user_settings.students`, `boss_states_by_class`, bảng `students_imperial_old`, `app_state`, `users`) | 2026-10-28 |
+| D30 | Phase 7: ảnh đại diện giữ trong DB, ảnh mới nén về ~100 KB (thay D21 về Storage) | 2026-10-28 |
+| D31 | Phase 7: hai máy cùng sửa một học sinh thì DB từ chối gói lỗi thời (số phiên bản), app không ghi đè, báo và tải lại | 2026-10-28 |
 | D22 | Giao diện học sinh responsive cả điện thoại, máy tính bảng và desktop (điện thoại trước rồi mở rộng). Áp dụng cho mọi màn học sinh ở Phase 5 và các Phase sau; mỗi màn có smoke test ở 390 / 820 / 1440px | 2026-10-28 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
@@ -55,8 +59,8 @@
 | 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Hoàn thành (2026-10-28) | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Hoàn thành (2026-10-28, PR #5) | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Hoàn thành (2026-10-28, PR #6); bổ sung responsive desktop (5.7) | **Có (migration)** |
-| 6 | Bạn bè, quà tặng, tặng điểm | Đang làm (nhánh `claude/focused-lamport-rk8qji`) | **Có (migration)** |
-| 7 | Hardening, kiểm thử bảo mật, ra mắt | Chưa bắt đầu | Có |
+| 6 | Bạn bè, quà tặng, tặng điểm | Hoàn thành (2026-10-28, PR #8) | **Có (migration)** |
+| 7 | Hardening, kiểm thử bảo mật, ra mắt | Đang làm (nhánh `claude/focused-lamport-rk8qji`) | **Có (migration)** |
 
 Ghi chú: so với lộ trình đã trao đổi, Phase 2 (reskin + thuật ngữ) được tách riêng để các Phase tài khoản/xã hội dùng ngay hệ thiết kế mới; các Phase sau dời xuống một số.
 
@@ -218,7 +222,7 @@ src/
 
 ---
 
-## Phase 6 - Bạn bè, quà tặng, tặng điểm (ĐANG LÀM, bắt đầu 2026-10-28)
+## Phase 6 - Bạn bè, quà tặng, tặng điểm (HOÀN THÀNH 2026-10-28)
 
 **Nhánh:** `claude/focused-lamport-rk8qji` (khởi động lại từ `main` sau PR #7). **Thiết kế:** `docs/adr/0004-phase-6-social.md` (D23-D26). **Runbook:** `docs/phase-6-runbook.md`.
 
@@ -230,18 +234,25 @@ src/
 - [x] 6.5 Tương tác lành mạnh: không bảng xếp hạng quà/bạn bè; học sinh chỉ thấy tên + Pokémon đồng hành của bạn (không điểm, không ảnh); quà nhận được chỉ người nhận xem; thông báo lỗi thân thiện
 - [x] 6.6 (smoke 390/820/1440px) Khu bạn bè & quà ở cột phải trên máy tính bảng/desktop, không cuộn ngang
 - [x] 6.7 Harry chạy `docs/phase-6-runbook.md` bước 1 trên `classivy-dev` (2026-10-28): 1.6 điểm tặng không bị cộng trùng; 1.7 thu hồi quà thì điểm tự trừ lại
-- [ ] 6.8 Harry chạy bước 2 trên production (migration, pilot một lớp), nghiệm thu. Harry yêu cầu gộp nhánh vào `main` (2026-10-28) = bước 2.3 của runbook; **migration production cần chạy trước hoặc ngay khi Vercel đưa bản mới lên**
+- [x] 6.8 Gộp `main` qua PR #8; Harry yêu cầu ghi Phase 6 hoàn thành (2026-10-28)
 
-**Bàn giao cho Harry:** chạy `20261031100000_phase6_social.sql` trên dev rồi production, thử theo runbook. **Chưa có gì được áp dụng trên Supabase thật.**
+**Bàn giao cho Harry:** đã chạy migration trên dev và thử 1.6/1.7 ổn; Harry xác nhận hoàn thành Phase 6 (2026-10-28).
 
 ---
 
-## Phase 7 - Hardening và ra mắt (roadmap)
+## Phase 7 - Hardening và ra mắt (ĐANG LÀM, bắt đầu 2026-10-28)
 
-- [ ] 7.1 Rà soát bảo mật (RLS, Edge Function, giới hạn tốc độ, lộ khoá)
-- [ ] 7.2 Kiểm thử tải nhẹ theo quy mô lớp thật; theo dõi giới hạn free tier
-- [ ] 7.3 Hướng dẫn sử dụng cho giáo viên và học sinh; thông báo phụ huynh nếu cần
-- [ ] 7.4 Kế hoạch triển khai từng lớp (pilot một lớp trước)
+**Nhánh:** `claude/focused-lamport-rk8qji` (khởi động lại từ `main` sau PR #8). **Thiết kế:** `docs/adr/0005-phase-7-hardening.md` (D28-D31). **Runbook:** `docs/phase-7-runbook.md`.
+
+- [x] 7.1 (test SQL 2 kiểu dự án + smoke) Rà soát bảo mật: `docs/security-review-phase7.md`. Sửa S1 (học sinh dùng được API dữ liệu giáo viên -> chốt `is_teacher()`), S2 (thu quyền bảng thừa của ẩn danh ở dự án cũ), S3 (thu quyền gọi hàm trigger), S4 (hai máy ghi đè -> `students.revision` + `save_teacher_changes_v2` + banner tải lại). Thêm chốt chặn tổng quát chạy mãi về sau: mọi bảng bật RLS, mọi hàm security definer khoá `search_path`, ẩn danh không có quyền bảng/hàm quyền cao, không hàm trigger nào gọi được qua API
+- [x] 7.2 (cục bộ) Kiểm thử tải nhẹ `npm run test:load`: 350 học sinh, 70.000 dòng sổ điểm, ~5.000 quà; mọi truy vấn chính < 35 ms; DB ~30 MB / 500 MB. Theo dõi gói miễn phí: `docs/phase-7-rollout.md`
+- [x] 7.3 Hướng dẫn: `docs/huong-dan/giao-vien.md`, `docs/huong-dan/hoc-sinh.md`, thư mẫu `docs/huong-dan/thu-gui-phu-huynh.md` (Harry chỉnh trước khi gửi)
+- [x] 7.4 Kế hoạch triển khai từng lớp (pilot 1 lớp, bật xã hội sau 1 tuần, mở rộng 2-3 lớp/tuần), theo dõi hằng tuần, dừng khẩn cấp: `docs/phase-7-rollout.md`
+- [x] 7.5 Dọn dữ liệu cũ (D29): migration riêng `20261101110000_drop_legacy_data.sql`, có chốt dừng khi còn giáo viên chưa nâng cấp; ảnh mới nén ~100 KB (D30)
+- [ ] 7.6 Harry chạy `docs/phase-7-runbook.md` bước 1 trên dev (đặc biệt 1.3 thử hai máy, 1.5, 1.8 Advisors)
+- [ ] 7.7 Harry chạy bước 2 trên production, bắt đầu pilot theo `docs/phase-7-rollout.md`
+
+**Bàn giao cho Harry:** migration `20261101100000_phase7_hardening.sql` (dev rồi production), gộp nhánh, rồi `20261101110000_drop_legacy_data.sql` **sau khi sao lưu**. **Chưa có gì được áp dụng trên Supabase thật.**
 
 ---
 
@@ -396,3 +407,11 @@ src/
 - `npm run smoke`: 21/21 đạt. Mới: học sinh bạn bè & quà ở 3 khổ (đồng ý lời mời, kết bạn, tặng quà với nút +2 bị khoá đúng hạn mức, lỗi ví hết hiện trong hộp thoại, báo thầy cô, tab đã tặng, không chạm bảng giáo viên); lớp chưa bật; trang giáo viên (bật, hạn mức, thu hồi kèm lý do, gỡ bạn bè); app giáo viên cộng hàng chờ đúng một lần kể cả sau khi mở lại. 18 ảnh gốc DOM cập nhật có chủ đích: chỉ thêm nút "Bạn bè & quà" trên trang lớp, không dòng nào bị xoá; dữ liệu đồng bộ không đổi. Đã xem ảnh chụp các màn mới.
 - **Chưa kiểm chứng:** Supabase thật; hai lần tặng đồng thời thật (khoá dòng chỉ đọc mã); thử tay trên điện thoại.
 - 2026-10-28: Harry chạy runbook Phase 6 bước 1 trên `classivy-dev`: điểm tặng không bị cộng trùng khi tải lại (1.6), thu hồi quà thì điểm tự trừ lại (1.7) (kiểm chứng thủ công trên dev). Harry yêu cầu gộp vào `main`. Production chưa được xác nhận.
+- 2026-10-28: Harry yêu cầu ghi Phase 6 hoàn thành.
+
+**Phase 7 - 2026-10-28** (kiểm thử tự động trên máy của phiên Claude; CHƯA chạy trên Supabase dev/production, chưa thử tay):
+- Rà soát trên PostgreSQL cục bộ (đủ migration Phase 3-6): xác nhận được lỗ hổng S1 bằng cách đăng nhập học sinh và gọi `save_teacher_changes` (tạo được 1 dòng học sinh). Sau migration Phase 7: bị chặn (42501).
+- `npm run test:db` (2 kiểu dự án): đạt, thêm `60_phase7_hardening.test.sql` (chốt chặn tổng quát; học sinh không dùng được API giáo viên; giáo viên lưu được; máy B lưu trước thì máy A bị từ chối, không ghi gì, một em lỗi thời làm hỏng cả gói, em đã bị xoá ở máy khác thì bị từ chối; ghi y nguyên không tăng phiên bản; đổi tài khoản không tăng phiên bản; giáo viên không tự đặt phiên bản; hàm trigger không gọi được) + dọn dữ liệu cũ (chốt dừng khi còn giáo viên chưa nâng cấp, xoá, chạy 2 lần, "hoàn tác" tạo lại cột rỗng). Test tổng quát bắt được S2 ở kiểu dự án cũ (đã sửa).
+- `npm run test:load`: đạt (số liệu ở 7.2).
+- `npm run typecheck` 0 lỗi; `npm test` 22 file, 197 test (thêm 4 test số phiên bản trong `cloudModel.test.ts`); `npm run build` đạt; `npm run smoke` 22/22 (mới: máy khác vừa sửa -> không ghi gì, hiện banner, tải lại, thao tác sau lưu được), không ảnh gốc DOM nào đổi.
+- **Chưa kiểm chứng:** Supabase thật (migration, Advisors), thử hai máy thật, ảnh nén ~100 KB trên ảnh thật.
