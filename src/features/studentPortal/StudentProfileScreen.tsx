@@ -6,6 +6,8 @@ import { StudentPortalProfile } from '../../domain/studentPortal';
 import { BadgeList, CollectionGrid, CompanionCard, HistoryList, TrainerCard } from './StudentProfileSections';
 
 // Hồ sơ của chính học sinh (Phase 5, chỉ xem). Không có vị trí xếp hạng trong lớp (Harry chốt 2026-10-28).
+// Responsive (D22): điện thoại một cột; máy tính bảng (md) hai cột đều; desktop (lg) cột trái cố định
+// (danh tính, Trainer Level, Pokémon) + cột phải rộng (bộ sưu tập, huy hiệu, lịch sử).
 
 interface StudentProfileScreenProps {
   profile: StudentPortalProfile;
@@ -25,7 +27,7 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
   return (
     <div className="min-h-screen bg-brand-cream font-brand text-base text-brand-ink">
       <header className="sticky top-0 z-10 border-b border-[#e6e2d4] bg-white/95">
-        <div className="mx-auto flex max-w-md items-center justify-between gap-2 px-4 py-2">
+        <div className="mx-auto flex max-w-md items-center justify-between gap-2 px-4 py-2 md:max-w-3xl md:px-6 lg:max-w-6xl lg:px-8">
           <img src="/brand/classivy-logo-horizontal.png" alt="Classivy" className="h-8 w-auto" />
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="md" icon={<RefreshCw size={18} />} loading={refreshing} onClick={refresh} aria-label="Cập nhật hồ sơ">
@@ -36,35 +38,41 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
         </div>
       </header>
 
-      <main className="mx-auto max-w-md space-y-4 px-4 pb-10 pt-5">
+      <main className="mx-auto max-w-md space-y-4 px-4 pb-10 pt-5 md:max-w-3xl md:px-6 md:pt-6 lg:max-w-6xl lg:px-8 lg:pt-8">
         {refreshFailed && (
           <div role="alert" className="rounded-brand-md border border-brand-danger/30 bg-[#fff4f2] p-3 text-[13px] font-semibold text-brand-danger">
             Chưa cập nhật được. Kiểm tra mạng rồi thử lại nhé.
           </div>
         )}
 
-        <section className="flex items-center gap-4 rounded-brand-lg bg-brand-forest p-5 text-brand-cream">
-          {profile.avatar ? (
-            <img src={profile.avatar} alt={profile.name} className="h-16 w-16 shrink-0 rounded-brand-md object-cover ring-2 ring-brand-gold" referrerPolicy="no-referrer" />
-          ) : (
-            <div aria-hidden className="grid h-16 w-16 shrink-0 place-items-center rounded-brand-md bg-brand-cream text-xl font-extrabold text-brand-forest ring-2 ring-brand-gold">
-              {getStudentInitials(profile.name)}
-            </div>
-          )}
-          <div className="min-w-0 flex-1">
-            <h1 className="break-words text-2xl font-extrabold leading-tight">{profile.name}</h1>
-            {profile.className && <p className="text-[13px] font-semibold text-brand-cream/80">Lớp {profile.className}</p>}
-          </div>
-          <div className="rounded-brand-md bg-brand-cream px-2 py-1">
-            <ShieldScore points={profile.points} />
-          </div>
-        </section>
+        <div className="grid gap-4 md:grid-cols-2 md:items-start lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-6">
+          <div data-portal-column="identity" className="space-y-4 lg:sticky lg:top-20">
+            <section className="flex items-center gap-4 rounded-brand-lg bg-brand-forest p-5 text-brand-cream">
+              {profile.avatar ? (
+                <img src={profile.avatar} alt={profile.name} className="h-16 w-16 shrink-0 rounded-brand-md object-cover ring-2 ring-brand-gold" referrerPolicy="no-referrer" />
+              ) : (
+                <div aria-hidden className="grid h-16 w-16 shrink-0 place-items-center rounded-brand-md bg-brand-cream text-xl font-extrabold text-brand-forest ring-2 ring-brand-gold">
+                  {getStudentInitials(profile.name)}
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <h1 className="break-words text-2xl font-extrabold leading-tight">{profile.name}</h1>
+                {profile.className && <p className="text-[13px] font-semibold text-brand-cream/80">Lớp {profile.className}</p>}
+              </div>
+              <div className="rounded-brand-md bg-brand-cream px-2 py-1">
+                <ShieldScore points={profile.points} />
+              </div>
+            </section>
 
-        <TrainerCard trainer={profile.trainer} />
-        <CompanionCard companion={profile.companion} egg={profile.egg} />
-        <CollectionGrid pets={profile.collection} supportPetInstanceId={profile.supportPetInstanceId} />
-        <BadgeList badges={profile.badges} />
-        <HistoryList items={profile.history} />
+            <TrainerCard trainer={profile.trainer} />
+            <CompanionCard companion={profile.companion} egg={profile.egg} />
+          </div>
+          <div data-portal-column="activity" className="space-y-4">
+            <CollectionGrid pets={profile.collection} supportPetInstanceId={profile.supportPetInstanceId} />
+            <BadgeList badges={profile.badges} />
+            <HistoryList items={profile.history} />
+          </div>
+        </div>
 
         <p className="text-center text-[13px] text-brand-ink/70">Thông tin này chỉ mình em xem được.</p>
       </main>
