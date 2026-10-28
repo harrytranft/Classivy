@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-28 (Phase 4 và Phase 5 nghiệm thu, PR #5/#6 đã gộp `main`; đang bổ sung giao diện học sinh responsive desktop theo D22)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 4, 5 nghiệm thu; Phase 6 bạn bè & quà đã viết xong trên nhánh `claude/focused-lamport-rk8qji`, chờ Harry chạy migration trên dev)
 
 ## 1. Sản phẩm
 
@@ -29,6 +29,8 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - D13 (2026-10-28): không thêm vai trò phụ huynh; đổi tên hồ sơ mặc định cũ thành "Trainer".
 - Phase 4 (D14-D17, 2026-10-28): tên đăng nhập = tên + số ngẫu nhiên (sửa tay được); mật khẩu ngẫu nhiên 8 ký tự in trên thẻ, học sinh bắt buộc đổi ở lần đăng nhập đầu; tách "Thu hồi tài khoản" (giữ học sinh + điểm) với "Xoá học sinh" (xoá hẳn kèm tài khoản, đúng D12; không có xoá mềm); có bảng nhật ký thao tác `teacher_audit_log`. Thiết kế: `docs/adr/0002-phase-4-student-accounts.md`.
 - Phase 5 (D18-D21, 2026-10-28): học sinh đọc hồ sơ qua hàm DB chọn lọc `get_my_student_profile()` (không mở RLS đọc bảng); "hạng" = Trainer Level + danh hiệu + huy hiệu, không có vị trí trong lớp; học sinh chỉ xem; ảnh đại diện giữ trong DB, dời Storage tới Phase 7. Thiết kế: `docs/adr/0003-phase-5-student-portal.md`.
+- Phase 6 (D23-D26, 2026-10-28): điểm tặng vào Hào Quang qua hàng chờ (app giáo viên tự gom, không ghi đè/cộng trùng); ví 5 điểm/tuần, 2 điểm/tuần/bạn; quà = sticker + lời khen định sẵn; kết bạn bằng lời mời, tính năng mặc định tắt, giáo viên bật theo lớp và thu hồi được. Thiết kế: `docs/adr/0004-phase-6-social.md`.
+- D27 (2026-10-28): ô đăng nhập nhận cả email lẫn tên đăng nhập; Supabase đã tắt đăng ký công khai (giáo viên mới do Harry tạo trong Authentication).
 - D22 (2026-10-28): giao diện học sinh responsive điện thoại + máy tính bảng + desktop, áp dụng cho mọi màn học sinh từ nay (Phase 6 trở đi); smoke test 3 khổ 390/820/1440px. Chi tiết bố cục ở DESIGN.md mục Layout.
 - Phase 3 (D12): mô hình lai theo `docs/adr/0001-phase-3-data-model.md`; một học sinh một lớp; **xoá học sinh là xoá hẳn** (kể cả sổ điểm); sổ điểm giữ toàn bộ lịch sử; ảnh đại diện tạm lưu DB (nén); chuyển dữ liệu trong app do giáo viên bấm; có dự án Supabase dev riêng (Harry duyệt 2026-10-27).
 - Phase 1: React Context + hook (không thêm thư viện state), `react-router-dom` + `vercel.json`, Playwright làm lưới an toàn, làm trên nhánh `refactor/phase-1-split` (lấy theo mặc định đề xuất khi Harry yêu cầu hoàn thành Phase 1).
@@ -44,13 +46,14 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Migration khoá `app_state`/`users` đã chạy trên production (Harry xác nhận 2026-10-28).
 - Phase 3 follow-up: PR #4 (`claude/phase3-followup`) đã gộp vào `main`. Việc chạy `20261028130000_rename_legacy_display_names.sql` trên production: **xác nhận lại với Harry** (BRIEF trước ghi là chờ chạy).
 - **Phase 4 (hoàn thành 2026-10-28, PR #5 đã gộp `main`):** Harry chạy runbook trên dev và production, xác nhận "ok hết" (gồm thử học sinh trên production và 3 mục "ghi lại"). Nội dung: đã viết migration `20261029100000_phase4_student_accounts.sql` (+ hoàn tác), Edge Function `student-accounts` (tạo/hàng loạt, đặt lại mật khẩu, khoá/mở, thu hồi), trang `/class/<lớp>/tai-khoan` (lọc, xác nhận, thẻ đăng nhập in được, nhật ký), ô đăng nhập nhận tên đăng nhập, cổng học sinh tối thiểu (đổi mật khẩu lần đầu; tài khoản học sinh không tải dữ liệu giáo viên). Kiểm chứng tự động đạt (typecheck, 172 test, test:db 2 kiểu dự án, smoke 11/11, build). 
-- **Phase 5 (hoàn thành 2026-10-28, PR #6 đã gộp `main`; Harry xác nhận đã chạy migration và thử ổn):** migration `20261030100000_phase5_student_portal.sql` (+ hoàn tác) thêm hàm `get_my_student_profile()` (security definer: chỉ dữ liệu của người gọi, danh sách khoá cho phép, trứng không lộ Pokémon sắp nở, 30 dòng lịch sử, tài khoản khoá chỉ nhận `locked`). Giao diện hồ sơ học sinh điện thoại trước trong `src/features/studentPortal/` (Hào Quang, Trainer Level, Pokémon, trứng, bộ sưu tập, huy hiệu, lịch sử, nút Cập nhật; màn khoá/chưa gắn/lỗi). Kiểm chứng tự động đạt (typecheck, 182 test, test:db 2 kiểu dự án, smoke 13/13, build). Bổ sung sau nghiệm thu (task 5.7, nhánh `claude/focused-lamport-rk8qji` khởi động lại từ `main`): bố cục responsive máy tính bảng/desktop, chỉ giao diện, không migration.
+- **Phase 5 (hoàn thành 2026-10-28, PR #6 đã gộp `main`; Harry xác nhận đã chạy migration và thử ổn):** migration `20261030100000_phase5_student_portal.sql` (+ hoàn tác) thêm hàm `get_my_student_profile()` (security definer: chỉ dữ liệu của người gọi, danh sách khoá cho phép, trứng không lộ Pokémon sắp nở, 30 dòng lịch sử, tài khoản khoá chỉ nhận `locked`). Giao diện hồ sơ học sinh điện thoại trước trong `src/features/studentPortal/` (Hào Quang, Trainer Level, Pokémon, trứng, bộ sưu tập, huy hiệu, lịch sử, nút Cập nhật; màn khoá/chưa gắn/lỗi). Kiểm chứng tự động đạt (typecheck, 182 test, test:db 2 kiểu dự án, smoke 13/13, build). Bổ sung sau nghiệm thu (task 5.7, PR #7 đã gộp): bố cục responsive máy tính bảng/desktop.
+- **Phase 6 (đang làm, nhánh `claude/focused-lamport-rk8qji`):** migration `20261031100000_phase6_social.sql` (+ hoàn tác): cột cài đặt ở `classes`, bảng `student_friendships`, `student_gifts` (bất biến), `student_gift_revocations`, `student_gift_reports`, hàm học sinh (security definer) và `teacher_pending_gift_adjustments()`. App: `src/domain/social.ts`, `src/app/providers/gameData/useGiftCollector.ts` (gom hàng chờ), cổng học sinh `src/features/studentPortal/social/`, trang giáo viên `src/features/social/` (`/class/<lớp>/ban-be`). Kiểm chứng tự động đạt (typecheck, 193 test, test:db 2 kiểu dự án, smoke 21/21, build). **Chưa chạy trên Supabase thật.**
 
 ## 5. Bản đồ repo (hiện tại)
 
 - `src/app/`: khung app (`App.tsx` ~20 dòng, `AppRoutes`, `AppLayout`, `AppContext`), `controller/` (gom state/hành động), `providers/` (`GameDataProvider` + `gameData/` đồng bộ Supabase/localStorage, `UiEventsProvider`).
-- `src/features/<tính năng>/`: state, hành động, giao diện của class, students, attendance, homework, random, ludo, wheel, shop, pokemon, profile, settings, tools, feedback, auth, accounts (Phase 4: quản lý tài khoản học sinh), studentPortal (Phase 4-5: đổi mật khẩu lần đầu + hồ sơ chỉ xem của học sinh; logic đọc dữ liệu ở `src/domain/studentPortal.ts`).
-- `supabase/functions/`: Edge Function `student-accounts` (`handler.ts` có test, `index.ts` là điểm vào Deno) và `_shared/studentAccount.ts` (logic thuần dùng chung với app). Runbook: `docs/phase-4-runbook.md`, `docs/phase-5-runbook.md`.
+- `src/features/<tính năng>/`: state, hành động, giao diện của class, students, attendance, homework, random, ludo, wheel, shop, pokemon, profile, settings, tools, feedback, auth, accounts (Phase 4: quản lý tài khoản học sinh), social (Phase 6: trang giáo viên Bạn bè & quà), studentPortal (Phase 4-5: đổi mật khẩu lần đầu + hồ sơ chỉ xem của học sinh; logic đọc dữ liệu ở `src/domain/studentPortal.ts`).
+- `supabase/functions/`: Edge Function `student-accounts` (`handler.ts` có test, `index.ts` là điểm vào Deno) và `_shared/studentAccount.ts` (logic thuần dùng chung với app). Runbook: `docs/phase-4-runbook.md`, `docs/phase-5-runbook.md`, `docs/phase-6-runbook.md`.
 - `src/domain/`: logic thuần có test (điểm, điểm danh, bài tập, battle, Cá Ngựa, Boss, Pokémon, tiến trình, trứng, ngày/tuần).
 - `src/components/` (component dùng chung), `src/data/` (hằng số, `pokemonData`), `src/lib/` (Supabase, âm thanh), `src/types/`.
 - `tests/smoke/` + `fixtures/sample-class.json`: smoke test Playwright. `docs/architecture.md`: hướng dẫn kiến trúc.
@@ -67,17 +70,18 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 3: `students.points` vẫn do game đặt trực tiếp; sổ điểm là nhật ký (tổng sổ = điểm ngay sau khi chuyển, có thể lệch nếu điểm đổi mà không ghi lịch sử). Ví tặng điểm Phase 6 phải dùng hàm DB atomic riêng (D2).
 - Phase 4 tạo tài khoản học sinh phải đặt `app_metadata.role = 'student'` để hồ sơ nhận vai trò học sinh. Lỗi đã gặp (2026-10-28): Supabase gắn `app_metadata` SAU khi tạo người dùng nên hồ sơ bị ghi `teacher`; sửa bằng `20261030110000_sync_profile_role.sql` (`profiles.role` luôn theo `app_metadata.role`; tạo trong Authentication = giáo viên).
 - Giới hạn gói miễn phí Supabase (500 MB/dự án, 2 dự án, dự án nghỉ 7 ngày bị tạm dừng) ghi trong runbook Phase 3. Edge Functions gói Free: 256 MB, 2 giây CPU/yêu cầu, 150 giây tổng, 100 hàm (tài liệu Supabase); hạn mức số lần gọi/tháng chưa tìm thấy, xem Dashboard.
-- Phase 4 đã thử trên dev/production và Harry xác nhận ổn (email ảo `@students.classivy.invalid`, khoá tài khoản, trigger xoá `auth.users` khi xoá học sinh). Phiên đang mở của học sinh bị khoá: hàm Phase 5 chặn dữ liệu ngay. API đăng ký công khai của Supabase vẫn mở (UI đã bỏ): khuyến nghị tắt "Allow new users to sign up" (cần Harry quyết).
+- Phase 4 đã thử trên dev/production và Harry xác nhận ổn (email ảo `@students.classivy.invalid`, khoá tài khoản, trigger xoá `auth.users` khi xoá học sinh). Phiên đang mở của học sinh bị khoá: hàm Phase 5 chặn dữ liệu ngay. Đăng ký công khai của Supabase: Harry đã tắt (2026-10-28).
+- Phase 6: điểm tặng chỉ vào Hào Quang khi app giáo viên đang mở (dữ liệu bảng). Hai máy giáo viên mở cùng lúc không cộng đôi (sổ điểm chặn trùng) nhưng vẫn còn vấn đề có sẵn: hai máy sửa cùng một học sinh thì lần lưu sau ghi đè. Hai lần tặng đồng thời: khoá dòng trong hàm, chưa thử tải thật.
 - Phase 5: lý do trong lịch sử điểm là chữ tự do giáo viên/game ghi; học sinh thấy nguyên văn (nếu có tên bạn khác thì em thấy). Thông báo đăng nhập tài khoản khoá (runbook 1.6): Harry xác nhận đúng như mong đợi.
 - Cờ "phải đổi mật khẩu" là cơ chế giao diện, không phải ranh giới bảo mật (DB không biết mật khẩu đã đổi chưa).
 
 ## 7. Quyết định còn mở
 
-- Tắt đăng ký công khai của Supabase Auth (khuyến nghị, xem runbook Phase 4 bước 2.6)? Cần Harry quyết vì liên quan cách đăng nhập.
-- Ô đăng nhập hiện nhận cả email lẫn tên đăng nhập (chỉnh D11 để học sinh đăng nhập được): Harry xác nhận khi nghiệm thu.
+- (Đã chốt: tắt đăng ký công khai, ô đăng nhập nhận cả email lẫn tên đăng nhập - D27.)
+- Phase 6: có muốn bạn cùng lớp chỉ thấy tên gọi (không họ) không? Hiện hiện tên đầy đủ như giáo viên nhập.
 - (Vai trò phụ huynh: Harry quyết định không thêm, D13.)
 
 ## 8. Bước tiếp theo
 
-1. Harry xem preview Vercel của nhánh `claude/focused-lamport-rk8qji` trên máy tính (hồ sơ học sinh hai cột) rồi gộp.
-2. Phase 6 (bạn bè, quà tặng, ví điểm tặng) bắt đầu bằng ADR riêng + câu hỏi cho Harry (hạn mức tuần, loại quà, giáo viên bật/tắt theo lớp). Mọi màn học sinh mới theo D22 (responsive 3 khổ).
+1. Harry chạy `docs/phase-6-runbook.md` bước 1 trên `classivy-dev` (migration `20261031100000_phase6_social.sql`, thử với 3 học sinh), báo kết quả 1.6 (không cộng trùng) và 1.7 (thu hồi). Sau đó bước 2 trên production, bật thử một lớp.
+2. Sau nghiệm thu Phase 6: Phase 7 (rà soát bảo mật, giới hạn free tier, hướng dẫn sử dụng, kế hoạch triển khai từng lớp; xoá cột/bảng cũ nếu Harry đồng ý; ảnh đại diện sang Storage theo D21).
