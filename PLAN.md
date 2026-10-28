@@ -229,8 +229,8 @@ src/
 - [x] 6.4 (test SQL + smoke) Chống lạm dụng: 10 quà/ngày, hạn mức mỗi bạn chặn đổi điểm qua lại, quà thu hồi không trả ví; học sinh "Báo thầy cô"; giáo viên xem nhật ký 100 quà, tab Báo cáo, thu hồi (tự trừ lại nếu đã cộng) kèm lý do riêng; tài khoản khoá không dùng được gì
 - [x] 6.5 Tương tác lành mạnh: không bảng xếp hạng quà/bạn bè; học sinh chỉ thấy tên + Pokémon đồng hành của bạn (không điểm, không ảnh); quà nhận được chỉ người nhận xem; thông báo lỗi thân thiện
 - [x] 6.6 (smoke 390/820/1440px) Khu bạn bè & quà ở cột phải trên máy tính bảng/desktop, không cuộn ngang
-- [ ] 6.7 Harry chạy `docs/phase-6-runbook.md` bước 1 trên `classivy-dev`, báo kết quả 1.6 (không cộng trùng) và 1.7 (thu hồi)
-- [ ] 6.8 Harry chạy bước 2 trên production (pilot một lớp), nghiệm thu
+- [x] 6.7 Harry chạy `docs/phase-6-runbook.md` bước 1 trên `classivy-dev` (2026-10-28): 1.6 điểm tặng không bị cộng trùng; 1.7 thu hồi quà thì điểm tự trừ lại
+- [ ] 6.8 Harry chạy bước 2 trên production (migration, pilot một lớp), nghiệm thu. Harry yêu cầu gộp nhánh vào `main` (2026-10-28) = bước 2.3 của runbook; **migration production cần chạy trước hoặc ngay khi Vercel đưa bản mới lên**
 
 **Bàn giao cho Harry:** chạy `20261031100000_phase6_social.sql` trên dev rồi production, thử theo runbook. **Chưa có gì được áp dụng trên Supabase thật.**
 
@@ -395,3 +395,4 @@ src/
 - `npm run test:db` (PostgreSQL 16, cả kiểu dự án cũ và mới): đạt, thêm `supabase/tests/50_phase6_social.test.sql` (mặc định tắt; chỉ giáo viên của lớp bật được; danh sách bạn cùng lớp; không mời được lớp khác/giáo viên khác/chưa có tài khoản/chính mình; lời mời, chấp nhận, mời chéo; bạn bè không lộ điểm; hạn mức mỗi bạn, tuần, mỗi lần, ngày; sticker/lời nhắn lạ bị từ chối; học sinh không đọc/ghi thẳng bảng; hàng chờ đúng, hết chờ sau khi cộng; báo cáo; thu hồi trước/sau khi cộng; giáo viên khác không thu hồi được; sổ cái bất biến kể cả quản trị; tài khoản khoá; thôi làm bạn; tắt tính năng; ẩn danh; xoá học sinh kéo theo quà). Migration chạy 2 lần, hoàn tác, chạy lại. Thử bỏ hạn mức mỗi bạn và bỏ dấu "đã cộng" -> test đỏ đúng chỗ.
 - `npm run smoke`: 21/21 đạt. Mới: học sinh bạn bè & quà ở 3 khổ (đồng ý lời mời, kết bạn, tặng quà với nút +2 bị khoá đúng hạn mức, lỗi ví hết hiện trong hộp thoại, báo thầy cô, tab đã tặng, không chạm bảng giáo viên); lớp chưa bật; trang giáo viên (bật, hạn mức, thu hồi kèm lý do, gỡ bạn bè); app giáo viên cộng hàng chờ đúng một lần kể cả sau khi mở lại. 18 ảnh gốc DOM cập nhật có chủ đích: chỉ thêm nút "Bạn bè & quà" trên trang lớp, không dòng nào bị xoá; dữ liệu đồng bộ không đổi. Đã xem ảnh chụp các màn mới.
 - **Chưa kiểm chứng:** Supabase thật; hai lần tặng đồng thời thật (khoá dòng chỉ đọc mã); thử tay trên điện thoại.
+- 2026-10-28: Harry chạy runbook Phase 6 bước 1 trên `classivy-dev`: điểm tặng không bị cộng trùng khi tải lại (1.6), thu hồi quà thì điểm tự trừ lại (1.7) (kiểm chứng thủ công trên dev). Harry yêu cầu gộp vào `main`. Production chưa được xác nhận.
