@@ -62,14 +62,19 @@ Chỉ làm sau khi bước 1 ổn. Nên làm ngoài giờ dạy.
 
 ## Sau Phase 3: khoá bảng cũ (Harry duyệt 2026-10-28)
 
-- [ ] Supabase **dự án Classivy gốc** > SQL Editor: dán `supabase/migrations/20261028120000_lock_legacy_tables.sql`, **Run**. Kết quả mong đợi: "Success. No rows returned". File này chỉ khoá hai bảng cũ trống `app_state`, `users` (bật RLS, thu quyền API), không xoá gì, chạy lại không sao. App không dùng hai bảng này nên không thay đổi gì khi dùng.
+- [x] (Harry chạy 2026-10-28, kết quả `true`) Supabase **dự án Classivy gốc** > SQL Editor: dán `supabase/migrations/20261028120000_lock_legacy_tables.sql`, **Run**. Kết quả mong đợi: "Success. No rows returned". File này chỉ khoá hai bảng cũ trống `app_state`, `users` (bật RLS, thu quyền API), không xoá gì, chạy lại không sao. App không dùng hai bảng này nên không thay đổi gì khi dùng.
 - [ ] Kiểm tra (chỉ đọc), kết quả mong đợi `true` cho cả hai dòng:
   ```sql
   select relname, relrowsecurity from pg_class
   where relnamespace = 'public'::regnamespace and relname in ('app_state', 'users');
   ```
 
+## Sau Phase 3: đổi tên hồ sơ mặc định cũ (Harry duyệt 2026-10-28, D13)
+
+- [ ] Gộp PR nhánh `claude/phase3-followup` trước (để app mới không ghi tên cũ trở lại khi đăng nhập).
+- [ ] Supabase **dự án Classivy gốc** > SQL Editor: dán `supabase/migrations/20261028130000_rename_legacy_display_names.sql`, **Run**. Chỉ hồ sơ còn đúng tên "Học sĩ triều đình" được đổi; tên tự đặt giữ nguyên.
+- [ ] Đăng xuất, đăng nhập lại: tên hiển thị là "Trainer" (hoặc tên thầy tự đặt).
+
 ## Chưa làm trong Phase 3 (cần Harry duyệt riêng)
 
-- Đổi tên các hồ sơ giáo viên còn mang tên mặc định cũ "Học sĩ triều đình" thành "Trainer" (sửa dữ liệu thật): `update public.profiles set display_name = 'Trainer' where display_name = 'Học sĩ triều đình';`
 - Xoá cột cũ `user_settings.students`, `boss_states_by_class`: để tới Phase 7.

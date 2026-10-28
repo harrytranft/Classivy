@@ -28,6 +28,7 @@
 | D10 | Bỏ hẳn trang Plaza và phần thời tiết (Weather Plaza trong Cài đặt). Thanh điều hướng màu xanh như nền logo, bo hai góc phải; nút Tặng quà màu trắng; dock phóng to kiểu macOS | 2026-10-27 |
 | D11 | Màn đăng nhập chỉ còn email + mật khẩu cho tài khoản đã có; bỏ nút "Tạo tài khoản" và "Đăng nhập Google" trên giao diện (code nền giữ lại cho Phase 4). Harry xác nhận 2026-10-27 | 2026-10-27 |
 | D12 | Phase 3 theo ADR 0001: mô hình lai (bảng `classes`, `students`, `point_ledger`; dữ liệu game JSON trong `students.game_state`), một học sinh một lớp, **xoá học sinh là xoá hẳn** (kể cả sổ điểm), sổ điểm giữ toàn bộ lịch sử, ảnh đại diện tạm lưu DB (nén <= ~200 KB), chuyển dữ liệu trong app do giáo viên bấm, có dự án Supabase dev riêng | 2026-10-27 |
+| D13 | Không thêm vai trò phụ huynh. Đổi tên các hồ sơ giáo viên còn mang tên mặc định cũ "Học sĩ triều đình" thành "Trainer" | 2026-10-28 |
 | D5 | Bạn bè chỉ trong cùng lớp; không chat tự do (chỉ lời nhắn/emoji định sẵn) | 2026-10-26 (đề xuất, mặc định) |
 
 ## Tổng quan Phase
@@ -210,7 +211,8 @@ src/
 
 ## Đề xuất phát sinh (chờ Harry duyệt)
 
-- Có cần vai trò phụ huynh (xem điểm con) không? Hiện ngoài phạm vi.
+- ~~Có cần vai trò phụ huynh (xem điểm con) không?~~ → Harry: **không** (D13, 2026-10-28).
+- ~~Đổi tên hồ sơ còn mang tên mặc định cũ "Học sĩ triều đình" thành "Trainer"~~ → Harry duyệt (D13); **đã viết** `supabase/migrations/20261028130000_rename_legacy_display_names.sql` (chỉ đổi tên mặc định cũ, tên tự đặt giữ nguyên; có test) + app coi tên cũ trong thông tin đăng ký là chưa đặt tên (`src/domain/displayName.ts`, có test) để đăng nhập lại không ghi tên cũ trở lại. **Chờ Harry chạy trên production.**
 - ~~**[Lỗi game]** Cá Ngựa: bị Quái vật giữ, lắc 6 vẫn bị kẹt~~ → Harry duyệt sửa, **đã sửa 2026-10-26** (`checkMonsterEscape` trong `src/domain/ludo.ts`, có test).
 - ~~**[Lỗi có sẵn]** Danh sách cấp bậc rỗng làm trắng trang~~ → giải quyết bằng việc bỏ hệ cấp bậc (D7, task 2.0).
 - ~~**[Chất lượng mã]** Cài `@types/react`~~ → Harry duyệt, **đã làm 2026-10-26**: cài `@types/react`, `@types/react-dom`, thêm `src/vite-env.d.ts`, sửa lỗi kiểu còn lại; `npm run typecheck` = 0 lỗi.
@@ -219,7 +221,7 @@ src/
 - ~~**[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt"~~ → **đã bỏ hiệu ứng làm mờ** khi reskin thẻ học sinh (2026-10-27).
 - ~~**[Truy cập, gộp vào 2.4]** Thẻ học sinh bấm được bằng chuột nhưng chưa vào được bằng phím Tab (là `div` có `onClick`). Đề xuất đổi sang nút/đường dẫn thật khi rà `accessibility-review`.~~ → **đã sửa 2026-10-27**: thẻ có `role="button"`, `tabIndex=0`, Enter/Space để mở.
 
-- ~~**[Bảo mật]** Dự án Supabase gốc còn hai bảng cũ thời Imperial School: `app_state`, `users` (0 dòng, app không dùng), có thể chưa bật RLS.~~ → Harry duyệt 2026-10-28; **đã viết** `supabase/migrations/20261028120000_lock_legacy_tables.sql` (bật RLS không policy + thu quyền API, không xoá; có test và file hoàn tác). **Chờ Harry chạy trên production và xác nhận.** Xoá hẳn hai bảng (và `students_imperial_old`) để Phase 7 nếu Harry muốn.
+- ~~**[Bảo mật]** Dự án Supabase gốc còn hai bảng cũ thời Imperial School: `app_state`, `users` (0 dòng, app không dùng), có thể chưa bật RLS.~~ → Harry duyệt 2026-10-28; **đã viết** `supabase/migrations/20261028120000_lock_legacy_tables.sql` (bật RLS không policy + thu quyền API, không xoá; có test và file hoàn tác). **Harry đã chạy trên production, kiểm tra `relrowsecurity = true` cho cả hai bảng (2026-10-28).** Xoá hẳn hai bảng (và `students_imperial_old`) để Phase 7 nếu Harry muốn.
 
 ## Quy trình sau mỗi Phase
 
@@ -332,3 +334,4 @@ src/
 - 2026-10-28: Harry xác nhận runbook bước 1 trên `classivy-dev` chạy ổn (migration, nâng cấp, dùng thử). Đây là kiểm chứng thủ công trên dev; production chưa chạy.
 - 2026-10-28: chạy migration trên production lỗi `42703: column "class_id" does not exist`, migration tự huỷ, không thay đổi gì (Harry kiểm tra: `data_model_version` chưa có). Nguyên nhân: dự án gốc còn bảng `public.students` cũ của Imperial School (0 dòng, cột `class_name`, `pet`...); `create table if not exists` bỏ qua nên bước tạo chỉ mục `class_id` lỗi. Sửa: migration thêm bước 0 đổi tên bảng cũ thành `students_imperial_old` (giữ dữ liệu, đổi tên chỉ mục, bật RLS, thu quyền API), dừng với thông báo rõ nếu `classes`/`point_ledger` có sẵn mà sai cấu trúc; file hoàn tác trả lại tên cũ. `npm run test:db` giờ mô phỏng bảng cũ này; bỏ bước 0 thì test báo đúng lỗi của Harry.
 - 2026-10-28: Harry chạy migration Phase 3 (bản có bước 0) trên production, nâng cấp dữ liệu, xác nhận ổn -> **nghiệm thu Phase 3** (kiểm chứng thủ công trên production do Harry thực hiện). PR #3 đã gộp trước bản sửa bước 0 nên bản sửa + migration khoá `app_state`/`users` đi qua PR tiếp theo (nhánh `claude/phase3-followup`). `npm run test:db` (2 kiểu dự án, có mô phỏng bảng cũ của dự án gốc) đạt; bỏ phần khoá thì test đỏ đúng chỗ.
+- 2026-10-28: Harry chạy `20261028120000_lock_legacy_tables.sql` trên production, câu kiểm tra trả `true` cho `app_state` và `users`. Thêm migration đổi tên hồ sơ mặc định cũ + `resolveDisplayName`: `npm test` 130/130, `npm run test:db` đạt (2 kiểu dự án), build đạt, `npm run smoke` 8/8.

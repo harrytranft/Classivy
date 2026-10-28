@@ -47,6 +47,17 @@ run -c "do \$\$ begin
     raise exception 'FAIL: RLS not enabled on old table'; end if;
   if has_table_privilege('authenticated', 'public.students_imperial_old', 'select') then
     raise exception 'FAIL: old table still readable by authenticated'; end if; end \$\$"
+echo "== Đổi tên hồ sơ mặc định cũ (chạy 2 lần)"
+run -c "insert into auth.users (id, email) values ('eeeeeeee-0000-4000-8000-000000000005', 'old@test'), ('ffffffff-0000-4000-8000-000000000006', 'named@test')" \
+    -c "update public.profiles set display_name = 'Học sĩ triều đình' where email = 'old@test'" \
+    -c "update public.profiles set display_name = 'Thầy Harry' where email = 'named@test'"
+run -f supabase/migrations/20261028130000_rename_legacy_display_names.sql
+run -f supabase/migrations/20261028130000_rename_legacy_display_names.sql
+run -c "do \$\$ begin
+  if (select display_name from public.profiles where email = 'old@test') <> 'Trainer' then raise exception 'FAIL: legacy name not renamed'; end if;
+  if (select display_name from public.profiles where email = 'named@test') <> 'Thầy Harry' then raise exception 'FAIL: custom name changed'; end if;
+  delete from auth.users where email in ('old@test', 'named@test'); end \$\$"
+
 echo "== Khoá bảng cũ app_state/users (chạy 2 lần)"
 run -f supabase/migrations/20261028120000_lock_legacy_tables.sql
 run -f supabase/migrations/20261028120000_lock_legacy_tables.sql
