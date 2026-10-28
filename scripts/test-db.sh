@@ -24,6 +24,10 @@ run -f supabase-schema.sql
 # Như dự án Classivy gốc: còn bảng students cũ của Imperial School (khác cấu trúc), có khoá chính và 1 dòng.
 run -c "create table public.students (id text primary key, name text, gender text, points integer, class_name text, custom_avatar text, pet jsonb, accessories jsonb, history jsonb, ludo_tile integer, ludo_steps integer, created_at timestamptz default now())" \
     -c "insert into public.students (id, name) values ('imperial-1', 'Học sinh cũ')"
+# Hai bảng cũ khác của dự án gốc, mở cho API như Supabase cũ (để kiểm tra migration khoá chúng).
+run -c "create table public.app_state (id text primary key, data jsonb)" \
+    -c "create table public.users (id text primary key, email text)" \
+    -c "grant all on public.app_state, public.users to anon, authenticated"
 run -c "insert into auth.users (id, email) values ('dddddddd-0000-4000-8000-000000000004', 'legacy@test')" \
     -c "insert into public.user_settings (user_id, students) values ('dddddddd-0000-4000-8000-000000000004', '[{\"id\":\"old\"}]')"
 
@@ -43,6 +47,16 @@ run -c "do \$\$ begin
     raise exception 'FAIL: RLS not enabled on old table'; end if;
   if has_table_privilege('authenticated', 'public.students_imperial_old', 'select') then
     raise exception 'FAIL: old table still readable by authenticated'; end if; end \$\$"
+echo "== Khoá bảng cũ app_state/users (chạy 2 lần)"
+run -f supabase/migrations/20261028120000_lock_legacy_tables.sql
+run -f supabase/migrations/20261028120000_lock_legacy_tables.sql
+run -c "do \$\$ declare t text; begin
+  foreach t in array array['app_state', 'users'] loop
+    if not (select relrowsecurity from pg_class where oid = format('public.%I', t)::regclass) then
+      raise exception 'FAIL: RLS not enabled on %', t; end if;
+    if has_table_privilege('anon', format('public.%I', t), 'select') or has_table_privilege('authenticated', format('public.%I', t), 'insert') then
+      raise exception 'FAIL: % still reachable by API roles', t; end if;
+  end loop; end \$\$"
 echo "== Test RLS"
 run -o /dev/null -f supabase/tests/10_phase3_rls.test.sql
 

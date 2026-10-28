@@ -60,6 +60,15 @@ Chỉ làm sau khi bước 1 ổn. Nên làm ngoài giờ dạy.
 | Đã nâng cấp nhưng dữ liệu sai | Không thao tác thêm. Chạy trong SQL Editor: `update public.user_settings set data_model_version = 1;` rồi tải lại app: app quay về dữ liệu cũ (thay đổi sau lúc nâng cấp sẽ không có). Báo Claude |
 | Muốn gỡ hẳn Phase 3 | Chạy file rollback (xoá các bảng mới). Dữ liệu cũ còn nguyên |
 
+## Sau Phase 3: khoá bảng cũ (Harry duyệt 2026-10-28)
+
+- [ ] Supabase **dự án Classivy gốc** > SQL Editor: dán `supabase/migrations/20261028120000_lock_legacy_tables.sql`, **Run**. Kết quả mong đợi: "Success. No rows returned". File này chỉ khoá hai bảng cũ trống `app_state`, `users` (bật RLS, thu quyền API), không xoá gì, chạy lại không sao. App không dùng hai bảng này nên không thay đổi gì khi dùng.
+- [ ] Kiểm tra (chỉ đọc), kết quả mong đợi `true` cho cả hai dòng:
+  ```sql
+  select relname, relrowsecurity from pg_class
+  where relnamespace = 'public'::regnamespace and relname in ('app_state', 'users');
+  ```
+
 ## Chưa làm trong Phase 3 (cần Harry duyệt riêng)
 
 - Đổi tên các hồ sơ giáo viên còn mang tên mặc định cũ "Học sĩ triều đình" thành "Trainer" (sửa dữ liệu thật): `update public.profiles set display_name = 'Trainer' where display_name = 'Học sĩ triều đình';`

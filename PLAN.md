@@ -3,7 +3,7 @@
 > Thay thế hoàn toàn PLAN.md cũ của Imperial School 3.0 (bản cũ lưu ở `docs/archive/imperial-school-3.0-plan.md` và trong lịch sử git).
 > Cập nhật file này sau mỗi Phase. Quy trình báo cáo ở cuối file.
 
-**Cập nhật lần cuối:** 2026-10-27 | **Phase hiện tại:** Phase 3 (dev `classivy-dev` đã chạy ổn 2026-10-28; tiếp theo: PR gộp `main` rồi chạy migration production theo runbook bước 2)
+**Cập nhật lần cuối:** 2026-10-28 | **Phase hiện tại:** Phase 4 (chưa bắt đầu; Phase 3 đã nghiệm thu 2026-10-28)
 
 ## Mục tiêu
 
@@ -37,7 +37,7 @@
 | 0 | Nền móng: tài liệu, đổi tên, logo | Hoàn thành | Không |
 | 1 | Tách App.tsx, thêm router, giữ nguyên hành vi | Hoàn thành (2026-10-27) | Không |
 | 2 | Hệ thiết kế Classivy, reskin, thuật ngữ trung tính, đổi khoá localStorage | Hoàn thành (2026-10-27) | Không |
-| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Dev chạy ổn (2026-10-28), chờ production | **Có (migration)** |
+| 3 | Mô hình dữ liệu mới + RLS + chuyển dữ liệu cũ | Hoàn thành (2026-10-28) | **Có (migration)** |
 | 4 | Giáo viên quản lý tài khoản học sinh | Chưa bắt đầu | **Có (migration + Edge Function)** |
 | 5 | Cổng học sinh: đăng nhập, xem hồ sơ | Chưa bắt đầu | Có |
 | 6 | Bạn bè, quà tặng, tặng điểm | Chưa bắt đầu | **Có (migration)** |
@@ -152,7 +152,7 @@ src/
 
 ---
 
-## Phase 3 - Mô hình dữ liệu mới + RLS (CODE XONG 2026-10-27, chờ chạy trên Supabase dev)
+## Phase 3 - Mô hình dữ liệu mới + RLS (HOÀN THÀNH 2026-10-28)
 
 **Mục tiêu:** học sinh, lớp, điểm là dữ liệu bảng thật, có RLS chặt, dữ liệu cũ được chuyển sang mà không mất.
 
@@ -164,7 +164,7 @@ src/
 - [x] 3.3 Chuyển dữ liệu trong app: `src/domain/legacyImport.ts` (chạy thử, kiểm tra lỗi chặn/lưu ý, số dư đầu kỳ, đối chiếu từng học sinh, chạy lại được sau khi chuyển dở) + hộp thoại `src/features/dataUpgrade/DataUpgradeModal.tsx` (tải sao lưu JSON trước; lỗi thì giữ cách lưu cũ) (2026-10-27)
 - [x] 3.4 Lớp truy cập dữ liệu: `src/app/providers/gameData/cloudStore.ts` chọn cách lưu cũ/mới theo `data_model_version`; bảng mới chỉ gửi phần thay đổi (`src/domain/cloudModel.ts`, có test), lưu lần lượt không chồng nhau; sao lưu/khôi phục/nhập JSON đi cùng đường; nén ảnh đại diện quá lớn (`src/lib/imageCompression.ts`). App không có chế độ khách nên không cần giữ (2026-10-27)
 - [x] 3.5 Harry chạy trên **dự án Supabase dev** (`classivy-dev`) theo `docs/phase-3-runbook.md` bước 1: Harry xác nhận "chạy ổn" 2026-10-28 (sau khi sửa lỗi cấp quyền ở dự án mới, xem Nhật ký)
-- [x] 3.6 Checklist triển khai + sao lưu + hoàn tác: `docs/phase-3-runbook.md` bước 2 và "Nếu có sự cố" (2026-10-27). Chạy production chờ 3.5
+- [x] 3.6 Checklist triển khai + sao lưu + hoàn tác: `docs/phase-3-runbook.md` bước 2 và "Nếu có sự cố". Harry chạy migration trên production (sau bản sửa bảng `students` cũ), nâng cấp dữ liệu, xác nhận "mọi thứ đã ổn" 2026-10-28
 
 **Bàn giao cho Harry:** sao lưu dữ liệu, chạy migration trên dev rồi production theo hướng dẫn; xác nhận từng bước trước khi coi là đã áp dụng.
 
@@ -219,7 +219,7 @@ src/
 - ~~**[Giao diện, nhỏ]** Hiệu ứng làm mờ khi rê chuột trên thẻ học sinh có thể bị "kẹt"~~ → **đã bỏ hiệu ứng làm mờ** khi reskin thẻ học sinh (2026-10-27).
 - ~~**[Truy cập, gộp vào 2.4]** Thẻ học sinh bấm được bằng chuột nhưng chưa vào được bằng phím Tab (là `div` có `onClick`). Đề xuất đổi sang nút/đường dẫn thật khi rà `accessibility-review`.~~ → **đã sửa 2026-10-27**: thẻ có `role="button"`, `tabIndex=0`, Enter/Space để mở.
 
-- **[Bảo mật, chờ Harry duyệt]** Dự án Supabase gốc còn hai bảng cũ thời Imperial School: `app_state`, `users` (0 dòng, app không dùng). Chưa rõ có bật RLS không; nếu không thì ai có khoá `anon` có thể ghi vào. Đề xuất: bật RLS (không policy) hoặc xoá hẳn hai bảng này. Bảng `students` cũ đã được migration Phase 3 đổi tên thành `students_imperial_old` và khoá truy cập.
+- ~~**[Bảo mật]** Dự án Supabase gốc còn hai bảng cũ thời Imperial School: `app_state`, `users` (0 dòng, app không dùng), có thể chưa bật RLS.~~ → Harry duyệt 2026-10-28; **đã viết** `supabase/migrations/20261028120000_lock_legacy_tables.sql` (bật RLS không policy + thu quyền API, không xoá; có test và file hoàn tác). **Chờ Harry chạy trên production và xác nhận.** Xoá hẳn hai bảng (và `students_imperial_old`) để Phase 7 nếu Harry muốn.
 
 ## Quy trình sau mỗi Phase
 
@@ -331,3 +331,4 @@ src/
 **Phase 3 - 2026-10-28** (Harry chạy runbook bước 1 trên `classivy-dev`): bước 1.4c lỗi `permission denied for table profiles/user_settings` (42501). Nguyên nhân: dự án Supabase mới tạo không tự cấp quyền bảng cho vai trò `authenticated` như dự án cũ; `supabase-schema.sql` dựa vào việc tự cấp đó. Sửa: thêm `grant` rõ ràng vào `supabase-schema.sql` và migration Phase 3; `npm run test:db` giờ chạy cả hai kiểu dự án (cũ/mới), bỏ phần grant thì kiểu "mới" báo đúng lỗi này. Dữ liệu thật không bị ảnh hưởng (dự án gốc không đụng tới).
 - 2026-10-28: Harry xác nhận runbook bước 1 trên `classivy-dev` chạy ổn (migration, nâng cấp, dùng thử). Đây là kiểm chứng thủ công trên dev; production chưa chạy.
 - 2026-10-28: chạy migration trên production lỗi `42703: column "class_id" does not exist`, migration tự huỷ, không thay đổi gì (Harry kiểm tra: `data_model_version` chưa có). Nguyên nhân: dự án gốc còn bảng `public.students` cũ của Imperial School (0 dòng, cột `class_name`, `pet`...); `create table if not exists` bỏ qua nên bước tạo chỉ mục `class_id` lỗi. Sửa: migration thêm bước 0 đổi tên bảng cũ thành `students_imperial_old` (giữ dữ liệu, đổi tên chỉ mục, bật RLS, thu quyền API), dừng với thông báo rõ nếu `classes`/`point_ledger` có sẵn mà sai cấu trúc; file hoàn tác trả lại tên cũ. `npm run test:db` giờ mô phỏng bảng cũ này; bỏ bước 0 thì test báo đúng lỗi của Harry.
+- 2026-10-28: Harry chạy migration Phase 3 (bản có bước 0) trên production, nâng cấp dữ liệu, xác nhận ổn -> **nghiệm thu Phase 3** (kiểm chứng thủ công trên production do Harry thực hiện). PR #3 đã gộp trước bản sửa bước 0 nên bản sửa + migration khoá `app_state`/`users` đi qua PR tiếp theo (nhánh `claude/phase3-followup`). `npm run test:db` (2 kiểu dự án, có mô phỏng bảng cũ của dự án gốc) đạt; bỏ phần khoá thì test đỏ đúng chỗ.

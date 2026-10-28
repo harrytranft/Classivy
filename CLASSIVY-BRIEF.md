@@ -2,7 +2,7 @@
 
 Tóm tắt trạng thái dự án để chuyển sang chat/phiên sau. Cập nhật cuối mỗi Phase. Chi tiết tasks ở `PLAN.md`.
 
-**Cập nhật lần cuối:** 2026-10-27 (Phase 3: code xong trên nhánh `claude/phase3-data-model`, chờ Harry chạy migration trên Supabase dev)
+**Cập nhật lần cuối:** 2026-10-28 (Phase 3 hoàn thành, Harry nghiệm thu trên production; tiếp theo Phase 4)
 
 ## 1. Sản phẩm
 
@@ -35,8 +35,9 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 - Phase 1 (tách App.tsx, router, trang riêng theo lớp): hoàn thành, Harry nghiệm thu và đã gộp vào `main` (2026-10-27).
 - Hành vi giữ nguyên: smoke test so DOM và dữ liệu đồng bộ với ảnh gốc tạo từ code trước khi tách, đều khớp.
 - Phase 2 (hệ thiết kế, reskin, thuật ngữ): hoàn thành, Harry nghiệm thu preview (2026-10-27), gộp vào `main` qua PR từ nhánh `claude/phase2-rebranding`. Nội dung: bỏ cấp bậc/Gemini, hệ thiết kế + Tailwind local, thuật ngữ Trainer, localStorage `classivy_*`, Modal/Toast và reskin shell, lớp, hồ sơ, cài đặt, đăng nhập, công cụ, điểm danh/bài tập cùng các modal game. Vòng cuối đã làm lại Random và Tặng Pokémon theo nền kem/trắng, CTA xanh rừng/vàng, tăng tương phản và dọn CTA đỏ không có nghĩa cảnh báo. Phông chữ: một nguồn duy nhất `fontFamily.sans` = Plus Jakarta Sans/Be Vietnam Pro; `font-royal` và kiểu VIẾT HOA giãn chữ đã bỏ. Rà soát sau Codex đã sửa: smoke đỏ, CSS ép màu làm nút trừ điểm Battle thành xanh, bảng Cá Ngựa mất nền (xem Nhật ký kiểm chứng trong PLAN).
-- Phase 3 (dữ liệu mới + RLS): **code xong 2026-10-27** trên nhánh `claude/phase3-data-model`, chưa gộp `main`. Có migration + file hoàn tác, test RLS trên Postgres cục bộ (`npm run test:db`), lớp lưu mới chỉ gửi phần thay đổi, hộp thoại "Nâng cấp cách lưu dữ liệu" (chạy thử, sao lưu, đối chiếu). App chạy được cả trước và sau migration (chưa chạy = cách lưu cũ).
-- Migration **đã chạy trên dự án dev `classivy-dev`** và Harry xác nhận ổn (2026-10-28). **Production chưa chạy**: dự án Classivy gốc vẫn ở schema cũ (`profiles`, `user_settings`). Bài học: dự án Supabase mới không tự cấp quyền bảng, SQL phải `grant` rõ ràng (đã sửa, `npm run test:db` kiểm cả hai kiểu).
+- Phase 3 (dữ liệu mới + RLS): **hoàn thành 2026-10-28**. Migration `20261027120000_phase3_data_model.sql` đã chạy trên `classivy-dev` và **production** (Harry xác nhận), dữ liệu đã nâng cấp: app dùng bảng `classes`/`students`/`point_ledger` (`data_model_version = 2`), chỉ gửi phần thay đổi. Cột cũ `user_settings.students` giữ làm bản dự phòng tới Phase 7. Bảng `students` cũ của Imperial School đổi tên thành `students_imperial_old` (khoá).
+- Bài học Supabase: dự án mới không tự cấp quyền bảng (phải `grant` rõ ràng); dự án gốc có bảng cũ trùng tên. `npm run test:db` mô phỏng cả hai.
+- **Còn chờ Harry:** gộp PR sửa sau Phase 3 (nhánh `claude/phase3-followup`: bản migration có bước 0 vào `main` + migration khoá bảng cũ), rồi chạy `supabase/migrations/20261028120000_lock_legacy_tables.sql` trên production.
 
 ## 5. Bản đồ repo (hiện tại)
 
@@ -65,6 +66,5 @@ React 19 + Vite 6 + TypeScript, react-router-dom 7, Tailwind 3.4 (build local, t
 
 ## 8. Bước tiếp theo
 
-1. ~~Harry chạy runbook bước 1 trên dev~~ - xong 2026-10-28.
-2. Gộp PR Phase 3, chạy bước 2 trên production, Harry xác nhận -> nghiệm thu Phase 3.
-3. Phase 4: giáo viên quản lý tài khoản học sinh (Edge Function).
+1. Harry gộp PR sửa sau Phase 3 và chạy migration khoá `app_state`/`users` trên production, báo lại.
+2. Phase 4: giáo viên quản lý tài khoản học sinh (Edge Function tạo/khoá/xoá tài khoản, tên đăng nhập + mật khẩu do giáo viên cấp, `app_metadata.role = 'student'`). Bắt đầu bằng kiểm tra giới hạn Edge Functions gói Free và phân tích sâu Phase 4.
