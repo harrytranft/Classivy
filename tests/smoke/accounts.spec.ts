@@ -2,7 +2,7 @@ import { expect, test, type Page, type Route } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 
-// Smoke test Phase 4: trang quản lý tài khoản học sinh (giáo viên) và cổng học sinh (đổi mật khẩu lần đầu).
+// Smoke test Phase 4-5: trang quản lý tài khoản học sinh (giáo viên) và cổng học sinh (đổi mật khẩu lần đầu, hồ sơ chỉ xem).
 // Supabase và Edge Function đều là bản giả (không chạm mạng thật); không có ảnh gốc, chỉ kiểm tra hành vi.
 
 const FIXTURE = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'fixtures/sample-class.json'), 'utf-8'));
@@ -28,7 +28,27 @@ interface Mock {
   rpcCalls: string[];
   passwordUpdates: number;
   errors: string[];
+  /** Kết quả hàm get_my_student_profile() (Phase 5); test đổi được giữa chừng. */
+  profile: unknown;
 }
+
+const PROFILE_PAYLOAD = {
+  status: 'active', name: 'Nguyễn Minh Anh', gender: 'Nữ', class_name: '6A', points: 42, avatar: null,
+  game: {
+    pet: { instanceId: 'pet-1', dexId: 25, name: 'Pikachu', types: ['electric'], accessories: [], skills: [], level: 3, hp: 80 },
+    pets: [
+      { instanceId: 'pet-1', dexId: 25, name: 'Pikachu', types: ['electric'], accessories: [], skills: [] },
+      { instanceId: 'pet-2', dexId: 1, name: 'Bulbasaur', types: ['grass'], accessories: [], skills: [] }
+    ],
+    egg: { status: 'egg', progress: 4, kind: 'normal' },
+    trainerProgress: { level: 2, xp: 5, totalXp: 85, titleId: 'rookie' },
+    earnedBadges: [{ badgeId: 'blaze', earnedAt: 1761000000000 }]
+  },
+  history: [
+    { amount: 5, reason: 'Trả lời hay', occurred_at: '2026-10-27T02:00:00Z' },
+    { amount: -1, reason: 'Quên vở', occurred_at: '2026-10-28T02:00:00Z' }
+  ]
+};
 
 const ACCOUNT_ROWS = [
   { id: '11111111-1111-4111-8111-111111111111', client_id: 'stu-01', name: 'Nguyễn Minh Anh', username: null, status: 'active', must_change_password: false, auth_user_id: null },
@@ -41,7 +61,7 @@ const AUDIT_ROWS = [
 ];
 
 async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
-  const mock: Mock = { functionCalls: [], restPaths: [], rpcCalls: [], passwordUpdates: 0, errors: [] };
+  const mock: Mock = { functionCalls: [], restPaths: [], rpcCalls: [], passwordUpdates: 0, errors: [], profile: PROFILE_PAYLOAD };
   let firstLoginPending = true;
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ key, value }) => { window.localStorage.setItem(key, JSON.stringify(value)); },
@@ -70,6 +90,7 @@ async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
       return;
     }
     if (p === '/rest/v1/rpc/student_first_login_pending') { mock.rpcCalls.push('pending'); await json(route, firstLoginPending); return; }
+    if (p === '/rest/v1/rpc/get_my_student_profile') { mock.rpcCalls.push('profile'); await json(route, mock.profile); return; }
     if (p === '/rest/v1/rpc/complete_first_login') { mock.rpcCalls.push('complete'); firstLoginPending = false; await route.fulfill({ status: 204, body: '' }); return; }
 
     if (p.endsWith('/user_settings')) {
@@ -200,16 +221,71 @@ test('học sinh: đổi mật khẩu lần đầu, không bao giờ tải dữ 
   // Hợp lệ: đổi mật khẩu rồi đánh dấu hoàn tất lần đầu.
   await page.getByLabel('Nhập lại mật khẩu mới').fill('hoctot2026');
   await page.getByRole('button', { name: 'Lưu mật khẩu mới' }).click();
-  await expect(page.getByRole('heading', { name: /Xin chào/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
   expect(mock.passwordUpdates).toBe(1);
-  expect(mock.rpcCalls).toEqual(['pending', 'complete']);
+  expect(mock.rpcCalls).toEqual(['pending', 'complete', 'profile']);
 
-  // Tải lại: không bị hỏi đổi mật khẩu nữa.
+  // Tải lại: không bị hỏi đổi mật khẩu nữa, vào thẳng hồ sơ.
   await page.reload();
-  await expect(page.getByRole('heading', { name: /Xin chào/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
 
   // Tài khoản học sinh không chạm dữ liệu giáo viên.
   const teacherTables = mock.restPaths.filter(p => /^(user_settings|classes|students|point_ledger|student_recent_history|teacher_audit_log)$/.test(p) || p.startsWith('rpc/save_teacher_changes'));
   expect(teacherTables).toEqual([]);
   expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừng thì không còn thấy dữ liệu', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
+  await expect(page.getByText('Lớp 6A')).toBeVisible();
+  await expect(page.getByText('Cấp 2', { exact: true })).toBeVisible();
+  await expect(page.getByText('🌱 Rookie Trainer')).toBeVisible();
+  await expect(page.getByText('Pikachu', { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Bộ sưu tập/ })).toContainText('(1)');
+  await expect(page.getByText('Bulbasaur')).toBeVisible();
+  await expect(page.getByText('Trứng thường đang ấp')).toBeVisible();
+  await expect(page.getByText('Blaze Badge')).toBeVisible();
+  // Lịch sử mới nhất trước, điểm trừ có dấu (không chỉ dựa vào màu).
+  const history = page.getByRole('listitem').filter({ hasText: /Quên vở|Trả lời hay/ });
+  await expect(history.first()).toContainText('Quên vở');
+  await expect(history.first()).toContainText('−1');
+  await expect(history.nth(1)).toContainText('+5');
+  // Không có vị trí xếp hạng trong lớp, không có nút thao tác game.
+  await expect(page.getByText(/Hạng \d/)).toHaveCount(0);
+  await expect(page.getByRole('button')).toHaveText(['Cập nhật', 'Đăng xuất']);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/50-student-profile.png', fullPage: true });
+  // Vừa khung điện thoại, không cuộn ngang.
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  // Giáo viên khoá tài khoản trong lúc phiên còn mở: bấm Cập nhật thì dữ liệu biến mất.
+  mock.profile = { status: 'locked' };
+  await page.getByRole('button', { name: 'Cập nhật hồ sơ' }).click();
+  await expect(page.getByRole('heading', { name: 'Tài khoản đang tạm khoá' })).toBeVisible();
+  await expect(page.getByText('Pikachu')).toHaveCount(0);
+  await expect(page.getByText('Nguyễn Minh Anh')).toHaveCount(0);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/51-student-locked.png' });
+
+  const teacherTables = mock.restPaths.filter(p => /^(user_settings|classes|students|point_ledger|student_recent_history|teacher_audit_log)$/.test(p) || p.startsWith('rpc/save_teacher_changes'));
+  expect(teacherTables).toEqual([]);
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: lỗi tải hồ sơ hiện thông báo thân thiện và thử lại được', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  let failures = 1;
+  await page.route(url => url.pathname === '/rest/v1/rpc/get_my_student_profile', async route => {
+    if (failures-- > 0) { await json(route, { code: 'XX000', message: 'boom' }, 500); return; }
+    await json(route, mock.profile);
+  });
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Chưa tải được hồ sơ' })).toBeVisible();
+  await expect(page.getByText('boom')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Thử lại' }).click();
+  await expect(page.getByRole('heading', { name: 'Nguyễn Minh Anh' })).toBeVisible();
 });
