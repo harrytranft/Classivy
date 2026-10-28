@@ -168,24 +168,6 @@ export const CompanionCard: React.FC<{ companion?: PokemonPet; egg?: PortalEgg }
   </Card>
 );
 
-export const CollectionGrid: React.FC<{ pets: PokemonPet[]; supportPetInstanceId?: string }> = ({ pets, supportPetInstanceId }) => {
-  if (pets.length === 0) return null;
-  return (
-    <Card>
-      <h2 className="mb-3 text-lg font-extrabold text-brand-ink">Bộ sưu tập <span className="tabular-nums text-brand-ink/70">({pets.length})</span></h2>
-      <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
-        {pets.map((pet, index) => (
-          <li key={pet.instanceId || `${pet.dexId}-${index}`} className="flex flex-col items-center rounded-brand-md bg-[#f4f8f1] p-2 text-center">
-            <PokemonArt pet={pet} className="h-16 w-16" />
-            <span className="mt-1 w-full truncate text-[13px] font-bold text-brand-ink">{getPokemonDisplayName(pet)}</span>
-            {pet.instanceId && pet.instanceId === supportPetInstanceId && <Chip tone="sky" className="mt-1">Hỗ trợ</Chip>}
-          </li>
-        ))}
-      </ul>
-    </Card>
-  );
-};
-
 export const BadgeList: React.FC<{ badges: PortalBadge[]; bare?: boolean }> = ({ badges, bare }) => {
   const Wrap = bare ? React.Fragment : Card;
   return (

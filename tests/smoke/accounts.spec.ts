@@ -337,7 +337,7 @@ test('học sinh: xem hồ sơ của mình (chỉ xem), bị khoá giữa chừn
   // Phase 12A: Pokémon đồng hành, bộ sưu tập, trứng và skill nằm ở trang Pokémon.
   await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
   await expect(page.getByText('Pikachu', { exact: true }).first()).toBeVisible();
-  await expect(page.getByRole('heading', { name: /Bộ sưu tập/ })).toContainText('(1)');
+  await expect(page.getByRole('heading', { name: /Bộ sưu tập/ })).toContainText('(2)');
   await expect(page.getByText('Bulbasaur')).toBeVisible();
   await expect(page.getByText('Trứng thường đang ấp')).toBeVisible();
   // Skills: bấm để đọc công dụng và số lượt còn lại.
@@ -504,7 +504,7 @@ test('giáo viên: bật bạn bè & quà, đặt hạn mức, thu hồi quà, g
   await page.getByRole('tab', { name: 'Bạn bè (1)' }).click();
   await expect(page.getByRole('listitem')).toContainText('Nguyễn Minh Anh và Trần Bảo');
   await page.getByRole('button', { name: 'Gỡ' }).click();
-  expect(mock.writes.at(-1)?.method).toBe('DELETE');
+  await expect.poll(() => mock.writes.at(-1)?.method).toBe('DELETE');
   expect(mock.errors).toEqual([]);
 });
 
@@ -555,7 +555,9 @@ test('học sinh: mua trứng, nở nhanh, mua skill, đổi Pokémon; lỗi hi�
   // Đang ấp: không mua thêm trứng được.
   await expect(page.getByRole('button', { name: 'Mua Trứng thường' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Mua Trứng đặc biệt' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' })).toBeDisabled();
+  // Đổi Pokémon không còn ở Cửa hàng (Phase 12B).
+  await expect(page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Đổi Pokémon' })).toHaveCount(0);
 
   // Nở nhanh: trả phần còn thiếu (10), thú mới thành đồng hành và có tên đúng dù DB chỉ lưu dexId.
   await page.getByRole('button', { name: /Nở nhanh/ }).click();
@@ -569,18 +571,28 @@ test('học sinh: mua trứng, nở nhanh, mua skill, đổi Pokémon; lỗi hi�
   // Skill: bấm đọc công dụng rồi mua.
   await page.getByRole('button', { name: /Bẻ Cong Thời Gian/ }).click();
   await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('10 giây');
+  // D43: chi tiết + nút Mua nằm ngay dưới đúng dòng skill được bấm (không ở cuối trang).
+  const skillRow = page.getByRole('listitem').filter({ has: page.getByRole('button', { name: /Bẻ Cong Thời Gian/ }) });
+  await expect(skillRow.getByRole('region', { name: 'Công dụng skill' })).toBeVisible();
+  await expect(skillRow.getByRole('button', { name: /Mua skill/ })).toBeVisible();
+  const rowBox = await skillRow.getByRole('button', { name: /Bẻ Cong Thời Gian/ }).boundingBox();
+  const detailBox = await skillRow.getByRole('region', { name: 'Công dụng skill' }).boundingBox();
+  expect(detailBox!.y).toBeGreaterThanOrEqual(rowBox!.y + rowBox!.height - 1);
+  // Bấm skill khác thì skill này thu lại.
+  await page.getByRole('button', { name: /Khiên Hộ Mệnh/ }).click();
+  await expect(page.getByRole('region', { name: 'Công dụng skill' })).toHaveCount(1);
+  await page.getByRole('button', { name: /Bẻ Cong Thời Gian/ }).click();
   await page.getByRole('button', { name: /Mua skill/ }).click();
   await confirm.getByRole('button', { name: 'Xác nhận mua' }).click();
   await expect(page.getByRole('status')).toContainText('Đã mua skill');
   expect(mock.shopCalls.at(-1)).toEqual({ fn: 'student_shop_buy_skill', body: { p_skill_id: 'sk_time_warp' } });
   await expect(page.getByRole('region', { name: 'Công dụng skill' })).toContainText('đã có skill này');
 
-  // Đổi đồng hành miễn phí.
+  // Đổi đồng hành ở trang Pokémon: miễn phí, không trừ Hào Quang.
+  await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
   await page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' }).click();
   await expect(page.getByRole('status')).toContainText('Bulbasaur là Pokémon đồng hành mới');
   expect(mock.shopCalls.at(-1)).toEqual({ fn: 'student_set_companion', body: { p_instance_id: 'pet-2' } });
-  await expect(page.getByText('2 Hào Quang').first()).toBeVisible();
-
   // Lỗi từ DB (ví dụ lớp vừa đóng) hiện bằng tiếng Việt.
   mock.shopError = 'shop_closed';
   await page.getByRole('button', { name: 'Chọn Pikachu hỗ trợ' }).click();
@@ -672,5 +684,18 @@ test('học sinh: bấm avatar mở hộp Đăng xuất, chỉ đăng xuất khi
   await page.getByRole('button', { name: 'Tài khoản của em' }).click();
   await page.getByRole('dialog', { name: 'Đăng xuất?' }).getByRole('button', { name: 'Đăng xuất' }).click();
   await expect.poll(() => logoutRequests.length).toBeGreaterThan(0);
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: trang Pokémon - Cửa hàng đóng thì không đổi được, mở thì đổi đồng hành/hỗ trợ (đang ấp thì khoá đồng hành)', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  mock.shop = { enabled: false, points: 42, eggPrices: { normal: 10, special: 20 }, skills: [] };
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
+  await expect(page.getByText('Thầy cô sẽ mở Cửa hàng khi tới giờ')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' })).toHaveCount(0);
+  expect(mock.shopCalls).toEqual([]);
   expect(mock.errors).toEqual([]);
 });

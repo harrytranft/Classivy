@@ -3,7 +3,8 @@ import { PawPrint, Store, UserRound, Users, RefreshCw } from 'lucide-react';
 import { Button, Card, cx } from '../../components/ui';
 import { getStudentInitials } from '../../components/StudentAvatar';
 import { StudentPortalProfile } from '../../domain/studentPortal';
-import { ActivityTabs, CollectionGrid, CompanionCard, HeroCard } from './StudentProfileSections';
+import { ActivityTabs, HeroCard } from './StudentProfileSections';
+import { StudentPokemon } from './StudentPokemon';
 import { StudentSocialPanel } from './social/StudentSocialPanel';
 import { IncomingRequests } from './social/SocialFriendsCard';
 import { useStudentSocial } from './social/useStudentSocial';
@@ -130,16 +131,7 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
           </div>
         )}
 
-        {tab === 'pokemon' && (
-          <div className="grid gap-4 md:grid-cols-2 md:items-start lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-6">
-            <div data-portal-column="identity" className="space-y-4 lg:sticky lg:top-24">
-              <CompanionCard companion={profile.companion} egg={profile.egg} />
-            </div>
-            <div data-portal-column="activity" className="space-y-4">
-              <CollectionGrid pets={profile.collection} supportPetInstanceId={profile.supportPetInstanceId} />
-            </div>
-          </div>
-        )}
+        {tab === 'pokemon' && <StudentPokemon profile={profile} refreshSignal={refreshSignal} onChanged={onRefresh} />}
 
         {tab === 'friends' && (
           <div data-portal-column="activity" className="mx-auto max-w-3xl space-y-4">
