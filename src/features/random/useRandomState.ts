@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { ActiveBossRound, BossContribution, BossInstance, Student } from '../../types';
 import { BattleLudoTurn, RandomMode } from '../../types/app';
 
+/** Lần cộng/trừ nhanh gần nhất ở Random Solo, để Hoàn tác trong vài giây (Phase 13A.4). */
+export interface LastQuickPoints {
+  studentId: string;
+  studentName: string;
+  amount: number;
+  /** Bản chụp học sinh ngay trước khi bấm. */
+  snapshot: Student;
+  /** Dòng lịch sử mới nhất ngay sau lần cộng/trừ; sau đó lịch sử đổi nữa thì không hoàn tác được. */
+  afterHistoryId?: string;
+}
+
 // State Random: solo, battle, boss.
 export const useRandomState = () => {
   const [showRandomModal, setShowRandomModal] = useState(false);
@@ -21,10 +32,13 @@ export const useRandomState = () => {
     resultMsg: string;
     ludoTurns: BattleLudoTurn[];
   } | null>(null);
+  // Em đã được bấm "Đúng hết" trong lượt Random hiện tại (Phase 13A.5).
+  const [perfectMarks, setPerfectMarks] = useState<Record<string, boolean>>({});
+  const [lastQuickPoints, setLastQuickPoints] = useState<LastQuickPoints | null>(null);
   const [uncalledMap, setUncalledMap] = useState<Record<string, string[]>>({});
   const [activeBossRound, setActiveBossRound] = useState<ActiveBossRound | null>(null);
   const [bossRoundResolving, setBossRoundResolving] = useState(false);
-  const [bossRoundVisualResult, setBossRoundVisualResult] = useState<'success' | 'failure' | null>(null);
+  const [bossRoundVisualResult, setBossRoundVisualResult] = useState<'success' | 'mixed' | 'failure' | null>(null);
   const [bossDefeatedAnnouncement, setBossDefeatedAnnouncement] = useState<{
     boss: BossInstance;
     topContributors: BossContribution[];
@@ -36,6 +50,7 @@ export const useRandomState = () => {
     battleScoreA, setBattleScoreA, battleScoreB, setBattleScoreB, battleResultSummary,
     setBattleResultSummary, uncalledMap, setUncalledMap, activeBossRound, setActiveBossRound,
     bossRoundResolving, setBossRoundResolving, bossRoundVisualResult, setBossRoundVisualResult,
-    bossDefeatedAnnouncement, setBossDefeatedAnnouncement
+    bossDefeatedAnnouncement, setBossDefeatedAnnouncement, perfectMarks, setPerfectMarks,
+    lastQuickPoints, setLastQuickPoints
   };
 };

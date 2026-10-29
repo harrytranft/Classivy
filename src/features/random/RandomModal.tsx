@@ -5,15 +5,17 @@ import { StudentAvatar } from '../../components/StudentAvatar';
 import { PokemonMiniStatus } from '../../components/PokemonMiniStatus';
 import { useApp } from '../../app/AppContext';
 import { RandomSkillsPanel } from './RandomSkillsPanel';
+import { PerfectAnswerButton, QuickPointsBar } from '../../components/QuickPointsBar';
+import { adjustBattleScore } from '../../domain/ludoRolls';
 
 export const RandomModal: React.FC = () => {
   const {
     activeBossParty, activeBossRound, battleResultSummary, battleScoreA, battleScoreB,
     battleStudentA, battleStudentB, bossRoundResolving, bossRoundVisualResult,
     currentBossFrequencyOption, currentBossState, currentBossTopContributors, handleRandom,
-    handleResolveBattle, handleResolveBossRound, handleUsePetSkill, openBattleLudoTurns,
-    petSkills, randomMode, randomStudent, setBattleScoreA, setBattleScoreB, setFeedbackSource,
-    setRandomStudent, setShowRandomModal, setShowSkillModal, showRandomModal, students
+    handleQuickPoints, handleResolveBattle, handleResolveBossRound, handleUsePetSkill, ludoBonusRolls, openBattleLudoTurns,
+    perfectMarks, petSkills, randomMode, randomStudent, setBattleScoreA, setBattleScoreB, setFeedbackSource,
+    setRandomStudent, setShowRandomModal, setShowSkillModal, showRandomModal, students, togglePerfectAnswer
   } = useApp();
   return (
     <>
@@ -57,6 +59,7 @@ export const RandomModal: React.FC = () => {
               <>
                 {activeBossRound && currentBossState && activeBossParty.length === BOSS_PARTY_SIZE ? (
                   <BossBattlePanel
+                    key={activeBossRound.roundId}
                     boss={currentBossState.boss}
                     party={activeBossParty}
                     topContributors={currentBossTopContributors}
@@ -65,8 +68,7 @@ export const RandomModal: React.FC = () => {
                     frequencyLabel={currentBossFrequencyOption.label}
                     resolving={bossRoundResolving}
                     visualResult={bossRoundVisualResult}
-                    onSuccess={() => handleResolveBossRound('success')}
-                    onFailure={() => handleResolveBossRound('failure')}
+                    onResolve={handleResolveBossRound}
                   />
                 ) : (
                   <div className="mx-auto max-w-2xl rounded-brand-lg border border-brand-emerald/20 bg-[#f4f8f1] p-8 text-center">
@@ -129,11 +131,24 @@ export const RandomModal: React.FC = () => {
                 </div>
 
                 <div className="mb-6">
-                  <h3 className="text-2xl font-extrabold tracking-tight text-brand-ink sm:text-3xl">{randomStudent.name}</h3>
+                  <h3 data-testid="random-student-name" className="text-2xl font-extrabold tracking-tight text-brand-ink sm:text-3xl">{randomStudent.name}</h3>
                   <p className="mt-1 text-xs font-bold text-brand-ink/60">{randomStudent.className}</p>
                 </div>
 
                 <RandomSkillsPanel key={randomStudent.id} student={students.find(item => item.id === randomStudent.id) || randomStudent} />
+
+                <div className="mb-5 space-y-3 text-left">
+                  <PerfectAnswerButton
+                    studentName={randomStudent.name}
+                    active={!!perfectMarks[randomStudent.id]}
+                    bonusRolls={ludoBonusRolls[randomStudent.id] || 0}
+                    onToggle={() => togglePerfectAnswer(randomStudent.id)}
+                  />
+                  <QuickPointsBar
+                    studentName={randomStudent.name}
+                    onPick={amount => handleQuickPoints(randomStudent.id, amount)}
+                  />
+                </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button 
@@ -189,7 +204,7 @@ export const RandomModal: React.FC = () => {
                               if (!turnStudent) return null;
                               return (
                                 <div key={`${turn.studentId}-${index}`} className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
-                                  <span className="text-xs font-black text-amber-950">{index + 1}. {turnStudent.name}</span>
+                                  <span className="text-xs font-black text-amber-950">{index + 1}. {turnStudent.name}{perfectMarks[turnStudent.id] ? ' ⭐ +1 lượt bonus' : ''}</span>
                                   <span className="text-xs font-black text-amber-700">
                                     {turn.role === 'winner' ? 'Thắng - lắc trước' : turn.role === 'loser' ? 'Thua - lắc sau' : 'Hòa'}
                                   </span>
@@ -238,7 +253,7 @@ export const RandomModal: React.FC = () => {
                           Trainer A
                         </span>
                         <StudentAvatar student={battleStudentA} className="w-20 h-20 rounded-full border-4 border-amber-400 shadow-md mb-2" />
-                        <h4 className="text-base font-extrabold text-brand-ink">{battleStudentA.name}</h4>
+                        <h4 data-testid="battle-name-a" className="text-base font-extrabold text-brand-ink">{battleStudentA.name}</h4>
                         <p className="mb-2 text-xs font-bold text-brand-ink/65">Hào quang: {battleStudentA.points}đ</p>
 
                         <PokemonMiniStatus
@@ -253,16 +268,19 @@ export const RandomModal: React.FC = () => {
 
                         <div className="w-full">
                           <p className="text-xs font-black text-amber-800 mb-1">Điểm Battle Vòng Này:</p>
-                          <div className="flex items-center justify-center gap-1 mb-2">
-                            {[-1, +1, +2, +3, +5].map(pts => (
-                              <button
-                                key={pts}
-                                onClick={() => setBattleScoreA(prev => Math.max(-10, prev + pts))}
-                                className={`px-2 py-1 rounded-lg text-xs font-black ${pts > 0 ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}`}
-                              >
-                                {pts > 0 ? `+${pts}` : pts}
-                              </button>
-                            ))}
+                          <div className="mb-2 space-y-2">
+                            <PerfectAnswerButton
+                              testId="perfect-answer-a"
+                              studentName={battleStudentA.name}
+                              active={!!perfectMarks[battleStudentA.id]}
+                              bonusRolls={ludoBonusRolls[battleStudentA.id] || 0}
+                              onToggle={() => togglePerfectAnswer(battleStudentA.id)}
+                            />
+                            <QuickPointsBar
+                              testIdPrefix="battle-a"
+                              studentName={battleStudentA.name}
+                              onPick={pts => setBattleScoreA(prev => adjustBattleScore(prev, pts))}
+                            />
                           </div>
                           <input 
                             type="number"
@@ -279,7 +297,7 @@ export const RandomModal: React.FC = () => {
                           Trainer B
                         </span>
                         <StudentAvatar student={battleStudentB} className="w-20 h-20 rounded-full border-4 border-purple-400 shadow-md mb-2" />
-                        <h4 className="text-base font-extrabold text-brand-ink">{battleStudentB.name}</h4>
+                        <h4 data-testid="battle-name-b" className="text-base font-extrabold text-brand-ink">{battleStudentB.name}</h4>
                         <p className="mb-2 text-xs font-bold text-brand-ink/65">Hào quang: {battleStudentB.points}đ</p>
 
                         <PokemonMiniStatus
@@ -294,16 +312,19 @@ export const RandomModal: React.FC = () => {
 
                         <div className="w-full">
                           <p className="text-xs font-black text-purple-800 mb-1">Điểm Battle Vòng Này:</p>
-                          <div className="flex items-center justify-center gap-1 mb-2">
-                            {[-1, +1, +2, +3, +5].map(pts => (
-                              <button
-                                key={pts}
-                                onClick={() => setBattleScoreB(prev => Math.max(-10, prev + pts))}
-                                className={`px-2 py-1 rounded-lg text-xs font-black ${pts > 0 ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}`}
-                              >
-                                {pts > 0 ? `+${pts}` : pts}
-                              </button>
-                            ))}
+                          <div className="mb-2 space-y-2">
+                            <PerfectAnswerButton
+                              testId="perfect-answer-b"
+                              studentName={battleStudentB.name}
+                              active={!!perfectMarks[battleStudentB.id]}
+                              bonusRolls={ludoBonusRolls[battleStudentB.id] || 0}
+                              onToggle={() => togglePerfectAnswer(battleStudentB.id)}
+                            />
+                            <QuickPointsBar
+                              testIdPrefix="battle-b"
+                              studentName={battleStudentB.name}
+                              onPick={pts => setBattleScoreB(prev => adjustBattleScore(prev, pts))}
+                            />
                           </div>
                           <input 
                             type="number"

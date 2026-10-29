@@ -24,7 +24,7 @@ export const createRandomActions = (appState: AppState, app: AppActions): Random
     activeBossRound, activeRandomClassName, bossEncounterFrequency, bossStatesByClass,
     filterClass, presentStudents, setActiveBossRound, setBattleResultSummary, setBattleScoreA,
     setBattleScoreB, setBattleStudentA, setBattleStudentB, setBossStatesByClass, setRandomMode,
-    setRandomStudent, setSelectedStudentIds, setShowRandomModal, setStudents, setUncalledMap, students,
+    setPerfectMarks, setRandomStudent, setSelectedStudentIds, setShowRandomModal, setStudents, setUncalledMap, students,
     showHatchAnnouncement, showPokemonReaction, posSoundUrl, uncalledMap
   } = appState;
 
@@ -98,6 +98,7 @@ export const createRandomActions = (appState: AppState, app: AppActions): Random
 
   const handleRandom = (forceMode?: RandomMode, options: HandleRandomOptions = {}) => {
     setBattleResultSummary(null);
+    setPerfectMarks({});
     const available = options.excludeStudentId ? presentStudents.filter(s => s.id !== options.excludeStudentId) : presentStudents;
     if (available.length === 0) return alert("Không có trainer nào hiện diện.");
 

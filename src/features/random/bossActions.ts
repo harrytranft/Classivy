@@ -1,4 +1,4 @@
-import { normalizeClassBossState, resolveBossFailure, resolveBossSuccess } from '../../domain/bossSystem';
+import { BossMemberResult, normalizeClassBossState, resolveBossRound } from '../../domain/bossSystem';
 import { PokemonReleaseEvent } from '../../types';
 import { PokemonUiEvent, applyPetHpDeltaToStudent } from '../../domain/gameEvents';
 import { normalizeStudentPokemonData } from '../../domain/pokemonProgression';
@@ -8,9 +8,9 @@ import { addWeeklyChestProgress, appendAdventureJournal, applyAuraRewardToStuden
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
 
-// Chốt lượt Boss Raid.
+// Chốt lượt Boss Raid theo từng em (Phase 13B, D54): em đúng gây sát thương và nhận thưởng, em sai chỉ Pokémon của em đó bị phản công.
 export interface BossActions {
-  handleResolveBossRound: (result: "success" | "failure") => void;
+  handleResolveBossRound: (results: BossMemberResult[]) => void;
 }
 
 export const createBossActions = (appState: AppState, app: AppActions): BossActions => {
@@ -22,8 +22,12 @@ export const createBossActions = (appState: AppState, app: AppActions): BossActi
     setStudents, showPokemonReaction, students
   } = appState;
 
-  const handleResolveBossRound = (result: 'success' | 'failure') => {
+  const handleResolveBossRound = (results: BossMemberResult[]) => {
     if (!activeBossRound || bossRoundResolving) return;
+    // Phải chấm đủ cả nhóm, đúng những em đang trong vòng này.
+    const partyIds = activeBossRound.partyStudentIds;
+    const resultById = new Map(results.map(item => [item.studentId, item.correct]));
+    if (results.length !== partyIds.length || !partyIds.every(id => resultById.has(id))) return;
     const className = activeBossRound.className;
     const state = normalizeClassBossState(bossStatesByClass[className], className, bossEncounterFrequency);
     if (state.boss.instanceId !== activeBossRound.bossInstanceId) {
@@ -32,14 +36,17 @@ export const createBossActions = (appState: AppState, app: AppActions): BossActi
       return;
     }
 
+    const orderedResults: BossMemberResult[] = partyIds.map(studentId => ({ studentId, correct: !!resultById.get(studentId) }));
+    const correctIds = new Set(orderedResults.filter(item => item.correct).map(item => item.studentId));
+    const anyCorrect = correctIds.size > 0;
+    const anyWrong = correctIds.size < partyIds.length;
+    const visualResult = !anyWrong ? 'success' : anyCorrect ? 'mixed' : 'failure';
+
     setBossRoundResolving(true);
-    setBossRoundVisualResult(result);
+    setBossRoundVisualResult(visualResult);
     window.setTimeout(() => setBossRoundVisualResult(null), 900);
     const timestamp = Date.now();
-    const partyIds = activeBossRound.partyStudentIds;
-    const resolution = result === 'success'
-      ? resolveBossSuccess(state, partyIds, activeBossRound.roundId, timestamp, bossEncounterFrequency)
-      : resolveBossFailure(state, partyIds, activeBossRound.roundId, timestamp, bossEncounterFrequency);
+    const resolution = resolveBossRound(state, orderedResults, activeBossRound.roundId, timestamp, bossEncounterFrequency);
     const topRewardIds = resolution.bossDefeated ? new Set(resolution.topContributors.map(contribution => contribution.studentId)) : new Set<string>();
     const releaseEvents: PokemonReleaseEvent[] = [];
     const journeyEvents: PokemonUiEvent[] = [];
@@ -47,7 +54,7 @@ export const createBossActions = (appState: AppState, app: AppActions): BossActi
     const updatedStudents = students.map(student => {
       let nextStudent = normalizeStudentPokemonData(student);
 
-      if (result === 'success' && partyIds.includes(student.id)) {
+      if (correctIds.has(student.id)) {
         nextStudent = applyAuraRewardToStudent(
           nextStudent,
           5,
@@ -70,7 +77,7 @@ export const createBossActions = (appState: AppState, app: AppActions): BossActi
         }, timestamp);
       }
 
-      if (result === 'failure' && partyIds.includes(student.id)) {
+      if (partyIds.includes(student.id) && !correctIds.has(student.id)) {
         const hpUpdate = applyPetHpDeltaToStudent(
           nextStudent,
           -state.boss.failDamage,
@@ -125,9 +132,10 @@ export const createBossActions = (appState: AppState, app: AppActions): BossActi
     setActiveBossRound(null);
     setSelectedStudentIds([]);
     setBossRoundResolving(false);
-    if (result === 'success') {
-      const bossLudoTurns: BattleLudoTurn[] = partyIds.map(studentId => ({ studentId, role: 'boss' }));
-      const firstBossStudent = updatedStudents.find(student => student.id === bossLudoTurns[0]?.studentId) || null;
+    // Chỉ các em trả lời đúng được lắc Cá Ngựa (như luật cũ: thành công mới có lượt).
+    const bossLudoTurns: BattleLudoTurn[] = partyIds.filter(id => correctIds.has(id)).map(studentId => ({ studentId, role: 'boss' }));
+    if (bossLudoTurns.length > 0) {
+      const firstBossStudent = updatedStudents.find(student => student.id === bossLudoTurns[0].studentId) || null;
       if (firstBossStudent) {
         setShowRandomModal(false);
         setBattleLudoQueue(bossLudoTurns);
@@ -147,11 +155,15 @@ export const createBossActions = (appState: AppState, app: AppActions): BossActi
       });
     }
 
-    const eventMessage = result === 'success'
-      ? `Perfect Team Attack: ${state.boss.name} -${resolution.damageDealt} HP`
-      : `${state.boss.name} phản công: Pokémon -${state.boss.failDamage} HP`;
-    showPokemonReaction([{ type: result === 'success' ? 'hp' : 'random-drop', message: eventMessage }, ...journeyEvents.slice(0, 3)], result === 'success' ? 'Boss Raid thành công' : 'Boss Raid thất bại');
-    new Audio(result === 'success' ? posSoundUrl : negSoundUrl).play().catch(() => {});
+    const wrongCount = partyIds.length - correctIds.size;
+    const eventMessage = resolution.comboTriggered
+      ? `Combo hoàn hảo! ${state.boss.name} -${resolution.damageDealt} HP`
+      : anyCorrect
+        ? `${state.boss.name} -${resolution.damageDealt} HP, ${wrongCount} Pokémon bị phản công -${state.boss.failDamage} HP`
+        : `${state.boss.name} phản công: Pokémon -${state.boss.failDamage} HP`;
+    const reactionTitle = resolution.comboTriggered ? 'Boss Raid: Combo hoàn hảo' : anyCorrect ? 'Boss Raid: đánh trúng một phần' : 'Boss Raid thất bại';
+    showPokemonReaction([{ type: anyCorrect ? 'hp' : 'random-drop', message: eventMessage }, ...journeyEvents.slice(0, 3)], reactionTitle);
+    new Audio(anyCorrect ? posSoundUrl : negSoundUrl).play().catch(() => {});
   };
 
   return {

@@ -1,6 +1,7 @@
 import { PokemonReleaseEvent, Student } from '../../types';
 import { BattleLudoTurn, LudoReturnHint } from '../../types/app';
 import { awardLudoAura, checkMonsterEscape, resolveLudoMove } from '../../domain/ludo';
+import { consumeExtraRoll, shouldAdvanceLudoQueue } from '../../domain/ludoRolls';
 import { playDiceSound } from '../../lib/sounds';
 import { CLASS_SUB_PAGES } from '../../app/screenRoutes';
 import { AppState } from '../../app/controller/appState';
@@ -81,10 +82,7 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
     playDiceSound();
 
     if (isBonusRoll) {
-      setLudoBonusRolls(prev => ({
-        ...prev,
-        [student.id]: Math.max(0, (prev[student.id] || 0) - 1)
-      }));
+      setLudoBonusRolls(prev => consumeExtraRoll(prev, student.id));
     }
 
     // 1. Award +1 point for answering correctly, except bonus rolls from Lucky Wheel.
@@ -105,6 +103,8 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
       setLudoRolling(false);
 
       const advanceBattleQueue = (nextStudents: Student[]) => {
+        // Lắc bonus xong thì em này vẫn còn lượt lắc thường, chưa được rời hàng chờ (Phase 13A.6).
+        if (!shouldAdvanceLudoQueue(isBonusRoll)) return;
         setBattleLudoQueue(prev => {
           if (prev.length === 0) return prev;
           const nextQueue = prev.filter(turn => turn.studentId !== student.id);

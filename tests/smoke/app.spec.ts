@@ -47,6 +47,25 @@ const withSkills = (student: { id: string; pet?: Record<string, unknown> | null;
   return { ...student, pet: nextPet, pets: [nextPet] };
 };
 
+// Phase 13B: trạng thái Boss "sẵn sàng xuất hiện" cho lớp, ghi đè trong một test.
+let BOSS_STATES: Record<string, unknown> = {};
+const readyBossState = (className: string) => ({
+  className,
+  boss: {
+    instanceId: 'boss-smoke-1', definitionId: 'shadow-dragon', name: 'Shadow Dragon', icon: '🐲',
+    maxHp: 500, currentHp: 500, failDamage: 10, damagePerSuccessfulStudent: 5, tier: 'standard', spawnedAt: FIXED_NOW.getTime() - 1000
+  },
+  randomsSinceLastEncounter: 9,
+  nextEncounterAt: 6,
+  encounterReady: true,
+  contributionByStudentId: {},
+  participantQueue: [],
+  previousPartyIds: [],
+  defeatedBosses: 0,
+  resolvedRoundIds: [],
+  updatedAt: FIXED_NOW.getTime() - 1000
+});
+
 const cloudRow = () => ({
   user_id: fakeSession().user.id,
   students: FIXTURE.students.map((student: { id: string; points: number }) => withSkills(
@@ -63,7 +82,7 @@ const cloudRow = () => ({
   wheel_finish_sound_url: '',
   custom_ludo_tiles: {},
   lucky_wheel_rewards: null,
-  boss_states_by_class: {},
+  boss_states_by_class: BOSS_STATES,
   boss_encounter_frequency: 'occasional',
   updated_at_ms: FIXED_NOW.getTime() - 60_000
 });
@@ -472,8 +491,8 @@ test('luồng thao tác: điểm, điểm danh, bài tập, random, Cá Ngựa, 
   await reopen();
   await dockButton(page, DOCK.random).click();
   await page.getByRole('button', { name: /Chế độ Battle/ }).click();
-  await page.getByRole('button', { name: '+3', exact: true }).first().click();
-  await page.getByRole('button', { name: '+1', exact: true }).nth(1).click();
+  await page.getByTestId('battle-a-plus-3').click();
+  await page.getByTestId('battle-b-plus-1').click();
   await snap(page, '37-battle-scored', state);
   await page.getByRole('button', { name: /Chốt Trận & Trao Thưởng/ }).click();
   await snap(page, '38-battle-resolved', state);
@@ -989,5 +1008,193 @@ test('Phase 11: skill sau Random (Vòng Quay Tự Tin tự chạy, hộp Dùng/K
   const used = Object.values(saved).filter(item => item.pet?.skillUses && Object.keys(item.pet.skillUses).length > 0);
   expect(used.length).toBeGreaterThanOrEqual(2);
   expect(Object.values(saved).some(item => item.history.some(h => h.reason.includes('Né Trực Diện')))).toBe(true);
+  expect(state.errors).toEqual([]);
+});
+
+
+// Phase 13A: cộng/trừ nhanh, Hoàn tác, "Đúng hết" (+1 lượt lắc bonus) ở Random Solo và Battle.
+const dismissLudoPopup = async (page: Page) => {
+  const ok = page.getByRole('button', { name: /Đã Hiểu/ });
+  if (await ok.count() > 0 && await ok.first().isVisible()) await ok.first().click();
+};
+const fixtureByName = (name: string) => FIXTURE.students.find((student: { name: string }) => student.name === name) as { id: string; points: number };
+
+test('Phase 13A: Random Solo cộng/trừ nhanh, Hoàn tác, Đúng hết và lượt lắc bonus', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await chooseClass(page, '6A');
+  await dockButton(page, DOCK.random).click();
+  await page.getByRole('button', { name: /Chế độ Solo/ }).click();
+  const name = ((await page.getByTestId('random-student-name').textContent()) || '').trim();
+  const { id, points: startPoints } = fixtureByName(name);
+
+  // Trừ nhanh -2: hộp Random vẫn mở và hiện Hoàn tác.
+  await page.getByTestId('quick-minus-2').click();
+  await expect(page.getByTestId('quick-undo')).toBeVisible();
+  await expect(page.getByTestId('random-student-name')).toHaveText(name);
+  let saved = await savedStudents(page, state);
+  expect(saved[id].points).toBe(startPoints - 2);
+  expect(saved[id].history[0].reason).toContain('Trừ nhanh');
+
+  // Hoàn tác: điểm và lịch sử về như trước, chip biến mất.
+  await page.getByTestId('quick-undo').click();
+  await expect(page.getByTestId('quick-undo')).toHaveCount(0);
+  saved = await savedStudents(page, state);
+  expect(saved[id].points).toBe(startPoints);
+  expect(saved[id].history.some(item => item.reason.includes('Trừ nhanh'))).toBe(false);
+
+  // "Đúng hết": bấm lần 2 huỷ, bấm lần 3 ghi nhận lại; lượt bonus được lưu trên máy.
+  const perfect = page.getByTestId('perfect-answer');
+  await perfect.click();
+  await expect(perfect).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.evaluate(() => window.localStorage.getItem('classivy_ludo_bonus_rolls'))).toBe(JSON.stringify({ [id]: 1 }));
+  await perfect.click();
+  await expect(perfect).toHaveAttribute('aria-pressed', 'false');
+  expect(await page.evaluate(() => window.localStorage.getItem('classivy_ludo_bonus_rolls'))).toBe('{}');
+  await perfect.click();
+  await expect(perfect).toHaveAttribute('aria-pressed', 'true');
+
+  // Cộng nhanh +3 đi theo đúng luồng Ban thưởng: mở Cá Ngựa, em còn 1 lượt lắc bonus.
+  await page.getByTestId('quick-plus-3').click();
+  await expect(page.getByText('Còn 1 lượt lắc bonus')).toBeVisible();
+  await page.getByRole('button', { name: /Lắc Bonus/ }).click();
+  await page.waitForTimeout(1500);
+  await dismissLudoPopup(page);
+  await expect(page.getByText('Còn 1 lượt lắc bonus')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ })).toBeVisible();
+  expect(await page.evaluate(() => window.localStorage.getItem('classivy_ludo_bonus_rolls'))).toBe('{}');
+  saved = await savedStudents(page, state);
+  expect(saved[id].points).toBe(startPoints + 3);
+  expect(saved[id].history.some(item => item.reason.includes('Đúng hết: +1 lượt lắc'))).toBe(true);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13A: Battle -5..+5, Đúng hết, em có lượt bonus vẫn lắc thường trong hàng chờ', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await chooseClass(page, '6A');
+  await dockButton(page, DOCK.random).click();
+  await page.getByRole('button', { name: /Chế độ Battle/ }).click();
+  const nameA = ((await page.getByTestId('battle-name-a').textContent()) || '').trim();
+  const nameB = ((await page.getByTestId('battle-name-b').textContent()) || '').trim();
+
+  // Đủ 5 nút cộng và 5 nút trừ mỗi bên; điểm Battle cộng dồn, không thấp hơn -10.
+  for (const side of ['a', 'b']) {
+    for (let amount = 1; amount <= 5; amount += 1) {
+      await expect(page.getByTestId(`battle-${side}-plus-${amount}`)).toBeVisible();
+      await expect(page.getByTestId(`battle-${side}-minus-${amount}`)).toBeVisible();
+    }
+  }
+  const scoreInputs = page.locator('input[type="number"]');
+  await page.getByTestId('battle-a-plus-5').click();
+  await page.getByTestId('battle-a-minus-2').click();
+  await expect(scoreInputs.first()).toHaveValue('3');
+  await page.getByTestId('battle-b-minus-5').click();
+  await page.getByTestId('battle-b-minus-5').click();
+  await page.getByTestId('battle-b-minus-5').click();
+  await expect(scoreInputs.nth(1)).toHaveValue('-10');
+  await page.getByTestId('battle-b-plus-5').click();
+  await expect(scoreInputs.nth(1)).toHaveValue('-5');
+  await page.getByTestId('battle-b-plus-5').click();
+  await page.getByTestId('battle-b-plus-5').click();
+  await expect(scoreInputs.nth(1)).toHaveValue('5');
+
+  // A được "Đúng hết"; B thắng (5 so với 3) nên B lắc trước, A lắc sau và vẫn còn 1 lượt bonus.
+  await page.getByTestId('perfect-answer-a').click();
+  await page.getByRole('button', { name: /Chốt Trận & Trao Thưởng/ }).click();
+  await expect(page.getByText(`1. ${nameB}`)).toBeVisible();
+  await expect(page.getByText(`2. ${nameA} ⭐ +1 lượt bonus`)).toBeVisible();
+  await page.getByRole('button', { name: /Mở Cá Ngựa Theo Thứ Tự/ }).click();
+  await expect(page.locator('h4', { hasText: nameB }).first()).toBeVisible();
+  await page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ }).click();
+  await page.waitForTimeout(1500);
+  await dismissLudoPopup(page);
+
+  // Tới lượt A: lắc bonus trước, A vẫn là người đang lắc (chưa bị đẩy khỏi hàng chờ), rồi mới lắc thường.
+  await expect(page.locator('h4', { hasText: nameA }).first()).toBeVisible();
+  await expect(page.getByText('Còn 1 lượt lắc bonus')).toBeVisible();
+  await page.getByRole('button', { name: /Lắc Bonus/ }).click();
+  await page.waitForTimeout(1500);
+  await dismissLudoPopup(page);
+  await expect(page.locator('h4', { hasText: nameA }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ })).toBeVisible();
+  await page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ }).click();
+  await page.waitForTimeout(1500);
+  await dismissLudoPopup(page);
+  const saved = await savedStudents(page, state);
+  const idA = fixtureByName(nameA).id;
+  // Lắc thường của A vẫn được +1 điểm "trả lời đúng"; lắc bonus thì không.
+  expect(saved[idA].history.filter(item => item.reason.includes('Trả lời đúng câu hỏi Cá Ngựa')).length).toBe(1);
+  expect(state.errors).toEqual([]);
+});
+
+// Phase 13B: Boss chấm từng em.
+const bossPetOverrides = { 'stu-03': [] as string[], 'stu-06': [] as string[] };
+type SavedBoss = { boss_states_by_class: Record<string, { boss: { currentHp: number }; contributionByStudentId: Record<string, { damageDealt: number; failedRounds: number; successfulRounds: number }> }> };
+const openReadyBoss = async (page: Page) => {
+  SKILL_OVERRIDES = bossPetOverrides;
+  BOSS_STATES = { '6A': readyBossState('6A') };
+  const state = await setupPage(page, { loggedIn: true });
+  SKILL_OVERRIDES = {};
+  BOSS_STATES = {};
+  await chooseClass(page, '6A');
+  await dockButton(page, DOCK.random).click();
+  await page.getByRole('button', { name: /Boss/ }).first().click();
+  await expect(page.locator('[data-testid^="boss-member-"]')).toHaveCount(5);
+  return state;
+};
+// HP Pokémon ban đầu của em (em được gán Pokémon mẫu qua SKILL_OVERRIDES thì HP = 100).
+const startHp = (id: string) => (FIXTURE.students.find((student: { id: string }) => student.id === id) as { pet?: { hp?: number } } | undefined)?.pet?.hp ?? 100;
+const bossMemberIds = async (page: Page) => (await page.locator('[data-testid^="boss-member-"]').evaluateAll(nodes => nodes.map(node => node.getAttribute('data-testid')!.replace('boss-member-', ''))));
+const latestSettings = (state: SmokeState) => state.upserts[state.upserts.length - 1] as unknown as SavedBoss;
+
+test('Phase 13B: Boss chấm từng em, em sai chỉ mình em bị phản công', async ({ page }) => {
+  const state = await openReadyBoss(page);
+  const ids = await bossMemberIds(page);
+  const wrongId = ids[3];
+  const resolve = page.getByRole('button', { name: /Chốt vòng/ });
+  await expect(resolve).toBeDisabled();
+  for (const id of ids) {
+    await page.getByTestId(`boss-member-${id}`).getByRole('button', { name: id === wrongId ? /trả lời sai/ : /trả lời đúng/ }).click();
+  }
+  await expect(page.getByTestId('boss-preview')).toContainText('Boss -20 HP');
+  await expect(page.getByTestId('boss-preview')).not.toContainText('Combo');
+  await expect(page.getByTestId('boss-preview')).toContainText('1 Pokémon bị phản công -10 HP');
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/90-boss-marked.png', fullPage: true });
+  await expect(resolve).toBeEnabled();
+  await resolve.click();
+  await page.waitForTimeout(1500);
+
+  const saved = await savedStudents(page, state) as unknown as Record<string, { points: number; pet?: { hp: number } }>;
+  for (const id of ids) {
+    const start = FIXTURE.students.find((student: { id: string }) => student.id === id) as { points: number; pet?: { hp?: number } } | undefined;
+    const startPoints = start?.points ?? 0;
+    if (id === wrongId) {
+      expect(saved[id].points).toBe(startPoints);
+      expect(saved[id].pet?.hp).toBe(startHp(id) - 10);
+    } else {
+      expect(saved[id].points).toBe(startPoints + 5);
+      expect(saved[id].pet?.hp).toBe(Math.min(100, startHp(id) + 5)); // +5 điểm cũng hồi 5 HP Pokémon (cơ chế sẵn có)
+    }
+  }
+  const boss = latestSettings(state).boss_states_by_class['6A'];
+  expect(boss.boss.currentHp).toBe(480);
+  expect(boss.contributionByStudentId[wrongId].failedRounds).toBe(1);
+  expect(boss.contributionByStudentId[wrongId].damageDealt).toBe(0);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13B: cả nhóm đúng hết có Combo +10 sát thương và không Pokémon nào bị phản công', async ({ page }) => {
+  const state = await openReadyBoss(page);
+  const ids = await bossMemberIds(page);
+  await page.getByRole('button', { name: /Cả nhóm đúng/ }).click();
+  await expect(page.getByTestId('boss-preview')).toContainText('Boss -35 HP (có Combo)');
+  await page.getByRole('button', { name: /Chốt vòng/ }).click();
+  await page.waitForTimeout(1500);
+  const saved = await savedStudents(page, state) as unknown as Record<string, { points: number; pet?: { hp: number } }>;
+  for (const id of ids) {
+    const start = FIXTURE.students.find((student: { id: string }) => student.id === id) as { points: number };
+    expect(saved[id].points).toBe(start.points + 5);
+    expect(saved[id].pet?.hp).toBe(Math.min(100, startHp(id) + 5)); // không em nào bị phản công (chỉ nhận hồi từ +5 điểm)
+  }
+  expect(latestSettings(state).boss_states_by_class['6A'].boss.currentHp).toBe(465);
   expect(state.errors).toEqual([]);
 });

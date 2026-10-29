@@ -1126,7 +1126,7 @@
 <div class="bg-amber-50/80 p-4 rounded-3xl border-2 border-amber-300 flex flex-col items-center">
 <span class="bg-amber-500 text-white text-xs font-black px-2.5 py-0.5 rounded-full mb-2">Trainer A</span>
 <div class="w-20 h-20 rounded-full border-4 border-amber-400 shadow-md mb-2 grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">A6</div>
-<h4 class="text-base font-extrabold text-brand-ink">An 6A</h4>
+<h4 data-testid="battle-name-a" class="text-base font-extrabold text-brand-ink">An 6A</h4>
 <p class="mb-2 text-xs font-bold text-brand-ink/65">Hào quang: 28đ</p>
 <div class="rounded-2xl border p-3 shadow-sm border-amber-200 bg-amber-50 text-amber-950 mb-3 w-full">
 <div class="flex items-center gap-3 min-w-0">
@@ -1185,12 +1185,27 @@
 </div>
 <div class="w-full">
 <p class="text-xs font-black text-amber-800 mb-1">Điểm Battle Vòng Này:</p>
-<div class="flex items-center justify-center gap-1 mb-2">
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-red-600 text-white">-1</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+1</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+2</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+3</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+5</button>
+<div class="mb-2 space-y-2">
+<button type="button" data-testid="perfect-answer-a" aria-pressed="false" aria-label="Đúng hết cho An 6A" class="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-extrabold transition-colors border-brand-gold bg-white text-brand-forest-deep hover:bg-brand-gold-light">
+<span aria-hidden="true">⭐</span>
+<span>Đúng hết (+1 lượt xúc xắc)</span>
+</button>
+<div class="space-y-2" role="group" aria-label="Cộng hoặc trừ điểm nhanh cho An 6A">
+<div class="flex gap-1.5">
+<button type="button" data-testid="battle-a-plus-1" aria-label="Cộng 1 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+1</button>
+<button type="button" data-testid="battle-a-plus-2" aria-label="Cộng 2 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+2</button>
+<button type="button" data-testid="battle-a-plus-3" aria-label="Cộng 3 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+3</button>
+<button type="button" data-testid="battle-a-plus-4" aria-label="Cộng 4 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+4</button>
+<button type="button" data-testid="battle-a-plus-5" aria-label="Cộng 5 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+5</button>
+</div>
+<div class="flex gap-1.5">
+<button type="button" data-testid="battle-a-minus-1" aria-label="Trừ 1 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-1</button>
+<button type="button" data-testid="battle-a-minus-2" aria-label="Trừ 2 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-2</button>
+<button type="button" data-testid="battle-a-minus-3" aria-label="Trừ 3 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-3</button>
+<button type="button" data-testid="battle-a-minus-4" aria-label="Trừ 4 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-4</button>
+<button type="button" data-testid="battle-a-minus-5" aria-label="Trừ 5 điểm cho An 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-5</button>
+</div>
+</div>
 </div>
 <input class="w-20 mx-auto text-center font-black text-lg border-2 border-amber-400 rounded-xl py-1 bg-white" type="number" value="3">
 </div>
@@ -1198,7 +1213,7 @@
 <div class="bg-purple-50/80 p-4 rounded-3xl border-2 border-purple-300 flex flex-col items-center">
 <span class="bg-purple-600 text-white text-xs font-black px-2.5 py-0.5 rounded-full mb-2">Trainer B</span>
 <div class="w-20 h-20 rounded-full border-4 border-purple-400 shadow-md mb-2 grid place-items-center bg-gradient-to-br from-sky-100 via-white to-emerald-100 text-sm font-black text-teal-900 ring-2 ring-white shadow-inner">K6</div>
-<h4 class="text-base font-extrabold text-brand-ink">Khoa 6A</h4>
+<h4 data-testid="battle-name-b" class="text-base font-extrabold text-brand-ink">Khoa 6A</h4>
 <p class="mb-2 text-xs font-bold text-brand-ink/65">Hào quang: 120đ</p>
 <div class="rounded-2xl border p-3 shadow-sm border-purple-200 bg-purple-50 text-purple-950 mb-3 w-full">
 <div class="flex items-center gap-3 min-w-0">
@@ -1257,12 +1272,27 @@
 </div>
 <div class="w-full">
 <p class="text-xs font-black text-purple-800 mb-1">Điểm Battle Vòng Này:</p>
-<div class="flex items-center justify-center gap-1 mb-2">
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-red-600 text-white">-1</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+1</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+2</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+3</button>
-<button class="px-2 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white">+5</button>
+<div class="mb-2 space-y-2">
+<button type="button" data-testid="perfect-answer-b" aria-pressed="false" aria-label="Đúng hết cho Khoa 6A" class="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl border-2 px-3 py-2 text-sm font-extrabold transition-colors border-brand-gold bg-white text-brand-forest-deep hover:bg-brand-gold-light">
+<span aria-hidden="true">⭐</span>
+<span>Đúng hết (+1 lượt xúc xắc)</span>
+</button>
+<div class="space-y-2" role="group" aria-label="Cộng hoặc trừ điểm nhanh cho Khoa 6A">
+<div class="flex gap-1.5">
+<button type="button" data-testid="battle-b-plus-1" aria-label="Cộng 1 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+1</button>
+<button type="button" data-testid="battle-b-plus-2" aria-label="Cộng 2 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+2</button>
+<button type="button" data-testid="battle-b-plus-3" aria-label="Cộng 3 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+3</button>
+<button type="button" data-testid="battle-b-plus-4" aria-label="Cộng 4 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+4</button>
+<button type="button" data-testid="battle-b-plus-5" aria-label="Cộng 5 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-emerald-600 hover:bg-emerald-700">+5</button>
+</div>
+<div class="flex gap-1.5">
+<button type="button" data-testid="battle-b-minus-1" aria-label="Trừ 1 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-1</button>
+<button type="button" data-testid="battle-b-minus-2" aria-label="Trừ 2 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-2</button>
+<button type="button" data-testid="battle-b-minus-3" aria-label="Trừ 3 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-3</button>
+<button type="button" data-testid="battle-b-minus-4" aria-label="Trừ 4 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-4</button>
+<button type="button" data-testid="battle-b-minus-5" aria-label="Trừ 5 điểm cho Khoa 6A" class="min-h-[44px] flex-1 rounded-xl text-base font-extrabold text-white shadow-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 bg-red-600 hover:bg-red-700">-5</button>
+</div>
+</div>
 </div>
 <input class="w-20 mx-auto text-center font-black text-lg border-2 border-purple-400 rounded-xl py-1 bg-white" type="number" value="1">
 </div>

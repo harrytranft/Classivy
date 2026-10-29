@@ -18,6 +18,7 @@ import { SkillPromptModal } from '../features/feedback/SkillPromptModal';
 import { UserModal } from '../features/auth/UserModal';
 import { ShopModal } from '../features/shop/ShopModal';
 import { RandomModal } from '../features/random/RandomModal';
+import { QuickUndoChip } from '../features/random/QuickUndoChip';
 import { DataUpgradeModal } from '../features/dataUpgrade/DataUpgradeModal';
 import { SyncConflictBanner } from './SyncConflictBanner';
 import { useApp } from './AppContext';
@@ -66,6 +67,7 @@ export const AppLayout: React.FC = () => {
 
       {/* MODAL: RANDOM */}
       <RandomModal />
+      <QuickUndoChip />
 
       {/* MODAL: GROUP MAKER */}
       <GroupModal />

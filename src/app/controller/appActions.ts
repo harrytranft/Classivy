@@ -8,6 +8,7 @@ import { GiftPokemonActions, createGiftPokemonActions } from '../../features/pok
 import { RandomActions, createRandomActions } from '../../features/random/randomActions';
 import { BattleActions, createBattleActions } from '../../features/random/battleActions';
 import { BossActions, createBossActions } from '../../features/random/bossActions';
+import { QuickActions, createQuickActions } from '../../features/random/quickActions';
 import { LudoActions, createLudoActions } from '../../features/ludo/ludoActions';
 import { LuckyWheelActions, createLuckyWheelActions } from '../../features/wheel/luckyWheelActions';
 import { SettingsActions, createSettingsActions } from '../../features/settings/settingsActions';
@@ -26,6 +27,7 @@ export type AppActions = ClassActions
   & RandomActions
   & BattleActions
   & BossActions
+  & QuickActions
   & LudoActions
   & LuckyWheelActions
   & SettingsActions
@@ -45,6 +47,7 @@ export const createAppActions = (state: AppState): AppActions => {
     createRandomActions(state, actions),
     createBattleActions(state, actions),
     createBossActions(state, actions),
+    createQuickActions(state, actions),
     createLudoActions(state, actions),
     createLuckyWheelActions(state, actions),
     createSettingsActions(state, actions),

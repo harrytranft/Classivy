@@ -64,6 +64,16 @@
 | D45 | Hồ sơ Trainer của giáo viên làm theo cấu trúc học sinh: hai tab Hồ sơ / Pokémon, Hợp nhất nằm trong tab Pokémon, dùng chung component (12D) | 2026-10-28 |
 | D46 | 12C: Hợp nhất của học sinh dùng cùng công tắc Cửa hàng của lớp (như Đổi Pokémon), miễn phí (không trừ điểm, không ghi sổ), không hợp nhất khi đang ấp trứng; luật đúng như app giáo viên. Mặc định của Claude, chờ Harry xác nhận | 2026-10-28 |
 | D47 | 12C: loài của Pokémon mới chọn ngẫu nhiên ở phía server trong kho 1025 loài của Cửa hàng (`shop_egg_pool`, cả loài thường và đặc biệt như app giáo viên); tên "Hợp Thể <loài>" hiển thị từ cờ `isFusion` trong dữ liệu Pokémon, DB không lưu tên loài | 2026-10-28 |
+| D48 | Săn Pokémon hoang dã: trang riêng `/class/<lớp>/san-pokemon`; tự xuất hiện theo hẹn giờ (không cần bấm), hiện thông báo nổi không chặn thao tác với "Săn ngay / Để sau"; thời gian và tần suất cài trong Cài đặt | 2026-10-29 |
+| D49 | Pokémon bắt được trao cho một em đã trả lời đúng trong lần săn, chọn bằng vòng quay (đúng nhiều câu = nhiều ô); các em đúng còn lại nhận điểm an ủi (mặc định 2 Hào Quang, chỉnh được) | 2026-10-29 |
+| D50 | Luật săn: mỗi buổi tối đa 1 con (Harry chốt 2026-10-29); số câu đúng cần theo độ hiếm (mặc định 3/4/5); câu sai không làm Pokémon mất máu nhưng quá số lần sai tối đa (3) thì nó bỏ chạy; không trừ điểm ai | 2026-10-29 |
+| D51 | Cá Ngựa có loại ô mới "thử thách" (`challenge`): danh sách thử thách chỉnh trong Cài đặt; "Làm được" = +1 lượt lắc (dùng cơ chế lượt bonus có sẵn), "Chưa làm được" = không phạt | 2026-10-29 |
+| D52 | Nút "Đúng hết" ở Random Solo và Battle chỉ cộng +1 lượt lắc bonus Cá Ngựa (mỗi em mỗi lượt Random bấm một lần, có huỷ); lượt lắc bonus được lưu localStorage | 2026-10-29 |
+| D53 | Random Solo có nút cộng/trừ nhanh +1..+5 / -1..-5 (qua `requestPointsUpdate`, vẫn qua hộp hỏi skill) và Hoàn tác 8 giây; Battle có -5..+5 cho điểm Battle vòng này | 2026-10-29 |
+| D54 | Boss công bằng theo từng em: giáo viên chấm đúng/sai từng em; em đúng gây sát thương + thưởng, em sai chỉ Pokémon của em đó bị phản công; cả 5 đúng = Combo +10 sát thương. Đổi luật game: Harry đồng ý hướng này và số liệu mặc định (2026-10-29), vẫn thử trên lớp rồi chỉnh | 2026-10-29 |
+| D55 | Cài đặt mới (Săn Pokémon, thử thách Cá Ngựa) lưu cloud trong MỘT cột jsonb mới `user_settings.classroom_settings` (13C, cần migration và Harry duyệt); khi cột chưa có thì app không ghi cột đó, dùng localStorage | 2026-10-29 |
+| D56 | Hẹn giờ Săn Pokémon tính từ lúc mở trang của lớp đó (mỗi lớp một đồng hồ, ví dụ hẹn 40 phút thì sau 40 phút Pokémon hiện ra trên trang lớp), coi là buổi mới nếu nghỉ ≥ 2 giờ hoặc sang ngày khác. Harry xác nhận | 2026-10-29 |
+| D57 | "Sự kiện theo mùa" (Halloween, tuần lễ trứng...) Harry thấy ổn nhưng chưa chọn làm; ghi nhận, chưa vào kế hoạch | 2026-10-29 |
 
 ## Tổng quan Phase
 
@@ -82,6 +92,7 @@
 | 10 | Cổng học sinh v2: nav, Profile, Shop học sinh | Kế hoạch | **Có (migration, cần Harry duyệt)** |
 | 11 | Skills tự động sau Random và khi cộng/trừ điểm | Kế hoạch | Không |
 | 12 | Cổng học sinh v3: nav 4 mục, modal đăng xuất, trang Pokémon, Hợp nhất, dọn Hồ sơ Trainer | Hoàn thành 12A-12D (2026-10-28); 12C chờ chạy migration | Chỉ 12C (migration, cần Harry duyệt) |
+| 13 | Trò chơi và công cụ dùng trên lớp: chấm điểm nhanh + Đúng hết, Boss công bằng, Cá Ngựa ô thử thách, Săn Pokémon hoang dã | Kế hoạch (2026-10-29), chưa làm | Chỉ 13C (migration cột cài đặt, cần Harry duyệt) |
 
 Ghi chú: so với lộ trình đã trao đổi, Phase 2 (reskin + thuật ngữ) được tách riêng để các Phase tài khoản/xã hội dùng ngay hệ thiết kế mới; các Phase sau dời xuống một số.
 
@@ -384,7 +395,53 @@ Nhánh: `claude/phase12-student-portal`. Quyết định: D41-D45. Không mở r
 
 **Phase 12 tổng kết:** 12A, 12B đã commit; 12C, 12D chưa commit. Việc Harry cần làm: xem thử preview, commit 12C/12D, duyệt rồi chạy migration `20261103100000_phase12_student_fusion.sql` trên Supabase thật. Sau đó: Phase 11 đã xong; ý tưởng tính năng dùng trên lớp để brainstorm riêng.
 
-Thứ tự: 12A, 12B, 12C, 12D (12B trước 12D để dùng chung component; 12C tách riêng vì là bước duy nhất đụng schema). Mọi màn học sinh responsive 390/820/1440px (D22). Phase 11 đã xong; ý tưởng tính năng dùng trên lớp (giáo viên) để brainstorm riêng, chưa vào kế hoạch.
+Thứ tự: 12A, 12B, 12C, 12D (12B trước 12D để dùng chung component; 12C tách riêng vì là bước duy nhất đụng schema). Mọi màn học sinh responsive 390/820/1440px (D22). Phase 11 đã xong; ý tưởng tính năng dùng trên lớp (giáo viên) đã brainstorm và vào kế hoạch ở Phase 13 (2026-10-29).
+
+## Phase 13 - Trò chơi và công cụ dùng trên lớp (chỉ 13C có migration) - KẾ HOẠCH, chưa làm
+
+Nhánh dự kiến: `claude/phase13-classroom-games`. Quyết định: D48-D57. Thiết kế chi tiết, luật, cài đặt, rủi ro: `docs/plans/phase-13-classroom-games.md` (đọc trước khi làm). Không mở rộng phạm vi ngoài các bước dưới. Thứ tự: 13A, 13B (không cần migration, giao được ngay), rồi 13C, 13D, 13E; dừng cho Harry xem thử sau mỗi bước.
+
+- [x] 13A Chấm điểm nhanh + "Đúng hết" (không đụng DB)
+  - [x] 13A.1 Component `QuickPointsBar` (+1..+5 xanh, -1..-5 đỏ, nút to)
+  - [x] 13A.2 Random Solo: `QuickPointsBar` gọi `requestPointsUpdate` (vẫn qua hộp hỏi skill)
+  - [x] 13A.3 Battle: nút -5..-1, +1..+5 cho điểm Battle vòng này
+  - [x] 13A.4 Hoàn tác 8 giây cho cộng/trừ nhanh ở Solo (khôi phục bản chụp của em đó nếu chưa bị đổi thêm)
+  - [x] 13A.5 Nút "Đúng hết" (Solo và mỗi bên Battle): +1 `ludoBonusRolls`, ghi lịch sử, bấm lại để huỷ
+  - [x] 13A.6 Sửa hàng chờ lượt lắc: chỉ chuyển người khi lắc thường, không chuyển khi lắc bonus (hiện em có bonus mất lượt lắc thường)
+  - [x] 13A.7 Lưu `ludoBonusRolls` vào localStorage (`classivy_ludo_bonus_rolls`)
+  - [x] 13A.8 Test: `src/domain/ludoRolls.ts` (vitest), smoke 4 kịch bản (xem spec mục 3)
+- [x] 13B Boss công bằng theo từng em (không đụng DB; đổi luật game, D54)
+  - [x] 13B.0 Đọc `BossBattlePanel.tsx`, `bossSystem.test.ts`, smoke Boss hiện có
+  - [x] 13B.1 Domain `resolveBossRound` + hằng Combo, thay `resolveBossSuccess/Failure`, cập nhật test
+  - [x] 13B.2 `handleResolveBossRound(results)`: thưởng/phản công theo từng em, Cá Ngựa chỉ cho em đúng
+  - [x] 13B.3 `BossBattlePanel`: chấm từng em, "Cả nhóm đúng", "Chốt vòng", sát thương dự kiến
+  - [x] 13B.4 Test: 5/5, 4/5, 1/5, 0/5, Boss gục giữa vòng, trùng `roundId`; cập nhật smoke Boss
+- [ ] 13C Hạ tầng cài đặt mới (CÓ migration `20261104100000_phase13_classroom_settings.sql`, **chờ Harry duyệt trước khi chạy trên Supabase thật**)
+  - [ ] 13C.1 Migration thêm cột `user_settings.classroom_settings` + hoàn tác + test `npm run test:db` (hai kiểu dự án)
+  - [ ] 13C.2 Kiểu `ClassroomSettings`, mặc định, `normalizeClassroomSettings` + test
+  - [ ] 13C.3 Nối state, localStorage `classivy_classroom_settings`, tải/lưu cloud, sao lưu JSON
+  - [ ] 13C.4 Khi cột chưa có thì không ghi cột đó (không làm hỏng đồng bộ); Cài đặt báo chưa đồng bộ giữa các máy
+- [ ] 13D Ô thử thách trong Cá Ngựa (D51)
+  - [ ] 13D.1 Loại ô `challenge`, `resolveLudoMove`, popup có hai nút, hiển thị bàn cờ
+  - [ ] 13D.2 Danh sách thử thách trong Cài đặt (thêm/sửa/xoá/bật tắt), bộ mặc định ~10 mục, `pickLudoChallenge`
+  - [ ] 13D.3 Nút "Rải ngẫu nhiên N ô thử thách" trong Customize Cá Ngựa
+  - [ ] 13D.4 Test: vitest ô `challenge` + `pickLudoChallenge`; smoke làm được -> +1 lượt bonus
+- [ ] 13E Săn Pokémon hoang dã (D48-D50, D56)
+  - [ ] 13E.0 Đọc `LuckyWheelModal.tsx`, `eggs.ts`, `luckyWheelActions.ts` (phần Pokémon); chốt cách chọn loài theo độ hiếm và tái dùng vòng quay
+  - [ ] 13E.1 Domain `wildHunt.ts` + test
+  - [ ] 13E.2 Rút hàm dùng chung "trao Pokémon cho học sinh" (giữ nguyên hành vi Vòng quay may mắn, test hồi quy)
+  - [ ] 13E.3 Hẹn giờ tự động + thông báo nổi không chặn thao tác ("Săn ngay" / "Để sau")
+  - [ ] 13E.4 Trang `/class/<lớp>/san-pokemon` (gọi học sinh, Đúng/Sai, máu, lần sai, bắt được -> vòng quay -> trao Pokémon + điểm an ủi + nhật ký)
+  - [ ] 13E.5 Mục Cài đặt "Săn Pokémon hoang dã" (hẹn giờ X-Y phút từ lúc mở trang lớp, ở lại, độ hiếm, số câu, số lần sai, điểm an ủi) + nút "Gọi thử", phím tắt, mục trên trang lớp
+  - [ ] 13E.6 Smoke: xuất hiện, bắt được, bỏ chạy, tắt tính năng
+
+**Kết quả 13A + 13B (2026-10-29, chưa commit, chờ Harry xem thử):**
+- Đã kiểm thử tự động: vitest 236/236, typecheck sạch, build đạt, smoke Playwright 41/42 đạt (trình duyệt Chromium trong máy chủ đám mây, Supabase giả lập). Bài còn lại ("các màn hình chính") lệch ảnh chụp 15-profile-pet (Hợp nhất/Kho trứng của Phase 12, có sẵn từ trước, không do 13A/13B); khi cập nhật tạm ảnh đó thì bài đạt và không còn ảnh nào khác lệch. Đã cập nhật hai ảnh chụp thay đổi có chủ đích: 34-random-solo, 37-battle-scored.
+- Chưa kiểm chứng: chạy thật trên máy Harry (kiểm tay trên lớp), Supabase thật/production (13A, 13B không có migration).
+- Giới hạn đã biết: Hoàn tác không trả lại bộ đếm Boss (chỉ khôi phục điểm/lịch sử của em).
+- Lỗi cũ đã sửa trong 13A: em có lượt bonus không còn mất lượt lắc thường.
+
+**Việc Harry cần làm khi tới lượt:** 13A/13B xem thử và cho commit (không chạy gì trên Supabase); 13C duyệt rồi chạy migration trên dev, sau đó production, báo lại để ghi "đã áp dụng"; 13D/13E xem thử và chỉnh số liệu trong Cài đặt. **Đã xác nhận 2026-10-29:** D56, số liệu Boss mặc định, mỗi buổi tối đa 1 con. **Còn mở:** các mặc định còn lại của Săn Pokémon, bộ thử thách Cá Ngựa, lưu lượt bonus localStorage (xem spec mục 8).
 
 ## Đề xuất phát sinh (chờ Harry duyệt)
 

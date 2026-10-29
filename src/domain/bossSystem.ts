@@ -3,6 +3,8 @@ import { BossContribution, BossDefinition, BossEncounterFrequency, BossInstance,
 export const BOSS_MIN_RANDOM_GAP = 6;
 export const BOSS_MAX_RANDOM_GAP = 9;
 export const BOSS_PARTY_SIZE = 5;
+/** Combo (Phase 13B, D54): cả nhóm trả lời đúng hết thì Boss chịu thêm chừng này sát thương. */
+export const BOSS_COMBO_BONUS_DAMAGE = 10;
 
 export const BOSS_ENCOUNTER_FREQUENCY_OPTIONS: Array<{
   id: BossEncounterFrequency;
@@ -34,12 +36,43 @@ export const BOSS_PRESETS: BossDefinition[] = [
   }
 ];
 
+/** Kết quả chấm một em trong nhóm Boss (Phase 13B). */
+export interface BossMemberResult {
+  studentId: string;
+  correct: boolean;
+}
+
 export interface BossRoundResolution {
   state: ClassBossState;
   damageDealt: number;
   bossDefeated: boolean;
   topContributors: BossContribution[];
+  /** Cả nhóm đúng hết nên được cộng sát thương Combo. */
+  comboTriggered: boolean;
 }
+
+export interface BossRoundPreview {
+  correctCount: number;
+  wrongCount: number;
+  damage: number;
+  comboTriggered: boolean;
+}
+
+/** Sát thương dự kiến của một vòng: mỗi em đúng gây sát thương, cả nhóm đúng hết thì thêm Combo. */
+export const previewBossRound = (
+  boss: Pick<BossInstance, 'damagePerSuccessfulStudent'>,
+  results: BossMemberResult[]
+): BossRoundPreview => {
+  const correctCount = results.filter(result => result.correct).length;
+  const wrongCount = results.length - correctCount;
+  const comboTriggered = results.length > 0 && wrongCount === 0;
+  return {
+    correctCount,
+    wrongCount,
+    damage: correctCount * boss.damagePerSuccessfulStudent + (comboTriggered ? BOSS_COMBO_BONUS_DAMAGE : 0),
+    comboTriggered
+  };
+};
 
 const createId = (prefix: string): string => {
   return globalThis.crypto?.randomUUID?.() || `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -253,28 +286,37 @@ export const getBossTopContributors = (state: ClassBossState, limit = 5): BossCo
   return sortedContributions(state).slice(0, limit);
 };
 
-export const resolveBossSuccess = (
+/**
+ * Chốt một vòng Boss theo từng em (Phase 13B, D54).
+ * Em đúng: gây sát thương, tính vào đóng góp. Em sai: chỉ ghi một lần sai cho em đó (Boss phản công em đó, xử lý ở bossActions).
+ * Cả nhóm đúng hết: thêm sát thương Combo cho Boss (không tính vào đóng góp cá nhân).
+ */
+export const resolveBossRound = (
   state: ClassBossState,
-  studentIds: string[],
+  results: BossMemberResult[],
   roundId: string,
   timestamp = Date.now(),
   frequency: BossEncounterFrequency = DEFAULT_BOSS_ENCOUNTER_FREQUENCY
 ): BossRoundResolution => {
   if (state.resolvedRoundIds?.includes(roundId)) {
-    return { state, damageDealt: 0, bossDefeated: !!state.boss.defeatedAt, topContributors: getBossTopContributors(state) };
+    return { state, damageDealt: 0, bossDefeated: !!state.boss.defeatedAt, topContributors: getBossTopContributors(state), comboTriggered: false };
   }
 
   const contributionByStudentId = { ...state.contributionByStudentId };
-  studentIds.forEach(studentId => {
+  results.forEach(({ studentId, correct }) => {
     const contribution = touchContribution(contributionByStudentId, studentId, timestamp);
     contribution.appearances += 1;
-    contribution.successfulRounds += 1;
-    contribution.damageDealt += state.boss.damagePerSuccessfulStudent;
+    if (correct) {
+      contribution.successfulRounds += 1;
+      contribution.damageDealt += state.boss.damagePerSuccessfulStudent;
+    } else {
+      contribution.failedRounds += 1;
+    }
     contribution.lastContributionAt = timestamp;
     contributionByStudentId[studentId] = contribution;
   });
 
-  const damageDealt = studentIds.length * state.boss.damagePerSuccessfulStudent;
+  const { damage: damageDealt, comboTriggered } = previewBossRound(state.boss, results);
   const nextHp = Math.max(0, state.boss.currentHp - damageDealt);
   const defeated = nextHp <= 0;
   const nextState: ClassBossState = resetBossEncounterAfterRound({
@@ -290,7 +332,7 @@ export const resolveBossSuccess = (
         defeatedAt: undefined
       },
     contributionByStudentId: defeated ? {} : contributionByStudentId,
-    previousPartyIds: studentIds,
+    previousPartyIds: results.map(result => result.studentId),
     defeatedBosses: state.defeatedBosses + (defeated ? 1 : 0),
     resolvedRoundIds: [...(state.resolvedRoundIds || []), roundId].slice(-30)
   }, timestamp, frequency);
@@ -299,39 +341,7 @@ export const resolveBossSuccess = (
     state: nextState,
     damageDealt,
     bossDefeated: defeated,
-    topContributors: sortedContributions({ ...state, contributionByStudentId }).slice(0, 5)
-  };
-};
-
-export const resolveBossFailure = (
-  state: ClassBossState,
-  studentIds: string[],
-  roundId: string,
-  timestamp = Date.now(),
-  frequency: BossEncounterFrequency = DEFAULT_BOSS_ENCOUNTER_FREQUENCY
-): BossRoundResolution => {
-  if (state.resolvedRoundIds?.includes(roundId)) {
-    return { state, damageDealt: 0, bossDefeated: false, topContributors: getBossTopContributors(state) };
-  }
-
-  const contributionByStudentId = { ...state.contributionByStudentId };
-  studentIds.forEach(studentId => {
-    const contribution = touchContribution(contributionByStudentId, studentId, timestamp);
-    contribution.appearances += 1;
-    contribution.failedRounds += 1;
-    contribution.lastContributionAt = timestamp;
-    contributionByStudentId[studentId] = contribution;
-  });
-
-  return {
-    state: resetBossEncounterAfterRound({
-      ...state,
-      contributionByStudentId,
-      previousPartyIds: studentIds,
-      resolvedRoundIds: [...(state.resolvedRoundIds || []), roundId].slice(-30)
-    }, timestamp, frequency),
-    damageDealt: 0,
-    bossDefeated: false,
-    topContributors: getBossTopContributors({ ...state, contributionByStudentId })
+    topContributors: sortedContributions({ ...state, contributionByStudentId }).slice(0, 5),
+    comboTriggered
   };
 };

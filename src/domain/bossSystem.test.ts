@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { Gender, Student } from '../types';
 import {
+  BOSS_COMBO_BONUS_DAMAGE,
   BOSS_PARTY_SIZE,
   createClassBossState,
   getBossEncounterFrequencyOption,
@@ -8,9 +9,9 @@ import {
   isBossEncounterFrequency,
   isBossEncounterReady,
   normalizeClassBossState,
+  previewBossRound,
   recalibrateBossEncounterFrequency,
-  resolveBossFailure,
-  resolveBossSuccess,
+  resolveBossRound,
   rollNextBossEncounterGap,
   selectBossParty
 } from './bossSystem';
@@ -26,6 +27,10 @@ const makeStudent = (id: string, overrides: Partial<Student> = {}): Student => (
   pet: createPokemonPetFromDexId(25, undefined, { isShiny: false }),
   ...overrides
 });
+
+const PARTY = ['s1', 's2', 's3', 's4', 's5'];
+const allCorrect = () => PARTY.map(studentId => ({ studentId, correct: true }));
+const allWrong = () => PARTY.map(studentId => ({ studentId, correct: false }));
 
 describe('boss system', () => {
   it('rolls default encounter gaps from 6 to 9', () => {
@@ -104,10 +109,10 @@ describe('boss system', () => {
         currentHp: 20
       }
     };
-    const partyIds = ['s1', 's2', 's3', 's4', 's5'];
-    const result = resolveBossSuccess(state, partyIds, 'round-1', 1);
+    const result = resolveBossRound(state, allCorrect(), 'round-1', 1);
 
-    expect(result.damageDealt).toBe(25);
+    expect(result.damageDealt).toBe(25 + BOSS_COMBO_BONUS_DAMAGE);
+    expect(result.comboTriggered).toBe(true);
     expect(result.bossDefeated).toBe(true);
     expect(result.topContributors).toHaveLength(5);
     expect(result.topContributors[0].damageDealt).toBe(5);
@@ -115,15 +120,84 @@ describe('boss system', () => {
     expect(result.state.randomsSinceLastEncounter).toBe(0);
   });
 
-  it('failure adds appearances/failed rounds without damaging the boss', () => {
+  it('all correct: 5 x 5 damage plus the combo bonus, no failed rounds', () => {
+    const state = createClassBossState('Class A');
+    const result = resolveBossRound(state, allCorrect(), 'round-1', 1);
+
+    expect(result.damageDealt).toBe(35);
+    expect(result.comboTriggered).toBe(true);
+    expect(result.state.boss.currentHp).toBe(state.boss.maxHp - 35);
+    expect(result.state.contributionByStudentId.s1.successfulRounds).toBe(1);
+    expect(result.state.contributionByStudentId.s1.failedRounds).toBe(0);
+    // Combo là sát thương chung, không cộng vào đóng góp cá nhân.
+    expect(result.state.contributionByStudentId.s1.damageDealt).toBe(5);
+  });
+
+  it('4 of 5 correct: only the four deal damage, no combo, the wrong student alone takes a failed round', () => {
+    const state = createClassBossState('Class A');
+    const results = [
+      { studentId: 's1', correct: true }, { studentId: 's2', correct: true }, { studentId: 's3', correct: false },
+      { studentId: 's4', correct: true }, { studentId: 's5', correct: true }
+    ];
+    const result = resolveBossRound(state, results, 'round-1', 1);
+
+    expect(result.damageDealt).toBe(20);
+    expect(result.comboTriggered).toBe(false);
+    expect(result.state.boss.currentHp).toBe(state.boss.maxHp - 20);
+    expect(result.state.contributionByStudentId.s1.damageDealt).toBe(5);
+    expect(result.state.contributionByStudentId.s3.damageDealt).toBe(0);
+    expect(result.state.contributionByStudentId.s3.failedRounds).toBe(1);
+    expect(result.state.contributionByStudentId.s3.successfulRounds).toBe(0);
+    expect(result.state.contributionByStudentId.s3.appearances).toBe(1);
+    expect(result.state.previousPartyIds).toEqual(['s1', 's2', 's3', 's4', 's5']);
+  });
+
+  it('1 of 5 correct: 5 damage and four failed rounds', () => {
+    const state = createClassBossState('Class A');
+    const results = ['s1', 's2', 's3', 's4', 's5'].map((studentId, index) => ({ studentId, correct: index === 0 }));
+    const result = resolveBossRound(state, results, 'round-1', 1);
+
+    expect(result.damageDealt).toBe(5);
+    expect(result.comboTriggered).toBe(false);
+    expect(Object.values(result.state.contributionByStudentId).filter(item => item.failedRounds === 1)).toHaveLength(4);
+  });
+
+  it('0 of 5 correct: no damage to the boss, everyone has a failed round (old failure behaviour)', () => {
     const state = createClassBossState('Class A');
     const startingHp = state.boss.currentHp;
-    const result = resolveBossFailure(state, ['s1', 's2', 's3', 's4', 's5'], 'round-1', 1);
+    const result = resolveBossRound(state, allWrong(), 'round-1', 1);
 
     expect(result.damageDealt).toBe(0);
+    expect(result.comboTriggered).toBe(false);
+    expect(result.bossDefeated).toBe(false);
     expect(result.state.boss.currentHp).toBe(startingHp);
     expect(result.state.contributionByStudentId.s1.failedRounds).toBe(1);
     expect(result.state.contributionByStudentId.s1.damageDealt).toBe(0);
+    expect(result.state.randomsSinceLastEncounter).toBe(0);
+  });
+
+  it('a partial round can still defeat the boss and resets contributions', () => {
+    const base = createClassBossState('Class A');
+    const state = { ...base, boss: { ...base.boss, currentHp: 15 } };
+    const results = [
+      { studentId: 's1', correct: true }, { studentId: 's2', correct: true }, { studentId: 's3', correct: true },
+      { studentId: 's4', correct: false }, { studentId: 's5', correct: false }
+    ];
+    const result = resolveBossRound(state, results, 'round-1', 1);
+
+    expect(result.damageDealt).toBe(15);
+    expect(result.bossDefeated).toBe(true);
+    expect(result.topContributors.map(item => item.studentId)).toContain('s4');
+    expect(result.state.contributionByStudentId).toEqual({});
+    expect(result.state.boss.currentHp).toBe(result.state.boss.maxHp);
+    expect(result.state.defeatedBosses).toBe(1);
+  });
+
+  it('previewBossRound matches what the round deals', () => {
+    const boss = createClassBossState('Class A').boss;
+    expect(previewBossRound(boss, allCorrect())).toEqual({ correctCount: 5, wrongCount: 0, damage: 35, comboTriggered: true });
+    expect(previewBossRound(boss, allWrong())).toEqual({ correctCount: 0, wrongCount: 5, damage: 0, comboTriggered: false });
+    expect(previewBossRound(boss, [])).toEqual({ correctCount: 0, wrongCount: 0, damage: 0, comboTriggered: false });
   });
 
   it('sorts top contributors deterministically', () => {
@@ -135,15 +209,15 @@ describe('boss system', () => {
         c: { studentId: 'c', damageDealt: 15, successfulRounds: 3, appearances: 4, failedRounds: 1, firstContributionAt: 4 }
       }
     };
-    const result = resolveBossSuccess(state, ['a', 'b', 'c', 'd', 'e'], 'round-2', 5);
+    const result = resolveBossRound(state, ['a', 'b', 'c', 'd', 'e'].map(studentId => ({ studentId, correct: true })), 'round-2', 5);
 
     expect(result.topContributors.map(contribution => contribution.studentId).slice(0, 3)).toEqual(['c', 'b', 'a']);
   });
 
   it('does not apply the same round twice', () => {
     const state = createClassBossState('Class A');
-    const first = resolveBossSuccess(state, ['s1', 's2', 's3', 's4', 's5'], 'same-round', 1);
-    const second = resolveBossSuccess(first.state, ['s1', 's2', 's3', 's4', 's5'], 'same-round', 2);
+    const first = resolveBossRound(state, allCorrect(), 'same-round', 1);
+    const second = resolveBossRound(first.state, allCorrect(), 'same-round', 2);
 
     expect(second.damageDealt).toBe(0);
     expect(second.state.boss.currentHp).toBe(first.state.boss.currentHp);

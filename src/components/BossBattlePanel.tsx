@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BossContribution, BossInstance, Student } from '../types';
+import { BOSS_COMBO_BONUS_DAMAGE, BossMemberResult, previewBossRound } from '../domain/bossSystem';
 import { getPokemonDisplayName } from '../domain/pokemonProgression';
 import { BossHpBar } from './BossHpBar';
 import { PokemonMiniStatus } from './PokemonMiniStatus';
@@ -17,10 +18,10 @@ interface BossBattlePanelProps {
   randomsSinceLastEncounter: number;
   nextEncounterAt?: number;
   frequencyLabel?: string;
-  onSuccess: () => void;
-  onFailure: () => void;
+  /** Chốt vòng với kết quả từng em (Phase 13B). Component tự giữ phần chấm; đổi `key` khi sang vòng mới. */
+  onResolve: (results: BossMemberResult[]) => void;
   resolving?: boolean;
-  visualResult?: 'success' | 'failure' | null;
+  visualResult?: 'success' | 'mixed' | 'failure' | null;
 }
 
 export const BossBattlePanel: React.FC<BossBattlePanelProps> = ({
@@ -30,28 +31,34 @@ export const BossBattlePanel: React.FC<BossBattlePanelProps> = ({
   randomsSinceLastEncounter,
   nextEncounterAt,
   frequencyLabel,
-  onSuccess,
-  onFailure,
+  onResolve,
   resolving = false,
   visualResult = null
 }) => {
-  const successDamage = party.length * boss.damagePerSuccessfulStudent;
+  const [marks, setMarks] = useState<Record<string, boolean>>({});
+  const markedCount = party.filter(student => marks[student.id] !== undefined).length;
+  const allMarked = party.length > 0 && markedCount === party.length;
+  const preview = previewBossRound(
+    boss,
+    party.filter(student => marks[student.id] !== undefined).map(student => ({ studentId: student.id, correct: marks[student.id] }))
+  );
+  const setMark = (studentId: string, correct: boolean) => setMarks(prev => ({ ...prev, [studentId]: correct }));
 
   return (
-    <div className={`space-y-5 text-left transition-all duration-300 ${visualResult === 'success' ? 'scale-[1.01] drop-shadow-[0_0_24px_rgba(16,185,129,0.45)]' : visualResult === 'failure' ? 'animate-pulse drop-shadow-[0_0_24px_rgba(220,38,38,0.55)]':''}`}>
+    <div className={`space-y-5 text-left transition-all duration-300 ${visualResult === 'success' ? 'scale-[1.01] drop-shadow-[0_0_24px_rgba(16,185,129,0.45)]' : visualResult === 'failure' ? 'animate-pulse drop-shadow-[0_0_24px_rgba(220,38,38,0.55)]' : visualResult === 'mixed' ? 'drop-shadow-[0_0_24px_rgba(245,158,11,0.45)]' : ''}`}>
       <BossHpBar boss={boss} />
       {visualResult && (
-        <div className={`rounded-3xl border p-3 text-center text-xs font-black ${visualResult === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-800'}`}>
-          {visualResult === 'success' ? `Perfect Team Attack! Boss -${successDamage} HP` : `Boss phản công! Pokémon -${boss.failDamage} HP`}
+        <div className={`rounded-3xl border p-3 text-center text-xs font-black ${visualResult === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : visualResult === 'mixed' ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-red-200 bg-red-50 text-red-800'}`}>
+          {visualResult === 'success' ? 'Combo hoàn hảo! Cả nhóm cùng đánh trúng Boss' : visualResult === 'mixed' ? 'Boss bị đánh trúng, em trả lời sai bị phản công' : `Boss phản công! Pokémon -${boss.failDamage} HP`}
         </div>
       )}
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          ['Team Attack', `-${successDamage} HP`],
-          ['Reward', '+5 Aura'],
-          ['Counter', `-${boss.failDamage} HP`],
-          ['Frequency', frequencyLabel || 'Boss']
+          ['Mỗi em đúng', `-${boss.damagePerSuccessfulStudent} HP Boss`],
+          ['Combo (cả nhóm đúng)', `+${BOSS_COMBO_BONUS_DAMAGE} sát thương`],
+          ['Thưởng em đúng', '+5 Hào Quang'],
+          ['Em sai', `Pokémon -${boss.failDamage} HP`]
         ].map(([label, value]) => (
           <div key={label} className="rounded-3xl border border-amber-200 bg-gradient-to-br from-white to-amber-50 p-4 text-center shadow-sm">
             <p className="text-xs font-black text-amber-600">{label}</p>
@@ -61,18 +68,20 @@ export const BossBattlePanel: React.FC<BossBattlePanelProps> = ({
       </div>
 
       <div className="rounded-[28px] border border-red-100 bg-gradient-to-r from-red-50 via-white to-amber-50 p-4 text-center shadow-sm">
-        <p className="text-xs font-black text-red-900">Cả 5 trainer phải trả lời đúng</p>
+        <p className="text-xs font-black text-red-900">Chấm từng em: đúng hay sai</p>
         <p className="mt-1 text-xs font-bold leading-relaxed text-red-800">
-          Thắng: Boss -{successDamage} HP, mỗi trainer +5 Hào Quang. Sai một bạn: toàn đội bị Boss phản công -{boss.failDamage} HP Pokémon.
+          Em đúng đánh trúng Boss và nhận thưởng. Em sai chỉ Pokémon của em đó bị phản công, các bạn còn lại không bị ảnh hưởng. Cả nhóm đúng hết thì có thêm Combo.
         </p>
         <p className="mt-3 inline-flex rounded-full bg-white px-4 py-2 text-xs font-black text-red-700 shadow-sm">
-          Normal Random: {randomsSinceLastEncounter}{nextEncounterAt ? `/${nextEncounterAt}` : ''}
+          Lượt Random thường: {randomsSinceLastEncounter}{nextEncounterAt ? `/${nextEncounterAt}` : ''}
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
-        {party.map((student, index) => (
-          <div key={student.id} className={`relative overflow-hidden rounded-[26px] border-2 border-amber-200 bg-white p-3 text-center shadow-sm transition-all duration-300 ${visualResult === 'failure' ? 'border-red-300 bg-red-50' : visualResult === 'success' ? 'border-emerald-300 bg-emerald-50' : ''}`}>
+        {party.map((student, index) => {
+          const mark = marks[student.id];
+          return (
+          <div key={student.id} data-testid={`boss-member-${student.id}`} className={`relative overflow-hidden rounded-[26px] border-2 bg-white p-3 text-center shadow-sm transition-all duration-300 ${mark === true ? 'border-emerald-400 bg-emerald-50' : mark === false ? 'border-red-300 bg-red-50' : 'border-amber-200'}`}>
             <div className="absolute left-2 top-2 rounded-full bg-stone-950 px-2 py-1 text-xs font-black text-white">#{index + 1}</div>
             <StudentAvatar student={student} className="mx-auto h-16 w-16 rounded-[22px] border-2 border-amber-400 object-cover shadow-md" />
             <p className="mt-2 truncate text-xs font-black text-stone-900">{student.name}</p>
@@ -89,8 +98,31 @@ export const BossBattlePanel: React.FC<BossBattlePanelProps> = ({
                 {getPokemonDisplayName(student.pet)}
               </p>
             )}
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                disabled={resolving}
+                aria-pressed={mark === true}
+                aria-label={`${student.name} trả lời đúng`}
+                onClick={() => setMark(student.id, true)}
+                className={`min-h-[44px] rounded-2xl border-2 text-sm font-black transition-colors disabled:opacity-50 ${mark === true ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-emerald-300 bg-white text-emerald-700 hover:bg-emerald-50'}`}
+              >
+                ✅ Đúng
+              </button>
+              <button
+                type="button"
+                disabled={resolving}
+                aria-pressed={mark === false}
+                aria-label={`${student.name} trả lời sai`}
+                onClick={() => setMark(student.id, false)}
+                className={`min-h-[44px] rounded-2xl border-2 text-sm font-black transition-colors disabled:opacity-50 ${mark === false ? 'border-red-600 bg-red-600 text-white' : 'border-red-300 bg-white text-red-700 hover:bg-red-50'}`}
+              >
+                ❌ Sai
+              </button>
+            </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {topContributors.length > 0 && (
@@ -111,20 +143,31 @@ export const BossBattlePanel: React.FC<BossBattlePanelProps> = ({
         </div>
       )}
 
+      <div className="rounded-[26px] border border-amber-200 bg-white p-4 text-center shadow-sm" aria-live="polite">
+        <p className="text-xs font-black text-stone-500">Đã chấm {markedCount}/{party.length} em</p>
+        <p className="mt-1 text-sm font-black text-red-950" data-testid="boss-preview">
+          {markedCount === 0
+            ? 'Chấm từng em để xem sát thương dự kiến'
+            : `Dự kiến: Boss -${preview.damage} HP${preview.comboTriggered ? ' (có Combo)' : ''}${preview.wrongCount > 0 ? `, ${preview.wrongCount} Pokémon bị phản công -${boss.failDamage} HP` : ''}`}
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <button
+          type="button"
           disabled={resolving}
-          onClick={onSuccess}
-          className="rounded-[26px] bg-gradient-to-r from-emerald-600 to-teal-600 py-4 text-sm font-black text-white shadow-lg shadow-emerald-900/20 transition-all hover:scale-[1.01] hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50"
+          onClick={() => setMarks(Object.fromEntries(party.map(student => [student.id, true])))}
+          className="min-h-[52px] rounded-[26px] border-2 border-emerald-500 bg-white py-4 text-sm font-black text-emerald-700 shadow-sm transition-all hover:bg-emerald-50 disabled:opacity-50"
         >
-          ✅ Cả 5 đều đúng
+          ✅ Cả nhóm đúng
         </button>
         <button
-          disabled={resolving}
-          onClick={onFailure}
-          className="rounded-[26px] bg-gradient-to-r from-red-800 to-stone-900 py-4 text-sm font-black text-white shadow-lg shadow-red-950/25 transition-all hover:scale-[1.01] hover:from-red-900 hover:to-stone-950 disabled:opacity-50"
+          type="button"
+          disabled={resolving || !allMarked}
+          onClick={() => onResolve(party.map(student => ({ studentId: student.id, correct: marks[student.id] === true })))}
+          className="min-h-[52px] rounded-[26px] bg-gradient-to-r from-red-800 to-stone-900 py-4 text-sm font-black text-white shadow-lg shadow-red-950/25 transition-all hover:scale-[1.01] hover:from-red-900 hover:to-stone-950 disabled:opacity-50"
         >
-          ❌ Có ít nhất 1 bạn sai
+          ⚔️ Chốt vòng
         </button>
       </div>
     </div>
