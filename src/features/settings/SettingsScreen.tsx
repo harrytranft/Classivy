@@ -7,6 +7,8 @@ import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS } from '../../data/pokemonData';
 import { createEgg } from '../../domain/eggs';
 import { useApp } from '../../app/AppContext';
 import { ShortcutsSettings } from './ShortcutsSettings';
+import { LudoChallengesSettings } from './LudoChallengesSettings';
+import { WildHuntSettingsSection } from './WildHuntSettingsSection';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -186,14 +188,15 @@ export const SettingsScreen: React.FC = () => {
             <input type="text" placeholder="🚀" value={tileFormIcon} onChange={e => setTileFormIcon(e.target.value)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <select value={tileFormType} onChange={e => setTileFormType(e.target.value as any)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50">
+            <select value={tileFormType} onChange={e => { const type = e.target.value as typeof tileFormType; setTileFormType(type); if (type === 'challenge') setTileFormValue(1); }} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50">
               <option value="portal">🌀 Dịch Chuyển Tiến Bước</option>
               <option value="curse">📜 Bùa Chú Đẩy Lùi</option>
               <option value="monster">👹 Quái Vật Chặn Đường</option>
               <option value="treasure">💎 Rương Báu Cộng Điểm</option>
               <option value="restart">🌀 Lùi Về Xuất Phát</option>
+              <option value="challenge">🎯 Ô Thử Thách (làm được = thêm lượt lắc)</option>
             </select>
-            <input type="number" value={tileFormValue} onChange={e => setTileFormValue(parseInt(e.target.value) || 0)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" />
+            <input type="number" value={tileFormValue} min={tileFormType === 'challenge' ? 1 : undefined} max={tileFormType === 'challenge' ? 5 : undefined} title={tileFormType === 'challenge' ? 'Số lượt lắc thưởng khi làm được thử thách (1-5)' : undefined} aria-label={tileFormType === 'challenge' ? 'Số lượt lắc thưởng (1-5)' : 'Giá trị ô'} onChange={e => setTileFormValue(parseInt(e.target.value) || 0)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" />
           </div>
           <input type="text" placeholder="Mô tả khi dẫm vào ô..." value={tileFormDesc} onChange={e => setTileFormDesc(e.target.value)} className="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" />
           <div className="flex gap-2">
@@ -219,6 +222,10 @@ export const SettingsScreen: React.FC = () => {
           ))}
         </div>
       </SettingsSection>
+
+      <LudoChallengesSettings />
+
+      <WildHuntSettingsSection />
 
       <SettingsSection id="luckyWheel" icon="🎡" title="Customize Vòng Quay May Mắn" subtitle="Tùy chỉnh phần thưởng, hình phạt, HP, Pokémon skill và lượt lắc Cá Ngựa." className="bg-fuchsia-50 p-6 sm:p-10 rounded-[40px] border-4 border-fuchsia-200 text-left space-y-6 my-8" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="flex flex-wrap justify-end gap-3">

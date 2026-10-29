@@ -32,7 +32,8 @@ export const CLASS_SUB_PAGES = {
   wheel: 'vong-quay',
   gift: 'tang-pokemon',
   accounts: 'tai-khoan',
-  social: 'ban-be'
+  social: 'ban-be',
+  hunt: 'san-pokemon'
 } as const;
 
 export type ClassSubPage = typeof CLASS_SUB_PAGES[keyof typeof CLASS_SUB_PAGES];

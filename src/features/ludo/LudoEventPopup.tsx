@@ -5,7 +5,7 @@ import { useApp } from '../../app/AppContext';
 
 export const LudoEventPopup: React.FC = () => {
   const {
-    ludoEventPopup, ludoPositions, setLudoEventPopup
+    ludoEventPopup, ludoPositions, setLudoEventPopup, resolveLudoChallenge
   } = useApp();
   return (
     <>
@@ -55,12 +55,31 @@ export const LudoEventPopup: React.FC = () => {
               </div>
             )}
 
-            <button
-              onClick={() => setLudoEventPopup(null)}
-              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-3.5 rounded-2xl text-sm shadow-lg transition-all border-2 border-amber-400"
-            >
-              Đã Hiểu & Tiếp Tục 🎲
-            </button>
+            {ludoEventPopup.type === 'challenge' && ludoEventPopup.challenge ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" data-testid="ludo-challenge-actions">
+                <button
+                  onClick={() => resolveLudoChallenge(true)}
+                  data-testid="ludo-challenge-done"
+                  className="min-h-[52px] bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-2xl text-sm shadow-lg transition-all border-2 border-emerald-400"
+                >
+                  ✅ Làm được (+{ludoEventPopup.challenge.bonusRolls} lượt lắc)
+                </button>
+                <button
+                  onClick={() => resolveLudoChallenge(false)}
+                  data-testid="ludo-challenge-skip"
+                  className="min-h-[52px] bg-stone-200 hover:bg-stone-300 text-stone-800 font-black py-3.5 rounded-2xl text-sm shadow transition-all border-2 border-stone-300"
+                >
+                  Chưa làm được
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setLudoEventPopup(null)}
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-black py-3.5 rounded-2xl text-sm shadow-lg transition-all border-2 border-amber-400"
+              >
+                Đã Hiểu & Tiếp Tục 🎲
+              </button>
+            )}
           </div>
         </div>
       )}

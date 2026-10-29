@@ -95,6 +95,7 @@ export interface AdventureJournalEntry {
     | 'bond-max'
     | 'mastery'
     | 'shiny-acquired'
+    | 'wild-catch'
     | 'boss-win'
     | 'boss-top5'
     | 'trainer-level'
@@ -191,8 +192,8 @@ export interface LudoTileSpec {
   title: string;
   desc: string;
   icon: string;
-  type: 'portal' | 'curse' | 'treasure' | 'monster' | 'restart';
-  value?: number; // e.g. +3 steps, -5 steps, +5 pts, restart
+  type: 'portal' | 'curse' | 'treasure' | 'monster' | 'restart' | 'challenge';
+  value?: number; // e.g. +3 steps, -5 steps, +5 pts, restart; ô 'challenge': số lượt lắc thưởng (1-5)
 }
 
 export type LuckyWheelRewardType = 'points' | 'pokemon' | 'skill' | 'hp' | 'ludo_rolls';

@@ -23,6 +23,7 @@ import { DataUpgradeModal } from '../features/dataUpgrade/DataUpgradeModal';
 import { SyncConflictBanner } from './SyncConflictBanner';
 import { useApp } from './AppContext';
 import { useGlobalShortcuts } from './useGlobalShortcuts';
+import { WildEncounterToast } from '../features/hunt/WildEncounterToast';
 import { ShortcutHelpModal } from '../features/settings/ShortcutHelpModal';
 
 export const AppLayout: React.FC = () => {
@@ -74,6 +75,9 @@ export const AppLayout: React.FC = () => {
 
       {/* MODAL: TIMER */}
       <TimerModal />
+
+      {/* Pokémon hoang dã xuất hiện (thông báo nổi, không chặn thao tác) */}
+      <WildEncounterToast />
 
       {/* MODAL: LUDO EVENT ACTION POPUP */}
       <LudoEventPopup />

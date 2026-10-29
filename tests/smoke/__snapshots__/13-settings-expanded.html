@@ -151,6 +151,14 @@
 </span>
 </li>
 <li class="flex items-center justify-between gap-3 rounded-brand-md border border-[#e6e2d4] bg-white px-4 py-3">
+<span class="min-w-0 text-[15px] font-bold text-brand-ink">Săn Pokémon hoang dã<span class="ml-2 text-xs font-semibold text-brand-ink/50">trong lớp</span>
+</span>
+<span class="flex shrink-0 items-center gap-2">
+<kbd class="inline-grid h-9 min-w-9 place-items-center rounded-brand-sm border border-[#d9d6ca] bg-white px-2 text-[15px] font-extrabold text-brand-forest-deep shadow-[0_2px_0_#d9d6ca]">O</kbd>
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-9 px-3 text-[13px] gap-1.5">Đổi</button>
+</span>
+</li>
+<li class="flex items-center justify-between gap-3 rounded-brand-md border border-[#e6e2d4] bg-white px-4 py-3">
 <span class="min-w-0 text-[15px] font-bold text-brand-ink">Chia nhóm<span class="ml-2 text-xs font-semibold text-brand-ink/50">trong lớp</span>
 </span>
 <span class="flex shrink-0 items-center gap-2">
@@ -805,8 +813,9 @@
 <option value="monster">👹 Quái Vật Chặn Đường</option>
 <option value="treasure">💎 Rương Báu Cộng Điểm</option>
 <option value="restart">🌀 Lùi Về Xuất Phát</option>
+<option value="challenge">🎯 Ô Thử Thách (làm được = thêm lượt lắc)</option>
 </select>
-<input class="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" type="number" value="3">
+<input aria-label="Giá trị ô" class="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" type="number" value="3">
 </div>
 <input placeholder="Mô tả khi dẫm vào ô..." class="w-full border-2 border-amber-200 p-2.5 rounded-xl font-bold text-xs bg-amber-50/50" type="text" value="">
 <div class="flex gap-2">
@@ -814,6 +823,187 @@
 </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+</div>
+</section>
+<section class="bg-emerald-50 p-6 sm:p-10 rounded-[40px] border-4 border-emerald-300 text-left space-y-6 my-8">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
+<div class="flex items-center gap-3 min-w-0">
+<span class="text-3xl shrink-0">🎯</span>
+<div class="min-w-0">
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Thử thách Cá Ngựa</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Học sinh dừng ở ô thử thách sẽ bốc một thử thách; làm được thì nhận thêm lượt lắc.</p>
+</div>
+</div>
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Thử thách Cá Ngựa" title="Ẩn Thử thách Cá Ngựa">
+<span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
+</span>
+</button>
+</div>
+<p class="rounded-2xl border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900" data-testid="classroom-not-synced">Cài đặt này hiện chỉ lưu trên máy này. Chưa đồng bộ giữa các máy cho tới khi chạy migration Phase 13C trên Supabase.</p>
+<div class="bg-white p-5 rounded-3xl border-2 border-emerald-200 space-y-3">
+<h4 class="font-black text-emerald-950 text-sm">Rải ô thử thách lên bàn cờ</h4>
+<p class="text-xs text-emerald-900/80">Rải ngẫu nhiên vào các ô còn trống (không đè ô đặc biệt đang có). Bấm lại sẽ gỡ các ô thử thách cũ và xáo vị trí mới. Đang có 0 ô thử thách. Muốn đặt đúng một ô cụ thể, dùng mục"Customize Cá Ngựa" phía trên và chọn loại"Ô Thử Thách".</p>
+<div class="flex flex-wrap items-center gap-3">
+<label class="text-xs font-bold text-emerald-950" for="scatter-count">Số ô:</label>
+<input id="scatter-count" min="0" max="20" class="w-24 border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="5">
+<button data-testid="scatter-challenge-tiles" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-5 py-2.5 rounded-xl text-xs shadow">🎲 Rải ngẫu nhiên 5 ô thử thách</button>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<h4 class="font-black text-emerald-950 text-sm">Danh sách thử thách (10/10 đang bật)</h4>
+<button class="bg-emerald-200 hover:bg-emerald-300 text-emerald-950 px-4 py-2 rounded-xl text-xs font-bold transition-all">Khôi phục bộ mặc định 🔄</button>
+</div>
+<div class="space-y-2 max-h-96 overflow-y-auto pr-1 custom-scrollbar">
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Nói 3 từ tiếng Anh về chủ đề bài hôm nay" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="💬">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Nói 3 từ tiếng Anh về chủ đề bài hôm nay">
+<button aria-label="Xoá thử thách Nói 3 từ tiếng Anh về chủ đề bài hôm nay" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Đặt một câu với từ vừa học" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="✍️">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Đặt một câu với từ vừa học">
+<button aria-label="Xoá thử thách Đặt một câu với từ vừa học" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Đọc to một câu mẫu trong bài" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="📣">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Đọc to một câu mẫu trong bài">
+<button aria-label="Xoá thử thách Đọc to một câu mẫu trong bài" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Nói từ trái nghĩa của một từ cô đưa ra" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="🔁">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Nói từ trái nghĩa của một từ cô đưa ra">
+<button aria-label="Xoá thử thách Nói từ trái nghĩa của một từ cô đưa ra" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Giới thiệu bản thân bằng 2 câu tiếng Anh" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="🙋">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Giới thiệu bản thân bằng 2 câu tiếng Anh">
+<button aria-label="Xoá thử thách Giới thiệu bản thân bằng 2 câu tiếng Anh" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Đánh vần một từ cô đưa ra" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="🔤">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Đánh vần một từ cô đưa ra">
+<button aria-label="Xoá thử thách Đánh vần một từ cô đưa ra" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Mô tả một đồ vật trong lớp bằng 2 câu" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="🪑">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Mô tả một đồ vật trong lớp bằng 2 câu">
+<button aria-label="Xoá thử thách Mô tả một đồ vật trong lớp bằng 2 câu" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Hỏi một bạn một câu hỏi bằng tiếng Anh" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="❓">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Hỏi một bạn một câu hỏi bằng tiếng Anh">
+<button aria-label="Xoá thử thách Hỏi một bạn một câu hỏi bằng tiếng Anh" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Kể tên 4 con vật hoặc 4 màu sắc bằng tiếng Anh" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="🐾">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Kể tên 4 con vật hoặc 4 màu sắc bằng tiếng Anh">
+<button aria-label="Xoá thử thách Kể tên 4 con vật hoặc 4 màu sắc bằng tiếng Anh" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+<div class="bg-white p-3 rounded-2xl border border-emerald-200 flex items-center gap-2" data-testid="challenge-row">
+<input aria-label="Bật thử thách Diễn tả một từ bằng hành động cho cả lớp đoán" class="h-5 w-5 shrink-0 accent-emerald-600" type="checkbox" checked="">
+<input maxlength="8" aria-label="Biểu tượng" class="w-14 shrink-0 border-2 border-emerald-200 p-2 rounded-xl text-center text-base bg-white" type="text" value="🎭">
+<input maxlength="200" aria-label="Nội dung thử thách" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white" type="text" value="Diễn tả một từ bằng hành động cho cả lớp đoán">
+<button aria-label="Xoá thử thách Diễn tả một từ bằng hành động cho cả lớp đoán" class="text-red-600 hover:bg-red-100 p-2 rounded font-bold text-xs shrink-0">🗑️</button>
+</div>
+</div>
+<div class="bg-white p-4 rounded-3xl border-2 border-emerald-200 flex flex-wrap items-center gap-2">
+<input maxlength="8" aria-label="Biểu tượng thử thách mới" class="w-14 border-2 border-emerald-200 p-2.5 rounded-xl text-center text-base bg-white" type="text" value="🎯">
+<input maxlength="200" placeholder="Nội dung thử thách mới, ví dụ: Nói 3 từ về màu sắc" class="w-full border-2 border-emerald-200 p-2.5 rounded-xl font-bold text-xs bg-white flex-1 min-w-[12rem]" type="text" value="">
+<button disabled="" class="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white font-black px-5 py-2.5 rounded-xl text-xs shadow">+ Thêm thử thách</button>
+</div>
+</div>
+</section>
+<section class="bg-lime-50 p-6 sm:p-10 rounded-[40px] border-4 border-lime-300 text-left space-y-6 my-8">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
+<div class="flex items-center gap-3 min-w-0">
+<span class="text-3xl shrink-0">🌿</span>
+<div class="min-w-0">
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Săn Pokémon hoang dã</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Mỗi buổi học có thể có một Pokémon hoang dã tự xuất hiện; cả lớp trả lời đúng để bắt.</p>
+</div>
+</div>
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Săn Pokémon hoang dã" title="Ẩn Săn Pokémon hoang dã">
+<span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
+</span>
+</button>
+</div>
+<p class="rounded-2xl border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900" data-testid="wild-not-synced">Cài đặt này hiện chỉ lưu trên máy này. Chưa đồng bộ giữa các máy cho tới khi chạy migration Phase 13C trên Supabase.</p>
+<div class="space-y-2">
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-lime-200 bg-white p-3 text-xs font-bold text-lime-950">
+<span class="min-w-[14rem] flex-1">Bật Săn Pokémon hoang dã<span class="block font-medium text-lime-900/70">Tắt thì Pokémon không tự xuất hiện nữa (nút Gọi thử vẫn dùng được).</span>
+</span>
+<input data-testid="wild-enabled" class="h-5 w-5 accent-lime-600" type="checkbox" checked="">
+</label>
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-lime-200 bg-white p-3 text-xs font-bold text-lime-950">
+<span class="min-w-[14rem] flex-1">Xuất hiện sau (phút)<span class="block font-medium text-lime-900/70">Tính từ lúc mở trang của lớp. Mỗi buổi bốc ngẫu nhiên trong khoảng này; để hai số bằng nhau là cố định.</span>
+</span>
+<span class="flex items-center gap-2">
+<input min="1" max="240" aria-label="Xuất hiện sau tối thiểu (phút)" data-testid="wild-delay-min" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="40">
+<span>đến</span>
+<input min="1" max="240" aria-label="Xuất hiện sau tối đa (phút)" data-testid="wild-delay-max" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="40">
+</span>
+</label>
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-lime-200 bg-white p-3 text-xs font-bold text-lime-950">
+<span class="min-w-[14rem] flex-1">Ở lại tối đa (phút)<span class="block font-medium text-lime-900/70">Nếu chưa ai bấm Săn ngay, Pokémon tự bỏ đi sau từng này phút.</span>
+</span>
+<input min="1" max="60" aria-label="Ở lại tối đa (phút)" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="5">
+</label>
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-lime-200 bg-white p-3 text-xs font-bold text-lime-950">
+<span class="min-w-[14rem] flex-1">Số em có mặt tối thiểu<span class="block font-medium text-lime-900/70">Lớp có ít em hơn số này thì Pokémon không xuất hiện.</span>
+</span>
+<input min="1" max="60" aria-label="Số em có mặt tối thiểu" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="4">
+</label>
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-lime-200 bg-white p-3 text-xs font-bold text-lime-950">
+<span class="min-w-[14rem] flex-1">Số lần sai tối đa<span class="block font-medium text-lime-900/70">Sai nhiều hơn số này thì Pokémon bỏ chạy.</span>
+</span>
+<input min="1" max="10" aria-label="Số lần sai tối đa" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="3">
+</label>
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-lime-200 bg-white p-3 text-xs font-bold text-lime-950">
+<span class="min-w-[14rem] flex-1">Điểm an ủi<span class="block font-medium text-lime-900/70">Cộng cho các em trả lời đúng nhưng không trúng Pokémon (0 = không cộng).</span>
+</span>
+<input min="0" max="10" aria-label="Điểm an ủi" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="2">
+</label>
+</div>
+<div class="bg-white p-4 rounded-3xl border-2 border-lime-200 space-y-3">
+<h4 class="font-black text-lime-950 text-sm">Theo độ hiếm</h4>
+<div class="grid gap-2 sm:grid-cols-3">
+<div class="rounded-2xl border border-lime-200 p-3 space-y-2" data-testid="wild-rarity-common">
+<p class="text-sm font-black text-lime-950">Thường</p>
+<label class="flex items-center justify-between gap-2 text-xs font-bold text-lime-950">Tỉ lệ xuất hiện<input min="0" max="100" aria-label="Tỉ lệ Thường" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="70">
+</label>
+<label class="flex items-center justify-between gap-2 text-xs font-bold text-lime-950">Câu đúng cần<input min="1" max="10" aria-label="Câu đúng cần cho Thường" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="3">
+</label>
+</div>
+<div class="rounded-2xl border border-lime-200 p-3 space-y-2" data-testid="wild-rarity-rare">
+<p class="text-sm font-black text-lime-950">Hiếm</p>
+<label class="flex items-center justify-between gap-2 text-xs font-bold text-lime-950">Tỉ lệ xuất hiện<input min="0" max="100" aria-label="Tỉ lệ Hiếm" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="25">
+</label>
+<label class="flex items-center justify-between gap-2 text-xs font-bold text-lime-950">Câu đúng cần<input min="1" max="10" aria-label="Câu đúng cần cho Hiếm" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="4">
+</label>
+</div>
+<div class="rounded-2xl border border-lime-200 p-3 space-y-2" data-testid="wild-rarity-legendary">
+<p class="text-sm font-black text-lime-950">Huyền thoại</p>
+<label class="flex items-center justify-between gap-2 text-xs font-bold text-lime-950">Tỉ lệ xuất hiện<input min="0" max="100" aria-label="Tỉ lệ Huyền thoại" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="5">
+</label>
+<label class="flex items-center justify-between gap-2 text-xs font-bold text-lime-950">Câu đúng cần<input min="1" max="10" aria-label="Câu đúng cần cho Huyền thoại" class="w-24 border-2 border-lime-200 p-2 rounded-xl font-bold text-xs bg-white" type="number" value="5">
+</label>
+</div>
+</div>
+<p class="text-xs text-lime-900/80">Tỉ lệ là trọng số, không cần cộng đủ 100. Nếu cả ba bằng 0, hệ thống dùng lại tỉ lệ mặc định.</p>
+</div>
+<div class="bg-white p-4 rounded-3xl border-2 border-lime-200 flex flex-wrap items-center justify-between gap-3">
+<p class="text-xs font-bold text-lime-950">Muốn xem thử ngay? Gọi một Pokémon hoang dã vào lớp đang chọn (không tính vào giới hạn mỗi buổi 1 con).</p>
+<button type="button" data-testid="wild-call-test" class="bg-lime-600 hover:bg-lime-700 text-white font-black px-5 py-2.5 rounded-xl text-xs shadow">🌿 Gọi thử một Pokémon hoang dã</button>
 </div>
 </section>
 <section class="bg-fuchsia-50 p-6 sm:p-10 rounded-[40px] border-4 border-fuchsia-200 text-left space-y-6 my-8">

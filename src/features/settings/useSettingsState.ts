@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { LudoTileSpec } from '../../types';
 
 // State màn Cài đặt (form ô Cá Ngựa, khối thu gọn).
 export const useSettingsState = () => {
@@ -6,7 +7,7 @@ export const useSettingsState = () => {
   const [tileFormTitle, setTileFormTitle] = useState<string>('');
   const [tileFormDesc, setTileFormDesc] = useState<string>('');
   const [tileFormIcon, setTileFormIcon] = useState<string>('🚀');
-  const [tileFormType, setTileFormType] = useState<'portal' | 'curse' | 'treasure' | 'monster' | 'restart'>('portal');
+  const [tileFormType, setTileFormType] = useState<LudoTileSpec['type']>('portal');
   const [tileFormValue, setTileFormValue] = useState<number>(3);
   const [editingTileIndex, setEditingTileIndex] = useState<number | null>(null);
   const [settingsCollapsed, setSettingsCollapsed] = useState<Record<string, boolean>>({
@@ -15,6 +16,8 @@ export const useSettingsState = () => {
     petSkills: true,
     pokemonReset: true,
     ludo: true,
+    ludoChallenges: true,
+    wildHunt: true,
     luckyWheel: true,
     data: true
   });

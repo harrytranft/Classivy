@@ -63,6 +63,8 @@ export interface LudoEventPopupData {
   actor: Student;
   target?: Student;
   icon: string;
-  type: 'kick' | 'special' | 'finish' | 'monster' | 'curse' | 'portal';
+  type: 'kick' | 'special' | 'finish' | 'monster' | 'curse' | 'portal' | 'challenge';
   tileIndex?: number;
+  /** Phase 13D: thử thách đang chờ giáo viên chọn "Làm được" / "Chưa làm được". */
+  challenge?: { text: string; bonusRolls: number };
 }

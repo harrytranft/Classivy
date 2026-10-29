@@ -420,20 +420,27 @@ Nhánh dự kiến: `claude/phase13-classroom-games`. Quyết định: D48-D57. 
   - [x] 13C.1 Migration thêm cột `user_settings.classroom_settings` + hoàn tác + test `npm run test:db` (hai kiểu dự án)
   - [x] 13C.2 Kiểu `ClassroomSettings`, mặc định, `normalizeClassroomSettings` + test
   - [x] 13C.3 Nối state, localStorage `classivy_classroom_settings`, tải/lưu cloud, sao lưu JSON
-  - [x] 13C.4 Khi cột chưa có thì không ghi cột đó (không làm hỏng đồng bộ). Dòng báo "Chưa đồng bộ giữa các máy cho tới khi chạy migration" trong Cài đặt CHƯA làm: sẽ thêm cùng mục Cài đặt của 13D/13E (state `classroomCloudSynced` đã sẵn sàng)
-- [ ] 13D Ô thử thách trong Cá Ngựa (D51)
-  - [ ] 13D.1 Loại ô `challenge`, `resolveLudoMove`, popup có hai nút, hiển thị bàn cờ
-  - [ ] 13D.2 Danh sách thử thách trong Cài đặt (thêm/sửa/xoá/bật tắt), bộ mặc định ~10 mục, `pickLudoChallenge`
-  - [ ] 13D.3 Nút "Rải ngẫu nhiên N ô thử thách" trong Customize Cá Ngựa
-  - [ ] 13D.4 Test: vitest ô `challenge` + `pickLudoChallenge`; smoke làm được -> +1 lượt bonus
-- [ ] 13E Săn Pokémon hoang dã (D48-D50, D56)
-  - [ ] 13E.0 Đọc `LuckyWheelModal.tsx`, `eggs.ts`, `luckyWheelActions.ts` (phần Pokémon); chốt cách chọn loài theo độ hiếm và tái dùng vòng quay
-  - [ ] 13E.1 Domain `wildHunt.ts` + test
-  - [ ] 13E.2 Rút hàm dùng chung "trao Pokémon cho học sinh" (giữ nguyên hành vi Vòng quay may mắn, test hồi quy)
-  - [ ] 13E.3 Hẹn giờ tự động + thông báo nổi không chặn thao tác ("Săn ngay" / "Để sau")
-  - [ ] 13E.4 Trang `/class/<lớp>/san-pokemon` (gọi học sinh, Đúng/Sai, máu, lần sai, bắt được -> vòng quay -> trao Pokémon + điểm an ủi + nhật ký)
-  - [ ] 13E.5 Mục Cài đặt "Săn Pokémon hoang dã" (hẹn giờ X-Y phút từ lúc mở trang lớp, ở lại, độ hiếm, số câu, số lần sai, điểm an ủi) + nút "Gọi thử", phím tắt, mục trên trang lớp
-  - [ ] 13E.6 Smoke: xuất hiện, bắt được, bỏ chạy, tắt tính năng
+  - [x] 13C.4 Khi cột chưa có thì không ghi cột đó (không làm hỏng đồng bộ). Dòng báo "Chưa đồng bộ giữa các máy cho tới khi chạy migration" đã thêm ở mục Thử thách Cá Ngựa trong Cài đặt (13D)
+- [x] 13D Ô thử thách trong Cá Ngựa (D51)
+  - [x] 13D.1 Loại ô `challenge`, `resolveLudoMove`, popup có hai nút, hiển thị bàn cờ
+  - [x] 13D.2 Danh sách thử thách trong Cài đặt (thêm/sửa/xoá/bật tắt), bộ mặc định ~10 mục, `pickLudoChallenge`
+  - [x] 13D.3 Nút "Rải ngẫu nhiên N ô thử thách" trong Customize Cá Ngựa
+  - [x] 13D.4 Test: vitest ô `challenge` + `pickLudoChallenge`; smoke làm được -> +1 lượt bonus
+- [x] 13E Săn Pokémon hoang dã (D48-D50, D56) — code xong 2026-10-29, chưa commit, chờ Harry xem thử
+  - [x] 13E.0 Đọc `LuckyWheelModal.tsx`, `eggs.ts`, `luckyWheelActions.ts` (phần Pokémon); chốt cách chọn loài theo độ hiếm và tái dùng vòng quay
+  - [x] 13E.1 Domain `wildHunt.ts` + test
+  - [x] 13E.2 Rút hàm dùng chung "trao Pokémon cho học sinh" (giữ nguyên hành vi Vòng quay may mắn, test hồi quy)
+  - [x] 13E.3 Hẹn giờ tự động + thông báo nổi không chặn thao tác ("Săn ngay" / "Để sau")
+  - [x] 13E.4 Trang `/class/<lớp>/san-pokemon` (gọi học sinh, Đúng/Sai, máu, lần sai, bắt được -> vòng quay -> trao Pokémon + điểm an ủi + nhật ký)
+  - [x] 13E.5 Mục Cài đặt "Săn Pokémon hoang dã" (hẹn giờ X-Y phút từ lúc mở trang lớp, ở lại, độ hiếm, số câu, số lần sai, điểm an ủi) + nút "Gọi thử", phím tắt, mục trên trang lớp
+  - [x] 13E.6 Smoke: xuất hiện, bắt được, bỏ chạy, tắt tính năng
+
+**Kết quả 13E (2026-10-29, chưa commit, chờ Harry xem thử):**
+- Đã làm: logic thuần `src/domain/wildHunt.ts` (hẹn giờ, buổi học, độ hiếm, luồng săn, vòng quay chọn người nhận) + hàm dùng chung `src/domain/pokemonGrant.ts` (Vòng quay may mắn đã chuyển sang dùng, hành vi giữ nguyên); `src/features/hunt/` (state, hẹn giờ 10 giây, hành động, thông báo nổi `WildEncounterToast`, trang `HuntPage` + `CatchWheel`); route `/class/<lớp>/san-pokemon`; phím tắt `O`; nút "Săn Pokémon" thêm CUỐI thanh công cụ lớp (giữ nguyên chỉ số nút cũ); mục Cài đặt "Săn Pokémon hoang dã" + nút "Gọi thử".
+- Quyết định thực hiện (Harry có thể đổi): thời gian ở lại chỉ tính khi chưa bấm "Săn ngay"; Pokémon bỏ chạy khi số lần sai VƯỢT mức tối đa (mặc định 3, tức sai lần thứ 4); "Gọi thử" không tính vào giới hạn 1 con mỗi buổi; mốc buổi học lưu localStorage (`classivy_wild_hunt_sessions`) nên tải lại trang không chạy lại đồng hồ; không chen ngang khi đang mở Random, Cá Ngựa, Vòng quay hoặc trang con của lớp (đợi về trang lớp); người nhận Pokémon chỉ thành đồng hành nếu chưa có, ngược lại vào bộ sưu tập; Pokémon hoang dã chưa hiện rõ (bóng đen) tới khi bắt được; cuộc săn chỉ nằm trong bộ nhớ (tải lại trang thì mất cuộc đang săn, không mất điểm/Pokémon đã trao).
+- Đã kiểm thử tự động: vitest 294/294, typecheck sạch, build đạt, smoke Playwright 51/51 đạt sau khi cập nhật ảnh chụp thay đổi có chủ đích (thanh công cụ lớp có thêm nút, Cài đặt có thêm mục; các ảnh chỉ có phần thêm, không mất gì; một số ảnh `*-cloud.json` chỉ đổi một mã id ngẫu nhiên do dãy số ngẫu nhiên của test dịch đi). Giữ nguyên ảnh 15-profile-pet đã lệch từ trước (Phase 12). 6 bài smoke mới: tự xuất hiện đúng giờ + bắt được + vòng quay + trao Pokémon + điểm an ủi; bỏ chạy; "Để sau"; chưa tới giờ; tắt tính năng; Cài đặt + Gọi thử + phím tắt O.
+- Chưa kiểm chứng: dùng thật trên lớp (kiểm tay, xem chữ trên vòng quay đủ to khi chiếu màn hình), ảnh Pokémon thật (smoke chạy offline nên chỉ thấy ảnh thay thế), đồng hồ thật (smoke đứng đồng hồ nên đường "chờ đủ phút" kiểm bằng buổi học nạp sẵn giờ), cài đặt đồng bộ giữa các máy (cần chạy migration 13C trên Supabase thật, chờ Harry duyệt), production.
+- Việc nhỏ có thể làm sau: chữ tên trên vòng quay ở nửa dưới bị ngược (vòng quay xoay nên khó tránh); Harry nên thử xem chữ có đọc được khi quay.
 
 **Kết quả 13A + 13B (2026-10-29, chưa commit, chờ Harry xem thử):**
 - Đã kiểm thử tự động: vitest 236/236, typecheck sạch, build đạt, smoke Playwright 41/42 đạt (trình duyệt Chromium trong máy chủ đám mây, Supabase giả lập). Bài còn lại ("các màn hình chính") lệch ảnh chụp 15-profile-pet (Hợp nhất/Kho trứng của Phase 12, có sẵn từ trước, không do 13A/13B); khi cập nhật tạm ảnh đó thì bài đạt và không còn ảnh nào khác lệch. Đã cập nhật hai ảnh chụp thay đổi có chủ đích: 34-random-solo, 37-battle-scored.
@@ -446,6 +453,12 @@ Nhánh dự kiến: `claude/phase13-classroom-games`. Quyết định: D48-D57. 
 - Code: kiểu `ClassroomSettings`, mặc định `src/data/classroomDefaults.ts`, `src/domain/classroomSettings.ts` (chuẩn hoá, kẹp giá trị), nối state, localStorage `classivy_classroom_settings`, tải/lưu cloud, sao lưu/khôi phục JSON. Khi Supabase chưa có cột: không gửi cột, vẫn dùng localStorage. Khi cột còn `{}`: giữ cài đặt trên máy rồi đẩy lên.
 - Đã kiểm thử tự động: vitest 252/252 (có test chuẩn hoá và test không gửi/gửi cột), typecheck, build, `npm run test:db` đạt ở cả hai kiểu dự án Supabase trên Postgres 16 cục bộ (migration 2 lần, hoàn tác, chạy lại), smoke 41/42 (bài còn lại là ảnh 15-profile-pet có sẵn từ Phase 12).
 - Chưa kiểm chứng: chạy migration trên Supabase dev/production thật, đồng bộ giữa hai máy thật. Mặc định đề xuất cần Harry xem: Săn Pokémon bật sẵn.
+
+**Kết quả 13D (2026-10-29, chưa commit, chờ Harry xem thử; không có migration):**
+- Đã làm: loại ô `challenge` (`value` = số lượt lắc thưởng 1-5); `src/domain/ludoChallenges.ts` (`pickLudoChallenge`, `scatterChallengeTiles`, `getChallengeBonusRolls`); `resolveLudoMove` nhánh `challenge`; hộp thông báo hai nút "Làm được (+N lượt lắc)" / "Chưa làm được" (không đóng bằng cách bấm nền); `resolveLudoChallenge` trong `ludoActions.ts` (làm được: cộng `ludoBonusRolls`, ghi lịch sử 0 điểm và nhật ký; chưa làm được: không phạt); bàn cờ tô màu ô thử thách; Cài đặt: loại "Ô Thử Thách" trong form ô, mục mới "Thử thách Cá Ngựa" (thêm/sửa/xoá/bật tắt, khôi phục bộ mặc định 10 thử thách, nút rải ngẫu nhiên N ô, báo chưa đồng bộ khi chưa có cột 13C).
+- Đã kiểm thử tự động: vitest 265/265 (có test chọn thử thách, rải ô, `resolveLudoMove` ô thử thách), typecheck, build, smoke 3 bài mới (Làm được, Chưa làm được, Cài đặt) đạt; toàn bộ smoke 43/45 trước khi cập nhật ảnh chụp, sau đó cập nhật 13-settings-expanded và 43-boss-frequency (chỉ thêm mục mới, không mất dòng nào), bài "các màn hình chính" vẫn lệch ảnh 15-profile-pet có sẵn từ Phase 12.
+- Chưa kiểm chứng: chơi thật trên lớp; cloud thật (cài đặt thử thách chỉ đi lên Supabase sau khi chạy migration 13C).
+- Hành vi cần biết: trong hàng chờ Battle/Boss, lượt lắc thêm của em làm được thử thách dùng được khi em đó được chọn lại (hết hàng chờ thì có ô chọn trainer); đây giống cách Vòng quay may mắn đang cấp lượt lắc.
 
 **Việc Harry cần làm khi tới lượt:** 13A/13B xem thử và cho commit (không chạy gì trên Supabase); 13C duyệt rồi chạy migration trên dev, sau đó production, báo lại để ghi "đã áp dụng"; 13D/13E xem thử và chỉnh số liệu trong Cài đặt. **Đã xác nhận 2026-10-29:** D56, số liệu Boss mặc định, mỗi buổi tối đa 1 con. **Còn mở:** các mặc định còn lại của Săn Pokémon, bộ thử thách Cá Ngựa, lưu lượt bonus localStorage (xem spec mục 8).
 

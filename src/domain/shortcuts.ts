@@ -1,7 +1,7 @@
 // Phím tắt cho giáo viên (D38): phím đơn, đổi được trong Cài đặt. Logic thuần để kiểm thử.
 
 export type ShortcutId =
-  | 'attendance' | 'homework' | 'random' | 'wheel' | 'timer' | 'ludo' | 'gift' | 'group' | 'shop' | 'addTrainer'
+  | 'attendance' | 'homework' | 'random' | 'wheel' | 'timer' | 'ludo' | 'gift' | 'hunt' | 'group' | 'shop' | 'addTrainer'
   | 'search' | 'classes' | 'settings' | 'help';
 
 export interface ShortcutDefinition {
@@ -20,6 +20,7 @@ export const SHORTCUT_DEFINITIONS: ShortcutDefinition[] = [
   { id: 'timer', label: 'Hẹn giờ', scope: 'class', defaultKey: 't' },
   { id: 'ludo', label: 'Cá Ngựa', scope: 'class', defaultKey: 'l' },
   { id: 'gift', label: 'Tặng Pokémon', scope: 'class', defaultKey: 'p' },
+  { id: 'hunt', label: 'Săn Pokémon hoang dã', scope: 'class', defaultKey: 'o' },
   { id: 'group', label: 'Chia nhóm', scope: 'class', defaultKey: 'g' },
   { id: 'shop', label: 'Shop', scope: 'class', defaultKey: 's' },
   { id: 'addTrainer', label: 'Thêm Trainer', scope: 'class', defaultKey: 'n' },

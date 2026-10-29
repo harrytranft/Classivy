@@ -12,6 +12,7 @@ const ProfileScreen = lazy(() => import('../features/profile/ProfileScreen').the
 const LudoModal = lazy(() => import('../features/ludo/LudoModal').then(m => ({ default: m.LudoModal })));
 const LuckyWheelModal = lazy(() => import('../features/wheel/LuckyWheelModal').then(m => ({ default: m.LuckyWheelModal })));
 const GiftPokemonModal = lazy(() => import('../features/pokemon/GiftPokemonModal').then(m => ({ default: m.GiftPokemonModal })));
+const HuntPage = lazy(() => import('../features/hunt/HuntPage').then(m => ({ default: m.HuntPage })));
 const StudentAccountsScreen = lazy(() => import('../features/accounts/StudentAccountsScreen').then(m => ({ default: m.StudentAccountsScreen })));
 const ClassSocialScreen = lazy(() => import('../features/social/ClassSocialScreen').then(m => ({ default: m.ClassSocialScreen })));
 const SettingsScreen = lazy(() => import('../features/settings/SettingsScreen').then(m => ({ default: m.SettingsScreen })));
@@ -37,6 +38,7 @@ export const AppRoutes: React.FC = () => (
       <Route path={`class/:className/${CLASS_SUB_PAGES.ludo}`} element={<ClassPageGuard><LudoModal /></ClassPageGuard>} />
       <Route path={`class/:className/${CLASS_SUB_PAGES.wheel}`} element={<ClassPageGuard><LuckyWheelModal /></ClassPageGuard>} />
       <Route path={`class/:className/${CLASS_SUB_PAGES.gift}`} element={<ClassPageGuard><GiftPokemonModal /></ClassPageGuard>} />
+      <Route path={`class/:className/${CLASS_SUB_PAGES.hunt}`} element={<ClassPageGuard><HuntPage /></ClassPageGuard>} />
       <Route path={`class/:className/${CLASS_SUB_PAGES.accounts}`} element={<ClassPageGuard><StudentAccountsScreen /></ClassPageGuard>} />
       <Route path={`class/:className/${CLASS_SUB_PAGES.social}`} element={<ClassPageGuard><ClassSocialScreen /></ClassPageGuard>} />
       <Route path="student/:studentId" element={<ProfileRoute />} />

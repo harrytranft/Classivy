@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MotionValue, motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
 import {
-  CheckCheck, Dices, Eraser, FerrisWheel, Flag, Gift, Hand, ShoppingBag, Sparkles, Timer, Trash2, Users, type LucideIcon
+  CheckCheck, Crosshair, Dices, Eraser, FerrisWheel, Flag, Gift, Hand, ShoppingBag, Sparkles, Timer, Trash2, Users, type LucideIcon
 } from 'lucide-react';
 import { cx } from './ui';
 
@@ -26,6 +26,8 @@ interface ClassDockProps {
   isMultiSelectMode: boolean;
   onToggleMultiSelect: () => void;
   onResetAura: () => void;
+  onHunt: () => void;
+  huntActive?: boolean;
   selectedCount: number;
   isSyncing: boolean;
   lastSyncedTime: number | null;
@@ -137,7 +139,7 @@ const DockTile: React.FC<DockTileProps> = ({ mouseX, label, short, onClick, acti
 // Công cụ của trang lớp: nút có chữ để đọc được trên màn chiếu (thay cho dock kính phóng to kiểu cũ).
 export const ClassDock: React.FC<ClassDockProps> = ({
   onRandom, onLudo, onLuckyWheel, onShop, onGroup, onTimer, onClaimAllRewards, onSelectAll,
-  isMultiSelectMode, onToggleMultiSelect, onResetAura, selectedCount, isSyncing, lastSyncedTime,
+  isMultiSelectMode, onToggleMultiSelect, onResetAura, onHunt, huntActive, selectedCount, isSyncing, lastSyncedTime,
   onOpenFeedback, onDeleteSelected
 }) => {
   const [now, setNow] = useState(() => new Date());
@@ -171,7 +173,8 @@ export const ClassDock: React.FC<ClassDockProps> = ({
       short: 'Reset điểm',
       Icon: Eraser,
       onClick: onResetAura
-    }
+    },
+    { id: 'hunt', label: 'Săn Pokémon hoang dã', short: 'Săn Pokémon', Icon: Crosshair, onClick: onHunt, active: huntActive }
   ];
 
   const syncLabel = isSyncing

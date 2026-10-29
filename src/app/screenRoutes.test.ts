@@ -34,6 +34,7 @@ describe('class routes', () => {
   it('round-trips class names with spaces and Vietnamese letters', () => {
     for (const name of ['Lớp 7 Sun Santa', 'Smartie A/B', '8C']) {
       expect(parseClassPath(classPath(name, CLASS_SUB_PAGES.gift))).toEqual({ className: name, subPage: 'tang-pokemon' });
+      expect(parseClassPath(classPath(name, CLASS_SUB_PAGES.hunt))).toEqual({ className: name, subPage: 'san-pokemon' });
     }
   });
 

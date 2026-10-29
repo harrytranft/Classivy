@@ -10,6 +10,7 @@ import { useHomeworkState } from '../../features/homework/useHomeworkState';
 import { useShopState } from '../../features/shop/useShopState';
 import { useLuckyWheelState } from '../../features/wheel/useLuckyWheelState';
 import { useLudoState } from '../../features/ludo/useLudoState';
+import { useHuntState } from '../../features/hunt/useHuntState';
 import { useSettingsState } from '../../features/settings/useSettingsState';
 import { useToolsState } from '../../features/tools/useToolsState';
 import { useGiftPokemonState } from '../../features/pokemon/useGiftPokemonState';
@@ -40,6 +41,7 @@ export const useBaseState = () => {
     ...useShopState(),
     ...useLuckyWheelState(),
     ...useLudoState(),
+    ...useHuntState(),
     ...useSettingsState(),
     ...useToolsState(),
     ...useGiftPokemonState(),

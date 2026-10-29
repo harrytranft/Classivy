@@ -31,7 +31,7 @@ export const ClassScreen: React.FC = () => {
     classes, currentClassStudents, filterClass, handleAddStudent, handleClaimAllRewards,
     handleDeleteStudents, handleOpenLuckyWheel, handleOpenShop, handleRandom,
     handleResetSelectedAura, handleToggleSelectAll, isMultiSelectMode,
-    isSyncing, lastSyncedTime, openAttendanceCheck, openHomeworkCheck, openLudoForClass,
+    isSyncing, lastSyncedTime, openAttendanceCheck, openHomeworkCheck, openHuntPage, openLudoForClass, wildEncounter,
     petSkills, searchQuery, selectedStudentIds, setActiveTab, setCurrentScreen,
     setEditingStudent, setFeedbackSource, setFilterClass,
     setIsMultiSelectMode, setSearchQuery, setSelectedStudentIds, setShowGroupModal,
@@ -158,6 +158,8 @@ export const ClassScreen: React.FC = () => {
         isMultiSelectMode={isMultiSelectMode}
         onToggleMultiSelect={() => { setIsMultiSelectMode(!isMultiSelectMode); setSelectedStudentIds([]); }}
         onResetAura={handleResetSelectedAura}
+        onHunt={openHuntPage}
+        huntActive={!!wildEncounter && wildEncounter.className === filterClass}
         selectedCount={selectedStudentIds.length}
         isSyncing={isSyncing}
         lastSyncedTime={lastSyncedTime}

@@ -1,7 +1,8 @@
-import { HistoryItem, LudoTileSpec, PokemonReleaseEvent, Student } from '../types';
+import { HistoryItem, LudoChallenge, LudoTileSpec, PokemonReleaseEvent, Student } from '../types';
 import { LudoEventPopupData } from '../types/app';
 import { applyPetHpDeltaToStudent } from './gameEvents';
 import { LUDO_FINISH_TILE } from '../data/constants';
+import { getChallengeBonusRolls, pickLudoChallenge } from './ludoChallenges';
 
 // Logic thuần của Cá Ngựa (trước đây nằm trong handleLudoRollDice).
 // Bàn cờ 0-49: về đích (+20 Hào Quang) thì quay lại ô 0 và mở Vòng quay may mắn;
@@ -55,6 +56,10 @@ export interface LudoMoveInput {
   /** Danh sách học sinh lúc bấm lắc, dùng để biết ai đang ở trên đường đua. */
   rosterSource: Student[];
   tiles: Record<number, LudoTileSpec>;
+  /** Phase 13D: danh sách thử thách cho ô 'challenge' (không truyền = chưa có thử thách nào). */
+  challenges?: LudoChallenge[];
+  /** Hàm ngẫu nhiên để test; mặc định Math.random. */
+  rng?: () => number;
 }
 
 export interface LudoMoveResult {
@@ -69,7 +74,7 @@ export interface LudoMoveResult {
 }
 
 export const resolveLudoMove = (input: LudoMoveInput): LudoMoveResult => {
-  const { student, roll, steps, positions, monsterStuck, rosterSource, tiles } = input;
+  const { student, roll, steps, positions, monsterStuck, rosterSource, tiles, challenges = [], rng = Math.random } = input;
   let updatedStudents = input.students;
   let releaseEventToShow: PokemonReleaseEvent | null = null;
   const applyLudoAuraReward = (target: Student, amount: number, reason: string): Student => {
@@ -200,6 +205,36 @@ export const resolveLudoMove = (input: LudoMoveInput): LudoMoveResult => {
           type: 'curse'
         };
       }
+      return;
+    }
+
+    if (tileSpec.type === 'challenge') {
+      const picked = pickLudoChallenge(challenges, rng);
+      if (!picked) {
+        logs.unshift(`🎯 ${student.name} dừng ở ${tileSpec.title} nhưng chưa có thử thách nào đang bật (bật trong Cài đặt).`);
+        if (!popupEvent) {
+          popupEvent = {
+            title: tileSpec.title,
+            message: `${student.name} dừng ở ô thử thách nhưng chưa có thử thách nào đang bật. Thêm hoặc bật thử thách trong Cài đặt > Thử thách Cá Ngựa.`,
+            actor: student,
+            icon: tileSpec.icon,
+            type: 'special'
+          };
+        }
+        return;
+      }
+      const bonusRolls = getChallengeBonusRolls(tileSpec);
+      logs.unshift(`🎯 ${student.name} gặp thử thách: ${picked.text}`);
+      // Hộp thử thách thay thế hộp "cú đá" (nếu có) vì giáo viên bắt buộc phải chọn kết quả; cú đá vẫn nằm trong nhật ký.
+      popupEvent = {
+        title: tileSpec.title,
+        message: picked.text,
+        actor: student,
+        icon: picked.icon || tileSpec.icon,
+        type: 'challenge',
+        tileIndex: tileSpec.tileIndex,
+        challenge: { text: picked.text, bonusRolls }
+      };
       return;
     }
 

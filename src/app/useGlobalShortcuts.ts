@@ -42,6 +42,7 @@ export function useGlobalShortcuts(onToggleHelp: () => void) {
         timer: () => a.setShowTimerModal(true),
         ludo: () => a.openLudoForClass(),
         gift: () => a.openGiftPokemonModal(),
+        hunt: () => a.openHuntPage(),
         group: () => a.setShowGroupModal(true),
         shop: () => a.handleOpenShop(),
         addTrainer: () => a.handleAddStudent(),

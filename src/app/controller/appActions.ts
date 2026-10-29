@@ -10,6 +10,7 @@ import { BattleActions, createBattleActions } from '../../features/random/battle
 import { BossActions, createBossActions } from '../../features/random/bossActions';
 import { QuickActions, createQuickActions } from '../../features/random/quickActions';
 import { LudoActions, createLudoActions } from '../../features/ludo/ludoActions';
+import { HuntActions, createHuntActions } from '../../features/hunt/huntActions';
 import { LuckyWheelActions, createLuckyWheelActions } from '../../features/wheel/luckyWheelActions';
 import { SettingsActions, createSettingsActions } from '../../features/settings/settingsActions';
 import { ToolsActions, createToolsActions } from '../../features/tools/toolsActions';
@@ -29,6 +30,7 @@ export type AppActions = ClassActions
   & BossActions
   & QuickActions
   & LudoActions
+  & HuntActions
   & LuckyWheelActions
   & SettingsActions
   & ToolsActions;
@@ -49,6 +51,7 @@ export const createAppActions = (state: AppState): AppActions => {
     createBossActions(state, actions),
     createQuickActions(state, actions),
     createLudoActions(state, actions),
+    createHuntActions(state, actions),
     createLuckyWheelActions(state, actions),
     createSettingsActions(state, actions),
     createToolsActions(state, actions)

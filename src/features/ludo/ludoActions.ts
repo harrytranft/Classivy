@@ -1,7 +1,7 @@
 import { PokemonReleaseEvent, Student } from '../../types';
 import { BattleLudoTurn, LudoReturnHint } from '../../types/app';
 import { awardLudoAura, checkMonsterEscape, resolveLudoMove } from '../../domain/ludo';
-import { consumeExtraRoll, shouldAdvanceLudoQueue } from '../../domain/ludoRolls';
+import { consumeExtraRoll, grantExtraRoll, shouldAdvanceLudoQueue } from '../../domain/ludoRolls';
 import { playDiceSound } from '../../lib/sounds';
 import { CLASS_SUB_PAGES } from '../../app/screenRoutes';
 import { AppState } from '../../app/controller/appState';
@@ -14,11 +14,13 @@ export interface LudoActions {
   handleRandomFromLudo: () => void;
   closeLudoPage: () => void;
   handleLudoRollDice: (student: Student, options?: { isBonusRoll?: boolean; }) => void;
+  /** Phase 13D: giáo viên chọn kết quả thử thách trong hộp thông báo (đóng hộp, cộng lượt lắc nếu làm được). */
+  resolveLudoChallenge: (completed: boolean) => void;
 }
 
 export const createLudoActions = (appState: AppState, app: AppActions): LudoActions => {
   const {
-    activeLudoClassName, classOptions, effectiveLudoTiles, filterClass, goToClassPage, ludoMonsterStuck, ludoPositions,
+    activeLudoClassName, classOptions, classroomSettings, effectiveLudoTiles, ludoEventPopup, filterClass, goToClassPage, ludoMonsterStuck, ludoPositions,
     ludoRolling, ludoSteps, setBattleLudoQueue, setLudoActiveStudent, setLudoBonusRolls,
     setLudoClassName, setLudoDice, setLudoEventPopup, setLudoLogs, setLudoMonsterStuck,
     setLudoPositions, setLudoReturnHint, setLudoRolling, setLudoSteps, setPokemonReleaseEvent,
@@ -144,7 +146,8 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
         monsterStuck: monsterCheck.monsterStuck,
         students: updatedStudents,
         rosterSource: students,
-        tiles: effectiveLudoTiles
+        tiles: effectiveLudoTiles,
+        challenges: classroomSettings.ludoChallenges
       });
       if (move.releaseEvent && !releaseEventToShow) releaseEventToShow = move.releaseEvent;
       const { logs, popupEvent, reachedFinish: reachedFinishReward } = move;
@@ -168,7 +171,30 @@ export const createLudoActions = (appState: AppState, app: AppActions): LudoActi
     }, 600);
   };
 
+  const resolveLudoChallenge = (completed: boolean) => {
+    const popup = ludoEventPopup;
+    setLudoEventPopup(null);
+    if (!popup || popup.type !== 'challenge' || !popup.challenge) return;
+    const actorId = popup.actor.id;
+    const { text, bonusRolls } = popup.challenge;
+    if (!completed) {
+      setLudoLogs(prev => [`⏭️ ${popup.actor.name} chưa làm được thử thách (không bị phạt): ${text}`, ...prev].slice(0, 40));
+      return;
+    }
+    setLudoBonusRolls(prev => grantExtraRoll(prev, actorId, bonusRolls));
+    setStudents(prev => prev.map(s => s.id !== actorId ? s : {
+      ...s,
+      history: [{
+        id: Date.now().toString() + Math.random(),
+        amount: 0,
+        reason: `🎯 Hoàn thành thử thách Cá Ngựa (+${bonusRolls} lượt lắc): ${text}`,
+        timestamp: Date.now()
+      }, ...s.history].slice(0, 50)
+    }));
+    setLudoLogs(prev => [`✅ ${popup.actor.name} làm được thử thách "${text}" và nhận thêm ${bonusRolls} lượt lắc!`, ...prev].slice(0, 40));
+  };
+
   return {
-    openLudoForClass, openBattleLudoTurns, handleRandomFromLudo, closeLudoPage, handleLudoRollDice
+    openLudoForClass, openBattleLudoTurns, handleRandomFromLudo, closeLudoPage, handleLudoRollDice, resolveLudoChallenge
   };
 };

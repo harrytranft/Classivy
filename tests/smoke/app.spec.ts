@@ -47,6 +47,10 @@ const withSkills = (student: { id: string; pet?: Record<string, unknown> | null;
   return { ...student, pet: nextPet, pets: [nextPet] };
 };
 
+// Phase 13D: ô Cá Ngựa tuỳ chỉnh cho một test (ví dụ phủ ô thử thách lên ô 1-6 để lắc kiểu nào cũng trúng).
+let CUSTOM_TILES: Record<string, unknown> = {};
+const challengeTilesOneToSix = () => Object.fromEntries([1, 2, 3, 4, 5, 6].map(index => [index, { tileIndex: index, title: '🎯 Ô Thử Thách', desc: 'Thử thách!', icon: '🎯', type: 'challenge', value: 1 }]));
+
 // Phase 13B: trạng thái Boss "sẵn sàng xuất hiện" cho lớp, ghi đè trong một test.
 let BOSS_STATES: Record<string, unknown> = {};
 const readyBossState = (className: string) => ({
@@ -80,7 +84,7 @@ const cloudRow = () => ({
   timer_sound_url: '',
   wheel_spin_sound_url: '',
   wheel_finish_sound_url: '',
-  custom_ludo_tiles: {},
+  custom_ludo_tiles: CUSTOM_TILES,
   lucky_wheel_rewards: null,
   boss_states_by_class: BOSS_STATES,
   boss_encounter_frequency: 'occasional',
@@ -353,7 +357,7 @@ async function clickNav(page: Page, title: string) {
   await navButton(page, title).click();
 }
 const dockButton = (page: Page, index: number) => page.locator('[role="toolbar"][aria-label="Công cụ lớp"] button').nth(index);
-const DOCK = { random: 0, ludo: 1, wheel: 2, shop: 3, group: 4, timer: 5, selectAll: 6, multiSelect: 7, resetAura: 8 };
+const DOCK = { random: 0, ludo: 1, wheel: 2, shop: 3, group: 4, timer: 5, selectAll: 6, multiSelect: 7, resetAura: 8, hunt: 9 };
 
 async function chooseClass(page: Page, className: string) {
   await page.locator('main select, main button[aria-label^="Vào lớp"]').first().waitFor();
@@ -1196,5 +1200,252 @@ test('Phase 13B: cả nhóm đúng hết có Combo +10 sát thương và không 
     expect(saved[id].pet?.hp).toBe(Math.min(100, startHp(id) + 5)); // không em nào bị phản công (chỉ nhận hồi từ +5 điểm)
   }
   expect(latestSettings(state).boss_states_by_class['6A'].boss.currentHp).toBe(465);
+  expect(state.errors).toEqual([]);
+});
+
+
+// Phase 13D: ô thử thách Cá Ngựa.
+const openLudoAndRoll = async (page: Page, name: string) => {
+  await dockButton(page, DOCK.ludo).click();
+  await page.locator('#ludo-active-student').selectOption(fixtureByName(name).id);
+  await page.getByRole('button', { name: /Trả Lời Đúng & Lắc Xí Ngầu/ }).click();
+  await page.waitForTimeout(1500);
+};
+
+test('Phase 13D: dừng ở ô thử thách, bấm "Làm được" thì nhận thêm 1 lượt lắc', async ({ page }) => {
+  CUSTOM_TILES = challengeTilesOneToSix();
+  const state = await setupPage(page, { loggedIn: true });
+  CUSTOM_TILES = {};
+  await chooseClass(page, '6A');
+  const name = 'Bình 6A'; // đang ở ô 0 nên lắc 1-6 đều rơi vào ô thử thách
+  const { id } = fixtureByName(name);
+  await openLudoAndRoll(page, name);
+
+  await expect(page.getByTestId('ludo-challenge-actions')).toBeVisible();
+  await expect(page.getByTestId('ludo-challenge-done')).toContainText('+1 lượt lắc');
+  // Không đóng được bằng cách bấm nền: hộp vẫn còn.
+  await page.mouse.click(5, 5);
+  await expect(page.getByTestId('ludo-challenge-actions')).toBeVisible();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/95-ludo-challenge.png', fullPage: true });
+
+  await page.getByTestId('ludo-challenge-done').click();
+  await expect(page.getByTestId('ludo-challenge-actions')).toHaveCount(0);
+  await expect(page.getByText('Còn 1 lượt lắc bonus')).toBeVisible();
+  expect(await page.evaluate(() => window.localStorage.getItem('classivy_ludo_bonus_rolls'))).toBe(JSON.stringify({ [id]: 1 }));
+  const saved = await savedStudents(page, state);
+  expect(saved[id].history.some(item => item.reason.includes('Hoàn thành thử thách Cá Ngựa (+1 lượt lắc)') && item.amount === 0)).toBe(true);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13D: "Chưa làm được" không phạt và không có lượt lắc thêm', async ({ page }) => {
+  CUSTOM_TILES = challengeTilesOneToSix();
+  const state = await setupPage(page, { loggedIn: true });
+  CUSTOM_TILES = {};
+  await chooseClass(page, '6A');
+  const name = 'Bình 6A'; // đang ở ô 0 nên lắc 1-6 đều rơi vào ô thử thách
+  const { id, points } = fixtureByName(name);
+  await openLudoAndRoll(page, name);
+  await expect(page.getByTestId('ludo-challenge-skip')).toBeVisible();
+  await page.getByTestId('ludo-challenge-skip').click();
+  await expect(page.getByTestId('ludo-challenge-actions')).toHaveCount(0);
+  await expect(page.getByText('Còn 1 lượt lắc bonus')).toHaveCount(0);
+  expect(await page.evaluate(() => window.localStorage.getItem('classivy_ludo_bonus_rolls'))).toBe('{}');
+  const saved = await savedStudents(page, state);
+  expect(saved[id].points).toBe(points + 1); // chỉ có +1 điểm "trả lời đúng" của lượt lắc thường
+  expect(saved[id].history.some(item => item.reason.includes('Hoàn thành thử thách'))).toBe(false);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13D: Cài đặt rải ô thử thách, quản lý danh sách và báo chưa đồng bộ khi chưa có cột', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await chooseClass(page, '6A');
+  await clickNav(page, 'Cài Đặt');
+  await page.getByRole('heading', { name: 'Cài đặt lớp học' }).waitFor();
+  await page.getByRole('button', { name: 'Hiện Thử thách Cá Ngựa' }).click();
+
+  // Fake Supabase không có cột classroom_settings: Cài đặt báo chưa đồng bộ giữa các máy.
+  await expect(page.getByTestId('classroom-not-synced')).toBeVisible();
+  await expect(page.getByTestId('challenge-row')).toHaveCount(10);
+
+  // Thêm một thử thách rồi tắt thử thách đầu tiên.
+  await page.getByPlaceholder(/Nội dung thử thách mới/).fill('Nói 3 từ về màu sắc');
+  await page.getByRole('button', { name: '+ Thêm thử thách' }).click();
+  await expect(page.getByTestId('challenge-row')).toHaveCount(11);
+  await page.getByTestId('challenge-row').first().getByRole('checkbox').uncheck();
+  await expect(page.getByText('10/11 đang bật').first()).toBeVisible();
+
+  // Rải 6 ô thử thách; bấm lại thì vẫn đúng 6 ô (xáo lại, không cộng dồn).
+  await page.locator('#scatter-count').fill('6');
+  await page.getByTestId('scatter-challenge-tiles').click();
+  await expect(page.getByTestId('scatter-message')).toContainText('Đã rải 6 ô thử thách');
+  await page.getByTestId('scatter-challenge-tiles').click();
+  const tiles = await page.evaluate(() => JSON.parse(window.localStorage.getItem('custom_ludo_tiles') || '{}') as Record<string, { type: string }>);
+  expect(Object.values(tiles).filter(tile => tile.type === 'challenge')).toHaveLength(6);
+
+  // Cài đặt lớp học lưu trên máy (localStorage) và KHÔNG gửi cột lạ lên cloud.
+  const local = await page.evaluate(() => JSON.parse(window.localStorage.getItem('classivy_classroom_settings') || '{}'));
+  expect(local.ludoChallenges).toHaveLength(11);
+  expect(local.ludoChallenges[0].enabled).toBe(false);
+  await page.waitForTimeout(2200);
+  expect(state.upserts.some(upsert => 'classroom_settings' in (upsert as Record<string, unknown>))).toBe(false);
+  expect(state.errors).toEqual([]);
+});
+
+
+// Phase 13E: Săn Pokémon hoang dã.
+const HOUR_MS = 60 * 60 * 1000;
+const MINUTE_MS = 60 * 1000;
+/** Buổi học của lớp 6A đã tới giờ Pokémon xuất hiện (đồng hồ test đứng yên ở FIXED_NOW). */
+const dueHuntSeed = (): Record<string, string> => ({
+  classivy_wild_hunt_sessions: JSON.stringify({
+    '6A': { className: '6A', startedAt: FIXED_NOW.getTime() - 50 * MINUTE_MS, lastSeenAt: FIXED_NOW.getTime() - MINUTE_MS, delayMs: 40 * MINUTE_MS, spawned: false }
+  })
+});
+type SavedHuntStudent = SavedStudent & { pet?: { dexId: number } | null; pets?: { dexId: number }[] };
+const answerUntil = async (page: Page, answerTestId: 'hunt-correct' | 'hunt-wrong', doneTestId: string) => {
+  for (let i = 0; i < 12; i += 1) {
+    if (await page.getByTestId(doneTestId).count() > 0) return;
+    await page.getByTestId(answerTestId).click();
+    await page.waitForTimeout(80);
+  }
+  throw new Error(`Chưa thấy ${doneTestId} sau 12 lần bấm ${answerTestId}`);
+};
+
+test('Phase 13E: Pokémon tự xuất hiện đúng giờ, săn đủ câu đúng, quay chọn người nhận và trao Pokémon', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true, localStorageSeed: dueHuntSeed() });
+  await chooseClass(page, '6A');
+
+  // Thông báo nổi: không phải hộp thoại (phím tắt vẫn dùng được) và không chặn thao tác trên lớp.
+  const toast = page.getByTestId('wild-toast');
+  await expect(toast).toBeVisible();
+  await expect(toast).toHaveAttribute('role', 'status');
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/96-wild-toast.png', fullPage: true });
+
+  await page.getByTestId('wild-toast-go').click();
+  await expect(page).toHaveURL(/\/class\/6A\/san-pokemon$/);
+  await expect(page.getByTestId('hunt-progress')).toContainText('Cần thêm');
+  await expect(page.getByTestId('hunt-current-name')).toBeVisible();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/97-hunt-page.png', fullPage: true });
+
+  // Đúng liên tiếp cho tới khi bắt được: vòng quay chọn người nhận xuất hiện.
+  await answerUntil(page, 'hunt-correct', 'hunt-spin');
+  await expect(page.getByTestId('catch-wheel')).toBeVisible();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/98-hunt-wheel.png', fullPage: true });
+  await page.getByTestId('hunt-spin').click();
+  const result = page.getByTestId('hunt-result');
+  await expect(result).toBeVisible({ timeout: 12_000 });
+  const resultText = (await result.textContent()) || '';
+  const winnerName = /^(.+?) nhận được/.exec(resultText)![1];
+  const winner = fixtureByName(winnerName);
+  const before = FIXTURE.students.find((student: { id: string }) => student.id === winner.id) as { pets?: unknown[]; pet?: unknown };
+  const beforeCount = before.pets && before.pets.length > 0 ? before.pets.length : before.pet ? 1 : 0;
+
+  const saved = await savedStudents(page, state) as Record<string, SavedHuntStudent>;
+  expect((saved[winner.id].pets || []).length).toBe(beforeCount + 1);
+  expect(saved[winner.id].history.some(item => item.reason.includes('Bắt được') && item.reason.includes('hoang dã') && item.amount === 0)).toBe(true);
+  // Các em đúng khác nhận điểm an ủi (mặc định +2), đúng một lần mỗi em.
+  const consolation = Object.values(saved).filter(student => student.history.some(item => item.reason.includes('an ủi')));
+  const consolationNames = (await page.getByTestId('hunt-consolation').count()) > 0 ? ((await page.getByTestId('hunt-consolation').textContent()) || '') : '';
+  expect(consolation.length > 0).toBe(consolationNames !== '');
+  for (const student of consolation) {
+    expect(student.id).not.toBe(winner.id);
+    expect(student.history.filter(item => item.reason.includes('an ủi') && item.amount === 2)).toHaveLength(1);
+    expect(consolationNames).toContain(FIXTURE.students.find((fixture: { id: string }) => fixture.id === student.id).name);
+  }
+
+  await page.getByTestId('hunt-done').click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
+  // Mỗi buổi tối đa 1 con: xong rồi không xuất hiện lại.
+  await page.waitForTimeout(600);
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13E: trả lời sai quá số lần cho phép thì Pokémon bỏ chạy, không ai nhận gì', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true, localStorageSeed: dueHuntSeed() });
+  await chooseClass(page, '6A');
+  await page.getByTestId('wild-toast-go').click();
+  await expect(page.getByTestId('hunt-progress')).toContainText('còn được sai 3 lần');
+  await answerUntil(page, 'hunt-wrong', 'hunt-escaped');
+  await expect(page.getByTestId('hunt-escaped')).toContainText('bỏ chạy');
+  await expect(page.getByTestId('hunt-spin')).toHaveCount(0);
+  await page.getByTestId('hunt-done').click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
+  await page.waitForTimeout(600);
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  const latest = state.upserts[state.upserts.length - 1] as unknown as { students?: SavedHuntStudent[] } | undefined;
+  expect((latest?.students || []).some(student => student.history.some(item => item.reason.includes('hoang dã')))).toBe(false);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13E: "Để sau" làm Pokémon bỏ đi và buổi học đó không có con thứ hai', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true, localStorageSeed: dueHuntSeed() });
+  await chooseClass(page, '6A');
+  await page.getByTestId('wild-toast-later').click();
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  await dockButton(page, DOCK.hunt).click();
+  await expect(page.getByTestId('hunt-idle')).toContainText('đã xuất hiện rồi');
+  await page.getByTestId('hunt-back').click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
+  await page.waitForTimeout(600);
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13E: chưa tới giờ thì trang săn báo còn bao lâu; tắt tính năng thì không xuất hiện', async ({ page }) => {
+  const notDue = { '6A': { className: '6A', startedAt: FIXED_NOW.getTime() - 5 * MINUTE_MS, lastSeenAt: FIXED_NOW.getTime() - MINUTE_MS, delayMs: 40 * MINUTE_MS, spawned: false } };
+  const state = await setupPage(page, { loggedIn: true, localStorageSeed: { classivy_wild_hunt_sessions: JSON.stringify(notDue) } });
+  await chooseClass(page, '6A');
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  await dockButton(page, DOCK.hunt).click();
+  await expect(page.getByTestId('hunt-countdown')).toContainText('khoảng 35 phút');
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13E: tắt Săn Pokémon trong Cài đặt thì Pokémon không tự xuất hiện', async ({ page }) => {
+  const state = await setupPage(page, {
+    loggedIn: true,
+    localStorageSeed: { ...dueHuntSeed(), classivy_classroom_settings: JSON.stringify({ wildHunt: { enabled: false } }) }
+  });
+  await chooseClass(page, '6A');
+  await page.waitForTimeout(800);
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  await dockButton(page, DOCK.hunt).click();
+  await expect(page.getByTestId('hunt-idle')).toContainText('đang tắt');
+  expect(state.errors).toEqual([]);
+});
+
+test('Phase 13E: Cài đặt Săn Pokémon, Gọi thử và phím tắt O mở trang săn', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await chooseClass(page, '6A');
+  await clickNav(page, 'Cài Đặt');
+  await page.getByRole('heading', { name: 'Cài đặt lớp học' }).waitFor();
+  await page.getByRole('button', { name: 'Hiện Săn Pokémon hoang dã' }).click();
+  await expect(page.getByTestId('wild-not-synced')).toBeVisible();
+  await expect(page.getByTestId('wild-enabled')).toBeChecked();
+
+  // Đổi khoảng thời gian: min lớn hơn max thì max tự nâng theo (luôn min <= max).
+  await page.getByTestId('wild-delay-min').fill('50');
+  const local = await page.evaluate(() => JSON.parse(window.localStorage.getItem('classivy_classroom_settings') || '{}'));
+  expect(local.wildHunt.delayMinMinutes).toBe(50);
+  expect(local.wildHunt.delayMaxMinutes).toBeGreaterThanOrEqual(50);
+  await page.getByTestId('wild-delay-min').fill('1');
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/99-wild-settings.png', fullPage: true });
+
+  // Gọi thử: về trang lớp, thông báo nổi xuất hiện ngay.
+  await page.getByTestId('wild-call-test').click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
+  await expect(page.getByTestId('wild-toast')).toBeVisible();
+
+  // Phím tắt O (thông báo không phải hộp thoại nên phím vẫn chạy) mở trang săn đang ở trạng thái chờ.
+  await page.keyboard.press('o');
+  await expect(page).toHaveURL(/\/class\/6A\/san-pokemon$/);
+  await expect(page.getByTestId('hunt-announced')).toBeVisible();
+  await page.getByTestId('hunt-start').click();
+  await expect(page.getByTestId('hunt-progress')).toBeVisible();
+  await page.getByTestId('hunt-back').click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
   expect(state.errors).toEqual([]);
 });

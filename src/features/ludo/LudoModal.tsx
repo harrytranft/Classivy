@@ -75,6 +75,7 @@ export const LudoModal: React.FC = () => {
                         spec?.type === 'monster' ? 'border-red-500 bg-gradient-to-b from-red-100 to-rose-50' :
                         spec?.type === 'curse' ? 'border-purple-500 bg-gradient-to-b from-purple-100 to-fuchsia-50' :
                         spec?.type === 'portal' ? 'border-blue-500 bg-gradient-to-b from-blue-100 to-sky-50' :
+                        spec?.type === 'challenge' ? 'border-emerald-500 bg-gradient-to-b from-emerald-100 to-teal-50' :
                         spec?.type === 'treasure' ? 'border-amber-500 bg-gradient-to-b from-amber-100 to-yellow-50' : 'border-stone-200 bg-gradient-to-b from-stone-50 to-amber-50/30'
                       } ${hasActiveStudent ? 'z-10 scale-[1.04] ring-4 ring-cyan-300/80' : ''}`}
                     >

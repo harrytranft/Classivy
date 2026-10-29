@@ -7,8 +7,8 @@ import { getRandomPokemon } from '../../data/pokemonData';
 import { createPokemonPetFromDexId, getPokemonDisplayName } from '../../domain/pokemonProgression';
 import { applyPetHpDeltaToStudent } from '../../domain/gameEvents';
 import { isGoodLuckyWheelReward, shuffleLuckyWheelRewards } from '../../domain/luckyWheel';
-import { isSamePokemon, updateActivePetInCollection } from '../../domain/pokemonCollection';
-import { appendAdventureJournal } from '../../domain/progression';
+import { updateActivePetInCollection } from '../../domain/pokemonCollection';
+import { grantPokemonToStudent } from '../../domain/pokemonGrant';
 import { CLASS_SUB_PAGES } from '../../app/screenRoutes';
 import { AppState } from '../../app/controller/appState';
 import { AppActions } from '../../app/controller/appActions';
@@ -168,23 +168,11 @@ export const createLuckyWheelActions = (appState: AppState, app: AppActions): Lu
         };
 
         if (reward.type === 'pokemon' && result.pokemon) {
-          const currentPets = s.pets ? [...s.pets] : [];
-          if (s.pet && !currentPets.some(p => isSamePokemon(p, s.pet))) {
-            currentPets.push(s.pet);
-          }
-          let updatedS: Student = {
-            ...s,
-            pet: result.pokemon,
-            pets: [result.pokemon, ...currentPets],
-            history: [historyItem, ...s.history].slice(0, 50)
-          };
-          if (result.pokemon.isShiny) {
-            updatedS = appendAdventureJournal(updatedS, {
-              type: 'shiny-acquired',
-              text: `${s.name} received Shiny ${getPokemonDisplayName(result.pokemon)} from Lucky Wheel.`,
-              petInstanceId: result.pokemon.instanceId
-            });
-          }
+          const updatedS = grantPokemonToStudent(s, result.pokemon, {
+            historyReason: historyItem.reason,
+            companion: 'always',
+            shinyJournalText: `${s.name} received Shiny ${getPokemonDisplayName(result.pokemon)} from Lucky Wheel.`
+          });
           updatedTarget = updatedS;
           return updatedS;
         }
