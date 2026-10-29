@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, NEG_SOUND_KEY, POS_SOUND_KEY, TIMER_SOUND_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
+import { CLASSROOM_SETTINGS_KEY } from '../../../data/classroomDefaults';
 import { Student } from '../../../types';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, getRandomPokemon } from '../../../data/pokemonData';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
@@ -15,12 +16,16 @@ export const useLocalPersistence = (data: GameDataState, user: AuthUser | null, 
     setSkills, petSkills, setPetSkills, bossEncounterFrequency, setBossEncounterFrequency,
     bossStatesByClass, setBossStatesByClass, luckyWheelRewards, setLuckyWheelRewards,
     setLuckyWheelDisplayRewards, customLudoTiles, setPosSoundUrl, setNegSoundUrl,
-    setTimerSoundUrl, setWheelSpinSoundUrl, setWheelFinishSoundUrl
+    setTimerSoundUrl, setWheelSpinSoundUrl, setWheelFinishSoundUrl, classroomSettings
   } = data;
 
   useEffect(() => {
     localStorage.setItem('custom_ludo_tiles', JSON.stringify(customLudoTiles));
   }, [customLudoTiles]);
+
+  useEffect(() => {
+    localStorage.setItem(CLASSROOM_SETTINGS_KEY, JSON.stringify(classroomSettings));
+  }, [classroomSettings]);
 
   useEffect(() => {
     localStorage.setItem(PET_SKILLS_KEY, JSON.stringify(petSkills));

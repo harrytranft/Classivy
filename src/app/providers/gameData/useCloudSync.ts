@@ -5,6 +5,8 @@ import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression'
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, NEG_SOUND_KEY, POS_SOUND_KEY, TIMER_SOUND_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS } from '../../../data/pokemonData';
+import { CLASSROOM_SETTINGS_KEY } from '../../../data/classroomDefaults';
+import { loadLocalClassroomSettings, normalizeClassroomSettings } from '../../../domain/classroomSettings';
 import { Student } from '../../../types';
 import { isStaleDataError } from '../../../lib/supabaseData';
 import { GameDataState } from './useGameDataState';
@@ -24,7 +26,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
     setIsSyncing, setLastSyncedTime, initialCloudLoadComplete, setInitialCloudLoadComplete,
     cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
-    cloudDataModelRef, lastCloudSnapshotRef, setLegacyUpgradeAvailable, setSyncConflict
+    cloudDataModelRef, lastCloudSnapshotRef, setLegacyUpgradeAvailable, setSyncConflict,
+    classroomSettings, setClassroomSettings, classroomCloudSynced, setClassroomCloudSynced
   } = data;
   // Tăng để tải lại toàn bộ từ đám mây (khi lần lưu bị từ chối vì máy khác đã sửa trước).
   const [reloadToken, setReloadToken] = useState(0);
@@ -45,6 +48,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
       cloudDataModelRef.current = 'legacy';
       lastCloudSnapshotRef.current = EMPTY_SNAPSHOT;
       setLegacyUpgradeAvailable(false);
+      setClassroomCloudSynced(false);
       return;
     }
 
@@ -86,6 +90,18 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           const cloudBossStates = normalizeBossStatesByClass(cloudData.bossStatesByClass || {}, cloudBossFrequency);
           setBossStatesByClass(cloudBossStates);
           localStorage.setItem(BOSS_STATES_KEY, JSON.stringify(cloudBossStates));
+          // Phase 13C: cột classroom_settings có khi Supabase đã chạy migration 13C. Cột còn '{}' (chưa ai lưu) thì
+          // giữ cài đặt trên máy này (không để mặc định ghi đè) và để vòng đồng bộ đẩy lên.
+          const classroomColumnExists = cloudData.classroomSettingsRaw !== undefined;
+          const cloudHasClassroom = classroomColumnExists && Object.keys(cloudData.classroomSettingsRaw || {}).length > 0;
+          const cloudClassroom = normalizeClassroomSettings(cloudData.classroomSettingsRaw);
+          if (cloudHasClassroom) {
+            setClassroomSettings(cloudClassroom);
+            localStorage.setItem(CLASSROOM_SETTINGS_KEY, JSON.stringify(cloudClassroom));
+          } else {
+            setClassroomSettings(loadLocalClassroomSettings());
+          }
+          setClassroomCloudSynced(classroomColumnExists);
           setLastSyncedTime(cloudData.updatedAt || Date.now());
 
           cloudDataModelRef.current = loaded.dataModel;
@@ -116,7 +132,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
             customLudoTiles: cloudData.customLudoTiles || {},
             luckyWheelRewards: cloudData.luckyWheelRewards || DEFAULT_LUCKY_WHEEL_REWARDS,
             bossStatesByClass: cloudBossStates,
-            bossEncounterFrequency: cloudBossFrequency
+            bossEncounterFrequency: cloudBossFrequency,
+            classroomSettings: classroomColumnExists ? cloudClassroom : null
           });
 
           // Also save a fallback local copy
@@ -189,8 +206,10 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
             customLudoTiles,
             luckyWheelRewards: localLuckyWheelRewards,
             bossStatesByClass: localBossStates,
-            bossEncounterFrequency: localBossFrequency
+            bossEncounterFrequency: localBossFrequency,
+            classroomSettings: null
           });
+          setClassroomCloudSynced(false);
           
           setStudents(localStudents);
           setSkills(localSkills);
@@ -244,7 +263,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
       customLudoTiles,
       luckyWheelRewards,
       bossStatesByClass,
-      bossEncounterFrequency
+      bossEncounterFrequency,
+      classroomSettings: classroomCloudSynced ? classroomSettings : null
     });
 
     // DIFFERENTIAL INCREMENTAL SYNC CHECK:
@@ -271,7 +291,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           customLudoTiles,
           luckyWheelRewards,
           bossStatesByClass,
-          bossEncounterFrequency
+          bossEncounterFrequency,
+          classroomSettings: classroomCloudSynced ? classroomSettings : undefined
         }, cloudDataModelRef.current, lastCloudSnapshotRef.current);
 
         lastSyncedSnapshotRef.current = currentSnapshot;
@@ -294,5 +315,5 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     }, 1500); // 1.5s debounce to group multiple rapid edits together
 
     return () => clearTimeout(timer);
-  }, [students, skills, petSkills, posSoundUrl, negSoundUrl, timerSoundUrl, wheelSpinSoundUrl, wheelFinishSoundUrl, customLudoTiles, luckyWheelRewards, bossStatesByClass, bossEncounterFrequency, user, initialCloudLoadComplete, cloudLoadSuccess]);
+  }, [students, skills, petSkills, posSoundUrl, negSoundUrl, timerSoundUrl, wheelSpinSoundUrl, wheelFinishSoundUrl, customLudoTiles, luckyWheelRewards, bossStatesByClass, bossEncounterFrequency, classroomSettings, classroomCloudSynced, user, initialCloudLoadComplete, cloudLoadSuccess]);
 };

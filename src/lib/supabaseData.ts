@@ -1,5 +1,5 @@
 import { supabase } from './supabaseClient';
-import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, Skill, Student, LudoTileSpec } from '../types';
+import { BossEncounterFrequency, ClassBossState, ClassroomSettings, LuckyWheelReward, Skill, Student, LudoTileSpec } from '../types';
 import { PetSkill } from '../data/pokemonData';
 import { ClassChange, HistoryRow, StudentRow, TeacherChanges, toRpcPayload } from '../domain/cloudModel';
 
@@ -16,6 +16,10 @@ export interface UserSettingsData {
   luckyWheelRewards?: LuckyWheelReward[];
   bossStatesByClass?: Record<string, ClassBossState>;
   bossEncounterFrequency?: BossEncounterFrequency;
+  /** Phase 13C: cài đặt lớp học để GHI. Không có = không gửi cột classroom_settings (Supabase có thể chưa chạy migration 13C). */
+  classroomSettings?: ClassroomSettings;
+  /** Phase 13C: giá trị cột classroom_settings khi ĐỌC. Không có = cột chưa tồn tại (chưa chạy migration 13C). */
+  classroomSettingsRaw?: Record<string, unknown>;
   updatedAt?: number;
   /** 1 = dữ liệu cũ (cột students), 2 = bảng mới (Phase 3). Không có = Supabase chưa chạy migration Phase 3. */
   dataModelVersion?: 1 | 2;
@@ -43,6 +47,10 @@ export const sanitizeForSupabase = (val: any): any => {
   return val;
 };
 
+/** Chỉ gửi cột classroom_settings khi app đã biết cột tồn tại (đã đọc thấy khoá này); nếu không, gửi cột lạ sẽ làm hỏng cả lần lưu. */
+const classroomSettingsColumn = (settings: { classroomSettings?: ClassroomSettings }) =>
+  settings.classroomSettings ? { classroom_settings: sanitizeForSupabase(settings.classroomSettings) } : {};
+
 export const fetchUserSettings = async (userId: string): Promise<UserSettingsData | null> => {
   const { data, error } = await supabase
     .from('user_settings')
@@ -66,6 +74,9 @@ export const fetchUserSettings = async (userId: string): Promise<UserSettingsDat
     luckyWheelRewards: Array.isArray(data.lucky_wheel_rewards) ? data.lucky_wheel_rewards : undefined,
     bossStatesByClass: data.boss_states_by_class || {},
     bossEncounterFrequency: data.boss_encounter_frequency || undefined,
+    classroomSettingsRaw: 'classroom_settings' in data
+      ? (data.classroom_settings && typeof data.classroom_settings === 'object' && !Array.isArray(data.classroom_settings) ? data.classroom_settings : {})
+      : undefined,
     updatedAt: data.updated_at_ms || undefined,
     dataModelVersion: data.data_model_version === 2 ? 2 : data.data_model_version === 1 ? 1 : undefined
   };
@@ -89,6 +100,7 @@ export const upsertUserSettings = async (userId: string, settings: UserSettingsD
       lucky_wheel_rewards: sanitizeForSupabase(settings.luckyWheelRewards || []),
       boss_states_by_class: sanitizeForSupabase(settings.bossStatesByClass || {}),
       boss_encounter_frequency: settings.bossEncounterFrequency || 'occasional',
+      ...classroomSettingsColumn(settings),
       updated_at_ms: updatedAt,
       updated_at: new Date(updatedAt).toISOString()
     }, { onConflict: 'user_id' });
@@ -120,6 +132,7 @@ export const upsertTeacherSettings = async (userId: string, settings: SettingsOn
       custom_ludo_tiles: sanitizeForSupabase(settings.customLudoTiles || {}),
       lucky_wheel_rewards: sanitizeForSupabase(settings.luckyWheelRewards || []),
       boss_encounter_frequency: settings.bossEncounterFrequency || 'occasional',
+      ...classroomSettingsColumn(settings),
       data_model_version: 2,
       updated_at_ms: updatedAt,
       updated_at: new Date(updatedAt).toISOString()

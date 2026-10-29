@@ -25,6 +25,8 @@ MIGRATION10=supabase/migrations/20261102100000_phase10_student_shop.sql
 ROLLBACK10=supabase/rollback/20261102100000_phase10_student_shop_down.sql
 MIGRATION12=supabase/migrations/20261103100000_phase12_student_fusion.sql
 ROLLBACK12=supabase/rollback/20261103100000_phase12_student_fusion_down.sql
+MIGRATION13=supabase/migrations/20261104100000_phase13_classroom_settings.sql
+ROLLBACK13=supabase/rollback/20261104100000_phase13_classroom_settings_down.sql
 ROLLBACK_ROLE=supabase/rollback/20261030110000_sync_profile_role_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
@@ -154,10 +156,28 @@ run -f "$ROLLBACK12"
 run -c "do \$\$ begin
   if to_regprocedure('public.student_fuse_pets(text[])') is not null or to_regprocedure('public.shop_pet_level(jsonb)') is not null then raise exception 'FAIL: phase 12C rollback left functions'; end if; end \$\$"
 run -f "$MIGRATION12"
+
+echo "== Migration Phase 13C cột classroom_settings (chạy 2 lần) + test, hoàn tác, chạy lại"
+run -c "do \$\$ begin
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'user_settings' and column_name = 'classroom_settings') then
+    raise exception 'FAIL: classroom_settings exists before phase 13C'; end if; end \$\$"
+run -f "$MIGRATION13"
+run -f "$MIGRATION13"
+run -o /dev/null -f supabase/tests/90_phase13_classroom_settings.test.sql
+run -f "$ROLLBACK13"
+run -c "do \$\$ begin
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'user_settings' and column_name = 'classroom_settings') then
+    raise exception 'FAIL: phase 13C rollback left column'; end if;
+  if (select count(*) from public.user_settings where user_id = 'dddddddd-0000-4000-8000-000000000004') <> 1 then
+    raise exception 'FAIL: phase 13C rollback lost settings rows'; end if; end \$\$"
+run -f "$ROLLBACK13"
+run -f "$MIGRATION13"
+
 run -f "$ROLLBACK7"
 run -c "do \$\$ begin
   if to_regprocedure('public.save_teacher_changes_v2(jsonb)') is not null or to_regprocedure('public.is_teacher()') is not null then raise exception 'FAIL: phase 7 rollback left functions'; end if; end \$\$"
 run -f "$MIGRATION7"
+run -f "$ROLLBACK13"
 run -f "$ROLLBACK12"
 run -f "$ROLLBACK10"
 run -f "$ROLLBACK7"

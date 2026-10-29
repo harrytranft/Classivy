@@ -274,3 +274,37 @@ export interface ActiveBossRound {
   resolvedAt?: number;
   result?: 'success' | 'failure';
 }
+
+// Phase 13C: cài đặt dùng trên lớp, lưu một cột jsonb `user_settings.classroom_settings`.
+export type WildRarity = 'common' | 'rare' | 'legendary';
+
+export interface WildHuntSettings {
+  enabled: boolean;
+  /** Pokémon hoang dã hiện ra sau từ min đến max phút kể từ lúc mở trang lớp (min = max: cố định). */
+  delayMinMinutes: number;
+  delayMaxMinutes: number;
+  /** Ở lại tối đa bao nhiêu phút nếu chưa ai bấm "Săn ngay". */
+  lingerMinutes: number;
+  /** Trọng số độ hiếm (không cần cộng đủ 100). */
+  rarityWeights: Record<WildRarity, number>;
+  /** Số câu đúng cần để bắt theo độ hiếm. */
+  correctNeeded: Record<WildRarity, number>;
+  /** Số lần sai tối đa trước khi Pokémon bỏ chạy. */
+  maxWrong: number;
+  /** Lớp có ít hơn số em có mặt này thì không xuất hiện. */
+  minPresentStudents: number;
+  /** Hào Quang an ủi cho các em đúng không trúng Pokémon (0 = tắt). */
+  consolationPoints: number;
+}
+
+export interface LudoChallenge {
+  id: string;
+  text: string;
+  icon: string;
+  enabled: boolean;
+}
+
+export interface ClassroomSettings {
+  wildHunt: WildHuntSettings;
+  ludoChallenges: LudoChallenge[];
+}

@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
-import { BossEncounterFrequency, ClassBossState, LuckyWheelReward, LudoTileSpec, Skill, Student } from '../../../types';
+import { BossEncounterFrequency, ClassBossState, ClassroomSettings, LuckyWheelReward, LudoTileSpec, Skill, Student } from '../../../types';
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_LUDO_TILES, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY } from '../../../data/constants';
 import { LIST_PET_SKILLS as DEFAULT_PET_SKILLS, PetSkill } from '../../../data/pokemonData';
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency } from '../../../domain/bossSystem';
 import { CloudSnapshot, EMPTY_SNAPSHOT } from '../../../domain/cloudModel';
+import { loadLocalClassroomSettings } from '../../../domain/classroomSettings';
 import type { CloudDataModel } from './cloudStore';
 
 // State dữ liệu lớp học dùng chung. Khởi tạo giống hệt App.tsx cũ (một số giá trị đọc từ localStorage).
@@ -63,6 +64,9 @@ export const useGameDataState = () => {
   const [timerSoundUrl, setTimerSoundUrl] = useState('https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg');
   const [wheelSpinSoundUrl, setWheelSpinSoundUrl] = useState('https://actions.google.com/sounds/v1/transportation/airport_departure_chime.ogg');
   const [wheelFinishSoundUrl, setWheelFinishSoundUrl] = useState('https://actions.google.com/sounds/v1/cartoon/concussive_hit_guitar_boing.ogg');
+  // Phase 13C: cài đặt lớp học (Săn Pokémon, thử thách Cá Ngựa). Luôn lưu localStorage; chỉ lên cloud khi cột đã có (classroomCloudSynced).
+  const [classroomSettings, setClassroomSettings] = useState<ClassroomSettings>(loadLocalClassroomSettings);
+  const [classroomCloudSynced, setClassroomCloudSynced] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncedTime, setLastSyncedTime] = useState<number | null>(null);
   const [initialCloudLoadComplete, setInitialCloudLoadComplete] = useState(false);
@@ -86,7 +90,8 @@ export const useGameDataState = () => {
     isSyncing, setIsSyncing, lastSyncedTime, setLastSyncedTime, initialCloudLoadComplete,
     setInitialCloudLoadComplete, cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
     cloudDataModelRef, lastCloudSnapshotRef, legacyUpgradeAvailable, setLegacyUpgradeAvailable,
-    syncConflict, setSyncConflict
+    syncConflict, setSyncConflict, classroomSettings, setClassroomSettings,
+    classroomCloudSynced, setClassroomCloudSynced
   };
 };
 

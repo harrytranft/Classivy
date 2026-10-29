@@ -4,6 +4,8 @@ import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, LUCKY_WHEEL_REWARDS_KEY,
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
 import { loadCloudData, saveCloudData } from './cloudStore';
 import { pickBackupFields } from '../../../domain/backup';
+import { CLASSROOM_SETTINGS_KEY } from '../../../data/classroomDefaults';
+import { normalizeClassroomSettings } from '../../../domain/classroomSettings';
 import { GameDataState } from './useGameDataState';
 import type { AuthUser } from '../../../features/auth/AuthContext';
 
@@ -16,7 +18,8 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     setLuckyWheelDisplayRewards, customLudoTiles, setCustomLudoTiles, posSoundUrl,
     setPosSoundUrl, negSoundUrl, setNegSoundUrl, timerSoundUrl, setTimerSoundUrl,
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
-    setIsSyncing, setLastSyncedTime, cloudDataModelRef, lastCloudSnapshotRef
+    setIsSyncing, setLastSyncedTime, cloudDataModelRef, lastCloudSnapshotRef,
+    classroomSettings, setClassroomSettings, classroomCloudSynced
   } = data;
 
   const handleExportJSON = () => {
@@ -33,6 +36,7 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
       luckyWheelRewards,
       bossStatesByClass,
       bossEncounterFrequency,
+      classroomSettings,
       exportedAt: Date.now()
     };
     const jsonString = JSON.stringify(data, null, 2);
@@ -100,6 +104,12 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
         localStorage.setItem(BOSS_ENCOUNTER_FREQUENCY_KEY, importedBossFrequency);
         setBossStatesByClass(importedBossStates);
         localStorage.setItem(BOSS_STATES_KEY, JSON.stringify(importedBossStates));
+        // File sao lưu cũ chưa có classroomSettings thì giữ cài đặt hiện tại.
+        const importedClassroom = data.classroomSettings !== undefined
+          ? normalizeClassroomSettings(data.classroomSettings)
+          : classroomSettings;
+        setClassroomSettings(importedClassroom);
+        localStorage.setItem(CLASSROOM_SETTINGS_KEY, JSON.stringify(importedClassroom));
 
         // Trigger immediate sync to Supabase if user is authenticated
         if (user) {
@@ -116,7 +126,8 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
               customLudoTiles: data.customLudoTiles || customLudoTiles,
               luckyWheelRewards: data.luckyWheelRewards || luckyWheelRewards,
               bossStatesByClass: importedBossStates,
-              bossEncounterFrequency: importedBossFrequency
+              bossEncounterFrequency: importedBossFrequency,
+              classroomSettings: classroomCloudSynced ? importedClassroom : undefined
           }, cloudDataModelRef.current, lastCloudSnapshotRef.current).then((saved) => {
             lastCloudSnapshotRef.current = saved.snapshot;
             setLastSyncedTime(saved.updatedAt);
@@ -156,7 +167,8 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
         customLudoTiles,
         luckyWheelRewards,
         bossStatesByClass,
-        bossEncounterFrequency
+        bossEncounterFrequency,
+        classroomSettings: classroomCloudSynced ? classroomSettings : undefined
       }, cloudDataModelRef.current, lastCloudSnapshotRef.current);
       lastCloudSnapshotRef.current = saved.snapshot;
       setLastSyncedTime(saved.updatedAt);
@@ -233,6 +245,11 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
         localStorage.setItem(BOSS_ENCOUNTER_FREQUENCY_KEY, cloudBossFrequency);
         setBossStatesByClass(cloudBossStates);
         localStorage.setItem(BOSS_STATES_KEY, JSON.stringify(cloudBossStates));
+        if (cloudData.classroomSettingsRaw && Object.keys(cloudData.classroomSettingsRaw).length > 0) {
+          const cloudClassroom = normalizeClassroomSettings(cloudData.classroomSettingsRaw);
+          setClassroomSettings(cloudClassroom);
+          localStorage.setItem(CLASSROOM_SETTINGS_KEY, JSON.stringify(cloudClassroom));
+        }
         setLastSyncedTime(cloudData.updatedAt || Date.now());
         alert("Đã khôi phục dữ liệu từ đám mây thành công!");
       } else {

@@ -416,11 +416,11 @@ Nhánh dự kiến: `claude/phase13-classroom-games`. Quyết định: D48-D57. 
   - [x] 13B.2 `handleResolveBossRound(results)`: thưởng/phản công theo từng em, Cá Ngựa chỉ cho em đúng
   - [x] 13B.3 `BossBattlePanel`: chấm từng em, "Cả nhóm đúng", "Chốt vòng", sát thương dự kiến
   - [x] 13B.4 Test: 5/5, 4/5, 1/5, 0/5, Boss gục giữa vòng, trùng `roundId`; cập nhật smoke Boss
-- [ ] 13C Hạ tầng cài đặt mới (CÓ migration `20261104100000_phase13_classroom_settings.sql`, **chờ Harry duyệt trước khi chạy trên Supabase thật**)
-  - [ ] 13C.1 Migration thêm cột `user_settings.classroom_settings` + hoàn tác + test `npm run test:db` (hai kiểu dự án)
-  - [ ] 13C.2 Kiểu `ClassroomSettings`, mặc định, `normalizeClassroomSettings` + test
-  - [ ] 13C.3 Nối state, localStorage `classivy_classroom_settings`, tải/lưu cloud, sao lưu JSON
-  - [ ] 13C.4 Khi cột chưa có thì không ghi cột đó (không làm hỏng đồng bộ); Cài đặt báo chưa đồng bộ giữa các máy
+- [x] 13C Hạ tầng cài đặt mới (CÓ migration `20261104100000_phase13_classroom_settings.sql`, **chờ Harry duyệt trước khi chạy trên Supabase thật**)
+  - [x] 13C.1 Migration thêm cột `user_settings.classroom_settings` + hoàn tác + test `npm run test:db` (hai kiểu dự án)
+  - [x] 13C.2 Kiểu `ClassroomSettings`, mặc định, `normalizeClassroomSettings` + test
+  - [x] 13C.3 Nối state, localStorage `classivy_classroom_settings`, tải/lưu cloud, sao lưu JSON
+  - [x] 13C.4 Khi cột chưa có thì không ghi cột đó (không làm hỏng đồng bộ). Dòng báo "Chưa đồng bộ giữa các máy cho tới khi chạy migration" trong Cài đặt CHƯA làm: sẽ thêm cùng mục Cài đặt của 13D/13E (state `classroomCloudSynced` đã sẵn sàng)
 - [ ] 13D Ô thử thách trong Cá Ngựa (D51)
   - [ ] 13D.1 Loại ô `challenge`, `resolveLudoMove`, popup có hai nút, hiển thị bàn cờ
   - [ ] 13D.2 Danh sách thử thách trong Cài đặt (thêm/sửa/xoá/bật tắt), bộ mặc định ~10 mục, `pickLudoChallenge`
@@ -440,6 +440,12 @@ Nhánh dự kiến: `claude/phase13-classroom-games`. Quyết định: D48-D57. 
 - Chưa kiểm chứng: chạy thật trên máy Harry (kiểm tay trên lớp), Supabase thật/production (13A, 13B không có migration).
 - Giới hạn đã biết: Hoàn tác không trả lại bộ đếm Boss (chỉ khôi phục điểm/lịch sử của em).
 - Lỗi cũ đã sửa trong 13A: em có lượt bonus không còn mất lượt lắc thường.
+
+**Kết quả 13C (2026-10-29, chưa commit; migration CHƯA chạy trên Supabase thật, chờ Harry duyệt):**
+- Đã viết: `supabase/migrations/20261104100000_phase13_classroom_settings.sql` (chỉ thêm cột jsonb `user_settings.classroom_settings` mặc định `{}`, chạy lại được, không đổi RLS), hoàn tác `supabase/rollback/20261104100000_phase13_classroom_settings_down.sql`, bài test `supabase/tests/90_phase13_classroom_settings.test.sql` nối vào `npm run test:db`. Quyền: `user_settings` cấp theo bảng + RLS theo chủ sở hữu nên cột mới tự được bảo vệ.
+- Code: kiểu `ClassroomSettings`, mặc định `src/data/classroomDefaults.ts`, `src/domain/classroomSettings.ts` (chuẩn hoá, kẹp giá trị), nối state, localStorage `classivy_classroom_settings`, tải/lưu cloud, sao lưu/khôi phục JSON. Khi Supabase chưa có cột: không gửi cột, vẫn dùng localStorage. Khi cột còn `{}`: giữ cài đặt trên máy rồi đẩy lên.
+- Đã kiểm thử tự động: vitest 252/252 (có test chuẩn hoá và test không gửi/gửi cột), typecheck, build, `npm run test:db` đạt ở cả hai kiểu dự án Supabase trên Postgres 16 cục bộ (migration 2 lần, hoàn tác, chạy lại), smoke 41/42 (bài còn lại là ảnh 15-profile-pet có sẵn từ Phase 12).
+- Chưa kiểm chứng: chạy migration trên Supabase dev/production thật, đồng bộ giữa hai máy thật. Mặc định đề xuất cần Harry xem: Săn Pokémon bật sẵn.
 
 **Việc Harry cần làm khi tới lượt:** 13A/13B xem thử và cho commit (không chạy gì trên Supabase); 13C duyệt rồi chạy migration trên dev, sau đó production, báo lại để ghi "đã áp dụng"; 13D/13E xem thử và chỉnh số liệu trong Cài đặt. **Đã xác nhận 2026-10-29:** D56, số liệu Boss mặc định, mỗi buổi tối đa 1 con. **Còn mở:** các mặc định còn lại của Săn Pokémon, bộ thử thách Cá Ngựa, lưu lượt bonus localStorage (xem spec mục 8).
 

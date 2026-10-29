@@ -13,7 +13,8 @@ export const BACKUP_FIELDS = [
   'customLudoTiles',
   'luckyWheelRewards',
   'bossStatesByClass',
-  'bossEncounterFrequency'
+  'bossEncounterFrequency',
+  'classroomSettings'
 ] as const;
 
 export type BackupField = typeof BACKUP_FIELDS[number];
