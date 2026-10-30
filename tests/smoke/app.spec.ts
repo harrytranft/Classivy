@@ -249,9 +249,12 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
     if (phase3Path) {
       const target = phase3Path[1];
       if (target === 'rpc/save_teacher_changes' || target === 'rpc/save_teacher_changes_v2') {
-        if (target === 'rpc/save_teacher_changes_v2' && (state.staleNextSave || state.staleAlways)) {
+        // Như DB thật: chỉ gói có học sinh mới có thể bị từ chối vì dữ liệu cũ.
+        const batchHasStudents = ((request.postDataJSON() as { p_changes: RpcPayload }).p_changes.students ?? []).length > 0;
+        if (target === 'rpc/save_teacher_changes_v2' && batchHasStudents && (state.staleNextSave || state.staleAlways)) {
           state.staleNextSave = false;
-          await route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ code: '40001', message: 'stale_data', details: 'x', hint: null }) });
+          const ids = ((request.postDataJSON() as { p_changes: RpcPayload }).p_changes.students ?? []).map(row => row.client_id);
+          await route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ code: '40001', message: 'stale_data', details: ids.join(','), hint: null }) });
           return;
         }
         const changes = fromRpcPayload((request.postDataJSON() as { p_changes: RpcPayload }).p_changes);
@@ -266,7 +269,10 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
         return;
       }
       const offset = Number(url.searchParams.get('offset') || 0);
-      const rows = offset > 0 ? [] : tableRows(state, target);
+      const inFilter = (url.searchParams.get('client_id') ?? url.searchParams.get('student_client_id') ?? '').match(/^in\.\((.*)\)$/);
+      const wanted = inFilter ? new Set(inFilter[1].split(',').map(id => id.replace(/^"|"$/g, ''))) : null;
+      const rows = (offset > 0 ? [] : tableRows(state, target)).filter(row =>
+        !wanted || wanted.has(String((row as { client_id?: string; student_client_id?: string }).client_id ?? (row as { student_client_id?: string }).student_client_id)));
       await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rows) });
       return;
     }
@@ -770,7 +776,7 @@ test('Phase 6: điểm tặng trong hàng chờ được cộng vào Hào Quang 
   expect(state.errors).toEqual([]);
 });
 
-test('Phase 7: máy khác vừa sửa thì không ghi đè, báo giáo viên và tải lại', async ({ page }) => {
+test('Phase 7 + B: học sinh mua Shop ở nhà đúng lúc giáo viên cộng điểm thì tự gộp, không mất bên nào', async ({ page }) => {
   const state = await setupPage(page, {
     loggedIn: true,
     emptyCloud: true,
@@ -778,28 +784,34 @@ test('Phase 7: máy khác vừa sửa thì không ghi đè, báo giáo viên và
     localStorageSeed: { classivy_school_data_v6: JSON.stringify(FIXTURE.students) }
   });
   await page.waitForTimeout(2200);
-  const savedPoints = Object.fromEntries(Object.entries(state.tables.students).map(([id, row]) => [id, row.points]));
-  const readsBefore = state.settingsReads;
+  await chooseClass(page, '6A');
+  const firstButton = page.getByRole('button', { name: /^Cộng điểm / }).first();
+  const name = (await firstButton.getAttribute('aria-label'))!.replace('Cộng điểm ', '');
+  const id = Object.values(state.tables.students).find(row => row.name === name)!.clientId;
+  const before = state.tables.students[id].points;
   const callsBefore = state.rpcCalls.length;
 
+  // Em mua trứng trong Shop ở nhà: Supabase trừ 5 điểm và thêm trứng; app giáo viên vẫn giữ bản cũ.
+  const egg = { instanceId: 'shop-egg-1', progress: 0, status: 'egg', assignedDexId: 1, kind: 'normal', requiredProgress: 10 };
+  state.tables.students[id] = {
+    ...state.tables.students[id],
+    points: before - 5,
+    gameState: { ...state.tables.students[id].gameState, eggInventory: [...(state.tables.students[id].gameState.eggInventory ?? []), egg] } as never
+  };
   state.staleNextSave = true;
-  await chooseClass(page, '6A');
-  await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
-  await page.locator('button.aspect-square').first().click();
-  const banner = page.getByRole('alert').filter({ hasText: 'Dữ liệu vừa được đổi ở máy khác' });
-  await expect(banner).toBeVisible({ timeout: 5000 });
-  // Không có gì bị ghi, app đọc lại từ đám mây.
-  expect(state.rpcCalls.length).toBe(callsBefore);
-  expect(Object.fromEntries(Object.entries(state.tables.students).map(([id, row]) => [id, row.points]))).toEqual(savedPoints);
-  await expect.poll(() => state.settingsReads).toBeGreaterThan(readsBefore);
-  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/70-sync-conflict.png' });
-  await banner.getByRole('button', { name: 'Đã hiểu' }).click();
-  await expect(banner).toHaveCount(0);
 
-  // Sau khi tải lại, thao tác mới lưu bình thường.
-  await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
+  await firstButton.click({ force: true });
   await page.locator('button.aspect-square').first().click();
-  await expect.poll(() => state.rpcCalls.length, { timeout: 5000 }).toBe(callsBefore + 1);
+  // Lần lưu đầu bị từ chối, app tự gộp và lưu lại: điểm cô cộng nằm trên số điểm sau khi em mua.
+  await expect.poll(() => state.tables.students[id].points, { timeout: 8000 }).toBeGreaterThan(before - 5);
+  const row = state.tables.students[id];
+  expect(state.rpcCalls.length).toBeGreaterThan(callsBefore);
+  expect(state.staleNextSave).toBe(false); // lần lưu đầu đã thật sự bị từ chối
+  const added = row.points - (before - 5);
+  expect(added).toBeGreaterThan(0);
+  expect((row.gameState.eggInventory ?? []).some(item => (item as { instanceId?: string }).instanceId === 'shop-egg-1')).toBe(true);
+  // Không làm phiền giáo viên: không có banner xung đột, không tải lại cả lớp.
+  await expect(page.getByRole('alert').filter({ hasText: 'Dữ liệu vừa được đổi ở máy khác' })).toHaveCount(0);
   expect(state.errors).toEqual([]);
 });
 
@@ -851,20 +863,11 @@ test('Bị từ chối liên tục thì dừng tự tải lại, báo tên học
   await page.waitForTimeout(2200);
   state.staleAlways = true;
   await chooseClass(page, '6A');
-  const conflict = page.getByRole('alert').filter({ hasText: 'Dữ liệu vừa được đổi ở máy khác' });
   const paused = page.getByRole('alert').filter({ hasText: 'tạm dừng lưu' });
-  for (let i = 0; i < 3; i += 1) {
-    const readsBefore = state.settingsReads;
-    await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
-    await page.locator('button.aspect-square').first().click();
-    if (i < 2) {
-      await expect(conflict).toBeVisible({ timeout: 5000 });
-      await expect.poll(() => state.settingsReads).toBeGreaterThan(readsBefore);
-      await conflict.getByRole('button', { name: 'Đã hiểu' }).click();
-      await page.waitForTimeout(800);
-    }
-  }
-  await expect(paused).toBeVisible({ timeout: 5000 });
+  // Gộp rồi lưu lại vẫn bị từ chối 3 lần liền: dừng hẳn.
+  await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
+  await page.locator('button.aspect-square').first().click();
+  await expect(paused).toBeVisible({ timeout: 10000 });
   const readsWhenPaused = state.settingsReads;
   await page.waitForTimeout(3000);
   // Không tự tải lại nữa (không còn vòng lặp dội vào Supabase).

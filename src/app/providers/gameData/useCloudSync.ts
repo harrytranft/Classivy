@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { chooseModelForNewTeacher, loadCloudData, runLegacyUpgrade, saveCloudData } from './cloudStore';
+import { useEffect, useRef, useState } from 'react';
+import { chooseModelForNewTeacher, loadCloudData, loadConflictingStudents, runLegacyUpgrade, saveCloudData } from './cloudStore';
+import { mergeConflicts } from '../../../domain/conflictMerge';
 import { EMPTY_SNAPSHOT } from '../../../domain/cloudModel';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
 import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, DEFAULT_LUCKY_WHEEL_REWARDS, DEFAULT_SKILLS, LUCKY_WHEEL_REWARDS_KEY, PET_SKILLS_KEY, SKILLS_KEY, STORAGE_KEY, NEG_SOUND_KEY, POS_SOUND_KEY, TIMER_SOUND_KEY, WHEEL_FINISH_SOUND_KEY, WHEEL_SPIN_SOUND_KEY } from '../../../data/constants';
@@ -38,6 +39,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
   const hiddenAtRef = useRef<number | null>(null);
   // Mốc các lần lưu bị từ chối vì máy khác vừa sửa (để phát hiện vòng lặp tải lại - lưu - bị từ chối).
   const conflictTimesRef = useRef<number[]>([]);
+  // Tăng để lưu lại ngay sau khi tự gộp xung đột (kể cả khi danh sách học sinh không đổi).
+  const [saveRetryToken, setSaveRetryToken] = useState(0);
 
   useEffect(() => {
     if (authLoading) return;
@@ -306,25 +309,39 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
         lastCloudSnapshotRef.current = saved.snapshot;
         setLastSyncedTime(saved.updatedAt);
         setCloudSaveError(null);
+        conflictTimesRef.current = [];
       } catch (err) {
         if (isStaleDataError(err)) {
-          // Không ghi đè dữ liệu máy khác vừa lưu: dừng lưu, tải lại bản mới nhất, báo giáo viên làm lại thao tác.
+          // Học sinh vừa được sửa ở nơi khác (em mua Shop ở nhà, máy/tab khác...). Không ghi đè: đọc lại riêng các em đó,
+          // tự gộp thay đổi của giáo viên lên bản mới rồi lưu lại (phương án B, 2026-10-30).
           const names = conflictStudentNames(err.clientIds, students);
           console.warn("Sync conflict (stale_data) for students:", names.join(', '));
           const conflict = recordSyncConflict(conflictTimesRef.current, Date.now());
           conflictTimesRef.current = conflict.times;
-          setInitialCloudLoadComplete(false);
           if (conflict.isLoop) {
-            // Bị từ chối liên tục (2026-10-30: hàng trăm lần mỗi giờ): không tự tải lại nữa để khỏi thành vòng lặp
+            // Bị từ chối liên tục dù đã gộp (2026-10-30: hàng trăm lần mỗi giờ): dừng hẳn để khỏi thành vòng lặp
             // dội vào Supabase. Tạm dừng lưu cho tới khi giáo viên đóng máy/tab khác và bấm "Thử lại".
             conflictTimesRef.current = [];
+            setInitialCloudLoadComplete(false);
             setSyncConflict(false);
             setCloudLoadSuccess(false);
             setCloudLoadError(`Dữ liệu của ${names.join(', ') || 'một số học sinh'} bị sửa ở nơi khác liên tục `
               + `(${CONFLICT_LOOP_LIMIT} lần trong 2 phút) nên Classivy tạm dừng lưu. Hãy đóng Classivy ở các máy/tab khác rồi bấm Thử lại.`);
           } else {
-            setSyncConflict(true);
-            setReloadToken(n => n + 1);
+            try {
+              if (err.clientIds.length === 0) throw new Error('stale_data without student ids');
+              const base = lastCloudSnapshotRef.current;
+              const fresh = await loadConflictingStudents(err.clientIds);
+              lastCloudSnapshotRef.current = mergeConflicts([], base, fresh, err.clientIds).snapshot;
+              setStudents(prev => mergeConflicts(prev, base, fresh, err.clientIds).students);
+              setSaveRetryToken(n => n + 1);
+            } catch (mergeError) {
+              // Không đọc lại được riêng các em: quay về cách cũ (tải lại toàn bộ, báo giáo viên làm lại thao tác).
+              console.error("Conflict merge failed, reloading:", mergeError);
+              setSyncConflict(true);
+              setInitialCloudLoadComplete(false);
+              setReloadToken(n => n + 1);
+            }
           }
         } else {
           console.error("Auto-sync to cloud failed:", err);
@@ -337,5 +354,5 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     }, 1500); // 1.5s debounce to group multiple rapid edits together
 
     return () => clearTimeout(timer);
-  }, [students, skills, petSkills, posSoundUrl, negSoundUrl, timerSoundUrl, wheelSpinSoundUrl, wheelFinishSoundUrl, customLudoTiles, luckyWheelRewards, bossStatesByClass, bossEncounterFrequency, classroomSettings, classroomCloudSynced, user, initialCloudLoadComplete, cloudLoadSuccess]);
+  }, [students, skills, petSkills, posSoundUrl, negSoundUrl, timerSoundUrl, wheelSpinSoundUrl, wheelFinishSoundUrl, customLudoTiles, luckyWheelRewards, bossStatesByClass, bossEncounterFrequency, classroomSettings, classroomCloudSynced, user, initialCloudLoadComplete, cloudLoadSuccess, saveRetryToken]);
 };

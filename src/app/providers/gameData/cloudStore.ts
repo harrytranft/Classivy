@@ -1,5 +1,6 @@
 import {
   areTeacherTablesAvailable,
+  fetchStudentsByClientIds,
   fetchTeacherTables,
   fetchUserSettings,
   saveTeacherChanges,
@@ -38,6 +39,12 @@ export interface CloudLoadResult {
 const loadTablesSnapshot = async (): Promise<CloudSnapshot> => {
   const tables = await fetchTeacherTables();
   return buildSnapshot(tables.classes, tables.students, tables.history);
+};
+
+/** Bản mới nhất của riêng các em bị xung đột (để tự gộp, không tải lại cả lớp). */
+export const loadConflictingStudents = async (clientIds: string[]): Promise<CloudSnapshot> => {
+  const tables = await fetchStudentsByClientIds(clientIds);
+  return buildSnapshot([], tables.students, tables.history);
 };
 
 /** null = giáo viên chưa có dữ liệu trên đám mây (lần đăng nhập đầu). */

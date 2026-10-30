@@ -229,6 +229,52 @@ export const fetchTeacherTables = async (): Promise<TeacherTables> => {
   };
 };
 
+/**
+ * Đọc lại riêng vài học sinh (khi lần lưu bị từ chối vì các em vừa được sửa ở nơi khác): dòng học sinh kèm số phiên bản
+ * và lịch sử gần đây. Em không còn trên Supabase thì không có trong kết quả.
+ */
+export const fetchStudentsByClientIds = async (clientIds: string[]): Promise<TeacherTables> => {
+  if (clientIds.length === 0) return { classes: [], students: [], history: [] };
+  const [classesResult, studentsResult, historyResult] = await Promise.all([
+    supabase.from('classes').select('id, name'),
+    supabase.from('students')
+      .select('client_id, class_id, name, gender, points, avatar, game_state, revision')
+      .in('client_id', clientIds),
+    supabase.from('student_recent_history')
+      .select('student_client_id, client_event_id, amount, reason, occurred_at, id')
+      .in('student_client_id', clientIds)
+      .order('id')
+  ]);
+  for (const result of [classesResult, studentsResult, historyResult]) if (result.error) throw result.error;
+  const classNameById = new Map((classesResult.data ?? []).map((row: { id: string; name: string }) => [row.id, row.name]));
+  return {
+    classes: [],
+    students: (studentsResult.data ?? []).map((row: {
+      client_id: string; class_id: string; name: string; gender: string; points: number;
+      avatar: string | null; game_state: Record<string, unknown> | null; revision?: number;
+    }) => ({
+      clientId: row.client_id,
+      className: classNameById.get(row.class_id) ?? '',
+      name: row.name,
+      gender: row.gender as StudentRow['gender'],
+      points: row.points,
+      avatar: row.avatar,
+      gameState: (row.game_state ?? {}) as StudentRow['gameState'],
+      ...(typeof row.revision === 'number' ? { revision: row.revision } : {})
+    })),
+    history: (historyResult.data ?? []).map((row: {
+      student_client_id: string; client_event_id: string; amount: number; reason: string; occurred_at: string;
+    }) => ({
+      studentClientId: row.student_client_id,
+      clientEventId: row.client_event_id,
+      amount: row.amount,
+      reason: row.reason,
+      occurredAtMs: Date.parse(row.occurred_at),
+      source: 'app' as const
+    }))
+  };
+};
+
 /** Ghi một gói thay đổi trong một transaction (hàm DB save_teacher_changes). */
 export const saveTeacherChanges = async (changes: TeacherChanges): Promise<number> => {
   const { data, error } = await supabase.rpc('save_teacher_changes', { p_changes: sanitizeForSupabase(toRpcPayload(changes)) });
