@@ -32,8 +32,8 @@ export const StatusDock: React.FC<StatusDockProps> = ({
 }) => {
   const syncLabel = isSyncing ? 'Đang đồng bộ dữ liệu' : formatSyncTime(lastSyncedTime);
   const items = [
-    { id: 'backup', label: 'Sao lưu đám mây', Icon: CloudUpload, onClick: onBackup, disabled: !user || isSyncing },
-    { id: 'restore', label: 'Khôi phục dữ liệu', Icon: History, onClick: onRestore, disabled: !user || isSyncing },
+    { id: 'backup', label: 'Sao lưu đám mây', Icon: CloudUpload, onClick: () => onBackup(), disabled: !user || isSyncing },
+    { id: 'restore', label: 'Khôi phục dữ liệu', Icon: History, onClick: () => onRestore(), disabled: !user || isSyncing },
     {
       id: 'sync',
       label: isSyncing ? 'Đang sync' : 'Trạng thái sync',

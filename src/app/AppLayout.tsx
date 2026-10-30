@@ -21,6 +21,7 @@ import { RandomModal } from '../features/random/RandomModal';
 import { QuickUndoChip } from '../features/random/QuickUndoChip';
 import { DataUpgradeModal } from '../features/dataUpgrade/DataUpgradeModal';
 import { SyncConflictBanner } from './SyncConflictBanner';
+import { CloudErrorBanner } from './CloudErrorBanner';
 import { useApp } from './AppContext';
 import { useGlobalShortcuts } from './useGlobalShortcuts';
 import { WildEncounterToast } from '../features/hunt/WildEncounterToast';
@@ -58,6 +59,7 @@ export const AppLayout: React.FC = () => {
 
       {/* Phase 7: lần lưu bị từ chối vì máy khác vừa sửa */}
       <SyncConflictBanner />
+      <CloudErrorBanner />
 
       {/* MODAL: NÂNG CẤP CÁCH LƯU DỮ LIỆU (Phase 3) */}
       <DataUpgradeModal />

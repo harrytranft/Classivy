@@ -4,6 +4,7 @@ import { BOSS_ENCOUNTER_FREQUENCY_KEY, BOSS_STATES_KEY, LUCKY_WHEEL_REWARDS_KEY,
 import { DEFAULT_BOSS_ENCOUNTER_FREQUENCY, isBossEncounterFrequency, normalizeBossStatesByClass } from '../../../domain/bossSystem';
 import { loadCloudData, saveCloudData } from './cloudStore';
 import { pickBackupFields } from '../../../domain/backup';
+import { describeCloudError } from '../../../domain/cloudError';
 import { CLASSROOM_SETTINGS_KEY } from '../../../data/classroomDefaults';
 import { normalizeClassroomSettings } from '../../../domain/classroomSettings';
 import { GameDataState } from './useGameDataState';
@@ -19,7 +20,8 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     setPosSoundUrl, negSoundUrl, setNegSoundUrl, timerSoundUrl, setTimerSoundUrl,
     wheelSpinSoundUrl, setWheelSpinSoundUrl, wheelFinishSoundUrl, setWheelFinishSoundUrl,
     setIsSyncing, setLastSyncedTime, cloudDataModelRef, lastCloudSnapshotRef,
-    classroomSettings, setClassroomSettings, classroomCloudSynced
+    classroomSettings, setClassroomSettings, classroomCloudSynced,
+    cloudLoadSuccess, cloudLoadError, setCloudLoadError, setCloudSaveError, setCloudReloadToken
   } = data;
 
   const handleExportJSON = () => {
@@ -111,8 +113,8 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
         setClassroomSettings(importedClassroom);
         localStorage.setItem(CLASSROOM_SETTINGS_KEY, JSON.stringify(importedClassroom));
 
-        // Trigger immediate sync to Supabase if user is authenticated
-        if (user) {
+        // Trigger immediate sync to Supabase if user is authenticated (và đã tải được dữ liệu đám mây, để biết cách lưu đúng)
+        if (user && cloudLoadSuccess) {
           setIsSyncing(true);
           saveCloudData(user.uid, {
               students: importedStudents,
@@ -148,9 +150,21 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
     e.target.value = '';
   };
 
-  const handleBackupToCloud = async (silent = false) => {
+  // `silent` phải đúng là true: nút bấm truyền sự kiện chuột vào đây, trước kia bị hiểu nhầm là "im lặng"
+  // nên bấm Sao lưu không thấy báo thành công hay lỗi.
+  const handleBackupToCloud = async (silent: unknown = false) => {
+    const quiet = silent === true;
     if (!user) {
-      if (!silent) alert("Vui lòng đăng nhập để thực hiện sao lưu lên đám mây!");
+      if (!quiet) alert("Vui lòng đăng nhập để thực hiện sao lưu lên đám mây!");
+      return;
+    }
+    if (!cloudLoadSuccess) {
+      // Chưa tải được dữ liệu đám mây: không đẩy dữ liệu máy này lên (có thể cũ hoặc trống, sẽ ghi đè bản trên mây).
+      setCloudReloadToken(n => n + 1);
+      if (!quiet) {
+        alert("Chưa tải được dữ liệu từ đám mây nên Classivy chưa sao lưu, để tránh ghi đè dữ liệu thật. Classivy đang thử tải lại."
+          + (cloudLoadError ? "\n\nLỗi: " + cloudLoadError : ""));
+      }
       return;
     }
     setIsSyncing(true);
@@ -172,13 +186,15 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
       }, cloudDataModelRef.current, lastCloudSnapshotRef.current);
       lastCloudSnapshotRef.current = saved.snapshot;
       setLastSyncedTime(saved.updatedAt);
-      if (!silent) {
+      setCloudSaveError(null);
+      if (!quiet) {
         alert("Toàn bộ dữ liệu trainer, Pokémon và lớp học đã được sao lưu lên đám mây thành công!");
       }
     } catch (err) {
       console.error("Backup to Cloud failed:", err);
-      if (!silent) {
-        alert("Có lỗi xảy ra khi sao lưu lên đám mây: " + (err instanceof Error ? err.message : String(err)));
+      setCloudSaveError(describeCloudError(err));
+      if (!quiet) {
+        alert("Có lỗi xảy ra khi sao lưu lên đám mây: " + describeCloudError(err));
       }
     } finally {
       setIsSyncing(false);
@@ -191,6 +207,12 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
       return;
     }
     if (!confirm("Người có chắc chắn muốn PHỤC HỒI dữ liệu từ đám mây? Thao tác này sẽ ghi đè toàn bộ dữ liệu hiện tại trên thiết bị!")) {
+      return;
+    }
+    if (!cloudLoadSuccess) {
+      // Lần tải đầu đã hỏng: tải lại đầy đủ (bật lại tự đồng bộ khi thành công); kết quả hiện trên banner.
+      setCloudLoadError(null);
+      setCloudReloadToken(n => n + 1);
       return;
     }
     setIsSyncing(true);
@@ -257,7 +279,7 @@ export const createBackupActions = (data: GameDataState, user: AuthUser | null) 
       }
     } catch (err) {
       console.error("Restore from Cloud failed:", err);
-      alert("Có lỗi xảy ra khi phục hồi từ đám mây: " + (err instanceof Error ? err.message : String(err)));
+      alert("Có lỗi xảy ra khi phục hồi từ đám mây: " + describeCloudError(err));
     } finally {
       setIsSyncing(false);
     }

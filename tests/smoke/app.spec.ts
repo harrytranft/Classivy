@@ -102,6 +102,8 @@ interface SmokeState {
   /** Phase 7: lần lưu tới bị DB từ chối như khi máy khác vừa sửa (stale_data); đếm số lần đọc user_settings. */
   staleNextSave: boolean;
   settingsReads: number;
+  /** Đọc bảng students trả lỗi như Supabase quá tải (statement timeout). */
+  failStudentReads: boolean;
 }
 
 // Payload JSON của save_teacher_changes -> TeacherChanges (ngược với toRpcPayload).
@@ -170,7 +172,7 @@ interface SetupOptions {
 }
 
 async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState> {
-  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1, staleNextSave: false, settingsReads: 0 };
+  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1, staleNextSave: false, settingsReads: 0, failStudentReads: false };
 
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ loggedIn, storageKey, session, seedValues }) => {
@@ -255,6 +257,10 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
         state.rpcCalls.push(changes);
         const body = target === 'rpc/save_teacher_changes' ? String(Date.now()) : JSON.stringify({ saved_at: Date.now(), revisions: {} });
         await route.fulfill({ status: 200, contentType: 'application/json', body });
+        return;
+      }
+      if (target === 'students' && state.failStudentReads) {
+        await route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ code: '57014', message: 'canceling statement due to statement timeout', details: null, hint: null }) });
         return;
       }
       const offset = Number(url.searchParams.get('offset') || 0);
@@ -793,6 +799,44 @@ test('Phase 7: máy khác vừa sửa thì không ghi đè, báo giáo viên và
   await page.locator('button.aspect-square').first().click();
   await expect.poll(() => state.rpcCalls.length, { timeout: 5000 }).toBe(callsBefore + 1);
   expect(state.errors).toEqual([]);
+});
+
+test('Tải đám mây lỗi: báo rõ, không sao lưu đè, Thử lại thì tải được', async ({ page }) => {
+  const state = await setupPage(page, {
+    loggedIn: true,
+    emptyCloud: true,
+    phase3: true,
+    localStorageSeed: { classivy_school_data_v6: JSON.stringify(FIXTURE.students) }
+  });
+  await page.waitForTimeout(2200);
+  const callsBefore = state.rpcCalls.length;
+
+  state.failStudentReads = true;
+  await page.reload();
+  const banner = page.getByRole('alert').filter({ hasText: 'Chưa tải được dữ liệu từ đám mây' });
+  await expect(banner).toBeVisible({ timeout: 10000 });
+  await expect(banner).toContainText('mã 57014');
+  await page.locator('.cl-splash').waitFor({ state: 'detached' });
+
+  // Nút Sao lưu báo lý do, không đẩy dữ liệu máy này lên đám mây.
+  state.dialogs = [];
+  await page.getByRole('button', { name: 'Sao lưu đám mây' }).click();
+  await expect.poll(() => state.dialogs.join('\n')).toContain('Chưa tải được dữ liệu từ đám mây nên Classivy chưa sao lưu');
+  expect(state.rpcCalls.length).toBe(callsBefore);
+  // Nút Sao lưu cũng tự tải lại; chờ lần đó xong (vẫn lỗi) rồi mới cho Supabase hồi phục.
+  const retry = banner.getByRole('button', { name: 'Thử lại' });
+  await expect(retry).toBeEnabled({ timeout: 10000 });
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/71-cloud-load-error.png' });
+
+  state.failStudentReads = false;
+  await retry.click();
+  await expect(banner).toHaveCount(0, { timeout: 10000 });
+  await page.locator('main button[aria-label="Vào lớp 6A"]').waitFor({ state: 'attached' });
+
+  // Đã tải được: Sao lưu báo thành công (trước đây nút này không báo gì).
+  state.dialogs = [];
+  await page.getByRole('button', { name: 'Sao lưu đám mây' }).click();
+  await expect.poll(() => state.dialogs.join('\n')).toContain('sao lưu lên đám mây thành công');
 });
 
 test('Phase 8: hiệu ứng điểm, phím tắt, hồi sinh, nút Lớp Học và đăng xuất không cần xác nhận', async ({ page }) => {

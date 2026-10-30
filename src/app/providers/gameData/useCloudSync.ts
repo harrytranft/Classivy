@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { chooseModelForNewTeacher, loadCloudData, runLegacyUpgrade, saveCloudData } from './cloudStore';
 import { EMPTY_SNAPSHOT } from '../../../domain/cloudModel';
 import { normalizeStudentPokemonData } from '../../../domain/pokemonProgression';
@@ -9,6 +9,7 @@ import { CLASSROOM_SETTINGS_KEY } from '../../../data/classroomDefaults';
 import { loadLocalClassroomSettings, normalizeClassroomSettings } from '../../../domain/classroomSettings';
 import { Student } from '../../../types';
 import { isStaleDataError } from '../../../lib/supabaseData';
+import { describeCloudError } from '../../../domain/cloudError';
 import { GameDataState } from './useGameDataState';
 import type { AuthUser } from '../../../features/auth/AuthContext';
 
@@ -27,10 +28,9 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     setIsSyncing, setLastSyncedTime, initialCloudLoadComplete, setInitialCloudLoadComplete,
     cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
     cloudDataModelRef, lastCloudSnapshotRef, setLegacyUpgradeAvailable, setSyncConflict,
-    classroomSettings, setClassroomSettings, classroomCloudSynced, setClassroomCloudSynced
+    classroomSettings, setClassroomSettings, classroomCloudSynced, setClassroomCloudSynced,
+    setCloudLoadError, setCloudSaveError, cloudReloadToken: reloadToken, setCloudReloadToken: setReloadToken
   } = data;
-  // Tăng để tải lại toàn bộ từ đám mây (khi lần lưu bị từ chối vì máy khác đã sửa trước).
-  const [reloadToken, setReloadToken] = useState(0);
   // Học sinh có thể mua/đổi Pokémon ở thiết bị khác (Phase 10B) trong lúc app giáo viên mở nền.
   // Khi giáo viên quay lại tab sau một lúc, tải lại bản mới nhất nếu máy này không còn thay đổi chưa lưu (D31).
   const hasPendingChangesRef = useRef(false);
@@ -49,6 +49,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
       lastCloudSnapshotRef.current = EMPTY_SNAPSHOT;
       setLegacyUpgradeAvailable(false);
       setClassroomCloudSynced(false);
+      setCloudLoadError(null);
+      setCloudSaveError(null);
       return;
     }
 
@@ -222,8 +224,10 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
         }
         setCloudLoadSuccess(true);
         setInitialCloudLoadComplete(true);
+        setCloudLoadError(null);
       } catch (err) {
         console.error("Error pulling database sync from Supabase:", err);
+        setCloudLoadError(describeCloudError(err));
         setCloudLoadSuccess(false);
         setInitialCloudLoadComplete(false);
       } finally {
@@ -299,6 +303,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
         hasPendingChangesRef.current = false;
         lastCloudSnapshotRef.current = saved.snapshot;
         setLastSyncedTime(saved.updatedAt);
+        setCloudSaveError(null);
       } catch (err) {
         if (isStaleDataError(err)) {
           // Không ghi đè dữ liệu máy khác vừa lưu: dừng lưu, tải lại bản mới nhất, báo giáo viên làm lại thao tác.
@@ -307,6 +312,7 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
           setReloadToken(n => n + 1);
         } else {
           console.error("Auto-sync to cloud failed:", err);
+          setCloudSaveError(describeCloudError(err));
         }
       } finally {
         busyRef.current = false;

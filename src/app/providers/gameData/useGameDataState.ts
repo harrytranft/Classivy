@@ -79,6 +79,11 @@ export const useGameDataState = () => {
   const [legacyUpgradeAvailable, setLegacyUpgradeAvailable] = useState(false);
   // Phase 7 (D31): máy khác vừa sửa dữ liệu nên lần lưu của máy này bị từ chối; app tải lại và báo giáo viên.
   const [syncConflict, setSyncConflict] = useState(false);
+  // Lỗi tải/lưu đám mây gần nhất (câu dễ hiểu kèm mã lỗi), hiện trên banner thay vì chỉ ghi console.
+  const [cloudLoadError, setCloudLoadError] = useState<string | null>(null);
+  const [cloudSaveError, setCloudSaveError] = useState<string | null>(null);
+  // Tăng để tải lại toàn bộ từ đám mây (nút "Thử lại", Khôi phục khi chưa tải được, hoặc lần lưu bị từ chối).
+  const [cloudReloadToken, setCloudReloadToken] = useState(0);
 
   return {
     students, setStudents, skills,
@@ -91,7 +96,8 @@ export const useGameDataState = () => {
     setInitialCloudLoadComplete, cloudLoadSuccess, setCloudLoadSuccess, lastSyncedSnapshotRef,
     cloudDataModelRef, lastCloudSnapshotRef, legacyUpgradeAvailable, setLegacyUpgradeAvailable,
     syncConflict, setSyncConflict, classroomSettings, setClassroomSettings,
-    classroomCloudSynced, setClassroomCloudSynced
+    classroomCloudSynced, setClassroomCloudSynced, cloudLoadError, setCloudLoadError,
+    cloudSaveError, setCloudSaveError, cloudReloadToken, setCloudReloadToken
   };
 };
 
