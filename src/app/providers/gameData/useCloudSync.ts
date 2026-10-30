@@ -9,7 +9,7 @@ import { CLASSROOM_SETTINGS_KEY } from '../../../data/classroomDefaults';
 import { loadLocalClassroomSettings, normalizeClassroomSettings } from '../../../domain/classroomSettings';
 import { Student } from '../../../types';
 import { isStaleDataError } from '../../../lib/supabaseData';
-import { describeCloudError } from '../../../domain/cloudError';
+import { CONFLICT_LOOP_LIMIT, conflictStudentNames, describeCloudError, recordSyncConflict } from '../../../domain/cloudError';
 import { GameDataState } from './useGameDataState';
 import type { AuthUser } from '../../../features/auth/AuthContext';
 
@@ -36,6 +36,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
   const hasPendingChangesRef = useRef(false);
   const busyRef = useRef(false);
   const hiddenAtRef = useRef<number | null>(null);
+  // Mốc các lần lưu bị từ chối vì máy khác vừa sửa (để phát hiện vòng lặp tải lại - lưu - bị từ chối).
+  const conflictTimesRef = useRef<number[]>([]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -307,9 +309,23 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
       } catch (err) {
         if (isStaleDataError(err)) {
           // Không ghi đè dữ liệu máy khác vừa lưu: dừng lưu, tải lại bản mới nhất, báo giáo viên làm lại thao tác.
-          setSyncConflict(true);
+          const names = conflictStudentNames(err.clientIds, students);
+          console.warn("Sync conflict (stale_data) for students:", names.join(', '));
+          const conflict = recordSyncConflict(conflictTimesRef.current, Date.now());
+          conflictTimesRef.current = conflict.times;
           setInitialCloudLoadComplete(false);
-          setReloadToken(n => n + 1);
+          if (conflict.isLoop) {
+            // Bị từ chối liên tục (2026-10-30: hàng trăm lần mỗi giờ): không tự tải lại nữa để khỏi thành vòng lặp
+            // dội vào Supabase. Tạm dừng lưu cho tới khi giáo viên đóng máy/tab khác và bấm "Thử lại".
+            conflictTimesRef.current = [];
+            setSyncConflict(false);
+            setCloudLoadSuccess(false);
+            setCloudLoadError(`Dữ liệu của ${names.join(', ') || 'một số học sinh'} bị sửa ở nơi khác liên tục `
+              + `(${CONFLICT_LOOP_LIMIT} lần trong 2 phút) nên Classivy tạm dừng lưu. Hãy đóng Classivy ở các máy/tab khác rồi bấm Thử lại.`);
+          } else {
+            setSyncConflict(true);
+            setReloadToken(n => n + 1);
+          }
         } else {
           console.error("Auto-sync to cloud failed:", err);
           setCloudSaveError(describeCloudError(err));

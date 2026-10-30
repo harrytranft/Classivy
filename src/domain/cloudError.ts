@@ -38,3 +38,19 @@ export function describeCloudError(error: unknown): string {
     .join(': ');
   return detail ? `${friendly} (${detail})` : friendly;
 }
+
+/** Quá số lần "máy khác vừa sửa" trong khoảng này thì coi là vòng lặp: dừng tự tải lại/tự lưu, chờ giáo viên. */
+export const CONFLICT_LOOP_WINDOW_MS = 2 * 60 * 1000;
+export const CONFLICT_LOOP_LIMIT = 3;
+
+/** Ghi nhận một lần bị từ chối vì dữ liệu cũ; trả về mốc thời gian còn trong cửa sổ và có phải vòng lặp không. */
+export function recordSyncConflict(previous: number[], now: number): { times: number[]; isLoop: boolean } {
+  const times = [...previous.filter(time => now - time < CONFLICT_LOOP_WINDOW_MS), now];
+  return { times, isLoop: times.length >= CONFLICT_LOOP_LIMIT };
+}
+
+/** Tên học sinh bị xung đột (từ mã lỗi của DB) để giáo viên biết em nào đang bị sửa ở nơi khác. */
+export function conflictStudentNames(clientIds: string[], students: { id: string; name: string }[]): string[] {
+  const nameById = new Map(students.map(student => [student.id, student.name]));
+  return [...new Set(clientIds)].map(id => nameById.get(id) ?? `(học sinh đã xoá ${id.slice(0, 8)})`);
+}

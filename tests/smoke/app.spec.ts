@@ -104,6 +104,8 @@ interface SmokeState {
   settingsReads: number;
   /** Đọc bảng students trả lỗi như Supabase quá tải (statement timeout). */
   failStudentReads: boolean;
+  /** Mọi lần lưu đều bị từ chối stale_data (như khi máy/tab khác sửa liên tục). */
+  staleAlways: boolean;
 }
 
 // Payload JSON của save_teacher_changes -> TeacherChanges (ngược với toRpcPayload).
@@ -172,7 +174,7 @@ interface SetupOptions {
 }
 
 async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState> {
-  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1, staleNextSave: false, settingsReads: 0, failStudentReads: false };
+  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1, staleNextSave: false, settingsReads: 0, failStudentReads: false, staleAlways: false };
 
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ loggedIn, storageKey, session, seedValues }) => {
@@ -247,7 +249,7 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
     if (phase3Path) {
       const target = phase3Path[1];
       if (target === 'rpc/save_teacher_changes' || target === 'rpc/save_teacher_changes_v2') {
-        if (target === 'rpc/save_teacher_changes_v2' && state.staleNextSave) {
+        if (target === 'rpc/save_teacher_changes_v2' && (state.staleNextSave || state.staleAlways)) {
           state.staleNextSave = false;
           await route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ code: '40001', message: 'stale_data', details: 'x', hint: null }) });
           return;
@@ -837,6 +839,41 @@ test('Tải đám mây lỗi: báo rõ, không sao lưu đè, Thử lại thì t
   state.dialogs = [];
   await page.getByRole('button', { name: 'Sao lưu đám mây' }).click();
   await expect.poll(() => state.dialogs.join('\n')).toContain('sao lưu lên đám mây thành công');
+});
+
+test('Bị từ chối liên tục thì dừng tự tải lại, báo tên học sinh và chờ Thử lại', async ({ page }) => {
+  const state = await setupPage(page, {
+    loggedIn: true,
+    emptyCloud: true,
+    phase3: true,
+    localStorageSeed: { classivy_school_data_v6: JSON.stringify(FIXTURE.students) }
+  });
+  await page.waitForTimeout(2200);
+  state.staleAlways = true;
+  await chooseClass(page, '6A');
+  const conflict = page.getByRole('alert').filter({ hasText: 'Dữ liệu vừa được đổi ở máy khác' });
+  const paused = page.getByRole('alert').filter({ hasText: 'tạm dừng lưu' });
+  for (let i = 0; i < 3; i += 1) {
+    const readsBefore = state.settingsReads;
+    await page.getByRole('button', { name: /^Cộng điểm / }).first().click({ force: true });
+    await page.locator('button.aspect-square').first().click();
+    if (i < 2) {
+      await expect(conflict).toBeVisible({ timeout: 5000 });
+      await expect.poll(() => state.settingsReads).toBeGreaterThan(readsBefore);
+      await conflict.getByRole('button', { name: 'Đã hiểu' }).click();
+      await page.waitForTimeout(800);
+    }
+  }
+  await expect(paused).toBeVisible({ timeout: 5000 });
+  const readsWhenPaused = state.settingsReads;
+  await page.waitForTimeout(3000);
+  // Không tự tải lại nữa (không còn vòng lặp dội vào Supabase).
+  expect(state.settingsReads).toBe(readsWhenPaused);
+
+  state.staleAlways = false;
+  await paused.getByRole('button', { name: 'Thử lại' }).click();
+  await expect(paused).toHaveCount(0, { timeout: 10000 });
+  expect(state.settingsReads).toBeGreaterThan(readsWhenPaused);
 });
 
 test('Phase 8: hiệu ứng điểm, phím tắt, hồi sinh, nút Lớp Học và đăng xuất không cần xác nhận', async ({ page }) => {

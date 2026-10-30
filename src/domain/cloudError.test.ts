@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CLOUD_TIMEOUT_MESSAGE, describeCloudError } from './cloudError';
+import { CLOUD_TIMEOUT_MESSAGE, conflictStudentNames, describeCloudError, recordSyncConflict } from './cloudError';
 
 describe('describeCloudError', () => {
   it('quá thời gian chờ', () => {
@@ -28,5 +28,21 @@ describe('describeCloudError', () => {
       "Có lỗi khi làm việc với dữ liệu đám mây. (mã PGRST204: Could not find the 'x' column)"
     );
     expect(describeCloudError(undefined)).toBe('Có lỗi khi làm việc với dữ liệu đám mây.');
+  });
+});
+
+describe('vòng lặp xung đột', () => {
+  it('3 lần trong 2 phút là vòng lặp, lần cũ hơn 2 phút không tính', () => {
+    let state = recordSyncConflict([], 0);
+    expect(state.isLoop).toBe(false);
+    state = recordSyncConflict(state.times, 60_000);
+    expect(state.isLoop).toBe(false);
+    state = recordSyncConflict(state.times, 110_000);
+    expect(state.isLoop).toBe(true);
+    expect(recordSyncConflict([0, 10_000], 200_000)).toEqual({ times: [200_000], isLoop: false });
+  });
+
+  it('đổi mã học sinh thành tên, bỏ trùng', () => {
+    expect(conflictStudentNames(['a', 'a', 'zzzzzzzzzz'], [{ id: 'a', name: 'An' }])).toEqual(['An', '(học sinh đã xoá zzzzzzzz)']);
   });
 });
