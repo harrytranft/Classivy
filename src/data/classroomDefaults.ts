@@ -4,8 +4,7 @@ export const CLASSROOM_SETTINGS_KEY = 'classivy_classroom_settings';
 
 export const DEFAULT_WILD_HUNT_SETTINGS: WildHuntSettings = {
   enabled: true,
-  delayMinMinutes: 40,
-  delayMaxMinutes: 40,
+  startOffsetMinutes: 30,
   lingerMinutes: 5,
   rarityWeights: { common: 70, rare: 25, legendary: 5 },
   correctNeeded: { common: 3, rare: 4, legendary: 5 },
@@ -29,5 +28,6 @@ export const DEFAULT_LUDO_CHALLENGES: LudoChallenge[] = [
 
 export const createDefaultClassroomSettings = (): ClassroomSettings => ({
   wildHunt: { ...DEFAULT_WILD_HUNT_SETTINGS, rarityWeights: { ...DEFAULT_WILD_HUNT_SETTINGS.rarityWeights }, correctNeeded: { ...DEFAULT_WILD_HUNT_SETTINGS.correctNeeded } },
-  ludoChallenges: DEFAULT_LUDO_CHALLENGES.map(challenge => ({ ...challenge }))
+  ludoChallenges: DEFAULT_LUDO_CHALLENGES.map(challenge => ({ ...challenge })),
+  classSchedules: {}
 });

@@ -3,54 +3,61 @@ import { DEFAULT_WILD_HUNT_SETTINGS } from '../data/classroomDefaults';
 import { WildHuntSettings } from '../types';
 import { LEGENDARY_POKEMON_DEX_IDS, SPECIAL_POKEMON_DEX_IDS } from './eggs';
 import {
-  HUNT_IDLE_RESET_MS, applyHuntAnswer, buildCatchWheelEntries, canSpawnWildPokemon, correctRemaining, createWildEncounter,
-  getConsolationStudentIds, getDexIdPoolForRarity, huntRemainingMs, isEncounterExpired, isHuntDue, isNewHuntSession,
-  pickCatchWinnerIndex, pickDexIdForRarity, pickNextCaller, rollAppearanceDelayMs, rollRarity, startHunting, touchHuntSession,
+  applyHuntAnswer, buildCatchWheelEntries, canSpawnWildPokemon, correctRemaining, createWildEncounter,
+  getConsolationStudentIds, getDexIdPoolForRarity, huntRemainingMs, isEncounterExpired, isHuntDue,
+  pickCatchWinnerIndex, pickDexIdForRarity, pickNextCaller, rollRarity, rollSpawnAt, startHunting, touchHuntSession,
   wrongAllowedRemaining
 } from './wildHunt';
+import { getCurrentClassSession } from './classSchedule';
 
 const settings = (patch: Partial<WildHuntSettings> = {}): WildHuntSettings => ({ ...DEFAULT_WILD_HUNT_SETTINGS, ...patch });
 const MIN = 60_000;
 // Trưa một ngày cố định (giờ địa phương) để các phép so sánh "cùng ngày" không phụ thuộc múi giờ máy chạy test.
 const NOON = new Date(2026, 9, 29, 12, 0, 0).getTime();
 
-describe('hẹn giờ xuất hiện', () => {
-  it('min = max: cố định đúng số phút', () => {
-    expect(rollAppearanceDelayMs(settings({ delayMinMinutes: 40, delayMaxMinutes: 40 }), () => 0.7)).toBe(40 * MIN);
-  });
-  it('bốc trong khoảng min..max, gồm cả hai đầu', () => {
-    const s = settings({ delayMinMinutes: 30, delayMaxMinutes: 50 });
-    expect(rollAppearanceDelayMs(s, () => 0)).toBe(30 * MIN);
-    expect(rollAppearanceDelayMs(s, () => 0.999999)).toBe(50 * MIN);
-  });
-});
+describe('buổi học theo lịch', () => {
+  // NOON (29/10/2026) là Thứ 5 = weekday 4. Lớp học 12:00-13:30, Pokémon xuất hiện từ 12:30 tới 13:30.
+  const slot = { id: 's1', weekday: 4, start: '12:00', end: '13:30' };
+  const windowAt = (now: number) => getCurrentClassSession([slot], now, 30);
 
-describe('buổi học (D56)', () => {
-  const s = settings({ delayMinMinutes: 40, delayMaxMinutes: 40 });
-  it('lần đầu mở trang lớp: mở buổi mới, đồng hồ bắt đầu từ lúc đó', () => {
-    const session = touchHuntSession(undefined, '6A', NOON, s);
-    expect(session).toMatchObject({ className: '6A', startedAt: NOON, lastSeenAt: NOON, delayMs: 40 * MIN, spawned: false });
-    expect(isHuntDue(session, NOON + 39 * MIN)).toBe(false);
-    expect(isHuntDue(session, NOON + 40 * MIN)).toBe(true);
-    expect(huntRemainingMs(session, NOON + 10 * MIN)).toBe(30 * MIN);
+  it('ngoài giờ học thì không mở phiên', () => {
+    expect(windowAt(NOON - MIN)).toBeNull();
+    expect(touchHuntSession(undefined, '6A', windowAt(NOON - MIN), NOON - MIN)).toBeUndefined();
+    expect(windowAt(NOON + 90 * MIN)).toBeNull();
   });
-  it('quay lại trong 2 giờ: giữ buổi và đồng hồ, chỉ cập nhật lastSeenAt', () => {
-    const first = touchHuntSession(undefined, '6A', NOON, s);
-    const again = touchHuntSession(first, '6A', NOON + 30 * MIN, s);
-    expect(again.startedAt).toBe(NOON);
-    expect(again.lastSeenAt).toBe(NOON + 30 * MIN);
+  it('vào lớp đầu giờ: giờ xuất hiện bốc trong 12:30-13:30', () => {
+    const early = touchHuntSession(undefined, '6A', windowAt(NOON + 5 * MIN), NOON + 5 * MIN, () => 0)!;
+    expect(early).toMatchObject({ className: '6A', spawnAt: NOON + 30 * MIN, windowEnd: NOON + 90 * MIN, spawned: false });
+    const late = touchHuntSession(undefined, '6A', windowAt(NOON + 5 * MIN), NOON + 5 * MIN, () => 0.999999)!;
+    expect(late.spawnAt).toBeLessThan(NOON + 90 * MIN);
+    expect(late.spawnAt).toBeGreaterThan(NOON + 89 * MIN);
+    expect(isHuntDue(early, NOON + 29 * MIN)).toBe(false);
+    expect(isHuntDue(early, NOON + 30 * MIN)).toBe(true);
+    expect(huntRemainingMs(early, NOON + 10 * MIN)).toBe(20 * MIN);
   });
-  it('nghỉ từ 2 giờ trở lên hoặc sang ngày khác: buổi mới, con mới', () => {
-    const first = { ...touchHuntSession(undefined, '6A', NOON, s), spawned: true };
-    expect(isNewHuntSession(first, NOON + HUNT_IDLE_RESET_MS - 1)).toBe(false);
-    expect(isNewHuntSession(first, NOON + HUNT_IDLE_RESET_MS)).toBe(true);
-    const nextDay = NOON + 24 * 60 * MIN;
-    expect(touchHuntSession({ ...first, lastSeenAt: nextDay - MIN }, '6A', nextDay, s).spawned).toBe(false);
+  it('mở trang giữa khung giờ: không xuất hiện ngay lập tức mà bốc từ lúc đó tới hết giờ', () => {
+    const session = touchHuntSession(undefined, '6A', windowAt(NOON + 60 * MIN), NOON + 60 * MIN, () => 0.5)!;
+    expect(session.spawnAt).toBe(NOON + 75 * MIN);
+  });
+  it('cùng buổi thì giữ nguyên giờ đã bốc; hết giờ học thì không còn đến hạn', () => {
+    const first = touchHuntSession(undefined, '6A', windowAt(NOON), NOON, () => 0.2)!;
+    expect(touchHuntSession(first, '6A', windowAt(NOON + 40 * MIN), NOON + 40 * MIN, () => 0.9)).toBe(first);
+    expect(isHuntDue(first, NOON + 90 * MIN)).toBe(false);
+  });
+  it('buổi khác (tuần sau) là phiên mới, con mới', () => {
+    const first = { ...touchHuntSession(undefined, '6A', windowAt(NOON), NOON)!, spawned: true };
+    const nextWeek = NOON + 7 * 24 * 60 * MIN;
+    const next = touchHuntSession(first, '6A', windowAt(nextWeek), nextWeek)!;
+    expect(next.sessionKey).not.toBe(first.sessionKey);
+    expect(next.spawned).toBe(false);
   });
   it('mỗi buổi tối đa 1 con: đã xuất hiện thì không đến hạn nữa', () => {
-    const session = { ...touchHuntSession(undefined, '6A', NOON, s), spawned: true };
-    expect(isHuntDue(session, NOON + 500 * MIN)).toBe(false);
+    const session = { ...touchHuntSession(undefined, '6A', windowAt(NOON), NOON)!, spawned: true };
+    expect(isHuntDue(session, NOON + 60 * MIN)).toBe(false);
     expect(huntRemainingMs(session, NOON)).toBe(0);
+  });
+  it('khung giờ đã qua thì giờ xuất hiện là giờ kết thúc (không bao giờ đến hạn)', () => {
+    expect(rollSpawnAt({ windowStart: NOON, windowEnd: NOON + MIN }, NOON + 2 * MIN)).toBe(NOON + MIN);
   });
 });
 

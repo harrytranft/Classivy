@@ -1,4 +1,5 @@
 import { CLASSROOM_SETTINGS_KEY, DEFAULT_WILD_HUNT_SETTINGS, createDefaultClassroomSettings } from '../data/classroomDefaults';
+import { normalizeClassSchedules } from './classSchedule';
 import { ClassroomSettings, LudoChallenge, WildHuntSettings, WildRarity } from '../types';
 
 // Chuẩn hoá cài đặt lớp học từ nguồn không tin cậy (cloud, localStorage, file sao lưu):
@@ -28,15 +29,13 @@ const normalizeRarityMap = (value: unknown, min: number, max: number, fallback: 
 export const normalizeWildHuntSettings = (value: unknown): WildHuntSettings => {
   const defaults = DEFAULT_WILD_HUNT_SETTINGS;
   const source = isRecord(value) ? value : {};
-  const delayMin = clampInt(source.delayMinMinutes, 1, 240, defaults.delayMinMinutes);
-  const delayMax = clampInt(source.delayMaxMinutes, 1, 240, defaults.delayMaxMinutes);
   const rarityWeights = normalizeRarityMap(source.rarityWeights, 0, 100, defaults.rarityWeights);
   // Cả ba trọng số bằng 0 thì không bốc được độ hiếm nào: quay về mặc định.
   const weightsValid = RARITIES.some(rarity => rarityWeights[rarity] > 0);
   return {
     enabled: typeof source.enabled === 'boolean' ? source.enabled : defaults.enabled,
-    delayMinMinutes: Math.min(delayMin, delayMax),
-    delayMaxMinutes: Math.max(delayMin, delayMax),
+    // Bản cũ hẹn giờ theo lúc mở trang (delayMin/MaxMinutes) không dùng nữa: quay về mặc định 30 phút.
+    startOffsetMinutes: clampInt(source.startOffsetMinutes, 0, 240, defaults.startOffsetMinutes),
     lingerMinutes: clampInt(source.lingerMinutes, 1, 60, defaults.lingerMinutes),
     rarityWeights: weightsValid ? rarityWeights : { ...defaults.rarityWeights },
     correctNeeded: normalizeRarityMap(source.correctNeeded, 1, 10, defaults.correctNeeded),
@@ -73,7 +72,8 @@ export const normalizeClassroomSettings = (value: unknown): ClassroomSettings =>
   const source = isRecord(value) ? value : {};
   return {
     wildHunt: normalizeWildHuntSettings(source.wildHunt),
-    ludoChallenges: normalizeLudoChallenges(source.ludoChallenges)
+    ludoChallenges: normalizeLudoChallenges(source.ludoChallenges),
+    classSchedules: normalizeClassSchedules(source.classSchedules)
   };
 };
 

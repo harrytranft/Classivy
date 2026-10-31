@@ -21,9 +21,10 @@ const Field: React.FC<{ label: string; hint?: string; children: React.ReactNode 
 
 export const WildHuntSettingsSection: React.FC = () => {
   const {
-    classroomSettings, setClassroomSettings, classroomCloudSynced, callTestWildPokemon, settingsCollapsed, toggleSettingsSection
+    classOptions, classroomSettings, setClassroomSettings, classroomCloudSynced, callTestWildPokemon, settingsCollapsed, toggleSettingsSection
   } = useApp();
   const wild = classroomSettings.wildHunt;
+  const unscheduled = classOptions.filter(name => (classroomSettings.classSchedules[name] || []).length === 0);
   const update = (patch: Partial<WildHuntSettings>) =>
     setClassroomSettings(prev => ({ ...prev, wildHunt: { ...prev.wildHunt, ...patch } }));
 
@@ -43,18 +44,19 @@ export const WildHuntSettingsSection: React.FC = () => {
         </p>
       )}
 
+      {unscheduled.length > 0 && (
+        <p className="rounded-2xl border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900" data-testid="wild-unscheduled">
+          Lớp chưa có lịch học nên Pokémon hoang dã chưa xuất hiện: {unscheduled.join(', ')}. Vào trang Class, di chuột vào thẻ lớp, bấm Sửa để thêm ngày và giờ học.
+        </p>
+      )}
+
       <div className="space-y-2">
         <Field label="Bật Săn Pokémon hoang dã" hint="Tắt thì Pokémon không tự xuất hiện nữa (nút Gọi thử vẫn dùng được).">
           <input type="checkbox" checked={wild.enabled} onChange={e => update({ enabled: e.target.checked })} data-testid="wild-enabled" className="h-5 w-5 accent-lime-600" />
         </Field>
-        <Field label="Xuất hiện sau (phút)" hint="Tính từ lúc mở trang của lớp. Mỗi buổi bốc ngẫu nhiên trong khoảng này; để hai số bằng nhau là cố định.">
-          <span className="flex items-center gap-2">
-            <input type="number" min={1} max={240} value={wild.delayMinMinutes} aria-label="Xuất hiện sau tối thiểu (phút)" data-testid="wild-delay-min"
-              onChange={e => { const v = clamp(e.target.value, 1, 240, wild.delayMinMinutes); update({ delayMinMinutes: v, delayMaxMinutes: Math.max(v, wild.delayMaxMinutes) }); }} className={inputClass} />
-            <span>đến</span>
-            <input type="number" min={1} max={240} value={wild.delayMaxMinutes} aria-label="Xuất hiện sau tối đa (phút)" data-testid="wild-delay-max"
-              onChange={e => { const v = clamp(e.target.value, 1, 240, wild.delayMaxMinutes); update({ delayMaxMinutes: v, delayMinMinutes: Math.min(v, wild.delayMinMinutes) }); }} className={inputClass} />
-          </span>
+        <Field label="Xuất hiện sau giờ bắt đầu lớp (phút)" hint="Pokémon xuất hiện ngẫu nhiên từ giờ bắt đầu + số phút này tới giờ kết thúc buổi học. Ví dụ lớp 19:00-20:30, để 30 phút thì Pokémon xuất hiện trong khoảng 19:30-20:30. Ngày, giờ học đặt ở trang Class (nút Thêm Lớp hoặc Sửa lớp).">
+          <input type="number" min={0} max={240} value={wild.startOffsetMinutes} aria-label="Xuất hiện sau giờ bắt đầu lớp (phút)" data-testid="wild-start-offset"
+            onChange={e => update({ startOffsetMinutes: clamp(e.target.value, 0, 240, wild.startOffsetMinutes) })} className={inputClass} />
         </Field>
         <Field label="Ở lại tối đa (phút)" hint="Nếu chưa ai bấm Săn ngay, Pokémon tự bỏ đi sau từng này phút.">
           <input type="number" min={1} max={60} value={wild.lingerMinutes} onChange={e => update({ lingerMinutes: clamp(e.target.value, 1, 60, wild.lingerMinutes) })} aria-label="Ở lại tối đa (phút)" className={inputClass} />

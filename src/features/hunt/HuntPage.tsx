@@ -7,6 +7,7 @@ import {
 import {
   createPokemonPetFromDexId, getPokemonArtworkUrl, getPokemonDisplayName, handlePokemonArtworkError
 } from '../../domain/pokemonProgression';
+import { formatClock, getCurrentClassSession, getNextClassSession, weekdayLabel } from '../../domain/classSchedule';
 import { CatchWheel } from './CatchWheel';
 
 const formatRemaining = (ms: number) => {
@@ -33,7 +34,12 @@ export const HuntPage: React.FC = () => {
     [encounter?.dexId]
   );
   const settings = classroomSettings.wildHunt;
-  const session = huntSessionsRef.current[filterClass];
+  const savedSession = huntSessionsRef.current[filterClass];
+  const schedule = classroomSettings.classSchedules[filterClass] || [];
+  const currentWindow = getCurrentClassSession(schedule, now, settings.startOffsetMinutes);
+  // Chỉ dùng phiên của buổi đang diễn ra (phiên của buổi trước không còn ý nghĩa).
+  const session = savedSession && currentWindow && savedSession.sessionKey === currentWindow.key ? savedSession : undefined;
+  const nextWindow = currentWindow ? null : getNextClassSession(schedule, now, settings.startOffsetMinutes);
   const studentName = (id: string | null | undefined) => students.find(s => s.id === id)?.name ?? '?';
   const currentStudent = encounter?.currentStudentId ? students.find(s => s.id === encounter.currentStudentId) : undefined;
   const back = () => goToClassPage(filterClass, null);
@@ -58,12 +64,24 @@ export const HuntPage: React.FC = () => {
             <p className="mt-3 text-xl font-black">Chưa có Pokémon hoang dã nào</p>
             {!settings.enabled ? (
               <p className="mt-2 text-sm font-semibold text-white/75">Tính năng đang tắt. Bật lại trong Cài đặt → Săn Pokémon hoang dã.</p>
+            ) : schedule.length === 0 ? (
+              <p className="mt-2 text-sm font-semibold text-white/75" data-testid="hunt-no-schedule">Lớp chưa có lịch học. Vào trang Class, di chuột vào thẻ lớp và bấm Sửa để thêm ngày, giờ học.</p>
             ) : session?.spawned ? (
               <p className="mt-2 text-sm font-semibold text-white/75">Buổi học này Pokémon hoang dã đã xuất hiện rồi. Buổi sau sẽ có con mới.</p>
-            ) : session ? (
-              <p className="mt-2 text-sm font-semibold text-white/75" data-testid="hunt-countdown">Pokémon hoang dã sẽ xuất hiện sau {formatRemaining(huntRemainingMs(session, now))} nữa.</p>
+            ) : session && currentWindow && session.spawnAt < currentWindow.windowEnd ? (
+              <p className="mt-2 text-sm font-semibold text-white/75" data-testid="hunt-countdown">
+                Pokémon hoang dã sẽ xuất hiện ngẫu nhiên trong khoảng {formatClock(currentWindow.windowStart)} - {formatClock(currentWindow.windowEnd)}
+                {now < session.spawnAt ? ` (còn ${formatRemaining(huntRemainingMs(session, now))} nữa)` : ''}. Giữ trang lớp mở nhé.
+              </p>
+            ) : currentWindow ? (
+              <p className="mt-2 text-sm font-semibold text-white/75" data-testid="hunt-countdown">Buổi học này đã quá khung giờ Pokémon xuất hiện.</p>
+            ) : nextWindow ? (
+              <p className="mt-2 text-sm font-semibold text-white/75" data-testid="hunt-next-session">
+                Buổi học tới: {new Date(nextWindow.classStartAt).toDateString() === new Date(now).toDateString() ? 'hôm nay' : weekdayLabel(nextWindow.slot.weekday)} {nextWindow.slot.start}-{nextWindow.slot.end}.
+                Pokémon hoang dã sẽ xuất hiện ngẫu nhiên từ {formatClock(nextWindow.windowStart)} tới {nextWindow.slot.end}.
+              </p>
             ) : (
-              <p className="mt-2 text-sm font-semibold text-white/75">Giữ trang lớp mở, Pokémon hoang dã sẽ tự xuất hiện.</p>
+              <p className="mt-2 text-sm font-semibold text-white/75">Giữ trang lớp mở trong giờ học, Pokémon hoang dã sẽ tự xuất hiện.</p>
             )}
           </div>
         )}

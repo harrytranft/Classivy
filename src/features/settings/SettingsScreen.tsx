@@ -9,6 +9,7 @@ import { useApp } from '../../app/AppContext';
 import { ShortcutsSettings } from './ShortcutsSettings';
 import { LudoChallengesSettings } from './LudoChallengesSettings';
 import { WildHuntSettingsSection } from './WildHuntSettingsSection';
+import { ArchivedStudentsSection } from './ArchivedStudentsSection';
 
 export const SettingsScreen: React.FC = () => {
   const {
@@ -276,6 +277,8 @@ export const SettingsScreen: React.FC = () => {
           })}
         </div>
       </SettingsSection>
+
+      <ArchivedStudentsSection />
 
       <SettingsSection id="data" icon="☁️" title="Dữ liệu" subtitle="Import/export danh sách trainer và JSON backup toàn bộ hệ thống." className="bg-[#f4f8f1] p-6 sm:p-8 rounded-brand-lg border border-brand-emerald/20 text-center space-y-6" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="bg-white p-6 rounded-3xl border border-red-100 flex flex-col sm:flex-row items-center justify-between gap-4">

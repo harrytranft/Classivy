@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../../components/ui';
 import { useApp } from '../../app/AppContext';
 import { Student } from '../../types';
+import { SkillHelpTip } from './SkillHelpTip';
 import {
   LOOKUP_SECONDS, MAX_SKILL_USES, RANDOM_SKILLS, SKILL_IDS, consumeSkillUse, getRandomSkillsFor, getSkillUsesLeft
 } from '../../domain/skills';
@@ -9,6 +10,7 @@ import {
 // Phase 11: sau khi Random gọi trúng một em, hiện các skill của em (nhóm B) với nút Dùng / Không.
 // Skill tự động (Vòng Quay Tự Tin, Nhân Đôi, Lá Chắn, Kim Bài, Hộ Tống, Cướp Quyền, Đồng Tâm) chỉ hiện dạng nhãn.
 // 10 skill còn lại giữ cách cũ: bấm "Sử Dụng" thủ công.
+// Rê chuột vào tên skill (hoặc bấm ⓘ) để xem cách dùng, đọc cho học sinh nghe trước khi em chọn Dùng/Không.
 
 const AUTO_SKILL_IDS: string[] = [SKILL_IDS.lucky, SKILL_IDS.double, SKILL_IDS.guard, SKILL_IDS.survival, SKILL_IDS.rescue, SKILL_IDS.rapid, SKILL_IDS.soulLink];
 
@@ -83,13 +85,13 @@ export const RandomSkillsPanel: React.FC<{ student: Student }> = ({ student }) =
         <div className="space-y-2" role="group" aria-label="Hỏi dùng skill">
           {askIds.map(id => (
             <div key={id} className="flex items-center justify-between gap-2 rounded-2xl border border-indigo-200 bg-white p-2.5">
-              <div className="flex min-w-0 items-center gap-2">
+              <SkillHelpTip name={nameOf(id)?.name || RANDOM_SKILLS[id].label} icon={nameOf(id)?.icon} description={nameOf(id)?.description}>
                 <span className="text-xl" aria-hidden>{nameOf(id)?.icon || '✨'}</span>
-                <div className="min-w-0">
+                <div className="min-w-0 cursor-help">
                   <p className="truncate text-xs font-bold text-brand-ink">{RANDOM_SKILLS[id].label}</p>
                   <span className="text-xs font-semibold text-indigo-600">Còn {getSkillUsesLeft(student.pet, id)}/{MAX_SKILL_USES} lượt</span>
                 </div>
-              </div>
+              </SkillHelpTip>
               <div className="flex shrink-0 gap-1.5">
                 <Button size="sm" variant="secondary" aria-label={`Không dùng ${nameOf(id)?.name || id}`} onClick={() => setDismissed(prev => [...prev, id])}>Không</Button>
                 <Button size="sm" variant="reward" aria-label={`Dùng ${nameOf(id)?.name || id}`} onClick={() => use(id)}>Dùng</Button>
@@ -113,9 +115,14 @@ export const RandomSkillsPanel: React.FC<{ student: Student }> = ({ student }) =
       )}
 
       {autoIds.length > 0 && (
-        <p className="mt-3 text-[13px] font-semibold text-indigo-900/80">
-          Skill tự động: {autoIds.map(id => `${nameOf(id)?.icon || ''} ${nameOf(id)?.name || id} (${getSkillUsesLeft(student.pet, id)}/${MAX_SKILL_USES})`).join(' · ')}
-        </p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] font-semibold text-indigo-900/80">
+          <span>Skill tự động:</span>
+          {autoIds.map(id => (
+            <SkillHelpTip key={id} name={nameOf(id)?.name || id} icon={nameOf(id)?.icon} description={nameOf(id)?.description}>
+              <span className="cursor-help">{nameOf(id)?.icon || ''} {nameOf(id)?.name || id} ({getSkillUsesLeft(student.pet, id)}/{MAX_SKILL_USES})</span>
+            </SkillHelpTip>
+          ))}
+        </div>
       )}
 
       {manualIds.length > 0 && (
@@ -126,13 +133,13 @@ export const RandomSkillsPanel: React.FC<{ student: Student }> = ({ student }) =
             const left = getSkillUsesLeft(student.pet, id);
             return (
               <div key={id} className="flex items-center justify-between gap-2 rounded-2xl border border-indigo-200 bg-white p-2.5">
-                <div className="flex min-w-0 items-center gap-2">
+                <SkillHelpTip name={info.name} icon={info.icon} description={info.description}>
                   <span className="text-xl" aria-hidden>{info.icon}</span>
-                  <div className="min-w-0">
+                  <div className="min-w-0 cursor-help">
                     <p className="truncate text-xs font-bold text-brand-ink">{info.name}</p>
                     <span className="text-xs font-semibold text-indigo-600">Còn {left}/{MAX_SKILL_USES} lượt</span>
                   </div>
-                </div>
+                </SkillHelpTip>
                 <Button size="sm" variant="reward" disabled={left <= 0} onClick={() => { handleUsePetSkill(student.id, id, info.name); }}>Sử Dụng</Button>
               </div>
             );

@@ -18,6 +18,7 @@ import { useUserModalState } from '../../features/auth/useUserModalState';
 import { useDerivedState } from './useDerivedState';
 import { useScreenRoute } from '../useScreenRoute';
 import { useClassRoute } from '../useClassRoute';
+import { useActiveStudents } from '../../features/students/useActiveStudents';
 
 // Toàn bộ state của ứng dụng giáo viên, gom từ các provider và state của từng tính năng.
 // Hành động (actions) đọc state qua object này; giao diện đọc qua useApp().
@@ -26,9 +27,12 @@ export const useBaseState = () => {
   const classRoute = useClassRoute();
   const screenRoute = useScreenRoute(profileState.editingStudent, profileState.setEditingStudent, classRoute.filterClass);
   const { user, profile, loginWithEmail, signUpWithEmail, signInWithGoogle, logout, updateUserProfile, loading: authLoading } = useAuth();
+  const gameData = useGameData();
   return {
     user, profile, loginWithEmail, signUpWithEmail, signInWithGoogle, logout, updateUserProfile, authLoading,
-    ...useGameData(),
+    ...gameData,
+    // Học sinh đã lưu trữ bị ẩn: mọi tính năng dùng `students`/`setStudents` chỉ thấy các em đang học.
+    ...useActiveStudents(gameData.students, gameData.setStudents),
     ...useUiEvents(),
     ...useClassState(),
     ...useFeedbackState(),

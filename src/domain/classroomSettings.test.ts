@@ -21,7 +21,7 @@ describe('normalizeClassroomSettings', () => {
 
   it('giữ nguyên giá trị hợp lệ do giáo viên đặt', () => {
     const custom = {
-      enabled: false, delayMinMinutes: 30, delayMaxMinutes: 50, lingerMinutes: 8,
+      enabled: false, startOffsetMinutes: 20, lingerMinutes: 8,
       rarityWeights: { common: 50, rare: 40, legendary: 10 },
       correctNeeded: { common: 2, rare: 3, legendary: 6 },
       maxWrong: 2, minPresentStudents: 6, consolationPoints: 0
@@ -31,12 +31,11 @@ describe('normalizeClassroomSettings', () => {
 
   it('kẹp số ngoài khoảng, làm tròn, bỏ NaN/chuỗi', () => {
     const result = normalizeWildHuntSettings({
-      delayMinMinutes: -5, delayMaxMinutes: 9999, lingerMinutes: 0, maxWrong: 99.6,
+      startOffsetMinutes: 9999, lingerMinutes: 0, maxWrong: 99.6,
       minPresentStudents: 'abc', consolationPoints: Number.NaN,
       correctNeeded: { common: 0, rare: 100, legendary: 2.4 }
     });
-    expect(result.delayMinMinutes).toBe(1);
-    expect(result.delayMaxMinutes).toBe(240);
+    expect(result.startOffsetMinutes).toBe(240);
     expect(result.lingerMinutes).toBe(1);
     expect(result.maxWrong).toBe(10);
     expect(result.minPresentStudents).toBe(DEFAULT_WILD_HUNT_SETTINGS.minPresentStudents);
@@ -44,9 +43,23 @@ describe('normalizeClassroomSettings', () => {
     expect(result.correctNeeded).toEqual({ common: 1, rare: 10, legendary: 2 });
   });
 
-  it('thời gian tối thiểu lớn hơn tối đa thì đổi chỗ', () => {
-    const result = normalizeWildHuntSettings({ delayMinMinutes: 60, delayMaxMinutes: 20 });
-    expect([result.delayMinMinutes, result.delayMaxMinutes]).toEqual([20, 60]);
+  it('cài đặt cũ (hẹn giờ theo lúc mở trang) quay về mặc định 30 phút sau giờ bắt đầu', () => {
+    const result = normalizeWildHuntSettings({ delayMinMinutes: 60, delayMaxMinutes: 20 }) as unknown as Record<string, unknown>;
+    expect(result.startOffsetMinutes).toBe(30);
+    expect(result.delayMinMinutes).toBeUndefined();
+  });
+
+  it('lịch học: giữ buổi hợp lệ, bỏ buổi sai, lớp không có buổi vẫn được giữ', () => {
+    const result = normalizeClassroomSettings({
+      classSchedules: {
+        SPK: [{ id: 'a', weekday: 5, start: '19:00', end: '20:30' }, { id: 'b', weekday: 9, start: '19:00', end: '20:00' }],
+        '6A': [],
+        'Tất cả': [{ id: 'x', weekday: 1, start: '08:00', end: '09:00' }],
+        Bad: 'x'
+      }
+    });
+    expect(result.classSchedules).toEqual({ SPK: [{ id: 'a', weekday: 5, start: '19:00', end: '20:30' }], '6A': [] });
+    expect(normalizeClassroomSettings({}).classSchedules).toEqual({});
   });
 
   it('ba trọng số độ hiếm đều 0 thì quay về mặc định', () => {

@@ -168,6 +168,9 @@ export interface Student {
   points: number;
   history: HistoryItem[];
   isAbsent?: boolean;
+  /** Đã lưu trữ: ẩn khỏi mọi trang của lớp cho tới khi bỏ lưu trữ trong Cài đặt. */
+  isArchived?: boolean;
+  archivedAt?: number;
   attendanceStatus?: AttendanceStatus;
   customAvatar?: string; // Custom Base64 avatar photo uploaded for student
   egg?: StudentEgg;
@@ -281,9 +284,8 @@ export type WildRarity = 'common' | 'rare' | 'legendary';
 
 export interface WildHuntSettings {
   enabled: boolean;
-  /** Pokémon hoang dã hiện ra sau từ min đến max phút kể từ lúc mở trang lớp (min = max: cố định). */
-  delayMinMinutes: number;
-  delayMaxMinutes: number;
+  /** Pokémon hoang dã xuất hiện ngẫu nhiên từ giờ bắt đầu buổi học + số phút này cho tới giờ kết thúc. */
+  startOffsetMinutes: number;
   /** Ở lại tối đa bao nhiêu phút nếu chưa ai bấm "Săn ngay". */
   lingerMinutes: number;
   /** Trọng số độ hiếm (không cần cộng đủ 100). */
@@ -305,7 +307,17 @@ export interface LudoChallenge {
   enabled: boolean;
 }
 
+/** Một buổi học trong tuần của lớp. weekday: 1 = Thứ 2 ... 6 = Thứ 7, 7 = Chủ nhật. Giờ dạng "HH:MM". */
+export interface ClassScheduleSlot {
+  id: string;
+  weekday: number;
+  start: string;
+  end: string;
+}
+
 export interface ClassroomSettings {
   wildHunt: WildHuntSettings;
   ludoChallenges: LudoChallenge[];
+  /** Lịch học theo tên lớp. Lớp có mặt ở đây vẫn hiện trong trang Class kể cả khi chưa có học sinh. */
+  classSchedules: Record<string, ClassScheduleSlot[]>;
 }

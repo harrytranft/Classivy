@@ -2,16 +2,18 @@ import { useRef, useState } from 'react';
 import { PokemonPet } from '../../types';
 import { WildEncounter, WildHuntSession } from '../../domain/wildHunt';
 
-// Các buổi học đang theo dõi để hẹn giờ Pokémon hoang dã (D56). Giữ trên máy để tải lại trang không làm đồng hồ chạy lại từ đầu.
-export const WILD_HUNT_SESSIONS_KEY = 'classivy_wild_hunt_sessions';
+// Các buổi học đang theo dõi để hẹn giờ Pokémon hoang dã (theo lịch học của lớp). Giữ trên máy để tải lại trang
+// không bốc lại giờ xuất hiện và không cho con thứ hai trong cùng buổi.
+// Khoá mới (v2): phiên kiểu cũ (hẹn giờ theo lúc mở trang) bị bỏ qua.
+export const WILD_HUNT_SESSIONS_KEY = 'classivy_wild_hunt_sessions_v2';
 
 export type HuntSessions = Record<string, WildHuntSession>;
 
 const isSession = (value: unknown): value is WildHuntSession => {
   const item = value as WildHuntSession | null;
   return !!item && typeof item === 'object'
-    && typeof item.className === 'string'
-    && Number.isFinite(item.startedAt) && Number.isFinite(item.lastSeenAt) && Number.isFinite(item.delayMs)
+    && typeof item.className === 'string' && typeof item.sessionKey === 'string'
+    && Number.isFinite(item.windowStart) && Number.isFinite(item.windowEnd) && Number.isFinite(item.spawnAt)
     && typeof item.spawned === 'boolean';
 };
 

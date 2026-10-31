@@ -77,6 +77,18 @@
 <h2 class="text-3xl font-extrabold tracking-tight text-brand-forest-deep">Chọn lớp</h2>
 <p class="mt-1 text-[15px] text-brand-ink/70">Mỗi lớp có trang riêng với Random, Cá Ngựa, Vòng quay và Tặng Pokémon.</p>
 </div>
+<div class="flex flex-wrap gap-2">
+<button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-white text-brand-forest border border-brand-forest/20 hover:border-brand-forest/45 hover:bg-brand-cream h-11 px-4 text-sm gap-2" data-testid="add-class">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-[18px] w-[18px]" aria-hidden="true">
+<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
+</path>
+<circle cx="9" cy="7" r="4">
+</circle>
+<path d="M22 21v-2a4 4 0 0 0-3-3.87">
+</path>
+<path d="M16 3.13a4 4 0 0 1 0 7.75">
+</path>
+</svg>Thêm Lớp</button>
 <button type="button" class="inline-flex shrink-0 items-center justify-center rounded-brand-md font-bold transition-[background-color,border-color,box-shadow,transform] duration-150 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0 bg-brand-forest text-brand-cream hover:bg-brand-forest-deep shadow-[0_2px_8px_-2px_rgba(0,38,25,0.45)] h-11 px-4 text-sm gap-2">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus h-[18px] w-[18px]" aria-hidden="true">
 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2">
@@ -89,12 +101,29 @@
 </line>
 </svg>Thêm Trainer</button>
 </div>
+</div>
 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-<button type="button" aria-label="Vào lớp 6A" class="group flex items-center gap-5 rounded-brand-lg border border-[#e6e2d4] bg-white p-5 text-left shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] transition-[box-shadow,border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_14px_28px_-10px_rgba(1,74,45,0.28)]">
-<span class="grid h-16 w-16 shrink-0 place-items-center rounded-brand-md bg-brand-forest text-2xl font-extrabold text-brand-cream">6A</span>
+<div class="group relative" data-testid="class-card-6A">
+<button type="button" aria-label="Vào lớp 6A" class="flex h-full w-full items-center gap-5 rounded-brand-lg border border-[#e6e2d4] bg-white p-5 text-left shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] transition-[box-shadow,border-color,transform] duration-200 group-hover:-translate-y-0.5 group-hover:border-brand-emerald/60 group-hover:shadow-[0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<span class="grid h-16 w-16 shrink-0 place-items-center overflow-hidden break-all rounded-brand-md bg-brand-forest px-1 text-center font-extrabold leading-tight text-brand-cream text-2xl">6A</span>
 <span class="min-w-0 flex-1">
-<span class="block text-xl font-extrabold text-brand-ink">Lớp 6A</span>
+<span class="block truncate text-xl font-extrabold text-brand-ink">Lớp 6A</span>
 <span class="mt-1 block text-sm text-brand-ink/70 tabular-nums">7 trainer · 6 có mặt</span>
+<span class="mt-1 flex items-start gap-1.5 text-xs font-semibold text-brand-ink/60" data-testid="class-schedule-6A">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-clock mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true">
+<path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5">
+</path>
+<path d="M16 2v4">
+</path>
+<path d="M8 2v4">
+</path>
+<path d="M3 10h5">
+</path>
+<path d="M17.5 17.5 16 16.3V14">
+</path>
+<circle cx="16" cy="16" r="6">
+</circle>
+</svg>Chưa có lịch học</span>
 </span>
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-5 w-5 shrink-0 text-brand-forest/50 transition-transform group-hover:translate-x-1 group-hover:text-brand-forest" aria-hidden="true">
 <path d="M5 12h14">
@@ -103,11 +132,52 @@
 </path>
 </svg>
 </button>
-<button type="button" aria-label="Vào lớp 7B" class="group flex items-center gap-5 rounded-brand-lg border border-[#e6e2d4] bg-white p-5 text-left shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] transition-[box-shadow,border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-brand-emerald/60 hover:shadow-[0_14px_28px_-10px_rgba(1,74,45,0.28)]">
-<span class="grid h-16 w-16 shrink-0 place-items-center rounded-brand-md bg-brand-forest text-2xl font-extrabold text-brand-cream">7B</span>
+<div class="absolute right-3 top-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+<button type="button" aria-label="Sửa lớp 6A" title="Sửa lớp" class="grid h-9 w-9 place-items-center rounded-full border border-[#e6e2d4] bg-white text-brand-ink/70 shadow-sm transition-colors hover:border-brand-emerald/60 hover:text-brand-forest" data-testid="edit-class-6A">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4" aria-hidden="true">
+<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+</path>
+<path d="m15 5 4 4">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Xoá lớp 6A" title="Xoá lớp" class="grid h-9 w-9 place-items-center rounded-full border border-[#e6e2d4] bg-white text-brand-ink/70 shadow-sm transition-colors hover:border-brand-danger/50 hover:text-brand-danger" data-testid="delete-class-6A">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4" aria-hidden="true">
+<path d="M3 6h18">
+</path>
+<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6">
+</path>
+<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2">
+</path>
+<line x1="10" x2="10" y1="11" y2="17">
+</line>
+<line x1="14" x2="14" y1="11" y2="17">
+</line>
+</svg>
+</button>
+</div>
+</div>
+<div class="group relative" data-testid="class-card-7B">
+<button type="button" aria-label="Vào lớp 7B" class="flex h-full w-full items-center gap-5 rounded-brand-lg border border-[#e6e2d4] bg-white p-5 text-left shadow-[0_1px_2px_rgba(12,37,39,0.04),0_6px_18px_-8px_rgba(12,37,39,0.14)] transition-[box-shadow,border-color,transform] duration-200 group-hover:-translate-y-0.5 group-hover:border-brand-emerald/60 group-hover:shadow-[0_14px_28px_-10px_rgba(1,74,45,0.28)]">
+<span class="grid h-16 w-16 shrink-0 place-items-center overflow-hidden break-all rounded-brand-md bg-brand-forest px-1 text-center font-extrabold leading-tight text-brand-cream text-2xl">7B</span>
 <span class="min-w-0 flex-1">
-<span class="block text-xl font-extrabold text-brand-ink">Lớp 7B</span>
+<span class="block truncate text-xl font-extrabold text-brand-ink">Lớp 7B</span>
 <span class="mt-1 block text-sm text-brand-ink/70 tabular-nums">5 trainer · 5 có mặt</span>
+<span class="mt-1 flex items-start gap-1.5 text-xs font-semibold text-brand-ink/60" data-testid="class-schedule-7B">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-clock mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true">
+<path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5">
+</path>
+<path d="M16 2v4">
+</path>
+<path d="M8 2v4">
+</path>
+<path d="M3 10h5">
+</path>
+<path d="M17.5 17.5 16 16.3V14">
+</path>
+<circle cx="16" cy="16" r="6">
+</circle>
+</svg>Chưa có lịch học</span>
 </span>
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right h-5 w-5 shrink-0 text-brand-forest/50 transition-transform group-hover:translate-x-1 group-hover:text-brand-forest" aria-hidden="true">
 <path d="M5 12h14">
@@ -116,6 +186,31 @@
 </path>
 </svg>
 </button>
+<div class="absolute right-3 top-3 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100">
+<button type="button" aria-label="Sửa lớp 7B" title="Sửa lớp" class="grid h-9 w-9 place-items-center rounded-full border border-[#e6e2d4] bg-white text-brand-ink/70 shadow-sm transition-colors hover:border-brand-emerald/60 hover:text-brand-forest" data-testid="edit-class-7B">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4" aria-hidden="true">
+<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+</path>
+<path d="m15 5 4 4">
+</path>
+</svg>
+</button>
+<button type="button" aria-label="Xoá lớp 7B" title="Xoá lớp" class="grid h-9 w-9 place-items-center rounded-full border border-[#e6e2d4] bg-white text-brand-ink/70 shadow-sm transition-colors hover:border-brand-danger/50 hover:text-brand-danger" data-testid="delete-class-7B">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4" aria-hidden="true">
+<path d="M3 6h18">
+</path>
+<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6">
+</path>
+<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2">
+</path>
+<line x1="10" x2="10" y1="11" y2="17">
+</line>
+<line x1="14" x2="14" y1="11" y2="17">
+</line>
+</svg>
+</button>
+</div>
+</div>
 </div>
 </div>
 </main>

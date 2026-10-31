@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { AppScope } from '../../app/AppContext';
 import { canSpawnWildPokemon, createWildEncounter, isEncounterExpired, isHuntDue, touchHuntSession } from '../../domain/wildHunt';
+import { getCurrentClassSession } from '../../domain/classSchedule';
 import { saveHuntSessions } from './useHuntState';
 
 export const HUNT_CHECK_INTERVAL_MS = 10 * 1000;
 
 // Hẹn giờ Pokémon hoang dã: cứ vài giây kiểm tra một lần khi giáo viên đang ở một trang của lớp.
+// Pokémon chỉ xuất hiện trong buổi học có trong lịch, từ giờ bắt đầu + startOffsetMinutes tới giờ kết thúc.
 export const useWildHuntEffects = (app: AppScope) => {
   const latest = useRef(app);
   latest.current = app;
@@ -21,7 +23,9 @@ export const useWildHuntEffects = (app: AppScope) => {
 
     const settings = a.classroomSettings.wildHunt;
     const sessions = a.huntSessionsRef.current;
-    const session = touchHuntSession(sessions[className], className, now, settings);
+    const window = getCurrentClassSession(a.classroomSettings.classSchedules[className], now, settings.startOffsetMinutes);
+    const session = touchHuntSession(sessions[className], className, window, now);
+    if (!session) return;
     sessions[className] = session;
 
     if (isHuntDue(session, now)) {

@@ -1,66 +1,69 @@
 import { LIST_POKEMONS } from '../data/pokemonData';
 import { LEGENDARY_POKEMON_DEX_IDS, SPECIAL_POKEMON_DEX_IDS } from './eggs';
 import { WildHuntSettings, WildRarity } from '../types';
+import { ClassSessionWindow } from './classSchedule';
 
 // Phase 13E: Săn Pokémon hoang dã. Toàn bộ logic thuần (không đụng React, không lưu cloud), có test.
 // Trạng thái cuộc săn chỉ nằm trong bộ nhớ; kết quả (Pokémon, điểm, lịch sử) đi vào dữ liệu học sinh như mọi thao tác khác.
 
 export const WILD_RARITIES: WildRarity[] = ['common', 'rare', 'legendary'];
 export const WILD_RARITY_LABELS: Record<WildRarity, string> = { common: 'Thường', rare: 'Hiếm', legendary: 'Huyền thoại' };
-/** Nghỉ ít nhất bấy lâu thì coi là buổi học mới (D56). */
-export const HUNT_IDLE_RESET_MS = 2 * 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
 
 export type Rng = () => number;
 
-// ---------- Buổi học và hẹn giờ (D56: tính từ lúc mở trang của lớp) ----------
+// ---------- Buổi học và hẹn giờ (theo lịch học của lớp) ----------
+// Mỗi buổi học trong lịch: Pokémon xuất hiện ngẫu nhiên từ (giờ bắt đầu + startOffsetMinutes) tới giờ kết thúc,
+// khi giáo viên đang mở trang của lớp. Mỗi buổi tối đa 1 con.
 
 export interface WildHuntSession {
   className: string;
-  startedAt: number;
-  /** Lần cuối giáo viên còn ở trang lớp này. */
-  lastSeenAt: number;
-  /** Sau bao lâu kể từ startedAt thì Pokémon xuất hiện (đã bốc ngẫu nhiên trong khoảng cài đặt). */
-  delayMs: number;
+  /** Khoá buổi học (ngày + id buổi trong lịch). Sang buổi khác là mở phiên mới. */
+  sessionKey: string;
+  windowStart: number;
+  windowEnd: number;
+  /** Lúc Pokémon xuất hiện (đã bốc ngẫu nhiên trong khung giờ). */
+  spawnAt: number;
   /** Buổi này đã có con rồi (mỗi buổi tối đa 1 con). */
   spawned: boolean;
 }
 
-const localDayKey = (ms: number) => {
-  const date = new Date(ms);
-  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+/** Bốc lúc xuất hiện trong [max(now, windowStart), windowEnd). Khung đã qua thì trả về windowEnd (không bao giờ tới hạn). */
+export const rollSpawnAt = (window: Pick<ClassSessionWindow, 'windowStart' | 'windowEnd'>, now: number, rng: Rng = Math.random): number => {
+  const from = Math.max(now, window.windowStart);
+  if (from >= window.windowEnd) return window.windowEnd;
+  const span = window.windowEnd - from;
+  return from + Math.min(span - 1, Math.floor(Math.max(0, rng()) * span));
 };
 
-/** Bốc thời gian xuất hiện (ms) trong khoảng min..max phút, bao gồm hai đầu. */
-export const rollAppearanceDelayMs = (settings: WildHuntSettings, rng: Rng = Math.random): number => {
-  const min = Math.min(settings.delayMinMinutes, settings.delayMaxMinutes);
-  const max = Math.max(settings.delayMinMinutes, settings.delayMaxMinutes);
-  const minutes = min + Math.min(max - min, Math.floor(rng() * (max - min + 1)));
-  return minutes * MINUTE_MS;
-};
-
-/** Buổi mới nếu chưa có buổi, nghỉ ≥ 2 giờ không ở trang lớp, hoặc đã sang ngày khác. */
-export const isNewHuntSession = (previous: WildHuntSession | undefined, now: number): boolean =>
-  !previous || now - previous.lastSeenAt >= HUNT_IDLE_RESET_MS || localDayKey(now) !== localDayKey(previous.startedAt);
-
-/** Gọi mỗi lần kiểm tra khi giáo viên đang ở trang lớp: mở buổi mới hoặc cập nhật "còn ở đây". */
+/**
+ * Gọi mỗi lần kiểm tra khi giáo viên đang ở trang lớp. `window` là buổi học đang diễn ra (null nếu không có):
+ * buổi mới thì mở phiên mới với giờ xuất hiện ngẫu nhiên; cùng buổi thì giữ nguyên; ngoài giờ học thì giữ phiên cũ.
+ */
 export const touchHuntSession = (
   previous: WildHuntSession | undefined,
   className: string,
+  window: ClassSessionWindow | null,
   now: number,
-  settings: WildHuntSettings,
   rng: Rng = Math.random
-): WildHuntSession => {
-  if (isNewHuntSession(previous, now)) {
-    return { className, startedAt: now, lastSeenAt: now, delayMs: rollAppearanceDelayMs(settings, rng), spawned: false };
-  }
-  return { ...previous!, lastSeenAt: now };
+): WildHuntSession | undefined => {
+  if (!window) return previous;
+  if (previous && previous.sessionKey === window.key) return previous;
+  return {
+    className,
+    sessionKey: window.key,
+    windowStart: window.windowStart,
+    windowEnd: window.windowEnd,
+    spawnAt: rollSpawnAt(window, now, rng),
+    spawned: false
+  };
 };
 
-export const isHuntDue = (session: WildHuntSession, now: number): boolean => !session.spawned && now - session.startedAt >= session.delayMs;
+export const isHuntDue = (session: WildHuntSession, now: number): boolean =>
+  !session.spawned && now >= session.spawnAt && now < session.windowEnd;
 
 export const huntRemainingMs = (session: WildHuntSession, now: number): number =>
-  session.spawned ? 0 : Math.max(0, session.startedAt + session.delayMs - now);
+  session.spawned ? 0 : Math.max(0, session.spawnAt - now);
 
 export interface SpawnContext {
   settings: WildHuntSettings;

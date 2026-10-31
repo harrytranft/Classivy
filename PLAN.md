@@ -74,6 +74,7 @@
 | D55 | Cài đặt mới (Săn Pokémon, thử thách Cá Ngựa) lưu cloud trong MỘT cột jsonb mới `user_settings.classroom_settings` (13C, cần migration và Harry duyệt); khi cột chưa có thì app không ghi cột đó, dùng localStorage | 2026-10-29 |
 | D56 | Hẹn giờ Săn Pokémon tính từ lúc mở trang của lớp đó (mỗi lớp một đồng hồ, ví dụ hẹn 40 phút thì sau 40 phút Pokémon hiện ra trên trang lớp), coi là buổi mới nếu nghỉ ≥ 2 giờ hoặc sang ngày khác. Harry xác nhận | 2026-10-29 |
 | D57 | "Sự kiện theo mùa" (Halloween, tuần lễ trứng...) Harry thấy ổn nhưng chưa chọn làm; ghi nhận, chưa vào kế hoạch | 2026-10-29 |
+| D58 | Pokémon hoang dã xuất hiện theo lịch học của lớp (ngày + giờ, nhiều buổi/tuần, đặt ở trang Class): ngẫu nhiên từ giờ bắt đầu + 30 phút (chỉnh được) tới giờ kết thúc, mỗi buổi tối đa 1 con. Thay D56. Kèm: Thêm/Sửa/Xoá lớp, lưu trữ học sinh, xem cách dùng skill khi Random (13F). Harry yêu cầu | 2026-10-31 |
 
 ## Tổng quan Phase
 
@@ -461,6 +462,28 @@ Nhánh dự kiến: `claude/phase13-classroom-games`. Quyết định: D48-D57. 
 - Hành vi cần biết: trong hàng chờ Battle/Boss, lượt lắc thêm của em làm được thử thách dùng được khi em đó được chọn lại (hết hàng chờ thì có ô chọn trainer); đây giống cách Vòng quay may mắn đang cấp lượt lắc.
 
 **Việc Harry cần làm khi tới lượt:** 13A/13B xem thử và cho commit (không chạy gì trên Supabase); 13C duyệt rồi chạy migration trên dev, sau đó production, báo lại để ghi "đã áp dụng"; 13D/13E xem thử và chỉnh số liệu trong Cài đặt. **Đã xác nhận 2026-10-29:** D56, số liệu Boss mặc định, mỗi buổi tối đa 1 con. **Còn mở:** các mặc định còn lại của Săn Pokémon, bộ thử thách Cá Ngựa, lưu lượt bonus localStorage (xem spec mục 8).
+
+### 13F - Lịch học, quản lý lớp, lưu trữ học sinh, cách dùng skill (Harry yêu cầu 2026-10-31; không có migration)
+
+Lý do: Harry báo hẹn giờ cũ (tính từ lúc mở trang lớp, D56) "có lớp được, có lớp không". Chưa tái hiện được nguyên nhân chính xác; cơ chế cũ phụ thuộc lúc mở trang, mốc buổi lưu trên máy (2 giờ/ngày), số em có mặt tối thiểu (4) và việc đang mở trang con nên khó đoán. Harry yêu cầu đổi sang cơ chế theo lịch học (D58, thay D56).
+
+- [x] 13F.1 Trang Class: nút "Thêm Lớp" cạnh "Thêm Trainer"; form tên lớp + nhiều buổi học (Thứ 2 - Chủ nhật, giờ bắt đầu/kết thúc), thêm/sửa/xoá buổi; kiểm tra giờ kết thúc sau giờ bắt đầu, buổi cùng ngày không trùng giờ, tên lớp không trùng.
+- [x] 13F.2 Rê chuột vào thẻ lớp hiện nút Sửa / Xoá (máy cảm ứng luôn hiện). Sửa: đổi tên (học sinh, Boss của lớp chuyển theo) và lịch học. Xoá: hộp xác nhận, phải gõ đúng tên lớp; xoá lớp cùng toàn bộ học sinh (kể cả em đã lưu trữ, kèm tài khoản như "Xoá học sinh").
+- [x] 13F.3 Pokémon hoang dã xuất hiện ngẫu nhiên từ giờ bắt đầu + 30 phút (chỉnh được trong Cài đặt) tới giờ kết thúc buổi học, khi giáo viên đang mở trang lớp; mỗi buổi tối đa 1 con. Ví dụ SPK Thứ 6 19:00-20:30 -> 19:30-20:30. Lớp chưa có lịch thì không xuất hiện (Cài đặt và trang săn có nhắc).
+- [x] 13F.4 Lưu trữ học sinh: nút "Lưu trữ" trong Hồ sơ Trainer; em bị ẩn khỏi mọi trang của lớp; Cài đặt có mục "Học sinh đã lưu trữ" để bỏ lưu trữ.
+- [x] 13F.5 Random: rê chuột vào tên skill (hoặc bấm ⓘ) hiện cách dùng (mô tả skill) để giáo viên đọc cho học sinh trước khi chọn Dùng/Không.
+
+**Quyết định thực hiện (Harry có thể đổi):**
+- Lịch học lưu trong cột cài đặt sẵn có `user_settings.classroom_settings` (khoá `classSchedules`), cờ lưu trữ lưu trong `students.game_state` (`isArchived`, `archivedAt`): **không đổi schema, không cần migration mới**. Lưu ý: lịch học chỉ đồng bộ giữa các máy khi migration 13C đã chạy trên Supabase (như các cài đặt 13C khác); chưa có thì chỉ lưu trên máy đang dùng.
+- Lớp tạo bằng "Thêm Lớp" hiện ngay cả khi chưa có học sinh. Lớp cũ (tạo từ học sinh) chưa có lịch: Harry cần bấm Sửa để thêm lịch, nếu không Pokémon hoang dã không xuất hiện.
+- Mở trang lớp giữa khung giờ thì giờ xuất hiện bốc ngẫu nhiên từ lúc đó tới hết giờ (không hiện ngay lập tức). Giờ theo đồng hồ máy giáo viên.
+- Cài đặt cũ "Xuất hiện sau min-max phút" bỏ, thay bằng "Xuất hiện sau giờ bắt đầu lớp (phút)", mặc định 30. Mốc buổi săn trên máy đổi sang khoá `classivy_wild_hunt_sessions_v2`.
+- Em lưu trữ vẫn đăng nhập cổng học sinh như cũ (chỉ ẩn ở phía giáo viên). Mở thẳng đường dẫn hồ sơ của em lưu trữ thì về trang lớp.
+
+**Kết quả 13F (2026-10-31, chưa commit vào `main`, nhánh `claude/wonderful-dirac-1zzykq`):**
+- Mã: `src/domain/classSchedule.ts`, `src/domain/studentArchive.ts` (+ test), `src/features/class/ClassFormModal.tsx`, `DeleteClassModal.tsx`, `classManagementActions.ts`, `src/features/students/useActiveStudents.ts`, `archiveActions.ts`, `src/features/settings/ArchivedStudentsSection.tsx`, `src/features/random/SkillHelpTip.tsx`; sửa `wildHunt.ts` (phiên theo buổi học), `useWildHuntEffects.ts`, `HuntPage.tsx`, `WildHuntSettingsSection.tsx`, `ClassPickerScreen.tsx`, `ClassPageGuard.tsx`, `ProfileScreen.tsx`, `RandomSkillsPanel.tsx`, `useProfileRouteSync.ts`.
+- Đã kiểm thử tự động (2026-10-31, máy của phiên Claude, Supabase giả lập): typecheck 0 lỗi; vitest 328/328 (mới: `classSchedule.test.ts`, `studentArchive.test.ts`, viết lại phần buổi học trong `wildHunt.test.ts`, lịch học trong `classroomSettings.test.ts`); build đạt; smoke 56/56. Smoke mới: Thêm Lớp (kiểm giờ sai) + Sửa (đổi tên kèm học sinh, thêm/xoá buổi) + Xoá lớp (gõ tên xác nhận, học sinh bị xoá); Lưu trữ từ Hồ sơ -> ẩn khỏi lớp -> dữ liệu còn -> bỏ lưu trữ trong Cài đặt; lớp chưa có lịch / ngoài giờ báo buổi tới; trong giờ báo khung giờ; hover skill hiện cách dùng. Ảnh gốc cập nhật có chủ đích: 10-class, 13-settings-expanded, 14/15-profile, 43-boss-frequency (chỉ phần thêm) và 9 ảnh `*-cloud.json` (chỉ đổi một mã id ngẫu nhiên vì hẹn giờ cũ dùng một số ngẫu nhiên khi mở trang lớp, cơ chế mới thì không). Sửa test chập chờn có từ trước ("các màn hình chính" hết giờ chờ ~2/3 lần, kể cả trên mã cũ): `chooseClass` chờ trang loading tắt rồi mới tìm nút lớp; sau sửa đạt 3/3.
+- Chưa kiểm chứng: dùng thật trên lớp với đồng hồ thật (smoke đứng đồng hồ, phiên săn nạp sẵn), hover trên màn hình cảm ứng/máy chiếu, đồng bộ lịch học giữa hai máy (cần migration 13C), production.
 
 ## Đề xuất phát sinh (chờ Harry duyệt)
 

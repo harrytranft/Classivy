@@ -375,6 +375,8 @@ const DOCK = { random: 0, ludo: 1, wheel: 2, shop: 3, group: 4, timer: 5, select
 
 async function chooseClass(page: Page, className: string) {
   await page.locator('main select, main button[aria-label^="Vào lớp"]').first().waitFor();
+  // Trang loading của app có thể còn phủ lên (nút lớp chưa "nhìn thấy" được): chờ nó tắt rồi mới đếm, tránh test chập chờn.
+  await expect(page.locator('.cl-splash')).toHaveCount(0, { timeout: 15_000 });
   const pickerCard = page.getByRole('button', { name: `Vào lớp ${className}`, exact: true });
   if (await pickerCard.count() > 0) await pickerCard.click();
   else await page.locator('main select').first().selectOption(className);
@@ -976,7 +978,7 @@ const PHASE11_SKILLS = () => {
     'stu-01': ['sk_double', 'sk_guard'], 'stu-02': ['sk_survival'], 'stu-04': ['sk_rapid', 'sk_soul_link'], 'stu-07': ['sk_rescue']
   } as Record<string, string[]>)[id] ?? []]]));
 };
-type SavedStudent = { id: string; points: number; history: { reason: string; amount: number }[]; pet?: { skills: string[]; skillUses: Record<string, number> } };
+type SavedStudent = { id: string; name: string; className: string; points: number; history: { reason: string; amount: number }[]; pet?: { skills: string[]; skillUses: Record<string, number> } };
 const savedStudents = async (page: Page, state: SmokeState): Promise<Record<string, SavedStudent>> => {
   await page.waitForTimeout(2200);
   const latest = state.upserts[state.upserts.length - 1] as unknown as { students: SavedStudent[] };
@@ -1073,6 +1075,13 @@ test('Phase 11: skill sau Random (Vòng Quay Tự Tin tự chạy, hộp Dùng/K
   // Nhóm A: tự +2 điểm và trừ 1 lượt, không cần bấm.
   await expect(panel).toContainText('Vòng Quay Tự Tin');
   await expect(panel).toContainText('(1/2)');
+
+  // Rê chuột vào tên skill: hiện cách dùng để giáo viên đọc cho học sinh trước khi chọn Dùng/Không.
+  await panel.getByText('Đổi Đề Thần Tốc: đổi sang câu hỏi dễ hơn').hover();
+  await expect(page.getByTestId('skill-help-tip')).toContainText('Yêu cầu Thầy/Cô đổi câu hỏi khác dễ hơn');
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/80-skill-help.png' });
+  await page.mouse.move(0, 0);
+  await expect(page.getByTestId('skill-help-tip')).toHaveCount(0);
 
   // Nhóm B: Đổi Đề, Trợ Thủ Tra Cứu (đồng hồ 30 giây), Đồng Đội Hỗ Trợ (chọn bạn).
   await panel.getByRole('button', { name: 'Dùng Đổi Đề Thần Tốc', exact: true }).click();
@@ -1379,12 +1388,20 @@ test('Phase 13D: Cài đặt rải ô thử thách, quản lý danh sách và b�
 // Phase 13E: Săn Pokémon hoang dã.
 const HOUR_MS = 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
-/** Buổi học của lớp 6A đã tới giờ Pokémon xuất hiện (đồng hồ test đứng yên ở FIXED_NOW). */
-const dueHuntSeed = (): Record<string, string> => ({
-  classivy_wild_hunt_sessions: JSON.stringify({
-    '6A': { className: '6A', startedAt: FIXED_NOW.getTime() - 50 * MINUTE_MS, lastSeenAt: FIXED_NOW.getTime() - MINUTE_MS, delayMs: 40 * MINUTE_MS, spawned: false }
-  })
+/** Lịch học: lớp 6A học Thứ 2 (FIXED_NOW là Thứ 2, 09:00) từ 08:00 tới 10:00, Pokémon xuất hiện trong 08:30-10:00. */
+const HUNT_SLOT = { id: 'smoke-6a-mon', weekday: 1, start: '08:00', end: '10:00' };
+const huntSession = (spawnAt: number) => ({
+  '6A': {
+    className: '6A', sessionKey: `2026-10-26|${HUNT_SLOT.id}`, windowStart: FIXED_NOW.getTime() - 30 * MINUTE_MS,
+    windowEnd: FIXED_NOW.getTime() + HOUR_MS, spawnAt, spawned: false
+  }
 });
+const huntSeed = (spawnAt: number): Record<string, string> => ({
+  classivy_classroom_settings: JSON.stringify({ classSchedules: { '6A': [HUNT_SLOT] } }),
+  classivy_wild_hunt_sessions_v2: JSON.stringify(huntSession(spawnAt))
+});
+/** Buổi học của lớp 6A đã tới giờ Pokémon xuất hiện (đồng hồ test đứng yên ở FIXED_NOW). */
+const dueHuntSeed = () => huntSeed(FIXED_NOW.getTime() - 10 * MINUTE_MS);
 type SavedHuntStudent = SavedStudent & { pet?: { dexId: number } | null; pets?: { dexId: number }[] };
 const answerUntil = async (page: Page, answerTestId: 'hunt-correct' | 'hunt-wrong', doneTestId: string) => {
   for (let i = 0; i < 12; i += 1) {
@@ -1477,13 +1494,34 @@ test('Phase 13E: "Để sau" làm Pokémon bỏ đi và buổi học đó không
   expect(state.errors).toEqual([]);
 });
 
-test('Phase 13E: chưa tới giờ thì trang săn báo còn bao lâu; tắt tính năng thì không xuất hiện', async ({ page }) => {
-  const notDue = { '6A': { className: '6A', startedAt: FIXED_NOW.getTime() - 5 * MINUTE_MS, lastSeenAt: FIXED_NOW.getTime() - MINUTE_MS, delayMs: 40 * MINUTE_MS, spawned: false } };
-  const state = await setupPage(page, { loggedIn: true, localStorageSeed: { classivy_wild_hunt_sessions: JSON.stringify(notDue) } });
+test('Lịch học: chưa tới giờ thì trang săn báo khung giờ và còn bao lâu', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true, localStorageSeed: huntSeed(FIXED_NOW.getTime() + 35 * MINUTE_MS) });
   await chooseClass(page, '6A');
   await expect(page.getByTestId('wild-toast')).toHaveCount(0);
   await dockButton(page, DOCK.hunt).click();
+  await expect(page.getByTestId('hunt-countdown')).toContainText('08:30 - 10:00');
   await expect(page.getByTestId('hunt-countdown')).toContainText('khoảng 35 phút');
+  expect(state.errors).toEqual([]);
+});
+
+test('Lịch học: lớp chưa có lịch thì Pokémon không xuất hiện; ngoài giờ học thì báo buổi học tới', async ({ page }) => {
+  const state = await setupPage(page, {
+    loggedIn: true,
+    localStorageSeed: { classivy_classroom_settings: JSON.stringify({ classSchedules: { '7B': [{ id: 'b', weekday: 5, start: '19:00', end: '20:30' }] } }) }
+  });
+  await chooseClass(page, '6A');
+  await page.waitForTimeout(600);
+  await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  await dockButton(page, DOCK.hunt).click();
+  await expect(page.getByTestId('hunt-no-schedule')).toBeVisible();
+  await page.getByTestId('hunt-back').click();
+  await chooseClass(page, '7B');
+  await dockButton(page, DOCK.hunt).click();
+  await expect(page.getByTestId('hunt-next-session')).toContainText('Thứ 6 19:00-20:30');
+  await expect(page.getByTestId('hunt-next-session')).toContainText('từ 19:30 tới 20:30');
+  // Không mở phiên khi ngoài giờ học.
+  const sessions = await page.evaluate(() => window.localStorage.getItem('classivy_wild_hunt_sessions_v2'));
+  expect(sessions === null || !JSON.parse(sessions)['7B']).toBe(true);
   expect(state.errors).toEqual([]);
 });
 
@@ -1509,12 +1547,12 @@ test('Phase 13E: Cài đặt Săn Pokémon, Gọi thử và phím tắt O mở t
   await expect(page.getByTestId('wild-not-synced')).toBeVisible();
   await expect(page.getByTestId('wild-enabled')).toBeChecked();
 
-  // Đổi khoảng thời gian: min lớn hơn max thì max tự nâng theo (luôn min <= max).
-  await page.getByTestId('wild-delay-min').fill('50');
+  // Mặc định xuất hiện sau 30 phút kể từ giờ bắt đầu lớp; lớp chưa có lịch được nhắc tên.
+  await expect(page.getByTestId('wild-start-offset')).toHaveValue('30');
+  await expect(page.getByTestId('wild-unscheduled')).toContainText('6A');
+  await page.getByTestId('wild-start-offset').fill('45');
   const local = await page.evaluate(() => JSON.parse(window.localStorage.getItem('classivy_classroom_settings') || '{}'));
-  expect(local.wildHunt.delayMinMinutes).toBe(50);
-  expect(local.wildHunt.delayMaxMinutes).toBeGreaterThanOrEqual(50);
-  await page.getByTestId('wild-delay-min').fill('1');
+  expect(local.wildHunt.startOffsetMinutes).toBe(45);
   if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/99-wild-settings.png', fullPage: true });
 
   // Gọi thử: về trang lớp, thông báo nổi xuất hiện ngay.
@@ -1531,5 +1569,111 @@ test('Phase 13E: Cài đặt Săn Pokémon, Gọi thử và phím tắt O mở t
   await page.getByTestId('hunt-back').click();
   await expect(page).toHaveURL(/\/class\/6A$/);
   await expect(page.getByTestId('wild-toast')).toHaveCount(0);
+  expect(state.errors).toEqual([]);
+});
+
+
+// Thêm / sửa / xoá lớp với lịch học, và lưu trữ học sinh.
+test('Trang Class: Thêm Lớp có lịch học, Sửa (đổi tên, thêm/xoá buổi), Xoá lớp kèm học sinh', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await page.getByTestId('add-class').waitFor();
+
+  // Thêm lớp SPK học Thứ 6, 19:00-20:30.
+  await page.getByTestId('add-class').click();
+  await page.getByTestId('class-form-name').fill('SPK');
+  await page.getByTestId('class-form-add-slot').click();
+  await page.getByLabel('Ngày học buổi 1').selectOption('5');
+  await page.getByLabel('Giờ bắt đầu buổi 1').fill('20:30');
+  await page.getByLabel('Giờ kết thúc buổi 1').fill('19:00');
+  await page.getByTestId('class-form-save').click();
+  await expect(page.getByTestId('class-form-error')).toContainText('sau giờ bắt đầu');
+  await page.getByLabel('Giờ bắt đầu buổi 1').fill('19:00');
+  await page.getByLabel('Giờ kết thúc buổi 1').fill('20:30');
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/100-add-class.png' });
+  await page.getByTestId('class-form-save').click();
+  await expect(page.getByTestId('class-form')).toHaveCount(0);
+  await expect(page.getByTestId('class-schedule-SPK')).toContainText('T6 19:00-20:30');
+  let local = await page.evaluate(() => JSON.parse(window.localStorage.getItem('classivy_classroom_settings') || '{}'));
+  expect(local.classSchedules.SPK).toHaveLength(1);
+
+  // Lớp mới chưa có học sinh vẫn vào được trang lớp.
+  await chooseClass(page, 'SPK');
+  await expect(page).toHaveURL(/\/class\/SPK$/);
+  await clickNav(page, 'Lớp Học');
+  await page.goto('/class');
+  await page.getByTestId('add-class').waitFor();
+
+  // Nút Sửa/Xoá hiện khi rê chuột vào thẻ lớp.
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await page.getByTestId('class-card-SPK').hover();
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/101-class-hover.png' });
+  await page.getByTestId('edit-class-SPK').click();
+  await page.getByTestId('class-form-name').fill('SPK1');
+  await page.getByTestId('class-form-add-slot').click();
+  await page.getByLabel('Ngày học buổi 2').selectOption('7');
+  await page.getByLabel('Giờ bắt đầu buổi 2').fill('08:00');
+  await page.getByLabel('Giờ kết thúc buổi 2').fill('09:30');
+  await page.getByLabel('Xoá buổi 1').click();
+  await page.getByTestId('class-form-save').click();
+  await expect(page.getByTestId('class-schedule-SPK1')).toHaveText('CN 08:00-09:30');
+  await expect(page.getByTestId('class-card-SPK')).toHaveCount(0);
+
+  // Đổi tên lớp có học sinh: học sinh chuyển theo.
+  await page.getByTestId('class-card-7B').hover();
+  await page.getByTestId('edit-class-7B').click();
+  await page.getByTestId('class-form-name').fill('7B Mới');
+  await page.getByTestId('class-form-save').click();
+  await expect(page.getByRole('button', { name: 'Vào lớp 7B Mới', exact: true })).toContainText('5 trainer');
+  let saved = await savedStudents(page, state);
+  expect(Object.values(saved).filter(student => student.className === '7B Mới')).toHaveLength(5);
+
+  // Xoá lớp: phải gõ đúng tên mới bấm được, xoá luôn học sinh.
+  await page.getByTestId('class-card-7B Mới').hover();
+  await page.getByTestId('delete-class-7B Mới').click();
+  await expect(page.getByTestId('delete-class-confirm')).toBeDisabled();
+  await page.getByTestId('delete-class-input').fill('7B Mới');
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/102-delete-class.png' });
+  await page.getByTestId('delete-class-confirm').click();
+  await expect(page.getByTestId('class-card-7B Mới')).toHaveCount(0);
+  saved = await savedStudents(page, state);
+  expect(Object.values(saved).some(student => student.className.startsWith('7B'))).toBe(false);
+  expect(Object.keys(saved)).toHaveLength(7);
+  local = await page.evaluate(() => JSON.parse(window.localStorage.getItem('classivy_classroom_settings') || '{}'));
+  expect(Object.keys(local.classSchedules)).toEqual(['SPK1']);
+  expect(state.errors).toEqual([]);
+});
+
+test('Lưu trữ học sinh từ Hồ sơ Trainer, ẩn khỏi lớp, bỏ lưu trữ trong Cài đặt', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await chooseClass(page, '6A');
+  await page.getByText('An 6A', { exact: true }).first().click();
+  await page.getByText('Hồ Sơ Trainer').waitFor();
+  await page.getByTestId('archive-student').click();
+  await page.getByTestId('archive-student-confirm').click();
+  await expect(page).toHaveURL(/\/class\/6A$/);
+  await expect(page.getByText('An 6A', { exact: true })).toHaveCount(0);
+
+  // Không còn trong Random/danh sách; dữ liệu vẫn còn, có cờ lưu trữ.
+  let saved = await savedStudents(page, state) as Record<string, SavedStudent & { isArchived?: boolean; points: number }>;
+  const an = Object.values(saved).find(student => student.name === 'An 6A')!;
+  expect(an.isArchived).toBe(true);
+  expect(an.points).toBe(fixtureByName('An 6A').points);
+  // Mở thẳng đường dẫn hồ sơ của em đã lưu trữ thì về trang lớp.
+  await page.evaluate(id => { window.history.pushState({}, '', `/student/${id}`); window.dispatchEvent(new PopStateEvent('popstate')); }, an.id);
+  await expect(page).toHaveURL(/\/class\/6A$/);
+
+  await clickNav(page, 'Cài Đặt');
+  await page.getByRole('heading', { name: 'Cài đặt lớp học' }).waitFor();
+  const section = page.getByRole('button', { name: 'Hiện Học sinh đã lưu trữ' });
+  if (await section.count() > 0) await section.click();
+  await expect(page.getByTestId('archived-student')).toHaveCount(1);
+  if (process.env.SMOKE_SCREENSHOTS) await page.screenshot({ path: 'test-results/screens/103-archived.png', fullPage: true });
+  await page.getByRole('button', { name: 'Bỏ lưu trữ An 6A' }).click();
+  await expect(page.getByTestId('archived-empty')).toBeVisible();
+  saved = await savedStudents(page, state) as Record<string, SavedStudent & { isArchived?: boolean; points: number }>;
+  expect(saved[an.id].isArchived).toBeUndefined();
+  await clickNav(page, 'Lớp Học');
+  await chooseClass(page, '6A');
+  await expect(page.getByText('An 6A', { exact: true }).first()).toBeVisible();
   expect(state.errors).toEqual([]);
 });

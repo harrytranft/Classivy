@@ -1,4 +1,6 @@
 import { ClassActions, createClassActions } from '../../features/class/classActions';
+import { ClassManagementActions, createClassManagementActions } from '../../features/class/classManagementActions';
+import { ArchiveActions, createArchiveActions } from '../../features/students/archiveActions';
 import { PointsActions, createPointsActions } from '../../features/students/pointsActions';
 import { AttendanceActions, createAttendanceActions } from '../../features/attendance/attendanceActions';
 import { HomeworkActions, createHomeworkActions } from '../../features/homework/homeworkActions';
@@ -19,6 +21,8 @@ import type { AppState } from './appState';
 // Mọi hành động nghiệp vụ của ứng dụng giáo viên. Mỗi nhóm nằm trong thư mục tính năng của nó.
 // Các nhóm gọi nhau qua tham số `app` (ví dụ Cá Ngựa gọi app.handleRandom), được nối ở đây sau khi tạo xong.
 export type AppActions = ClassActions
+  & ClassManagementActions
+  & ArchiveActions
   & PointsActions
   & AttendanceActions
   & HomeworkActions
@@ -40,6 +44,8 @@ export const createAppActions = (state: AppState): AppActions => {
   Object.assign(
     actions,
     createClassActions(state, actions),
+    createClassManagementActions(state, actions),
+    createArchiveActions(state, actions),
     createPointsActions(state, actions),
     createAttendanceActions(state, actions),
     createHomeworkActions(state, actions),

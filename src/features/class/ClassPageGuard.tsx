@@ -4,10 +4,10 @@ import { useApp } from '../../app/AppContext';
 import { SCREEN_PATHS } from '../../app/screenRoutes';
 import { ClassEntrySplash } from '../../app/SplashScreen';
 
-// Chặn trang lớp (và trang con của lớp) khi tên lớp trên đường dẫn không có học sinh nào.
+// Chặn trang lớp (và trang con của lớp) khi tên lớp trên đường dẫn không phải lớp nào đang có.
 export const ClassPageGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { routeClassName, students, initialCloudLoadComplete } = useApp();
-  if (students.some(student => student.className === routeClassName)) {
+  const { routeClassName, students, classOptions, initialCloudLoadComplete } = useApp();
+  if (classOptions.includes(routeClassName)) {
     return <>{children}<ClassEntrySplash className={routeClassName} /></>;
   }
   // Dữ liệu chưa tải xong thì chờ, tránh báo nhầm "không tìm thấy".

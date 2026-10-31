@@ -13,10 +13,14 @@ export const useDerivedState = (s: BaseState) => {
     activeBossRound, bossEncounterFrequency, bossStatesByClass, customLudoTiles,
     editingStudent, filterClass, luckyWheelDisplayRewards, luckyWheelRewards, ludoClassName,
     pokemonReleaseEvent, searchQuery, selectedStudentIds, sortType,
-    students
+    students, allStudents, classroomSettings
   } = s;
 
-  const classes = useMemo(() => ['Tất cả', ...Array.from(new Set(students.map(s => s.className)))], [students]);
+  // Lớp = lớp có học sinh (kể cả em đã lưu trữ) + lớp tạo bằng "Thêm Lớp" (có trong lịch học, có thể chưa có học sinh).
+  const classes = useMemo(
+    () => ['Tất cả', ...Array.from(new Set([...allStudents.map(s => s.className), ...Object.keys(classroomSettings.classSchedules)]))],
+    [allStudents, classroomSettings.classSchedules]
+  );
   const currentClassStudents = useMemo(() => {
     let list = students.filter(s => filterClass === 'Tất cả' || s.className === filterClass);
     if (searchQuery) list = list.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
