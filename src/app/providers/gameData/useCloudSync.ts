@@ -36,6 +36,8 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
   // Khi giáo viên quay lại tab sau một lúc, tải lại bản mới nhất nếu máy này không còn thay đổi chưa lưu (D31).
   const hasPendingChangesRef = useRef(false);
   const busyRef = useRef(false);
+  // Có thay đổi mới trong lúc một lần lưu đang chạy: chờ lần đó xong rồi mới lưu tiếp (xem vòng lưu bên dưới).
+  const saveWaitingRef = useRef(false);
   const hiddenAtRef = useRef<number | null>(null);
   // Mốc các lần lưu bị từ chối vì máy khác vừa sửa (để phát hiện vòng lặp tải lại - lưu - bị từ chối).
   const conflictTimesRef = useRef<number[]>([]);
@@ -285,6 +287,13 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
     }
 
     const timer = setTimeout(async () => {
+      // Lần lưu trước chưa xong (mạng/Supabase chậm): KHÔNG gửi thêm. Lần lưu mới sẽ tính phần thay đổi so với mốc cũ,
+      // gửi số phiên bản cũ của các em vừa được chính máy này lưu, và bị DB từ chối 'stale_data' như thể máy khác sửa
+      // (2026-11-03: lỗi stale_data mỗi giây, CPU Supabase cao). Lần đang chạy xong sẽ gọi lại vòng lưu này.
+      if (busyRef.current) {
+        saveWaitingRef.current = true;
+        return;
+      }
       setIsSyncing(true);
       busyRef.current = true;
       try {
@@ -350,6 +359,10 @@ export const useCloudSync = (data: GameDataState, user: AuthUser | null, authLoa
       } finally {
         busyRef.current = false;
         setIsSyncing(false);
+        if (saveWaitingRef.current) {
+          saveWaitingRef.current = false;
+          setSaveRetryToken(n => n + 1);
+        }
       }
     }, 1500); // 1.5s debounce to group multiple rapid edits together
 
