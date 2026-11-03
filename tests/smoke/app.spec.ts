@@ -106,6 +106,8 @@ interface SmokeState {
   failStudentReads: boolean;
   /** Mọi lần lưu đều bị từ chối stale_data (như khi máy/tab khác sửa liên tục). */
   staleAlways: boolean;
+  /** Supabase trả lời chậm (ms) cho mỗi lần lưu. */
+  saveDelayMs: number;
 }
 
 // Payload JSON của save_teacher_changes -> TeacherChanges (ngược với toRpcPayload).
@@ -174,7 +176,7 @@ interface SetupOptions {
 }
 
 async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState> {
-  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1, staleNextSave: false, settingsReads: 0, failStudentReads: false, staleAlways: false };
+  const state: SmokeState = { upserts: [], dialogs: [], errors: [], tables: emptyTables(), rpcCalls: [], dataModelVersion: 1, staleNextSave: false, settingsReads: 0, failStudentReads: false, staleAlways: false, saveDelayMs: 0 };
 
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ loggedIn, storageKey, session, seedValues }) => {
@@ -257,6 +259,7 @@ async function setupPage(page: Page, options: SetupOptions): Promise<SmokeState>
           await route.fulfill({ status: 400, contentType: 'application/json', body: JSON.stringify({ code: '40001', message: 'stale_data', details: ids.join(','), hint: null }) });
           return;
         }
+        if (state.saveDelayMs > 0) await new Promise(resolve => setTimeout(resolve, state.saveDelayMs));
         const changes = fromRpcPayload((request.postDataJSON() as { p_changes: RpcPayload }).p_changes);
         state.tables = applyChanges(state.tables, changes);
         state.rpcCalls.push(changes);
@@ -853,6 +856,38 @@ test('Tải đám mây lỗi: báo rõ, không sao lưu đè, Thử lại thì t
   state.dialogs = [];
   await page.getByRole('button', { name: 'Sao lưu đám mây' }).click();
   await expect.poll(() => state.dialogs.join('\n')).toContain('sao lưu lên đám mây thành công');
+});
+
+test('Supabase chậm: lần lưu trước chưa xong thì không gửi lần lưu chồng lên (tránh stale_data tự gây)', async ({ page }) => {
+  const state = await setupPage(page, {
+    loggedIn: true,
+    emptyCloud: true,
+    phase3: true,
+    localStorageSeed: { classivy_school_data_v6: JSON.stringify(FIXTURE.students) }
+  });
+  await page.waitForTimeout(2200);
+  await chooseClass(page, '6A');
+  state.saveDelayMs = 4000;
+  const plus = page.getByRole('button', { name: /^Cộng điểm / });
+  const name = (await plus.first().getAttribute('aria-label'))!.replace('Cộng điểm ', '');
+  const id = Object.values(state.tables.students).find(row => row.name === name)!.clientId;
+  const before = state.tables.students[id].points;
+  const callsBefore = state.rpcCalls.length;
+  // Cộng điểm 3 lần, cách nhau hơn 1,5 giây (quá thời gian chờ gom) trong khi lần lưu đầu còn treo.
+  for (let i = 0; i < 3; i++) {
+    await plus.first().click({ force: true });
+    await page.locator('button.aspect-square').first().click();
+    await page.waitForTimeout(2000);
+  }
+  // Cả 3 lần cộng đều lên đám mây (lần cuối đi sau khi lần lưu đang treo xong), điểm khớp sổ điểm.
+  const myEvents = () => state.rpcCalls.slice(callsBefore).flatMap(call => call.history.filter(entry => entry.studentClientId === id));
+  await expect.poll(() => new Set(myEvents().map(entry => entry.clientEventId)).size, { timeout: 25000 }).toBe(3);
+  await expect.poll(() => state.tables.students[id].points, { timeout: 10000 })
+    .toBe(before + [...new Map(myEvents().map(entry => [entry.clientEventId, entry.amount])).values()].reduce((sum, n) => sum + n, 0));
+  // Mỗi lần lưu tính từ mốc mới nhất: không gửi lại sự kiện điểm đã gửi (mốc cũ = gửi số phiên bản cũ = stale_data).
+  const sentEvents = state.rpcCalls.slice(callsBefore).flatMap(call => call.history.map(entry => `${entry.studentClientId}/${entry.clientEventId}`));
+  expect(new Set(sentEvents).size).toBe(sentEvents.length);
+  expect(state.errors).toEqual([]);
 });
 
 test('Bị từ chối liên tục thì dừng tự tải lại, báo tên học sinh và chờ Thử lại', async ({ page }) => {
