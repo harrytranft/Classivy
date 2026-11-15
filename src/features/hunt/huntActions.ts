@@ -15,6 +15,8 @@ import { AppActions } from '../../app/controller/appActions';
 export interface HuntActions {
   /** Mở trang săn Pokémon của lớp đang chọn. */
   openHuntPage: () => void;
+  /** Giáo viên chủ động gọi Pokémon hoang dã bất kỳ lúc nào (nút Nav hoặc phím tắt) và vào săn ngay. */
+  callWildPokemonNow: () => void;
   /** "Săn ngay": bắt đầu săn và gọi em đầu tiên. */
   startWildHunt: () => void;
   /** "Để sau": Pokémon bỏ đi, buổi này không xuất hiện lại. */
@@ -127,6 +129,30 @@ export const createHuntActions = (appState: AppState, app: AppActions): HuntActi
     if (className) goToClassPage(className, null, { replace: true });
   };
 
+  const callWildPokemonNow = () => {
+    // Đang có cuộc săn: mở lại trang săn thay vì tạo con mới.
+    if (wildEncounter) {
+      goToClassPage(wildEncounter.className, CLASS_SUB_PAGES.hunt);
+      return;
+    }
+    const className = routeClassName || (filterClass !== 'Tất cả' ? filterClass : classOptions[0] || '');
+    if (!className) {
+      alert('Chưa có lớp nào để săn Pokémon.');
+      return;
+    }
+    if (!classroomSettings.wildHunt.enabled) {
+      alert('Tính năng Săn Pokémon hoang dã đang tắt. Bật lại trong Cài đặt.');
+      return;
+    }
+    const hunting = startHunting(createWildEncounter(classroomSettings.wildHunt, className, Date.now()));
+    const caller = pickNextCaller(hunting, presentIdsOf(className));
+    setWildCatchResult(null);
+    setWildEncounter(caller
+      ? { ...hunting, currentStudentId: caller.studentId, calledStudentIds: caller.calledStudentIds }
+      : hunting);
+    goToClassPage(className, CLASS_SUB_PAGES.hunt);
+  };
+
   const callTestWildPokemon = () => {
     const className = filterClass !== 'Tất cả' ? filterClass : classOptions[0] || '';
     if (!className) {
@@ -138,5 +164,5 @@ export const createHuntActions = (appState: AppState, app: AppActions): HuntActi
     goToClassPage(className);
   };
 
-  return { openHuntPage, startWildHunt, dismissWildEncounter, callWildCaller, answerWildHunt, completeWildCatch, finishWildHunt, callTestWildPokemon };
+  return { openHuntPage, callWildPokemonNow, startWildHunt, dismissWildEncounter, callWildCaller, answerWildHunt, completeWildCatch, finishWildHunt, callTestWildPokemon };
 };
