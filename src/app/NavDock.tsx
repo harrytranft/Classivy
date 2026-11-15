@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Gift, Settings } from 'lucide-react';
+import { BookOpen, Gift, Leaf, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { SCREEN_PATHS } from './screenRoutes';
 import { Screen } from '../types/app';
@@ -10,6 +10,7 @@ import { cx } from '../components/ui';
 const NAV_ITEMS = [
   { id: 'class', screen: 'class' as Screen, Icon: BookOpen, label: 'Lớp Học' },
   { id: 'giftPokemon', Icon: Gift, label: 'Tặng Pokémon' },
+  { id: 'wildPokemon', Icon: Leaf, label: 'Gọi Pokémon hoang dã (O)' },
   { id: 'settings', screen: 'settings' as Screen, Icon: Settings, label: 'Cài Đặt' }
 ];
 
@@ -17,7 +18,7 @@ const NAV_ITEMS = [
 export const NavDock: React.FC = () => {
   const {
     currentScreen, handleBackupToCloud, handleRestoreFromCloud, isSyncing, lastSyncedTime,
-    openGiftPokemonModal, profile, setCurrentScreen, setShowUserModal, user
+    callWildPokemonNow, openGiftPokemonModal, profile, setCurrentScreen, setShowUserModal, user
   } = useApp();
   const navigate = useNavigate();
   return (
@@ -31,7 +32,10 @@ export const NavDock: React.FC = () => {
               key={id}
               type="button"
               // "Lớp Học" luôn về trang chọn lớp (kể cả khi đang trong một lớp).
-              onClick={() => id === 'class' ? navigate(SCREEN_PATHS.class) : screen ? setCurrentScreen(screen) : openGiftPokemonModal()}
+              onClick={() => id === 'class' ? navigate(SCREEN_PATHS.class)
+                : id === 'wildPokemon' ? callWildPokemonNow()
+                : screen ? setCurrentScreen(screen) : openGiftPokemonModal()}
+              data-testid={`nav-${id}`}
               aria-label={label}
               aria-current={active ? 'page' : undefined}
               className={cx(

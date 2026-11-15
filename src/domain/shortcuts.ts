@@ -20,7 +20,7 @@ export const SHORTCUT_DEFINITIONS: ShortcutDefinition[] = [
   { id: 'timer', label: 'Hẹn giờ', scope: 'class', defaultKey: 't' },
   { id: 'ludo', label: 'Cá Ngựa', scope: 'class', defaultKey: 'l' },
   { id: 'gift', label: 'Tặng Pokémon', scope: 'class', defaultKey: 'p' },
-  { id: 'hunt', label: 'Săn Pokémon hoang dã', scope: 'class', defaultKey: 'o' },
+  { id: 'hunt', label: 'Gọi Pokémon hoang dã', scope: 'global', defaultKey: 'o' },
   { id: 'group', label: 'Chia nhóm', scope: 'class', defaultKey: 'g' },
   { id: 'shop', label: 'Shop', scope: 'class', defaultKey: 's' },
   { id: 'addTrainer', label: 'Thêm Trainer', scope: 'class', defaultKey: 'n' },
