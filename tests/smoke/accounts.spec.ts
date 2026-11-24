@@ -671,7 +671,7 @@ test('học sinh: không có lời mời thì Hồ sơ không hiện thẻ lời
   await page.goto('/');
   await expect(page.locator('.cl-splash')).toHaveCount(0);
   await expect(page.getByRole('region', { name: 'Lời mời kết bạn' })).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Bạn bè', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Bạn bè/ })).toBeVisible();
   expect(mock.errors).toEqual([]);
 });
 
@@ -806,7 +806,7 @@ test('học sinh: trong giờ dạy vẫn xem Hào Quang nhưng các nút Shop, 
   await expect(page.getByRole('button', { name: 'Chọn Bulbasaur hỗ trợ' })).toBeDisabled();
   await expect(page.getByRole('button', { name: 'Chọn Pikachu để hợp nhất' })).toBeDisabled();
 
-  await page.getByRole('button', { name: 'Bạn bè', exact: true }).click();
+  await page.getByRole('button', { name: /^Bạn bè/ }).click();
   await expect(page.getByRole('button', { name: 'Tặng quà' })).toBeDisabled();
   expect(mock.shopCalls).toEqual([]);
   expect(mock.socialCalls).toEqual([]);
@@ -818,7 +818,7 @@ test('học sinh: ngoài giờ dạy các nút hoạt động bình thường, k
   await expect(page.getByTestId('teaching-hours-banner')).toHaveCount(0);
   await page.getByRole('button', { name: 'Cửa hàng' }).click();
   await expect(page.getByRole('button', { name: 'Mua Trứng thường' })).toBeEnabled();
-  await page.getByRole('button', { name: 'Bạn bè', exact: true }).click();
+  await page.getByRole('button', { name: /^Bạn bè/ }).click();
   await expect(page.getByRole('button', { name: 'Tặng quà' })).toBeEnabled();
   expect(mock.errors).toEqual([]);
 });

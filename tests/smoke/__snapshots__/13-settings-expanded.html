@@ -1011,6 +1011,84 @@
 <button type="button" data-testid="wild-call-test" class="bg-lime-600 hover:bg-lime-700 text-white font-black px-5 py-2.5 rounded-xl text-xs shadow">🌿 Gọi thử một Pokémon hoang dã</button>
 </div>
 </section>
+<section class="bg-emerald-50 p-6 sm:p-10 rounded-[40px] border-4 border-emerald-300 text-left space-y-6 my-8">
+<div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
+<div class="flex items-center gap-3 min-w-0">
+<span class="text-3xl shrink-0">🕒</span>
+<div class="min-w-0">
+<h3 class="text-xl font-extrabold tracking-tight text-brand-ink">Chế độ giờ dạy</h3>
+<p class="mt-1 text-sm text-brand-ink/70">Trong khung giờ này học sinh vẫn đăng nhập và xem Hào Quang, nhưng Cửa hàng, Hợp nhất, Đổi đồng hành và Tặng quà bị khoá.</p>
+</div>
+</div>
+<button type="button" class="shrink-0 h-8 w-14 rounded-full border p-1 transition-colors border-brand-forest bg-brand-forest" aria-label="Ẩn Chế độ giờ dạy" title="Ẩn Chế độ giờ dạy">
+<span class="block w-5 h-5 rounded-full bg-white shadow transition-transform translate-x-8">
+</span>
+</button>
+</div>
+<p class="rounded-2xl border border-amber-300 bg-amber-50 p-3 text-xs font-bold text-amber-900" data-testid="teaching-not-synced">Cài đặt này hiện chỉ lưu trên máy này. Học sinh dùng khung giờ mặc định cho tới khi chạy migration Phase 13C và migration giờ dạy trên Supabase.</p>
+<p class="rounded-2xl border p-3 text-xs font-bold border-emerald-200 bg-white text-emerald-950" data-testid="teaching-status">Bây giờ ngoài giờ dạy: học sinh dùng các nút bình thường.<span class="block font-medium text-emerald-900/70">Giờ tính theo giờ Việt Nam, không phụ thuộc đồng hồ máy học sinh.</span>
+</p>
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-200 bg-white p-3 text-xs font-bold text-emerald-950">
+<span class="min-w-[14rem] flex-1">Bật chế độ giờ dạy</span>
+<input data-testid="teaching-enabled" class="h-5 w-5 accent-emerald-600" type="checkbox" checked="">
+</label>
+<label class="flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-200 bg-white p-3 text-xs font-bold text-emerald-950">
+<span class="min-w-[14rem] flex-1">Thời gian thử lại sau khi tan lớp (phút)<span class="block font-medium text-emerald-900/70">Học sinh thấy"Lớp đang học, thử lại sau" = giờ tan lớp + số phút này.</span>
+</span>
+<input min="0" max="120" aria-label="Thời gian thử lại sau khi tan lớp (phút)" data-testid="teaching-retry" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white w-24" type="number" value="15">
+</label>
+<div class="space-y-2 rounded-3xl border-2 border-emerald-200 bg-white p-4">
+<h4 class="text-sm font-black text-emerald-950">Khung giờ dạy</h4>
+<ul class="space-y-2" data-testid="teaching-slots">
+<li class="flex flex-wrap items-center gap-2 rounded-2xl border border-emerald-100 p-2">
+<select aria-label="Ngày" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white">
+<option value="1">Thứ 2</option>
+<option value="2">Thứ 3</option>
+<option value="3">Thứ 4</option>
+<option value="4">Thứ 5</option>
+<option value="5">Thứ 6</option>
+<option value="6">Thứ 7</option>
+<option value="7">Chủ nhật</option>
+</select>
+<input aria-label="Từ giờ" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white" type="time" value="17:30">
+<span class="text-xs font-bold text-emerald-900">đến</span>
+<input aria-label="Đến giờ" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white" type="time" value="20:40">
+<button type="button" aria-label="Xoá khung giờ" class="ml-auto rounded-xl px-2 py-1 text-xs font-bold text-red-700 hover:bg-red-100">🗑️</button>
+</li>
+<li class="flex flex-wrap items-center gap-2 rounded-2xl border border-emerald-100 p-2">
+<select aria-label="Ngày" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white">
+<option value="1">Thứ 2</option>
+<option value="2">Thứ 3</option>
+<option value="3">Thứ 4</option>
+<option value="4">Thứ 5</option>
+<option value="5">Thứ 6</option>
+<option value="6">Thứ 7</option>
+<option value="7">Chủ nhật</option>
+</select>
+<input aria-label="Từ giờ" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white" type="time" value="16:30">
+<span class="text-xs font-bold text-emerald-900">đến</span>
+<input aria-label="Đến giờ" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white" type="time" value="18:10">
+<button type="button" aria-label="Xoá khung giờ" class="ml-auto rounded-xl px-2 py-1 text-xs font-bold text-red-700 hover:bg-red-100">🗑️</button>
+</li>
+<li class="flex flex-wrap items-center gap-2 rounded-2xl border border-emerald-100 p-2">
+<select aria-label="Ngày" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white">
+<option value="1">Thứ 2</option>
+<option value="2">Thứ 3</option>
+<option value="3">Thứ 4</option>
+<option value="4">Thứ 5</option>
+<option value="5">Thứ 6</option>
+<option value="6">Thứ 7</option>
+<option value="7">Chủ nhật</option>
+</select>
+<input aria-label="Từ giờ" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white" type="time" value="16:00">
+<span class="text-xs font-bold text-emerald-900">đến</span>
+<input aria-label="Đến giờ" class="border-2 border-emerald-200 p-2 rounded-xl font-bold text-xs bg-white" type="time" value="20:40">
+<button type="button" aria-label="Xoá khung giờ" class="ml-auto rounded-xl px-2 py-1 text-xs font-bold text-red-700 hover:bg-red-100">🗑️</button>
+</li>
+</ul>
+<button type="button" data-testid="teaching-add-slot" class="rounded-xl bg-emerald-700 px-4 py-2 text-xs font-black text-white shadow hover:bg-emerald-800">+ Thêm khung giờ</button>
+</div>
+</section>
 <section class="bg-fuchsia-50 p-6 sm:p-10 rounded-[40px] border-4 border-fuchsia-200 text-left space-y-6 my-8">
 <div class="flex items-center justify-between gap-4 border-b border-[#e6e2d4] pb-4">
 <div class="flex items-center gap-3 min-w-0">

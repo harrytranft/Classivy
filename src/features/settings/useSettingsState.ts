@@ -18,6 +18,7 @@ export const useSettingsState = () => {
     ludo: true,
     ludoChallenges: true,
     wildHunt: true,
+    teachingHours: true,
     luckyWheel: true,
     data: true
   });
