@@ -12,6 +12,8 @@ interface StudentShopProps {
   profile: StudentPortalProfile;
   refreshSignal: number;
   onChanged: () => Promise<unknown>;
+  /** Đang trong giờ dạy: xem được nhưng không mua được. */
+  locked?: boolean;
 }
 
 type Pending =
@@ -25,13 +27,14 @@ const PointsPill: React.FC<{ points: number }> = ({ points }) => (
   </span>
 );
 
-export const StudentShop: React.FC<StudentShopProps> = ({ profile, refreshSignal, onChanged }) => {
+export const StudentShop: React.FC<StudentShopProps> = ({ profile, refreshSignal, onChanged, locked = false }) => {
   const { state, busy, run } = useStudentShop(refreshSignal, onChanged);
   const [pending, setPending] = useState<Pending | null>(null);
   const [notice, setNotice] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null);
   const [openSkillId, setOpenSkillId] = useState<string | null>(null);
 
   const act = async (action: ShopAction, okText: string) => {
+    if (locked) return;
     setNotice(null);
     const result = await run(action);
     setPending(null);
@@ -130,7 +133,7 @@ export const StudentShop: React.FC<StudentShopProps> = ({ profile, refreshSignal
               <span className="tabular-nums text-brand-ink/70">{egg.progress}/{egg.required}</span>
             </div>
             <ProgressBar value={egg.percent} tone="gold" label={`Tiến độ ấp ${egg.label}`} className="mt-2" />
-            <Button className="mt-3" size="sm" variant="reward" icon={<Zap size={16} aria-hidden />} disabled={busy || points < hatchCost}
+            <Button className="mt-3" size="sm" variant="reward" icon={<Zap size={16} aria-hidden />} disabled={busy || locked || points < hatchCost}
               onClick={() => { setNotice(null); setPending({ type: 'hatch' }); }}>
               Nở nhanh{hatchCost > 0 ? ` (${hatchCost} Hào Quang)` : ''}
             </Button>
@@ -141,7 +144,7 @@ export const StudentShop: React.FC<StudentShopProps> = ({ profile, refreshSignal
         <ul className="grid gap-3 sm:grid-cols-2">
           {SHOP_EGG_OFFERS.map(offer => {
             const price = overview.eggPrices[offer.kind];
-            const cannot = incubating || points < price;
+            const cannot = locked || incubating || points < price;
             return (
               <li key={offer.kind} className="rounded-brand-md border border-[#e6e2d4] p-3">
                 <div className="flex items-center gap-3">
@@ -190,7 +193,7 @@ export const StudentShop: React.FC<StudentShopProps> = ({ profile, refreshSignal
                     {owned ? (
                       <p className="mt-2 inline-flex items-center gap-1 font-bold text-brand-forest"><Check size={16} aria-hidden /> Pokémon đồng hành đã có skill này</p>
                     ) : (
-                      <Button className="mt-3" size="sm" variant="reward" disabled={busy || !companion || points < skill.cost}
+                      <Button className="mt-3" size="sm" variant="reward" disabled={busy || locked || !companion || points < skill.cost}
                         onClick={() => { setNotice(null); setPending({ type: 'skill', skill }); }}>
                         Mua skill ({skill.cost} Hào Quang)
                       </Button>

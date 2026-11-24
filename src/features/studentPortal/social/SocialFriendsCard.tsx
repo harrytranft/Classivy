@@ -13,6 +13,8 @@ interface SocialFriendsCardProps {
   busy: boolean;
   actions: SocialActions;
   onGift: (friendId: string) => void;
+  /** Đang trong giờ dạy: nút Tặng quà bị khoá. */
+  giftLocked?: boolean;
 }
 
 const PetIcon: React.FC<{ dexId?: number; name: string }> = ({ dexId, name }) => {
@@ -46,7 +48,7 @@ export const IncomingRequests: React.FC<{ incoming: SocialOverview['incoming']; 
   );
 };
 
-export const SocialFriendsCard: React.FC<SocialFriendsCardProps> = ({ overview, busy, actions, onGift }) => {
+export const SocialFriendsCard: React.FC<SocialFriendsCardProps> = ({ overview, busy, actions, onGift, giftLocked = false }) => {
   const [showClassmates, setShowClassmates] = useState(false);
   const { friends, incoming, outgoing, classmates } = overview;
 
@@ -69,7 +71,7 @@ export const SocialFriendsCard: React.FC<SocialFriendsCardProps> = ({ overview, 
                 <span className="truncate font-bold text-brand-ink">{friend.name}</span>
               </span>
               <span className="flex shrink-0 gap-1">
-                <Button size="md" variant="secondary" icon={<Gift size={18} className="text-brand-violet" />} disabled={busy} onClick={() => onGift(friend.id)}>Tặng quà</Button>
+                <Button size="md" variant="secondary" icon={<Gift size={18} className="text-brand-violet" />} disabled={busy || giftLocked} onClick={() => onGift(friend.id)}>Tặng quà</Button>
                 <Button size="md" variant="ghost" disabled={busy} aria-label={`Thôi làm bạn với ${friend.name}`}
                   onClick={() => { if (window.confirm(`Thôi làm bạn với ${friend.name}?`)) actions.remove(friend.id); }}>Bỏ</Button>
               </span>

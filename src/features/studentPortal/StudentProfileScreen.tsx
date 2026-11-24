@@ -10,6 +10,8 @@ import { IncomingRequests } from './social/SocialFriendsCard';
 import { useStudentSocial } from './social/useStudentSocial';
 import { LogoutModal } from './LogoutModal';
 import { StudentShop } from './StudentShop';
+import { useTeachingHours } from './useTeachingHours';
+import { TeachingHoursBanner } from './TeachingHoursBanner';
 
 // Cổng học sinh (Phase 10A; Cửa hàng 10B; v3 Phase 12A): thanh điều hướng Hồ sơ / Pokémon / Bạn bè / Cửa hàng; avatar ở dưới cùng, bấm mở hộp Đăng xuất (D44).
 // Học sinh không đổi được avatar (chỉ giáo viên). Responsive (D22): thanh dọc bên trái giống hệt app giáo viên (NavDock) ở mọi khổ màn hình.
@@ -53,6 +55,8 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
 
   // Dữ liệu bạn bè giữ ở đây để chấm đỏ trên nav và thẻ lời mời ở Hồ sơ dùng chung với trang Bạn bè.
   const social = useStudentSocial(refreshSignal);
+  // Chế độ giờ dạy: đang trong giờ thì khoá các nút ghi (Cửa hàng, Hợp nhất, Đổi đồng hành, Tặng quà); Hào Quang vẫn xem được.
+  const teaching = useTeachingHours(refreshSignal);
   const pendingInvites = social.state.kind === 'loaded' && social.state.result.enabled ? social.state.result.overview.incoming.length : 0;
 
   const refresh = async () => {
@@ -114,6 +118,8 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
           </div>
         )}
 
+        <TeachingHoursBanner status={teaching} />
+
         {tab === 'profile' && (
           <div className="grid gap-4 md:grid-cols-2 md:items-start lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-6">
             <div data-portal-column="identity" className="space-y-4 lg:sticky lg:top-24">
@@ -131,17 +137,17 @@ export const StudentProfileScreen: React.FC<StudentProfileScreenProps> = ({ prof
           </div>
         )}
 
-        {tab === 'pokemon' && <StudentPokemon profile={profile} refreshSignal={refreshSignal} onChanged={onRefresh} />}
+        {tab === 'pokemon' && <StudentPokemon profile={profile} refreshSignal={refreshSignal} onChanged={onRefresh} locked={teaching.locked} />}
 
         {tab === 'friends' && (
           <div data-portal-column="activity" className="mx-auto max-w-3xl space-y-4">
-            <StudentSocialPanel social={social} />
+            <StudentSocialPanel social={social} giftLocked={teaching.locked} />
           </div>
         )}
 
         {tab === 'shop' && (
           <div data-portal-column="activity" className="mx-auto max-w-3xl">
-            <StudentShop profile={profile} refreshSignal={refreshSignal} onChanged={onRefresh} />
+            <StudentShop profile={profile} refreshSignal={refreshSignal} onChanged={onRefresh} locked={teaching.locked} />
           </div>
         )}
 

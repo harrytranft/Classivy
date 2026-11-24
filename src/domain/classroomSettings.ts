@@ -1,5 +1,6 @@
 import { CLASSROOM_SETTINGS_KEY, DEFAULT_WILD_HUNT_SETTINGS, createDefaultClassroomSettings } from '../data/classroomDefaults';
 import { normalizeClassSchedules } from './classSchedule';
+import { normalizeTeachingHours } from './teachingHours';
 import { ClassroomSettings, LudoChallenge, WildHuntSettings, WildRarity } from '../types';
 
 // Chuẩn hoá cài đặt lớp học từ nguồn không tin cậy (cloud, localStorage, file sao lưu):
@@ -73,7 +74,8 @@ export const normalizeClassroomSettings = (value: unknown): ClassroomSettings =>
   return {
     wildHunt: normalizeWildHuntSettings(source.wildHunt),
     ludoChallenges: normalizeLudoChallenges(source.ludoChallenges),
-    classSchedules: normalizeClassSchedules(source.classSchedules)
+    classSchedules: normalizeClassSchedules(source.classSchedules),
+    teachingHours: normalizeTeachingHours(source.teachingHours)
   };
 };
 

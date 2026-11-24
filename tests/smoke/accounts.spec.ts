@@ -41,6 +41,8 @@ interface Mock {
   shopCalls: Array<{ fn: string; body: Record<string, unknown> }>;
   shopError: string | null;
   shopClassEnabled: boolean | null;
+  /** Chế độ giờ dạy: kết quả student_teaching_hours() (null = giáo viên chưa lưu, app dùng khung mặc định). */
+  teachingHours: unknown;
 }
 
 const PROFILE_PAYLOAD = {
@@ -95,7 +97,7 @@ const SOCIAL_PAYLOAD = {
 async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
   const mock: Mock = { functionCalls: [], restPaths: [], rpcCalls: [], passwordUpdates: 0, errors: [], profile: PROFILE_PAYLOAD,
     social: { enabled: false }, socialCalls: [], giftError: null, writes: [],
-    shop: { enabled: false, points: 42, eggPrices: { normal: 10, special: 20 }, skills: [] }, shopCalls: [], shopError: null, shopClassEnabled: false };
+    shop: { enabled: false, points: 42, eggPrices: { normal: 10, special: 20 }, skills: [] }, shopCalls: [], shopError: null, shopClassEnabled: false, teachingHours: null };
   let firstLoginPending = true;
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(({ key, value }) => { window.localStorage.setItem(key, JSON.stringify(value)); },
@@ -124,6 +126,7 @@ async function setup(page: Page, who: 'teacher' | 'student'): Promise<Mock> {
       return;
     }
     if (p === '/rest/v1/rpc/student_first_login_pending') { mock.rpcCalls.push('pending'); await json(route, firstLoginPending); return; }
+    if (p === '/rest/v1/rpc/student_teaching_hours') { await json(route, mock.teachingHours); return; }
     if (p === '/rest/v1/rpc/student_shop_overview') { await json(route, mock.shop); return; }
     const shopFn = p.match(/^\/rest\/v1\/rpc\/(student_shop_buy_egg|student_shop_hatch_egg|student_shop_buy_skill|student_set_companion|student_set_support|student_fuse_pets)$/);
     if (shopFn) {
@@ -769,4 +772,64 @@ test('học sinh: Hợp nhất bị khoá khi Cửa hàng đóng', async ({ page
   await expect(page.getByRole('button', { name: 'Hợp nhất 2 Pokémon' })).toHaveCount(0);
   expect(mock.shopCalls).toEqual([]);
   expect(mock.errors).toEqual([]);
+});
+
+// Chế độ giờ dạy: trong giờ dạy học sinh vẫn xem Hào Quang nhưng Cửa hàng, Hợp nhất, Đổi đồng hành, Tặng quà chuyển xám.
+const TEACHING_HOURS_FRIDAY = { enabled: true, retryMinutes: 15, slots: [{ id: 'fri', weekday: 5, start: '17:30', end: '20:40' }] };
+
+async function openStudentInTeachingHours(page: Page, at: string) {
+  const mock = await setup(page, 'student');
+  await page.clock.setFixedTime(new Date(at)); // Thứ 6 2026-10-30
+  mock.teachingHours = TEACHING_HOURS_FRIDAY;
+  mock.shop = { enabled: true, points: 42, eggPrices: { normal: 10, special: 20 }, skills: [] };
+  mock.social = SOCIAL_PAYLOAD;
+  const base = JSON.parse(JSON.stringify(PROFILE_PAYLOAD));
+  delete base.game.egg;
+  mock.profile = base;
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  return mock;
+}
+
+test('học sinh: trong giờ dạy vẫn xem Hào Quang nhưng các nút Shop, Hợp nhất, Đổi đồng hành, Tặng quà bị khoá', async ({ page }) => {
+  const mock = await openStudentInTeachingHours(page, '2026-10-30T18:00:00+07:00');
+  await expect(page.getByTestId('teaching-hours-banner')).toContainText('Lớp đang học, thử lại sau 20:55');
+  await expect(page.getByText('42').first()).toBeVisible();
+
+  await page.getByRole('button', { name: 'Cửa hàng' }).click();
+  await expect(page.getByTestId('teaching-hours-banner')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Mua Trứng thường' })).toBeDisabled();
+
+  await page.getByRole('button', { name: 'Pokémon', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Làm Bulbasaur đồng hành' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Chọn Bulbasaur hỗ trợ' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Chọn Pikachu để hợp nhất' })).toBeDisabled();
+
+  await page.getByRole('button', { name: 'Bạn bè', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Tặng quà' })).toBeDisabled();
+  expect(mock.shopCalls).toEqual([]);
+  expect(mock.socialCalls).toEqual([]);
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: ngoài giờ dạy các nút hoạt động bình thường, không có thông báo', async ({ page }) => {
+  const mock = await openStudentInTeachingHours(page, '2026-10-30T21:00:00+07:00');
+  await expect(page.getByTestId('teaching-hours-banner')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Cửa hàng' }).click();
+  await expect(page.getByRole('button', { name: 'Mua Trứng thường' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Bạn bè', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Tặng quà' })).toBeEnabled();
+  expect(mock.errors).toEqual([]);
+});
+
+test('học sinh: hàm giờ dạy chưa có trên Supabase thì dùng khung giờ mặc định (Chủ nhật 16:00-20:40 khoá)', async ({ page }) => {
+  const mock = await setup(page, 'student');
+  await page.clock.setFixedTime(new Date('2026-11-01T17:00:00+07:00')); // Chủ nhật
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_teaching_hours', route => json(route, { code: 'PGRST202', message: 'not found', details: null, hint: null }, 404));
+  await page.route(url => url.pathname === '/rest/v1/rpc/student_first_login_pending', route => json(route, false));
+  await page.goto('/');
+  await expect(page.locator('.cl-splash')).toHaveCount(0);
+  await expect(page.getByTestId('teaching-hours-banner')).toContainText('thử lại sau 20:55');
+  expect(mock.shopCalls).toEqual([]);
 });

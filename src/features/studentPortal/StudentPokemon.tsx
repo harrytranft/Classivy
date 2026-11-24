@@ -13,15 +13,18 @@ interface StudentPokemonProps {
   profile: StudentPortalProfile;
   refreshSignal: number;
   onChanged: () => Promise<unknown>;
+  /** Đang trong giờ dạy: xem được nhưng không đổi/hợp nhất được. */
+  locked?: boolean;
 }
 
-export const StudentPokemon: React.FC<StudentPokemonProps> = ({ profile, refreshSignal, onChanged }) => {
+export const StudentPokemon: React.FC<StudentPokemonProps> = ({ profile, refreshSignal, onChanged, locked = false }) => {
   const { state, busy, run } = useStudentShop(refreshSignal, onChanged);
   const [notice, setNotice] = useState<{ tone: 'ok' | 'error'; text: string } | null>(null);
   const [fuseIds, setFuseIds] = useState<string[]>([]);
   const [confirmFuse, setConfirmFuse] = useState(false);
 
   const act = async (action: ShopAction, okText: string) => {
+    if (locked) return;
     setNotice(null);
     const result = await run(action);
     setNotice('message' in result ? { tone: 'error', text: result.message } : { tone: 'ok', text: okText });
@@ -80,11 +83,11 @@ export const StudentPokemon: React.FC<StudentPokemonProps> = ({ profile, refresh
                       </div>
                       {canSwap && pet.instanceId && !isCompanion && (
                         <div className="mt-2 flex flex-wrap gap-1.5">
-                          <Button size="sm" variant="secondary" disabled={busy || incubating} aria-label={`Làm ${name} đồng hành`}
+                          <Button size="sm" variant="secondary" disabled={busy || locked || incubating} aria-label={`Làm ${name} đồng hành`}
                             onClick={() => act({ fn: 'student_set_companion', args: { p_instance_id: pet.instanceId! } }, `${name} là Pokémon đồng hành mới.`)}>
                             Làm đồng hành
                           </Button>
-                          <Button size="sm" variant="ghost" disabled={busy} aria-label={isSupport ? `Bỏ hỗ trợ ${name}` : `Chọn ${name} hỗ trợ`}
+                          <Button size="sm" variant="ghost" disabled={busy || locked} aria-label={isSupport ? `Bỏ hỗ trợ ${name}` : `Chọn ${name} hỗ trợ`}
                             onClick={() => act({ fn: 'student_set_support', args: { p_instance_id: isSupport ? null : pet.instanceId! } }, isSupport ? `Đã bỏ hỗ trợ ${name}.` : `${name} là Pokémon hỗ trợ.`)}>
                             {isSupport ? 'Bỏ hỗ trợ' : 'Chọn hỗ trợ'}
                           </Button>
@@ -116,7 +119,7 @@ export const StudentPokemon: React.FC<StudentPokemonProps> = ({ profile, refresh
                     const name = getPokemonDisplayName(pet);
                     return (
                       <li key={id}>
-                        <button type="button" aria-pressed={on} aria-label={`Chọn ${name} để hợp nhất`} disabled={busy || (!on && fuseIds.length >= 2)}
+                        <button type="button" aria-pressed={on} aria-label={`Chọn ${name} để hợp nhất`} disabled={busy || locked || (!on && fuseIds.length >= 2)}
                           onClick={() => toggleFuse(id)}
                           className={cx('flex w-full flex-col items-center rounded-brand-md border p-2 text-center transition-colors disabled:opacity-50',
                             on ? 'border-brand-violet bg-[#f3e9fa]' : 'border-[#e6e2d4] bg-white hover:border-brand-violet')}>
@@ -129,7 +132,7 @@ export const StudentPokemon: React.FC<StudentPokemonProps> = ({ profile, refresh
                   })}
                 </ul>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <Button size="md" variant="reward" disabled={busy || fuseIds.length !== 2} onClick={() => setConfirmFuse(true)}>Hợp nhất 2 Pokémon</Button>
+                  <Button size="md" variant="reward" disabled={busy || locked || fuseIds.length !== 2} onClick={() => setConfirmFuse(true)}>Hợp nhất 2 Pokémon</Button>
                   <span className="text-[13px] font-semibold tabular-nums text-brand-ink/70">Đã chọn {fuseIds.length}/2</span>
                 </div>
               </>
