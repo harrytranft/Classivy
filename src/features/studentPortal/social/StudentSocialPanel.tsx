@@ -31,7 +31,7 @@ const WalletCard: React.FC<{ overview: SocialOverview }> = ({ overview }) => {
 };
 
 // Trạng thái bạn bè do cổng học sinh giữ (để chấm đỏ trên nav và thẻ lời mời ở Hồ sơ dùng chung dữ liệu).
-export const StudentSocialPanel: React.FC<{ social: StudentSocial }> = ({ social }) => {
+export const StudentSocialPanel: React.FC<{ social: StudentSocial; /** Đang trong giờ dạy: chưa tặng quà được. */ giftLocked?: boolean }> = ({ social, giftLocked = false }) => {
   const { state, busy, notice, clearNotice, actions } = social;
   const [giftFriendId, setGiftFriendId] = useState<string | null>(null);
 
@@ -55,11 +55,11 @@ export const StudentSocialPanel: React.FC<{ social: StudentSocial }> = ({ social
         </div>
       )}
       <WalletCard overview={overview} />
-      <SocialFriendsCard overview={overview} busy={busy} actions={actions} onGift={id => { clearNotice(); setGiftFriendId(id); }} />
+      <SocialFriendsCard overview={overview} busy={busy} actions={actions} giftLocked={giftLocked} onGift={id => { clearNotice(); setGiftFriendId(id); }} />
       <SocialGiftsCard received={overview.received} sent={overview.sent} busy={busy} onReport={actions.report} />
       {giftFriend && (
         <SendGiftModal friend={giftFriend} wallet={overview.wallet} busy={busy} error={notice?.tone === 'error' ? notice.text : null}
-          onSend={(amount, stickerId, messageId) => actions.sendGift(giftFriend.id, amount, stickerId, messageId)}
+          onSend={async (amount, stickerId, messageId) => !giftLocked && actions.sendGift(giftFriend.id, amount, stickerId, messageId)}
           onClose={() => setGiftFriendId(null)} />
       )}
     </>

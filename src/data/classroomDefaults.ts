@@ -1,3 +1,4 @@
+import { createDefaultTeachingHours } from '../domain/teachingHours';
 import { ClassroomSettings, LudoChallenge, WildHuntSettings } from '../types';
 
 export const CLASSROOM_SETTINGS_KEY = 'classivy_classroom_settings';
@@ -29,5 +30,6 @@ export const DEFAULT_LUDO_CHALLENGES: LudoChallenge[] = [
 export const createDefaultClassroomSettings = (): ClassroomSettings => ({
   wildHunt: { ...DEFAULT_WILD_HUNT_SETTINGS, rarityWeights: { ...DEFAULT_WILD_HUNT_SETTINGS.rarityWeights }, correctNeeded: { ...DEFAULT_WILD_HUNT_SETTINGS.correctNeeded } },
   ludoChallenges: DEFAULT_LUDO_CHALLENGES.map(challenge => ({ ...challenge })),
-  classSchedules: {}
+  classSchedules: {},
+  teachingHours: createDefaultTeachingHours()
 });

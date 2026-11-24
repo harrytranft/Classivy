@@ -9,6 +9,7 @@ import { useApp } from '../../app/AppContext';
 import { ShortcutsSettings } from './ShortcutsSettings';
 import { LudoChallengesSettings } from './LudoChallengesSettings';
 import { WildHuntSettingsSection } from './WildHuntSettingsSection';
+import { TeachingHoursSettingsSection } from './TeachingHoursSettingsSection';
 import { ArchivedStudentsSection } from './ArchivedStudentsSection';
 
 export const SettingsScreen: React.FC = () => {
@@ -227,6 +228,8 @@ export const SettingsScreen: React.FC = () => {
       <LudoChallengesSettings />
 
       <WildHuntSettingsSection />
+
+      <TeachingHoursSettingsSection />
 
       <SettingsSection id="luckyWheel" icon="🎡" title="Customize Vòng Quay May Mắn" subtitle="Tùy chỉnh phần thưởng, hình phạt, HP, Pokémon skill và lượt lắc Cá Ngựa." className="bg-fuchsia-50 p-6 sm:p-10 rounded-[40px] border-4 border-fuchsia-200 text-left space-y-6 my-8" collapsedSections={settingsCollapsed} onToggle={toggleSettingsSection}>
         <div className="flex flex-wrap justify-end gap-3">

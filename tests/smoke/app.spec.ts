@@ -1712,3 +1712,27 @@ test('Lưu trữ học sinh từ Hồ sơ Trainer, ẩn khỏi lớp, bỏ lưu 
   await expect(page.getByText('An 6A', { exact: true }).first()).toBeVisible();
   expect(state.errors).toEqual([]);
 });
+
+test('Chế độ giờ dạy: Cài đặt có khung giờ mặc định, sửa giờ thử lại và thêm/xoá khung giờ', async ({ page }) => {
+  const state = await setupPage(page, { loggedIn: true });
+  await chooseClass(page, '6A');
+  await clickNav(page, 'Cài Đặt');
+  await page.getByRole('heading', { name: 'Cài đặt lớp học' }).waitFor();
+  await page.getByRole('button', { name: 'Hiện Chế độ giờ dạy' }).click();
+  await expect(page.getByTestId('teaching-enabled')).toBeChecked();
+  await expect(page.getByTestId('teaching-retry')).toHaveValue('15');
+  await expect(page.getByTestId('teaching-slots').locator('li')).toHaveCount(3);
+  // Giờ thử nghiệm cố định Thứ 2 09:00: ngoài giờ dạy.
+  await expect(page.getByTestId('teaching-status')).toContainText('ngoài giờ dạy');
+
+  await page.getByTestId('teaching-retry').fill('20');
+  await page.getByTestId('teaching-add-slot').click();
+  await expect(page.getByTestId('teaching-slots').locator('li')).toHaveCount(4);
+  await page.getByTestId('teaching-slots').getByRole('button', { name: 'Xoá khung giờ' }).first().click();
+  await expect(page.getByTestId('teaching-slots').locator('li')).toHaveCount(3);
+
+  const local = await page.evaluate(() => JSON.parse(window.localStorage.getItem('classivy_classroom_settings') || '{}'));
+  expect(local.teachingHours.retryMinutes).toBe(20);
+  expect(local.teachingHours.slots).toHaveLength(3);
+  expect(state.errors).toEqual([]);
+});

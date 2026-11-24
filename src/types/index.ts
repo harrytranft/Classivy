@@ -315,9 +315,19 @@ export interface ClassScheduleSlot {
   end: string;
 }
 
+/** Chế độ giờ dạy: trong các khung giờ này học sinh chỉ xem được, các nút ghi bị khoá. Giờ theo giờ Việt Nam. */
+export interface TeachingHoursSettings {
+  enabled: boolean;
+  slots: ClassScheduleSlot[];
+  /** Số phút sau giờ tan lớp học sinh mới được thao tác lại. */
+  retryMinutes: number;
+}
+
 export interface ClassroomSettings {
   wildHunt: WildHuntSettings;
   ludoChallenges: LudoChallenge[];
   /** Lịch học theo tên lớp. Lớp có mặt ở đây vẫn hiện trong trang Class kể cả khi chưa có học sinh. */
   classSchedules: Record<string, ClassScheduleSlot[]>;
+  /** Chế độ giờ dạy (áp dụng cho mọi lớp của giáo viên). */
+  teachingHours: TeachingHoursSettings;
 }

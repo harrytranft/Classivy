@@ -27,6 +27,8 @@ MIGRATION12=supabase/migrations/20261103100000_phase12_student_fusion.sql
 ROLLBACK12=supabase/rollback/20261103100000_phase12_student_fusion_down.sql
 MIGRATION13=supabase/migrations/20261104100000_phase13_classroom_settings.sql
 ROLLBACK13=supabase/rollback/20261104100000_phase13_classroom_settings_down.sql
+MIGRATION_TH=supabase/migrations/20261105100000_teaching_hours.sql
+ROLLBACK_TH=supabase/rollback/20261105100000_teaching_hours_down.sql
 ROLLBACK_ROLE=supabase/rollback/20261030110000_sync_profile_role_down.sql
 
 run() { "${PSQL[@]}" -d "$DB" "$@"; }
@@ -173,10 +175,20 @@ run -c "do \$\$ begin
 run -f "$ROLLBACK13"
 run -f "$MIGRATION13"
 
+echo "== Migration chế độ giờ dạy (chạy 2 lần) + test, hoàn tác, chạy lại"
+run -f "$MIGRATION_TH"
+run -f "$MIGRATION_TH"
+run -o /dev/null -f supabase/tests/95_teaching_hours.test.sql
+run -f "$ROLLBACK_TH"
+run -c "do \$\$ begin
+  if to_regprocedure('public.student_teaching_hours()') is not null then raise exception 'FAIL: teaching hours rollback left function'; end if; end \$\$"
+run -f "$MIGRATION_TH"
+
 run -f "$ROLLBACK7"
 run -c "do \$\$ begin
   if to_regprocedure('public.save_teacher_changes_v2(jsonb)') is not null or to_regprocedure('public.is_teacher()') is not null then raise exception 'FAIL: phase 7 rollback left functions'; end if; end \$\$"
 run -f "$MIGRATION7"
+run -f "$ROLLBACK_TH"
 run -f "$ROLLBACK13"
 run -f "$ROLLBACK12"
 run -f "$ROLLBACK10"
